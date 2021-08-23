@@ -1,0 +1,35 @@
+var node0 = ::blueprint::nodes::output::Output()
+
+node0.var_name = "geo"
+node0.var_type = "geo"
+
+_editor.add_node(node0, -44.694347158821, -423.35205672125)
+
+var node1 = ::geograph::nodes::box::Box()
+node1.query_param("size").value.set(0.1, 0.05, 1)
+node1.query_param("pos").value.set(0, 0, 0)
+node1.query_param("offset_y").value = true
+
+_editor.add_node(node1, -355.73439315537, -376.44508782215)
+
+var node2 = ::geograph::nodes::box::Box()
+node2.query_param("size").value.set(0.13, 0.02, 1)
+node2.query_param("pos").value.set(0, 0, 0)
+node2.query_param("offset_y").value = true
+
+_editor.add_node(node2, -351.60216175041, -601.2384762519)
+
+var node3 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node3, -182.37946805087, -443.24295170051)
+
+var node4 = ::geograph::nodes::boolean::Boolean()
+node4.query_param("operator").value = "union"
+
+_editor.add_node(node4, -180.39984810364, -342.41541260867)
+
+Blueprint.connect(node1, "geo", node4, "a")
+Blueprint.connect(node2, "geo", node4, "b")
+Blueprint.connect(node1, "geo", node3, "in0")
+Blueprint.connect(node2, "geo", node3, "in1")
+Blueprint.connect(node3, "list", node0, "var")

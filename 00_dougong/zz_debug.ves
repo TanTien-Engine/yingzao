@@ -1,0 +1,68 @@
+var node0 = ::geograph::nodes::box::Box()
+node0.query_param("size").value.set(0.32686021924019, 0.12686021625996, 0.36073845624924)
+node0.query_param("pos").value.set(0, 0, 0)
+node0.query_param("offset_y").value = true
+
+_editor.add_node(node0, -358.46644697683, -375.07906091142)
+
+var node1 = ::geograph::nodes::boolean::Boolean()
+node1.query_param("operator").value = "subtract"
+
+_editor.add_node(node1, -80.003661857164, -576.4025276121)
+
+var node2 = ::blueprint::nodes::subgraph::Subgraph()
+node2.load_from_file(_editor, "80_beam_cut_down_23.ves")
+
+_editor.add_node(node2, -361.82182021969, -613.59258327011)
+
+var node3 = ::blueprint::nodes::subgraph::Subgraph()
+node3.load_from_file(_editor, "../99_tools/draw_geos_deferred.ves")
+
+_editor.add_node(node3, 647.45611944108, -478.67436766184)
+
+var node4 = ::blueprint::nodes::camera3d::Camera3d()
+
+node4.cam.position.set(-1.3660497452318, 0.67136075557349, 0.86958167702984)
+node4.cam.yaw = -19.6
+node4.cam.pitch = -23.5
+node4.cam.zoom = 45
+node4.cam.update_vectors()
+node4.speed = 0.24247005581856
+
+_editor.add_node(node4, -46.945807464852, -726.81574507784)
+
+var node5 = ::blueprint::nodes::subgraph::Subgraph()
+node5.load_from_file(_editor, "22_jiao_hua_gong.ves")
+
+_editor.add_node(node5, -30.328259852844, -341.93518568536)
+
+var node6 = ::blueprint::nodes::integer::Integer()
+
+node6.value = 2
+
+_editor.add_node(node6, -208.45974731445, -259.32214355469)
+
+var node7 = ::blueprint::nodes::list_flatten::ListFlatten()
+
+_editor.add_node(node7, 393.07021973519, -251.12594189698)
+
+var node8 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node8, 227.13669433594, -231.3102722168)
+
+var node9 = ::geograph::nodes::box::Box()
+node9.query_param("size").value.set(0.02, 0.02, 0.02)
+node9.query_param("pos").value.set(0, 0.15, -0.05)
+node9.query_param("offset_y").value = true
+
+_editor.add_node(node9, 238.87748385658, -456.48448723407)
+
+Blueprint.connect(node6, "v", node5, "hop_count")
+Blueprint.connect(node5, "pos_left", node9, "pos")
+Blueprint.connect(node5, "geo", node8, "in0")
+Blueprint.connect(node9, "geo", node8, "in1")
+Blueprint.connect(node8, "list", node7, "list")
+Blueprint.connect(node7, "list", node3, "geos")
+Blueprint.connect(node4, "this", node3, "view_cam")
+Blueprint.connect(node0, "geo", node1, "a")
+Blueprint.connect(node2, "geo", node1, "b")

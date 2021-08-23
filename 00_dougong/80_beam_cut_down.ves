@@ -1,0 +1,36 @@
+var node0 = ::blueprint::nodes::output::Output()
+
+node0.var_name = "geo"
+node0.var_type = "geo"
+
+_editor.add_node(node0, -29.083292070322, -218.36987639348)
+
+var node1 = ::geograph::nodes::box::Box()
+node1.query_param("size").value.set(0.1, 0.05, 1)
+node1.query_param("pos").value.set(0, 0, 0)
+node1.query_param("offset_y").value = true
+
+_editor.add_node(node1, -355.73439315537, -376.44508782215)
+
+var node2 = ::geograph::nodes::box::Box()
+node2.query_param("size").value.set(0.1, 0.1, 1)
+node2.query_param("pos").value.set(0, 0, 0)
+node2.query_param("offset_y").value = true
+
+_editor.add_node(node2, -557.36176123255, -318.65737712777)
+
+var node3 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node3, -166.4072997841, -238.65001857076)
+
+var node4 = ::blueprint::nodes::property::Property()
+
+node4.var_name = "high"
+node4.var_type = "bool"
+
+_editor.add_node(node4, -311.1178832763, -196.57103563343)
+
+Blueprint.connect(node4, "var", node3, "cond")
+Blueprint.connect(node2, "geo", node3, "true")
+Blueprint.connect(node1, "geo", node3, "false")
+Blueprint.connect(node3, "result", node0, "var")

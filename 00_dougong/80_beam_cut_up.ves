@@ -1,0 +1,27 @@
+var node0 = ::geograph::nodes::box::Box()
+node0.query_param("size").value.set(0.1, 1, 1)
+node0.query_param("pos").value.set(0, 0, 0)
+node0.query_param("offset_y").value = true
+
+_editor.add_node(node0, -351.9846492854, -162.24523808511)
+
+var node1 = ::blueprint::nodes::output::Output()
+
+node1.var_name = "geo"
+node1.var_type = "geo"
+
+_editor.add_node(node1, -38.839710793182, -130.36726175024)
+
+var node2 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node2, -176.96835419977, -138.13009631128)
+
+var node3 = ::blueprint::nodes::number3::Number3()
+
+node3.value.set(0, 0.05, 0)
+
+_editor.add_node(node3, -354.52107491846, -327.99860442451)
+
+Blueprint.connect(node0, "geo", node2, "geo")
+Blueprint.connect(node3, "v3", node2, "xyz")
+Blueprint.connect(node2, "geo", node1, "var")
