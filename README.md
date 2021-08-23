@@ -21,4 +21,3 @@ corner
 ![](./10_dougong/screenshots/7steps_2ch2xa_corner_2.jpg)
 
 ![](./10_dougong/screenshots/7steps_2ch2xa_corner_3.jpg)
-# yingzao
