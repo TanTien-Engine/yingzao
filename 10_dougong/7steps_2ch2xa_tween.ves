@@ -9,7 +9,7 @@ _editor.add_node(node1, 38.86746739339, -1309.0282645867)
 
 var node2 = ::blueprint::nodes::list_flatten::ListFlatten()
 
-_editor.add_node(node2, 176.20204445221, -1234.9377712789)
+_editor.add_node(node2, 163.22478880027, -1297.7750091725)
 
 var node3 = ::blueprint::nodes::subgraph::Subgraph()
 node3.load_from_file(_editor, "../99_tools/draw_geos_deferred.ves")
@@ -318,6 +318,7 @@ _editor.add_node(node55, 466.06632621069, -444.30388841497)
 
 var node56 = ::blueprint::nodes::subgraph::Subgraph()
 node56.load_from_file(_editor, "../00_dougong/19_ang.ves")
+node56.set_prop_value("rotate", 0)
 
 _editor.add_node(node56, 92.32695675756, -515.77616038016)
 
@@ -354,6 +355,7 @@ _editor.add_node(node61, 991.0451307383, 448.18709739253)
 
 var node62 = ::blueprint::nodes::subgraph::Subgraph()
 node62.load_from_file(_editor, "../00_dougong/35_ling_gong_dou.ves")
+node62.set_prop_value("vert", false)
 
 _editor.add_node(node62, 867.0304317301, 358.30986560325)
 
@@ -481,6 +483,7 @@ _editor.add_node(node83, 872.2599140262, -458.45783799975)
 
 var node84 = ::blueprint::nodes::subgraph::Subgraph()
 node84.load_from_file(_editor, "../00_dougong/37_shuatou_dou.ves")
+node84.set_prop_value("vert", false)
 
 _editor.add_node(node84, 876.93067308941, -604.47982063649)
 
@@ -514,6 +517,7 @@ _editor.add_node(node89, 923.61475067254, -697.59318195902)
 
 var node90 = ::blueprint::nodes::subgraph::Subgraph()
 node90.load_from_file(_editor, "../00_dougong/19_ang.ves")
+node90.set_prop_value("rotate", 0)
 
 _editor.add_node(node90, 1050.1024368352, -779.83077641033)
 
@@ -578,6 +582,7 @@ _editor.add_node(node100, 1527.8881112465, 389.58323969374)
 
 var node101 = ::blueprint::nodes::subgraph::Subgraph()
 node101.load_from_file(_editor, "../00_dougong/35_ling_gong_dou.ves")
+node101.set_prop_value("vert", false)
 
 _editor.add_node(node101, 1723.6295965899, 355.4505878524)
 
@@ -689,6 +694,7 @@ _editor.add_node(node119, 1724.3163559808, -306.70214465758)
 
 var node120 = ::blueprint::nodes::subgraph::Subgraph()
 node120.load_from_file(_editor, "../00_dougong/37_shuatou_dou.ves")
+node120.set_prop_value("vert", false)
 
 _editor.add_node(node120, 1829.2785714628, -432.4988249789)
 
@@ -820,6 +826,8 @@ _editor.add_node(node142, 3296.7272342398, 449.71212701992)
 var node143 = ::geograph::nodes::box::Box()
 node143.query_param("size").value.set(2, 0.12, 0.08)
 node143.query_param("pos").value.set(0, 0.06, 0)
+node143.query_param("offset_y").value = false
+node143.query_param("offset_x").value = false
 
 _editor.add_node(node143, 2897.7277035163, 337.08747596254)
 
@@ -875,6 +883,8 @@ _editor.add_node(node152, 3138.9566656589, -644.68118352276)
 var node153 = ::geograph::nodes::box::Box()
 node153.query_param("size").value.set(2, 0.3, 0.2)
 node153.query_param("pos").value.set(0, -0.15, 0)
+node153.query_param("offset_y").value = false
+node153.query_param("offset_x").value = false
 
 _editor.add_node(node153, 2996.1451355151, -860.06309004816)
 
@@ -991,6 +1001,8 @@ _editor.add_node(node174, 2463.5295605422, -69.013866723933)
 var node175 = ::geograph::nodes::box::Box()
 node175.query_param("size").value.set(0.1, 0.26, 2)
 node175.query_param("pos").value.set(0, -0.13, 0)
+node175.query_param("offset_y").value = false
+node175.query_param("offset_x").value = false
 
 _editor.add_node(node175, 2222.3150655008, -58.469531749663)
 
@@ -1027,6 +1039,10 @@ node181.query_param("ori").value.set(0, 0, 0)
 node181.query_param("dir").value.set(0, 0, 1)
 
 _editor.add_node(node181, 2466.3849612888, -397.80694448775)
+
+var node182 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node182, 122.32417297363, -1076.5090332031)
 
 Blueprint.connect(node158, "geo", node157, "base")
 Blueprint.connect(node157, "geo", node159, "obj")
@@ -1245,7 +1261,8 @@ Blueprint.connect(node65, "var", node1, "in4")
 Blueprint.connect(node104, "var", node1, "in5")
 Blueprint.connect(node134, "var", node1, "in6")
 Blueprint.connect(node161, "var", node1, "in7")
-Blueprint.connect(node1, "list", node2, "list")
-Blueprint.connect(node2, "list", node5, "var")
+Blueprint.connect(node1, "list", node182, "list")
+Blueprint.connect(node182, "brush", node5, "var")
 Blueprint.connect(node5, "var", node3, "geos")
 Blueprint.connect(node4, "this", node3, "view_cam")
+Blueprint.connect(node1, "list", node2, "list")

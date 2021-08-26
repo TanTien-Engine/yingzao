@@ -2,42 +2,44 @@ var node0 = ::blueprint::nodes::number::Number()
 
 node0.value = 0.15
 
-_editor.add_node(node0, -378.11222282874, 128.28874260977)
+_editor.add_node(node0, -589.68247076262, 121.67717236184)
 
 var node1 = ::blueprint::nodes::number::Number()
 
 node1.value = 0.2
 
-_editor.add_node(node1, -378.52336546062, 61.31195440882)
+_editor.add_node(node1, -590.0936133945, 54.700384160886)
 
 var node2 = ::blueprint::nodes::number::Number()
 
 node2.value = 0.09
 
-_editor.add_node(node2, -379.33863049189, -3.8345085488777)
+_editor.add_node(node2, -590.90887842577, -10.446078796812)
 
 var node3 = ::blueprint::nodes::number::Number()
 
 node3.value = 0.72
 
-_editor.add_node(node3, -378.88615779344, 195.09217133732)
+_editor.add_node(node3, -590.45640572732, 188.48060108939)
 
 var node4 = ::blueprint::nodes::subgraph::Subgraph()
 node4.load_from_file(_editor, "10_gong.ves")
 
-_editor.add_node(node4, -184.15051220006, 94.530664154213)
+_editor.add_node(node4, -395.72076013394, 87.919093906279)
 
 var node5 = ::geograph::nodes::boolean::Boolean()
 node5.query_param("operator").value = "subtract"
 
-_editor.add_node(node5, 12.870066003936, -72.898904694786)
+_editor.add_node(node5, -198.70018192995, -79.51047494272)
 
 var node6 = ::geograph::nodes::box::Box()
 node6.query_param("size").value.set(0.08, 0.2, 1)
 node6.query_param("pos").value.set(0, 0.15, 0)
+node6.query_param("offset_x").value = false
 node6.query_param("offset_y").value = false
+node6.query_param("offset_z").value = false
 
-_editor.add_node(node6, -131.81818181818, -98.227272727273)
+_editor.add_node(node6, -343.38842975206, -104.83884297521)
 
 var node7 = ::blueprint::nodes::output::Output()
 
@@ -184,6 +186,17 @@ node32.query_param("angle").value = "90"
 
 _editor.add_node(node32, 260.65572797663, 125.85676891638)
 
+var node33 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node33, -6.98624678683, -47.268240432109)
+
+var node34 = ::blueprint::nodes::input::Input()
+
+node34.var_name = "no_cut"
+node34.var_type = "bool"
+
+_editor.add_node(node34, -181.97389713004, 23.905273941927)
+
 Blueprint.connect(node22, "var", node24, "var")
 Blueprint.connect(node24, "var", node31, "var")
 Blueprint.connect(node24, "var", node28, "var")
@@ -216,10 +229,13 @@ Blueprint.connect(node27, "result", node19, "b")
 Blueprint.connect(node19, "v", node9, "var")
 Blueprint.connect(node4, "geo", node5, "a")
 Blueprint.connect(node6, "geo", node5, "b")
-Blueprint.connect(node5, "geo", node26, "geo")
+Blueprint.connect(node34, "var", node33, "cond")
+Blueprint.connect(node4, "geo", node33, "true")
+Blueprint.connect(node5, "geo", node33, "false")
+Blueprint.connect(node33, "result", node26, "geo")
 Blueprint.connect(node25, "var", node23, "cond")
 Blueprint.connect(node26, "geo", node23, "true")
-Blueprint.connect(node5, "geo", node23, "false")
+Blueprint.connect(node33, "result", node23, "false")
 Blueprint.connect(node23, "result", node16, "obj")
 Blueprint.connect(node17, "var", node16, "translate")
 Blueprint.connect(node16, "obj", node7, "var")

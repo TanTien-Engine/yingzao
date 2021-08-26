@@ -19,7 +19,7 @@ var node3 = ::geograph::nodes::plane::Plane()
 node3.query_param("ori").value.set(0, 0.3, 0)
 node3.query_param("dir").value.set(0, 1, 0.364)
 
-_editor.add_node(node3, -407.1473071811, 142.78901000079)
+_editor.add_node(node3, -410.87283511945, 114.84755046313)
 
 var node4 = ::blueprint::nodes::input::Input()
 
@@ -30,7 +30,10 @@ _editor.add_node(node4, -243.76597290039, 141.17114257812)
 
 var node5 = ::geograph::nodes::box::Box()
 node5.query_param("size").value.set(2, 0.2, 0.2)
-node5.query_param("pos").value.set(0, 0.1, 0)
+node5.query_param("pos").value.set(0, 0, 0)
+node5.query_param("offset_x").value = false
+node5.query_param("offset_y").value = true
+node5.query_param("offset_z").value = false
 
 _editor.add_node(node5, -413.62750515133, 334.89116294849)
 
@@ -51,10 +54,33 @@ node8.var_type = "num3"
 
 _editor.add_node(node8, 28.671681412836, 116.66228573026)
 
+var node9 = ::geograph::nodes::box::Box()
+node9.query_param("size").value.set(2, 0.2, 0.1)
+node9.query_param("pos").value.set(0, 0, 0)
+node9.query_param("offset_x").value = false
+node9.query_param("offset_y").value = true
+node9.query_param("offset_z").value = false
+
+_editor.add_node(node9, -616.48250139476, 317.81582656436)
+
+var node10 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node10, -230.81232692045, 556.32221748806)
+
+var node11 = ::blueprint::nodes::property::Property()
+
+node11.var_name = "narrow"
+node11.var_type = "bool"
+
+_editor.add_node(node11, -695.26145100572, 583.64277171495)
+
+Blueprint.connect(node11, "var", node10, "cond")
+Blueprint.connect(node9, "geo", node10, "true")
+Blueprint.connect(node5, "geo", node10, "false")
 Blueprint.connect(node4, "var", node6, "a")
 Blueprint.connect(node7, "v3", node6, "b")
 Blueprint.connect(node6, "v", node8, "var")
-Blueprint.connect(node5, "geo", node2, "geo")
+Blueprint.connect(node10, "result", node2, "geo")
 Blueprint.connect(node3, "plane", node2, "plane")
 Blueprint.connect(node2, "geo", node1, "obj")
 Blueprint.connect(node4, "var", node1, "translate")

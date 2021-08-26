@@ -1,0 +1,93 @@
+var node0 = ::geograph::nodes::box::Box()
+node0.query_param("size").value.set(2, 0.15, 0.1)
+node0.query_param("pos").value.set(0, 0, 0)
+node0.query_param("offset_x").value = false
+node0.query_param("offset_y").value = true
+node0.query_param("offset_z").value = false
+
+_editor.add_node(node0, 18.651719659667, 15.778513364767)
+
+var node1 = ::blueprint::nodes::input::Input()
+
+node1.var_name = "pos"
+node1.var_type = "num3"
+
+_editor.add_node(node1, -102.18713304204, -178.52781933866)
+
+var node2 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node2, 211.74779027721, 3.4982263392578)
+
+var node3 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node3, 752.98371930669, -82.400543059055)
+
+var node4 = ::blueprint::nodes::subgraph::Subgraph()
+node4.load_from_file(_editor, "01_san_dou.ves")
+node4.set_prop_value("no_arc", false)
+
+_editor.add_node(node4, 293.85660290966, -257.27693215842)
+
+var node5 = ::blueprint::nodes::subgraph::Subgraph()
+node5.load_from_file(_editor, "01_san_dou.ves")
+node5.set_prop_value("no_arc", false)
+
+_editor.add_node(node5, 294.89292059785, -365.93816369377)
+
+var node6 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node6, 476.67190250339, -315.53392260907)
+
+var node7 = ::blueprint::nodes::output::Output()
+
+node7.var_name = "geo"
+node7.var_type = "geo"
+
+_editor.add_node(node7, 893.45233386094, -65.148525484865)
+
+var node8 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node8, 107.43509990309, -264.71534772867)
+
+var node9 = ::blueprint::nodes::number3::Number3()
+
+node9.value.set(-0.41, 0.15, 0)
+
+_editor.add_node(node9, -37.38338883112, -303.69296731956)
+
+var node10 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node10, 106.21930919134, -373.26143843111)
+
+var node11 = ::blueprint::nodes::number3::Number3()
+
+node11.value.set(0.41, 0.15, 0)
+
+_editor.add_node(node11, -50.80706834828, -412.77459521209)
+
+var node12 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node12, 615.72767944336, -141.72991333008)
+
+var node13 = ::blueprint::nodes::property::Property()
+
+node13.var_name = "no_dou"
+node13.var_type = "bool"
+
+_editor.add_node(node13, 465.25805358887, -106.83587646484)
+
+Blueprint.connect(node1, "var", node10, "a")
+Blueprint.connect(node11, "v3", node10, "b")
+Blueprint.connect(node10, "v", node5, "pos")
+Blueprint.connect(node1, "var", node8, "a")
+Blueprint.connect(node9, "v3", node8, "b")
+Blueprint.connect(node8, "v", node4, "pos")
+Blueprint.connect(node4, "geo", node6, "in0")
+Blueprint.connect(node5, "geo", node6, "in1")
+Blueprint.connect(node13, "var", node12, "cond")
+Blueprint.connect(node6, "list", node12, "false")
+Blueprint.connect(node0, "geo", node2, "obj")
+Blueprint.connect(node1, "var", node2, "translate")
+Blueprint.connect(node2, "obj", node3, "in0")
+Blueprint.connect(node12, "result", node3, "in1")
+Blueprint.connect(node3, "list", node7, "var")

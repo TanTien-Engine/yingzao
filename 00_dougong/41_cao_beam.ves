@@ -1,0 +1,141 @@
+var node0 = ::geograph::nodes::box::Box()
+node0.query_param("size").value.set(0, 0, 0)
+node0.query_param("pos").value.set(0, 0, 0)
+node0.query_param("offset_x").value = false
+node0.query_param("offset_y").value = true
+node0.query_param("offset_z").value = true
+
+_editor.add_node(node0, 9.5676407033113, 16.393225474595)
+
+var node1 = ::blueprint::nodes::input::Input()
+
+node1.var_name = "pos"
+node1.var_type = "num3"
+
+_editor.add_node(node1, -140.02607846927, -125.93578327555)
+
+var node2 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node2, 201.36598575566, -71.496651059827)
+
+var node3 = ::blueprint::nodes::output::Output()
+
+node3.var_name = "geo"
+node3.var_type = "geo"
+
+_editor.add_node(node3, 596.34148077713, 42.767600462816)
+
+var node4 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node4, -130.09384877515, 43.645557702417)
+
+var node5 = ::blueprint::nodes::number::Number()
+
+node5.value = 0.24
+
+_editor.add_node(node5, -472.69333649255, 357.01213074877)
+
+var node6 = ::blueprint::nodes::store::Store()
+
+node6.var_name = "width"
+
+_editor.add_node(node6, -314.16590893958, 358.51477539154)
+
+var node7 = ::blueprint::nodes::number::Number()
+
+node7.value = 0.36
+
+_editor.add_node(node7, -474.94728089525, 271.36224344599)
+
+var node8 = ::blueprint::nodes::store::Store()
+
+node8.var_name = "height"
+
+_editor.add_node(node8, -316.41985334228, 272.86488808876)
+
+var node9 = ::blueprint::nodes::number::Number()
+
+node9.value = 2
+
+_editor.add_node(node9, -471.94202169165, 197.73339295764)
+
+var node10 = ::blueprint::nodes::store::Store()
+
+node10.var_name = "length"
+
+_editor.add_node(node10, -313.41459413868, 199.23603760041)
+
+var node11 = ::blueprint::nodes::load::Load()
+
+node11.var_name = "width"
+
+_editor.add_node(node11, -268.11374701669, 110.37684971416)
+
+var node12 = ::blueprint::nodes::load::Load()
+
+node12.var_name = "height"
+
+_editor.add_node(node12, -262.64963462084, 61.882885976889)
+
+var node13 = ::blueprint::nodes::load::Load()
+
+node13.var_name = "length"
+
+_editor.add_node(node13, -261.21530610559, 14.959852840949)
+
+var node14 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node14, 2.7693946668501, -147.11920430317)
+
+var node15 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node15, -128.487339036, -258.01605033705)
+
+var node16 = ::blueprint::nodes::load::Load()
+
+node16.var_name = "length"
+
+_editor.add_node(node16, -400.24431139322, -240.04771085313)
+
+var node17 = ::blueprint::nodes::negate::Negate()
+
+_editor.add_node(node17, -265.02607182227, -238.58659623195)
+
+var node18 = ::blueprint::nodes::output::Output()
+
+node18.var_name = "plane"
+node18.var_type = "plane"
+
+_editor.add_node(node18, 358.04696275441, -383.76539494216)
+
+var node19 = ::geograph::nodes::plane::Plane()
+node19.query_param("ori").value.set(0, 0, 0)
+node19.query_param("dir").value.set(0, -1, 0)
+
+_editor.add_node(node19, 85.900273076322, -435.18899205812)
+
+var node20 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node20, 226.49581222249, -416.86104802451)
+
+Blueprint.connect(node9, "v", node10, "var")
+Blueprint.connect(node10, "var", node16, "var")
+Blueprint.connect(node16, "var", node17, "v")
+Blueprint.connect(node17, "v", node15, "z")
+Blueprint.connect(node10, "var", node13, "var")
+Blueprint.connect(node7, "v", node8, "var")
+Blueprint.connect(node8, "var", node12, "var")
+Blueprint.connect(node5, "v", node6, "var")
+Blueprint.connect(node6, "var", node11, "var")
+Blueprint.connect(node11, "var", node4, "x")
+Blueprint.connect(node12, "var", node4, "y")
+Blueprint.connect(node13, "var", node4, "z")
+Blueprint.connect(node4, "xyz", node0, "size")
+Blueprint.connect(node19, "plane", node20, "obj")
+Blueprint.connect(node1, "var", node20, "translate")
+Blueprint.connect(node20, "obj", node18, "var")
+Blueprint.connect(node1, "var", node14, "a")
+Blueprint.connect(node15, "xyz", node14, "b")
+Blueprint.connect(node0, "geo", node2, "obj")
+Blueprint.connect(node14, "v", node2, "translate")
+Blueprint.connect(node2, "obj", node3, "var")

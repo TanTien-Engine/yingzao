@@ -1,0 +1,73 @@
+var node0 = ::blueprint::nodes::output::Output()
+
+node0.var_name = "geo"
+node0.var_type = "geo"
+
+_editor.add_node(node0, 746.94423484567, 291.77394670127)
+
+var node1 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node1, 298.93731554322, 189.22760289698)
+
+var node2 = ::geograph::nodes::box::Box()
+node2.query_param("size").value.set(0.02, 0.15, 0.1)
+node2.query_param("pos").value.set(0, 0, 0)
+node2.query_param("offset_x").value = false
+node2.query_param("offset_y").value = true
+node2.query_param("offset_z").value = false
+
+_editor.add_node(node2, -314.17975948438, 38.196631591161)
+
+var node3 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node3, 9.295251472789, 132.72680541889)
+
+var node4 = ::blueprint::nodes::number3::Number3()
+
+node4.value.set(0.05, 0, 0)
+
+_editor.add_node(node4, -160.54424032572, 1.4900172200405)
+
+var node5 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node5, 116.81624566943, 56.88070133328)
+
+var node6 = ::blueprint::nodes::negate::Negate()
+
+_editor.add_node(node6, -25.885050514033, 24.02327580887)
+
+var node7 = ::blueprint::nodes::input::Input()
+
+node7.var_name = "geo"
+node7.var_type = "geo"
+
+_editor.add_node(node7, 465.81028693574, 302.82376553438)
+
+var node8 = ::blueprint::nodes::input::Input()
+
+node8.var_name = "pos"
+node8.var_type = "num3"
+
+_editor.add_node(node8, 298.22048921222, 105.46436779585)
+
+var node9 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node9, 473.99633871604, 229.58985805726)
+
+var node10 = ::geograph::nodes::boolean::Boolean()
+node10.query_param("operator").value = "subtract"
+
+_editor.add_node(node10, 612.8200452348, 269.56979277028)
+
+Blueprint.connect(node4, "v3", node6, "v")
+Blueprint.connect(node2, "geo", node5, "geo")
+Blueprint.connect(node6, "v", node5, "xyz")
+Blueprint.connect(node2, "geo", node3, "geo")
+Blueprint.connect(node4, "v3", node3, "xyz")
+Blueprint.connect(node3, "geo", node1, "in0")
+Blueprint.connect(node5, "geo", node1, "in1")
+Blueprint.connect(node1, "list", node9, "geo")
+Blueprint.connect(node8, "var", node9, "xyz")
+Blueprint.connect(node7, "var", node10, "a")
+Blueprint.connect(node9, "geo", node10, "b")
+Blueprint.connect(node10, "geo", node0, "var")

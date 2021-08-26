@@ -84,12 +84,20 @@ var node15 = ::blueprint::nodes::add::Add()
 
 _editor.add_node(node15, 49.985434035625, -232.68990811435)
 
+var node16 = ::blueprint::nodes::property::Property()
+
+node16.var_name = "no_cut"
+node16.var_type = "bool"
+
+_editor.add_node(node16, -452.11801544742, -3.2635569852352)
+
 Blueprint.connect(node10, "geo", node11, "geo")
 Blueprint.connect(node8, "var", node9, "cond")
 Blueprint.connect(node11, "geo", node9, "true")
 Blueprint.connect(node10, "geo", node9, "false")
 Blueprint.connect(node2, "var", node0, "pos")
 Blueprint.connect(node8, "var", node0, "vert")
+Blueprint.connect(node16, "var", node0, "no_cut")
 Blueprint.connect(node0, "pos_right", node15, "a")
 Blueprint.connect(node10, "pos", node15, "b")
 Blueprint.connect(node15, "v", node5, "var")

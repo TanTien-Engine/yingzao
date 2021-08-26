@@ -25,7 +25,7 @@ _editor.add_node(node3, -1123.0978601904, 34.921673533983)
 
 var node4 = ::geograph::nodes::resample::Resample()
 node4.query_param("length").value = 0
-node4.query_param("count").value = 4
+node4.query_param("count").value = 1
 
 _editor.add_node(node4, -1124.2671951844, 277.48313350727)
 
@@ -35,7 +35,7 @@ _editor.add_node(node5, -686.83358253196, 63.088702391491)
 
 var node6 = ::geograph::nodes::resample::Resample()
 node6.query_param("length").value = 0
-node6.query_param("count").value = 4
+node6.query_param("count").value = 1
 
 _editor.add_node(node6, -1123.584181729, 147.02756353254)
 
@@ -124,13 +124,40 @@ node23.var_type = "num"
 
 _editor.add_node(node23, -1594.3961204569, 70.444868928952)
 
+var node24 = ::blueprint::nodes::integer::Integer()
+
+node24.value = 4
+
+_editor.add_node(node24, -1165.1910049675, 580.26226806641)
+
+var node25 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node25, -930.05952487731, 585.53008279449)
+
+var node26 = ::blueprint::nodes::input::Input()
+
+node26.var_name = "ban"
+node26.var_type = "int"
+
+_editor.add_node(node26, -1166.112309399, 511.99457540863)
+
+var node27 = ::blueprint::nodes::is_null::IsNull()
+
+_editor.add_node(node27, -1082.2677062673, 646.48657844262)
+
+Blueprint.connect(node26, "var", node27, "in")
+Blueprint.connect(node27, "out", node25, "cond")
+Blueprint.connect(node24, "v", node25, "true")
+Blueprint.connect(node26, "var", node25, "false")
 Blueprint.connect(node23, "var", node22, "y")
 Blueprint.connect(node22, "xy", node2, "p1")
 Blueprint.connect(node2, "geo", node6, "polyline")
+Blueprint.connect(node25, "result", node6, "count")
 Blueprint.connect(node6, "points", node8, "list")
 Blueprint.connect(node21, "var", node20, "x")
 Blueprint.connect(node20, "xy", node0, "p1")
 Blueprint.connect(node0, "geo", node4, "polyline")
+Blueprint.connect(node25, "result", node4, "count")
 Blueprint.connect(node4, "points", node9, "p0")
 Blueprint.connect(node8, "list", node9, "p1")
 Blueprint.connect(node9, "geo", node13, "v")

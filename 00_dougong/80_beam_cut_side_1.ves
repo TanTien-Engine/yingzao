@@ -1,0 +1,46 @@
+var node0 = ::blueprint::nodes::output::Output()
+
+node0.var_name = "geo"
+node0.var_type = "geo"
+
+_editor.add_node(node0, 393.83863949173, -417.4682986324)
+
+var node1 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node1, 256.70649855142, -449.23079570491)
+
+var node2 = ::geograph::nodes::box::Box()
+node2.query_param("size").value.set(0.1, 0.15, 0.02)
+node2.query_param("pos").value.set(0, 0, 0)
+node2.query_param("offset_x").value = false
+node2.query_param("offset_y").value = true
+node2.query_param("offset_z").value = false
+
+_editor.add_node(node2, -354.90794687438, -607.02360021884)
+
+var node3 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node3, -31.432935917211, -512.49342639111)
+
+var node4 = ::blueprint::nodes::number3::Number3()
+
+node4.value.set(0, 0, 0.05)
+
+_editor.add_node(node4, -201.27242771572, -643.73021458996)
+
+var node5 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node5, 76.088058279433, -588.33953047672)
+
+var node6 = ::blueprint::nodes::negate::Negate()
+
+_editor.add_node(node6, -66.613237904033, -621.19695600113)
+
+Blueprint.connect(node4, "v3", node6, "v")
+Blueprint.connect(node2, "geo", node5, "geo")
+Blueprint.connect(node6, "v", node5, "xyz")
+Blueprint.connect(node2, "geo", node3, "geo")
+Blueprint.connect(node4, "v3", node3, "xyz")
+Blueprint.connect(node3, "geo", node1, "in1")
+Blueprint.connect(node5, "geo", node1, "in2")
+Blueprint.connect(node1, "list", node0, "var")
