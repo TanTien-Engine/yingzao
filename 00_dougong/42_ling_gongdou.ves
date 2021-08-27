@@ -1,0 +1,29 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "14_ling_gong.ves")
+
+_editor.add_node(node0, -99.772579902809, -52.396892265971)
+
+var node1 = ::blueprint::nodes::subgraph::Subgraph()
+node1.load_from_file(_editor, "50_gong_add_dou.ves")
+
+_editor.add_node(node1, 130.47749685612, -41.670510568521)
+
+var node2 = ::blueprint::nodes::input::Input()
+
+node2.var_name = "pos"
+node2.var_type = "num3"
+
+_editor.add_node(node2, -292.13423063353, -32.286323174468)
+
+var node3 = ::blueprint::nodes::output::Output()
+
+node3.var_name = "gong_dou"
+node3.var_type = "array"
+
+_editor.add_node(node3, 320.06795282898, -23.061798452177)
+
+Blueprint.connect(node2, "var", node0, "pos")
+Blueprint.connect(node0, "geo", node1, "gong")
+Blueprint.connect(node0, "pos_left", node1, "pos_left")
+Blueprint.connect(node0, "pos_right", node1, "pos_right")
+Blueprint.connect(node1, "gong_dou", node3, "var")

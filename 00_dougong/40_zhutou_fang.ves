@@ -18,76 +18,59 @@ var node2 = ::scenegraph::nodes::transform3d::Transform3d()
 
 _editor.add_node(node2, 211.74779027721, 3.4982263392578)
 
-var node3 = ::blueprint::nodes::merge::Merge()
+var node3 = ::blueprint::nodes::output::Output()
 
-_editor.add_node(node3, 752.98371930669, -82.400543059055)
+node3.var_name = "geo"
+node3.var_type = "geo"
 
-var node4 = ::blueprint::nodes::subgraph::Subgraph()
-node4.load_from_file(_editor, "01_san_dou.ves")
-node4.set_prop_value("no_arc", false)
+_editor.add_node(node3, 767.1713421254, 4.8514745151361)
 
-_editor.add_node(node4, 293.85660290966, -257.27693215842)
+var node4 = ::blueprint::nodes::add::Add()
 
-var node5 = ::blueprint::nodes::subgraph::Subgraph()
-node5.load_from_file(_editor, "01_san_dou.ves")
-node5.set_prop_value("no_arc", false)
+_editor.add_node(node4, 107.43509990309, -264.71534772867)
 
-_editor.add_node(node5, 294.89292059785, -365.93816369377)
+var node5 = ::blueprint::nodes::number3::Number3()
 
-var node6 = ::blueprint::nodes::merge::Merge()
+node5.value.set(-0.41, 0.15, 0)
 
-_editor.add_node(node6, 476.67190250339, -315.53392260907)
+_editor.add_node(node5, -37.38338883112, -303.69296731956)
 
-var node7 = ::blueprint::nodes::output::Output()
+var node6 = ::blueprint::nodes::add::Add()
 
-node7.var_name = "geo"
-node7.var_type = "geo"
+_editor.add_node(node6, 106.21930919134, -373.26143843111)
 
-_editor.add_node(node7, 893.45233386094, -65.148525484865)
+var node7 = ::blueprint::nodes::number3::Number3()
 
-var node8 = ::blueprint::nodes::add::Add()
+node7.value.set(0.41, 0.15, 0)
 
-_editor.add_node(node8, 107.43509990309, -264.71534772867)
+_editor.add_node(node7, -50.80706834828, -412.77459521209)
 
-var node9 = ::blueprint::nodes::number3::Number3()
+var node8 = ::blueprint::nodes::branch_f::BranchF()
 
-node9.value.set(-0.41, 0.15, 0)
+_editor.add_node(node8, 629.77726622022, -16.110078619334)
 
-_editor.add_node(node9, -37.38338883112, -303.69296731956)
+var node9 = ::blueprint::nodes::property::Property()
 
-var node10 = ::blueprint::nodes::add::Add()
+node9.var_name = "no_dou"
+node9.var_type = "bool"
 
-_editor.add_node(node10, 106.21930919134, -373.26143843111)
+_editor.add_node(node9, 464.43160730788, 48.536024361609)
 
-var node11 = ::blueprint::nodes::number3::Number3()
+var node10 = ::blueprint::nodes::subgraph::Subgraph()
+node10.load_from_file(_editor, "50_gong_add_dou.ves")
 
-node11.value.set(0.41, 0.15, 0)
+_editor.add_node(node10, 430.5635338145, -89.431902672631)
 
-_editor.add_node(node11, -50.80706834828, -412.77459521209)
-
-var node12 = ::blueprint::nodes::branch_f::BranchF()
-
-_editor.add_node(node12, 615.72767944336, -141.72991333008)
-
-var node13 = ::blueprint::nodes::property::Property()
-
-node13.var_name = "no_dou"
-node13.var_type = "bool"
-
-_editor.add_node(node13, 465.25805358887, -106.83587646484)
-
-Blueprint.connect(node1, "var", node10, "a")
-Blueprint.connect(node11, "v3", node10, "b")
-Blueprint.connect(node10, "v", node5, "pos")
-Blueprint.connect(node1, "var", node8, "a")
-Blueprint.connect(node9, "v3", node8, "b")
-Blueprint.connect(node8, "v", node4, "pos")
-Blueprint.connect(node4, "geo", node6, "in0")
-Blueprint.connect(node5, "geo", node6, "in1")
-Blueprint.connect(node13, "var", node12, "cond")
-Blueprint.connect(node6, "list", node12, "false")
+Blueprint.connect(node1, "var", node6, "a")
+Blueprint.connect(node7, "v3", node6, "b")
+Blueprint.connect(node1, "var", node4, "a")
+Blueprint.connect(node5, "v3", node4, "b")
 Blueprint.connect(node0, "geo", node2, "obj")
 Blueprint.connect(node1, "var", node2, "translate")
-Blueprint.connect(node2, "obj", node3, "in0")
-Blueprint.connect(node12, "result", node3, "in1")
-Blueprint.connect(node3, "list", node7, "var")
+Blueprint.connect(node2, "obj", node10, "gong")
+Blueprint.connect(node4, "v", node10, "pos_left")
+Blueprint.connect(node6, "v", node10, "pos_right")
+Blueprint.connect(node9, "var", node8, "cond")
+Blueprint.connect(node2, "obj", node8, "true")
+Blueprint.connect(node10, "gong_dou", node8, "false")
+Blueprint.connect(node8, "result", node3, "var")

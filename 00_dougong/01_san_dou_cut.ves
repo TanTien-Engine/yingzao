@@ -1,0 +1,38 @@
+var node0 = ::geograph::nodes::rect::Rect()
+node0.query_param("x").value = -0.07
+node0.query_param("y").value = -0.08
+node0.query_param("w").value = 0.14
+node0.query_param("h").value = 0.16
+node0.query_param("fill").value = false
+node0.query_param("color").value.set(1, 0, 0)
+
+_editor.add_node(node0, 201.95792637115, 17.483471074375)
+
+var node1 = ::blueprint::nodes::output::Output()
+
+node1.var_name = "geo"
+node1.var_type = "geo"
+
+_editor.add_node(node1, 681.87732729866, 9.5971746522703)
+
+var node2 = ::geograph::nodes::column::Column()
+node2.query_param("height").value = 0.1
+node2.query_param("generatrix").value = [ 0, 0.75, 0.4, 1, 1, 1 ]
+
+_editor.add_node(node2, 352.95844690815, 35.927432548165)
+
+var node3 = ::blueprint::nodes::input::Input()
+
+node3.var_name = "pos"
+node3.var_type = "num3"
+
+_editor.add_node(node3, 364.85866780722, -57.803699960055)
+
+var node4 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node4, 543.30524579558, -23.435725744607)
+
+Blueprint.connect(node0, "geo", node2, "base")
+Blueprint.connect(node2, "geo", node4, "obj")
+Blueprint.connect(node3, "var", node4, "translate")
+Blueprint.connect(node4, "obj", node1, "var")

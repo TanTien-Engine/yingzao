@@ -57,7 +57,7 @@ var node10 = ::blueprint::nodes::output::Output()
 node10.var_name = "geo"
 node10.var_type = "geo"
 
-_editor.add_node(node10, 1113.7924915227, -479.31046826679)
+_editor.add_node(node10, 1256.7676981343, -551.21129471307)
 
 var node11 = ::blueprint::nodes::integer::Integer()
 
@@ -665,6 +665,10 @@ var node127 = ::blueprint::nodes::subtract::Subtract()
 
 _editor.add_node(node127, -972.19873895874, -1780.9086054372)
 
+var node128 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node128, 1119.0231489702, -551.50084591701)
+
 Blueprint.connect(node89, "curr_item", node90, "a")
 Blueprint.connect(node91, "v", node90, "b")
 Blueprint.connect(node86, "var", node95, "func")
@@ -803,7 +807,8 @@ Blueprint.connect(node34, "geo", node52, "in0")
 Blueprint.connect(node57, "list", node52, "in1")
 Blueprint.connect(node52, "list", node74, "obj")
 Blueprint.connect(node73, "var", node74, "translate")
-Blueprint.connect(node74, "obj", node10, "var")
+Blueprint.connect(node74, "obj", node128, "list")
+Blueprint.connect(node128, "brush", node10, "var")
 Blueprint.connect(node4, "pos_middle", node79, "a")
 Blueprint.connect(node80, "var", node79, "b")
 Blueprint.connect(node79, "v", node82, "a")

@@ -157,7 +157,7 @@ var node28 = ::blueprint::nodes::output::Output()
 node28.var_name = "geo"
 node28.var_type = "array"
 
-_editor.add_node(node28, 2187.8931098035, 598.99563683586)
+_editor.add_node(node28, 2324.2567461671, 598.16919055487)
 
 var node29 = ::scenegraph::nodes::transform3d::Transform3d()
 
@@ -348,6 +348,10 @@ var node66 = ::geograph::nodes::translate_f::TranslateF()
 
 _editor.add_node(node66, 2051.51453125, 595.68630859375)
 
+var node67 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node67, 2168.3630088617, 528.27679998224)
+
 Blueprint.connect(node45, "curr_item", node46, "a")
 Blueprint.connect(node47, "v", node46, "b")
 Blueprint.connect(node42, "var", node51, "func")
@@ -410,7 +414,8 @@ Blueprint.connect(node62, "geo", node38, "in1")
 Blueprint.connect(node23, "geo", node38, "in2")
 Blueprint.connect(node38, "list", node66, "geo")
 Blueprint.connect(node65, "var", node66, "xyz")
-Blueprint.connect(node66, "geo", node28, "var")
+Blueprint.connect(node66, "geo", node67, "list")
+Blueprint.connect(node67, "brush", node28, "var")
 Blueprint.connect(node38, "list", node29, "obj")
 Blueprint.connect(node30, "v3", node29, "rotate")
 Blueprint.connect(node29, "obj", node36, "geo")

@@ -245,7 +245,7 @@ void main()
     float rand = size.x + size.y + size.z;
     pos = pos + vec3(rand/3);
 
-    if (false && size.z > 1.9) 
+    if (size.z > 2.1) 
     {
 		float radians = -0.349066;
 		float s = sin(radians);
@@ -261,7 +261,7 @@ void main()
 
     vec3 tex_color;
 //    if (size.y < 0.21) {
-    if (size.x < 0.3 && size.y < 0.2 && size.z < 0.3 || (size.x == 0.32 && size.z == 0.32) || (size.x == 0.36 && size.z == 0.36)) {
+    if (size.x < 0.2 && size.y < 0.2 && size.z < 0.2 || (size.x == 0.32 && size.z == 0.32) || (size.x == 0.36 && size.z == 0.36)) {
     	tex_color = mix(vec3(0.216, 0.058, 0.021)*0.95, vec3(0.216, 0.058, 0.021)*0.4, rings)*1.5;
     } else {
     	tex_color = mix(vec3(0.3, 0.19, 0.075)*0.95, vec3(1.0, 0.73, 0.326)*0.4, rings)*1.5;
@@ -354,35 +354,35 @@ _editor.add_node(node14, 560.9265762203, 75.875717541404)
 
 var node15 = ::rendergraph::nodes::render_target::RenderTarget()
 
-node15.width = 2048
-node15.height = 2048
+node15.width = 1024
+node15.height = 1024
 
 _editor.add_node(node15, 1006.2254582471, -601.81666748678)
 
 var node16 = ::rendergraph::nodes::texture::Texture()
 node16.query_param("unif_name").value = "u_tex"
 node16.gamma_correction = false
-node16.init_texture(2048, 2048, "rgb")
+node16.init_texture(1024, 1024, "rgb")
 
 _editor.add_node(node16, 474.40405076971, -784.61954261786)
 
 var node17 = ::rendergraph::nodes::texture::Texture()
 node17.query_param("unif_name").value = "u_tex"
 node17.gamma_correction = false
-node17.init_texture(2048, 2048, "r16f")
+node17.init_texture(1024, 1024, "r16f")
 
 _editor.add_node(node17, 720.05358296636, -779.70827458377)
 
 var node18 = ::rendergraph::nodes::texture::Texture()
 node18.query_param("unif_name").value = "u_tex"
 node18.gamma_correction = false
-node18.init_texture(2048, 2048, "rgb16f")
+node18.init_texture(1024, 1024, "rgb16f")
 
 _editor.add_node(node18, 942.95412422541, -781.75098051994)
 
 var node19 = ::rendergraph::nodes::render_buffer::RenderBuffer()
 
-node19.init_rbo(2048, 2048, "depth_component")
+node19.init_rbo(1024, 1024, "depth_component")
 
 _editor.add_node(node19, 1145.9538811193, -710.3782391784)
 
@@ -477,15 +477,15 @@ _editor.add_node(node27, 2693.9307567941, -583.79069554953)
 
 var node28 = ::rendergraph::nodes::render_target::RenderTarget()
 
-node28.width = 2048
-node28.height = 2048
+node28.width = 1024
+node28.height = 1024
 
 _editor.add_node(node28, 2632.4692579609, -710.12467915388)
 
 var node29 = ::rendergraph::nodes::texture::Texture()
 node29.query_param("unif_name").value = "u_tex"
 node29.gamma_correction = false
-node29.init_texture(2048, 2048, "rgb")
+node29.init_texture(1024, 1024, "rgb")
 
 _editor.add_node(node29, 2269.4225193976, -901.1215192769)
 
@@ -601,7 +601,7 @@ _editor.add_node(node33, 2494.693311875, -492.16995939453)
 var node34 = ::rendergraph::nodes::texture::Texture()
 node34.query_param("unif_name").value = "u_tex"
 node34.gamma_correction = false
-node34.init_texture(2048, 2048, "rgb16f")
+node34.init_texture(1024, 1024, "rgb16f")
 
 _editor.add_node(node34, 1151.9562415671, -795.41124962724)
 
@@ -699,15 +699,15 @@ _editor.add_node(node36, 461.2087241899, -1496.0330013903)
 
 var node37 = ::rendergraph::nodes::render_target::RenderTarget()
 
-node37.width = 2048
-node37.height = 2048
+node37.width = 1024
+node37.height = 1024
 
 _editor.add_node(node37, 738.7185583766, -1713.4226119915)
 
 var node38 = ::rendergraph::nodes::texture::Texture()
 node38.query_param("unif_name").value = "u_tex"
 node38.gamma_correction = false
-node38.init_texture(2048, 2048, "r16")
+node38.init_texture(1024, 1024, "r16")
 
 _editor.add_node(node38, 498.50797274864, -1779.2589063444)
 
@@ -858,15 +858,15 @@ _editor.add_node(node46, 1330.696521231, -1386.4495516071)
 
 var node47 = ::rendergraph::nodes::render_target::RenderTarget()
 
-node47.width = 2048
-node47.height = 2048
+node47.width = 1024
+node47.height = 1024
 
 _editor.add_node(node47, 1578.4893645815, -1614.1784689544)
 
 var node48 = ::rendergraph::nodes::texture::Texture()
 node48.query_param("unif_name").value = "u_tex"
 node48.gamma_correction = false
-node48.init_texture(2048, 2048, "r16")
+node48.init_texture(1024, 1024, "r16")
 
 _editor.add_node(node48, 1343.6530253592, -1601.5511840201)
 
@@ -910,6 +910,13 @@ _editor.add_node(node54, 32.826858520508, 80.764144897461)
 var node55 = ::blueprint::nodes::branch_f::BranchF()
 
 _editor.add_node(node55, 178.74336538404, 41.646098561211)
+
+var node56 = ::blueprint::nodes::input::Input()
+
+node56.var_name = "model"
+node56.var_type = "mat4"
+
+_editor.add_node(node56, 186.21942138672, 195.88591003418)
 
 Blueprint.connect(node53, "var", node54, "in")
 Blueprint.connect(node48, "tex", node47, "col0")
@@ -970,6 +977,7 @@ Blueprint.connect(node13, "next", node12, "true")
 Blueprint.connect(node4, "next", node12, "false")
 Blueprint.connect(node0, "gltf", node1, "items")
 Blueprint.connect(node1, "item", node52, "items")
+Blueprint.connect(node56, "var", node5, "model")
 Blueprint.connect(node8, "mat", node5, "view")
 Blueprint.connect(node7, "mat", node5, "projection")
 Blueprint.connect(node55, "result", node5, "light_pos")

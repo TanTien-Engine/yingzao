@@ -10,7 +10,7 @@ var node1 = ::blueprint::nodes::output::Output()
 node1.var_name = "geo"
 node1.var_type = "array"
 
-_editor.add_node(node1, 873.39038495257, -36.193808032484)
+_editor.add_node(node1, 1202.4855492173, 14.502974974141)
 
 var node2 = ::blueprint::nodes::output::Output()
 
@@ -137,21 +137,31 @@ _editor.add_node(node23, 96.362526759629, 371.30640077197)
 var node24 = ::blueprint::nodes::subgraph::Subgraph()
 node24.load_from_file(_editor, "../00_dougong/01_jiaohu_dou.ves")
 
-_editor.add_node(node24, 405.02699023437, 106.62616113281)
+_editor.add_node(node24, 548.44547257847, 128.61168124756)
 
 var node25 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node25, 324.0435126943, 213.53452491445)
+_editor.add_node(node25, 304.95260360339, 285.35270673263)
 
 var node26 = ::blueprint::nodes::number3::Number3()
 
 node26.value.set(0, 0.15, -0.47)
 
-_editor.add_node(node26, 188.48753143065, 168.90640077197)
+_editor.add_node(node26, 169.39662233974, 240.72458259015)
 
 var node27 = ::blueprint::nodes::merge::Merge()
 
-_editor.add_node(node27, 715.70830031026, -66.672147255849)
+_editor.add_node(node27, 925.06300968804, 155.8667230399)
+
+var node28 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node28, 789.91804706059, -61.33446491013)
+
+var node29 = ::blueprint::nodes::subgraph::Subgraph()
+node29.load_from_file(_editor, "../00_dougong/50_gong_add_dou.ves")
+node29.set_prop_value("jiao_hu", true)
+
+_editor.add_node(node29, 999.62075195312, -88.276506347657)
 
 Blueprint.connect(node14, "all", node9, "vertices")
 Blueprint.connect(node9, "polytope", node10, "geo")
@@ -181,6 +191,9 @@ Blueprint.connect(node5, "geo", node6, "geo")
 Blueprint.connect(node8, "var", node6, "xyz")
 Blueprint.connect(node18, "list", node3, "a")
 Blueprint.connect(node6, "geo", node3, "b")
-Blueprint.connect(node3, "geo", node27, "in0")
+Blueprint.connect(node3, "geo", node28, "list")
+Blueprint.connect(node28, "brush", node29, "gong")
+Blueprint.connect(node25, "v", node29, "pos_right")
+Blueprint.connect(node29, "gong_dou", node1, "var")
+Blueprint.connect(node28, "brush", node27, "in0")
 Blueprint.connect(node24, "geo", node27, "in1")
-Blueprint.connect(node27, "list", node1, "var")
