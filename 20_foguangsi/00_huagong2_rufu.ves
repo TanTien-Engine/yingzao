@@ -40,7 +40,7 @@ var node6 = ::blueprint::nodes::number3::Number3()
 
 node6.value.set(0, 0.05, 0)
 
-_editor.add_node(node6, -236.7189827623, -384.10445517325)
+_editor.add_node(node6, -244.23213077132, -418.2551279415)
 
 var node7 = ::geograph::nodes::box::Box()
 node7.query_param("size").value.set(0.08, 0.1, 2)
@@ -192,6 +192,12 @@ node34.load_from_file(_editor, "../00_dougong/50_gong_add_dou.ves")
 
 _editor.add_node(node34, 1319.379375, 262.58572604093)
 
+var node35 = ::blueprint::nodes::boolean::Boolean()
+
+node35.value = true
+
+_editor.add_node(node35, 1137.121883835, 229.51920442288)
+
 Blueprint.connect(node29, "v", node31, "v")
 Blueprint.connect(node31, "v", node30, "z")
 Blueprint.connect(node30, "xyz", node25, "origin")
@@ -228,5 +234,6 @@ Blueprint.connect(node17, "geo", node8, "in1")
 Blueprint.connect(node8, "list", node33, "list")
 Blueprint.connect(node33, "brush", node34, "gong")
 Blueprint.connect(node9, "pos_right", node34, "pos_right")
+Blueprint.connect(node35, "v", node34, "rot_right")
 Blueprint.connect(node34, "gong_dou", node2, "var")
 Blueprint.connect(node9, "pos_middle", node3, "var")

@@ -1,0 +1,93 @@
+var node0 = ::blueprint::nodes::output::Output()
+
+node0.var_name = "geo"
+node0.var_type = "geo"
+
+_editor.add_node(node0, 182.50383359838, 187.16864619336)
+
+var node1 = ::blueprint::nodes::input::Input()
+
+node1.var_name = "hop_count"
+node1.var_type = "int"
+
+_editor.add_node(node1, -451.05679657971, 321.1962137143)
+
+var node2 = ::blueprint::nodes::input::Input()
+
+node2.var_name = "pos"
+node2.var_type = "num3"
+
+_editor.add_node(node2, -451.99967568298, 250.02063287418)
+
+var node3 = ::blueprint::nodes::subgraph::Subgraph()
+node3.load_from_file(_editor, "11_hua_gong_no_cut.ves")
+
+_editor.add_node(node3, -260.45434488955, 257.10312632905)
+
+var node4 = ::blueprint::nodes::input::Input()
+
+node4.var_name = "calc_step_len"
+node4.var_type = "func"
+
+_editor.add_node(node4, -450.30894597429, 184.54421406713)
+
+var node5 = ::blueprint::nodes::subgraph::Subgraph()
+node5.load_from_file(_editor, "50_gong_add_dou.ves")
+
+_editor.add_node(node5, -5.6667848961335, 166.50552341152)
+
+var node6 = ::blueprint::nodes::property::Property()
+
+node6.var_name = "left_head"
+node6.var_type = "int"
+
+_editor.add_node(node6, -450.65312296564, 119.5199131308)
+
+var node7 = ::blueprint::nodes::property::Property()
+
+node7.var_name = "right_head"
+node7.var_type = "int"
+
+_editor.add_node(node7, -451.11960163612, 54.675407666382)
+
+var node8 = ::blueprint::nodes::property::Property()
+
+node8.var_name = "rot_left"
+node8.var_type = "bool"
+
+_editor.add_node(node8, -212.07518955541, 139.94873151852)
+
+var node9 = ::blueprint::nodes::property::Property()
+
+node9.var_name = "rot_right"
+node9.var_type = "bool"
+
+_editor.add_node(node9, -211.45424069829, 74.751989508812)
+
+var node10 = ::blueprint::nodes::property::Property()
+
+node10.var_name = "left_jiaohu"
+node10.var_type = "bool"
+
+_editor.add_node(node10, -211.45425276361, 8.934332300552)
+
+var node11 = ::blueprint::nodes::property::Property()
+
+node11.var_name = "right_jiaohu"
+node11.var_type = "bool"
+
+_editor.add_node(node11, -209.59149499767, -58.746082699886)
+
+Blueprint.connect(node1, "var", node3, "hop_count")
+Blueprint.connect(node2, "var", node3, "pos")
+Blueprint.connect(node4, "var", node3, "calc_step_len")
+Blueprint.connect(node6, "var", node3, "left_head")
+Blueprint.connect(node7, "var", node3, "right_head")
+Blueprint.connect(node3, "geo", node5, "gong")
+Blueprint.connect(node3, "pos_left", node5, "pos_left")
+Blueprint.connect(node3, "pos_right", node5, "pos_right")
+Blueprint.connect(node8, "var", node5, "rot_left")
+Blueprint.connect(node9, "var", node5, "rot_right")
+Blueprint.connect(node10, "var", node5, "left_jiaohu")
+Blueprint.connect(node11, "var", node5, "right_jiaohu")
+Blueprint.connect(node5, "gong_dou", node0, "var")

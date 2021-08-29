@@ -3,7 +3,7 @@ node0.query_param("size").value.set(0, 0, 0)
 node0.query_param("pos").value.set(0, 0, 0)
 node0.query_param("offset_x").value = false
 node0.query_param("offset_y").value = true
-node0.query_param("offset_z").value = true
+node0.query_param("offset_z").value = false
 
 _editor.add_node(node0, 18.651719659667, 15.778513364767)
 
@@ -77,7 +77,7 @@ var node12 = ::blueprint::nodes::load::Load()
 
 node12.var_name = "length"
 
-_editor.add_node(node12, -351.81852796477, 52.254255077111)
+_editor.add_node(node12, -750.02779086907, -294.17079040537)
 
 var node13 = ::blueprint::nodes::combine::Combine()
 
@@ -93,20 +93,53 @@ _editor.add_node(node15, -161.44217790817, -260.84333857603)
 
 var node16 = ::blueprint::nodes::negate::Negate()
 
-_editor.add_node(node16, -303.18331757853, -239.16191494295)
+_editor.add_node(node16, -452.77009443803, -330.07100585204)
+
+var node17 = ::blueprint::nodes::divide::Divide()
+
+_editor.add_node(node17, -609.66037817594, -316.89187891876)
+
+var node18 = ::blueprint::nodes::integer::Integer()
+
+node18.value = 2
+
+_editor.add_node(node18, -746.44936222929, -350.6078969895)
+
+var node19 = ::blueprint::nodes::load::Load()
+
+node19.var_name = "length"
+
+_editor.add_node(node19, -354.05384472778, 53.061452797088)
+
+var node20 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node20, -317.41394096177, -264.56777568262)
+
+var node21 = ::blueprint::nodes::property::Property()
+
+node21.var_name = "outside"
+node21.var_type = "bool"
+
+_editor.add_node(node21, -452.91327436233, -239.0837219032)
 
 Blueprint.connect(node7, "v", node9, "var")
 Blueprint.connect(node9, "var", node11, "var")
 Blueprint.connect(node6, "v", node8, "var")
 Blueprint.connect(node8, "var", node10, "var")
 Blueprint.connect(node4, "v", node5, "var")
-Blueprint.connect(node5, "var", node12, "var")
-Blueprint.connect(node12, "var", node16, "v")
-Blueprint.connect(node16, "v", node15, "z")
+Blueprint.connect(node5, "var", node19, "var")
 Blueprint.connect(node10, "var", node13, "x")
 Blueprint.connect(node11, "var", node13, "y")
-Blueprint.connect(node12, "var", node13, "z")
+Blueprint.connect(node19, "var", node13, "z")
 Blueprint.connect(node13, "xyz", node0, "size")
+Blueprint.connect(node5, "var", node12, "var")
+Blueprint.connect(node12, "var", node17, "a")
+Blueprint.connect(node18, "v", node17, "b")
+Blueprint.connect(node17, "v", node16, "v")
+Blueprint.connect(node21, "var", node20, "cond")
+Blueprint.connect(node17, "v", node20, "true")
+Blueprint.connect(node16, "v", node20, "false")
+Blueprint.connect(node20, "result", node15, "z")
 Blueprint.connect(node1, "var", node14, "a")
 Blueprint.connect(node15, "xyz", node14, "b")
 Blueprint.connect(node0, "geo", node2, "obj")
