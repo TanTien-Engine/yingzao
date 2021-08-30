@@ -1,0 +1,41 @@
+var node0 = ::blueprint::nodes::list_flatten::ListFlatten()
+
+_editor.add_node(node0, -33.743626686591, 86.731509210378)
+
+var node1 = ::blueprint::nodes::subgraph::Subgraph()
+node1.load_from_file(_editor, "draw_geos_deferred.ves")
+
+_editor.add_node(node1, 171.25637331341, 63.731539727958)
+
+var node2 = ::blueprint::nodes::camera3d::Camera3d()
+
+node2.cam.position.set(2.1287644245057, 0.95325007215363, 0.52221947092223)
+node2.cam.yaw = -158.2
+node2.cam.pitch = -8.6
+node2.cam.zoom = 45
+node2.cam.update_vectors()
+node2.speed = 0.21526837348938
+
+_editor.add_node(node2, -31.743626686591, -30.268460272052)
+
+var node3 = ::blueprint::nodes::input::Input()
+
+node3.var_name = "list"
+node3.var_type = "array"
+
+_editor.add_node(node3, -170.82439787883, 89.035996296974)
+
+var node4 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node4, -101.72475498218, 199.41130921233)
+
+var node5 = ::blueprint::nodes::cache::Cache()
+node5.query_param("disable").value = false
+
+_editor.add_node(node5, 37.321968525819, 196.26509887637)
+
+Blueprint.connect(node3, "var", node4, "list")
+Blueprint.connect(node4, "brush", node5, "var")
+Blueprint.connect(node3, "var", node0, "list")
+Blueprint.connect(node5, "var", node1, "geos")
+Blueprint.connect(node2, "this", node1, "view_cam")

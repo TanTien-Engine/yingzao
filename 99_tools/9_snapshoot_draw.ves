@@ -1,0 +1,67 @@
+var node0 = ::blueprint::nodes::camera3d::Camera3d()
+
+node0.cam.position.set(2.3884455202832, 1.69826714812, 0.87534538831997)
+node0.cam.yaw = -155.3
+node0.cam.pitch = -16.1
+node0.cam.zoom = 45
+node0.cam.update_vectors()
+node0.speed = 0.24232439696789
+
+_editor.add_node(node0, 439.85864088664, -80.516760880439)
+
+var node1 = ::blueprint::nodes::cache::Cache()
+node1.query_param("disable").value = false
+
+_editor.add_node(node1, 300.43639219054, 262.41520030689)
+
+var node2 = ::blueprint::nodes::subgraph::Subgraph()
+node2.load_from_file(_editor, "draw_wood_deferred.ves")
+
+_editor.add_node(node2, 688.38699121384, 106.67103960836)
+
+var node3 = ::blueprint::nodes::list_flatten::ListFlatten()
+
+_editor.add_node(node3, 163.19290700034, 251.99847717131)
+
+var node4 = ::blueprint::nodes::number3::Number3()
+
+node4.value.set(0.60332572460175, 0.61443686485291, 0.56999242305756)
+
+_editor.add_node(node4, 159.23238771264, 97.421113253561)
+
+var node5 = ::blueprint::nodes::subtract::Subtract()
+
+_editor.add_node(node5, 305.73878691174, 131.98157570656)
+
+var node6 = ::blueprint::nodes::number3::Number3()
+
+node6.value.set(0.48828125, 0.48828125, 0.48828125)
+
+_editor.add_node(node6, 157.34826315454, -7.3892928597386)
+
+var node7 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node7, 432.71108437954, 123.71713330276)
+
+var node8 = ::blueprint::nodes::integer::Integer()
+
+node8.value = 100
+
+_editor.add_node(node8, 310.99799822194, 65.114568652361)
+
+var node9 = ::blueprint::nodes::input::Input()
+
+node9.var_name = "list"
+node9.var_type = "array"
+
+_editor.add_node(node9, 24.740115412515, 254.73639733722)
+
+Blueprint.connect(node9, "var", node3, "list")
+Blueprint.connect(node3, "list", node1, "var")
+Blueprint.connect(node4, "v3", node5, "a")
+Blueprint.connect(node6, "v3", node5, "b")
+Blueprint.connect(node5, "v", node7, "a")
+Blueprint.connect(node8, "v", node7, "b")
+Blueprint.connect(node1, "var", node2, "geos")
+Blueprint.connect(node0, "this", node2, "view_cam")
+Blueprint.connect(node7, "v", node2, "light_pos")

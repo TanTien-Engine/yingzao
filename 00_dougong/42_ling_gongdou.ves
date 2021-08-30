@@ -22,7 +22,15 @@ node3.var_type = "array"
 
 _editor.add_node(node3, 320.06795282898, -23.061798452177)
 
+var node4 = ::blueprint::nodes::property::Property()
+
+node4.var_name = "no_cut"
+node4.var_type = "bool"
+
+_editor.add_node(node4, -291.16655263247, -99.050239603873)
+
 Blueprint.connect(node2, "var", node0, "pos")
+Blueprint.connect(node4, "var", node0, "no_cut")
 Blueprint.connect(node0, "geo", node1, "gong")
 Blueprint.connect(node0, "pos_left", node1, "pos_left")
 Blueprint.connect(node0, "pos_right", node1, "pos_right")
