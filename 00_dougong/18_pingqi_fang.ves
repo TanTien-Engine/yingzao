@@ -5,7 +5,7 @@ node0.query_param("offset_x").value = false
 node0.query_param("offset_y").value = false
 node0.query_param("offset_z").value = false
 
-_editor.add_node(node0, -183.588, 45.515)
+_editor.add_node(node0, -257.47763744404, -38.930299936045)
 
 var node1 = ::blueprint::nodes::output::Output()
 
@@ -19,7 +19,7 @@ var node2 = ::blueprint::nodes::input::Input()
 node2.var_name = "pos"
 node2.var_type = "num3"
 
-_editor.add_node(node2, -10.726852701704, -31.091332703432)
+_editor.add_node(node2, -258.47446060231, 356.98449420854)
 
 var node3 = ::scenegraph::nodes::transform3d::Transform3d()
 
@@ -42,9 +42,27 @@ node6.var_type = "num3"
 
 _editor.add_node(node6, 278.51238774413, -68.197603451286)
 
-Blueprint.connect(node2, "var", node4, "a")
+var node7 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node7, -123.13205068489, 321.17344097692)
+
+var node8 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node8, -254.76737909151, 237.97000808006)
+
+var node9 = ::blueprint::nodes::input::Input()
+
+node9.var_name = "offset"
+node9.var_type = "num"
+
+_editor.add_node(node9, -396.43363763478, 287.06089089134)
+
+Blueprint.connect(node9, "var", node8, "x")
+Blueprint.connect(node2, "var", node7, "a")
+Blueprint.connect(node8, "xyz", node7, "b")
+Blueprint.connect(node7, "v", node4, "a")
 Blueprint.connect(node5, "v3", node4, "b")
 Blueprint.connect(node4, "v", node6, "var")
 Blueprint.connect(node0, "geo", node3, "obj")
-Blueprint.connect(node2, "var", node3, "translate")
+Blueprint.connect(node7, "v", node3, "translate")
 Blueprint.connect(node3, "obj", node1, "var")

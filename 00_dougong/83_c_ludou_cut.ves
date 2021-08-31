@@ -1,0 +1,27 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "00_jiao_lu_dou.ves")
+
+_editor.add_node(node0, -417.03700910312, 121.60272494765)
+
+var node1 = ::blueprint::nodes::input::Input()
+
+node1.var_name = "geo"
+node1.var_type = "geo"
+
+_editor.add_node(node1, -357, 225.5)
+
+var node2 = ::geograph::nodes::boolean::Boolean()
+node2.query_param("operator").value = "subtract"
+
+_editor.add_node(node2, -219.10639555776, 183.20294029206)
+
+var node3 = ::blueprint::nodes::output::Output()
+
+node3.var_name = "geo"
+node3.var_type = [ "geo", "array" ]
+
+_editor.add_node(node3, -83.119499138846, 202.70296842261)
+
+Blueprint.connect(node1, "var", node2, "a")
+Blueprint.connect(node0, "cut", node2, "b")
+Blueprint.connect(node2, "geo", node3, "var")

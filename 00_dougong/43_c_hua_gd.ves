@@ -1,0 +1,97 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "50_gong_add_dou.ves")
+
+_editor.add_node(node0, 263.53550738586, 18.434741168947)
+
+var node1 = ::blueprint::nodes::subgraph::Subgraph()
+node1.load_from_file(_editor, "11_hua_gong_no_cut.ves")
+node1.set_prop_value("corner", true)
+
+_editor.add_node(node1, 3.9564237415391, 42.510518407212)
+
+var node2 = ::blueprint::nodes::input::Input()
+
+node2.var_name = "hop_count"
+node2.var_type = "int"
+
+_editor.add_node(node2, -184.74845412762, 94.393502915378)
+
+var node3 = ::blueprint::nodes::input::Input()
+
+node3.var_name = "pos"
+node3.var_type = "num3"
+
+_editor.add_node(node3, 467.29822413924, -0.26981993678683)
+
+var node4 = ::blueprint::nodes::input::Input()
+
+node4.var_name = "calc_step_len"
+node4.var_type = "func"
+
+_editor.add_node(node4, -183.65307177412, 27.85568781187)
+
+var node5 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node5, 600.33572028076, 53.722818257541)
+
+var node6 = ::blueprint::nodes::output::Output()
+
+node6.var_name = "geo"
+node6.var_type = "array"
+
+_editor.add_node(node6, 739.69882290962, 45.941897046542)
+
+var node7 = ::geograph::nodes::rotate_y::RotateY()
+node7.query_param("angle").value = "135"
+
+_editor.add_node(node7, 469.81995707257, 69.51490111295)
+
+var node8 = ::blueprint::nodes::boolean::Boolean()
+
+node8.value = true
+
+_editor.add_node(node8, 55.528050294541, -72.500806150602)
+
+var node9 = ::blueprint::nodes::property::Property()
+
+node9.var_name = "left_head"
+node9.var_type = "int"
+
+_editor.add_node(node9, -184.54690628461, -38.005654350554)
+
+var node10 = ::blueprint::nodes::property::Property()
+
+node10.var_name = "right_head"
+node10.var_type = "int"
+
+_editor.add_node(node10, -187.81247085021, -104.71622455713)
+
+var node11 = ::blueprint::nodes::property::Property()
+
+node11.var_name = "left_dou"
+node11.var_type = "int"
+
+_editor.add_node(node11, 50.308504789997, -136.93421714143)
+
+var node12 = ::blueprint::nodes::property::Property()
+
+node12.var_name = "right_dou"
+node12.var_type = "int"
+
+_editor.add_node(node12, 47.975975440189, -202.71176366183)
+
+Blueprint.connect(node2, "var", node1, "hop_count")
+Blueprint.connect(node4, "var", node1, "calc_step_len")
+Blueprint.connect(node9, "var", node1, "left_head")
+Blueprint.connect(node10, "var", node1, "right_head")
+Blueprint.connect(node1, "geo", node0, "gong")
+Blueprint.connect(node1, "pos_left", node0, "pos_left")
+Blueprint.connect(node1, "pos_right", node0, "pos_right")
+Blueprint.connect(node8, "v", node0, "rot_left")
+Blueprint.connect(node8, "v", node0, "rot_right")
+Blueprint.connect(node11, "var", node0, "left_dou")
+Blueprint.connect(node12, "var", node0, "right_dou")
+Blueprint.connect(node0, "gong_dou", node7, "geo")
+Blueprint.connect(node7, "geo", node5, "geo")
+Blueprint.connect(node3, "var", node5, "xyz")
+Blueprint.connect(node5, "geo", node6, "var")
