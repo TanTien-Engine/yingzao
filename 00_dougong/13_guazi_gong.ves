@@ -30,13 +30,16 @@ _editor.add_node(node4, -184.15051220006, 94.530664154213)
 var node5 = ::geograph::nodes::boolean::Boolean()
 node5.query_param("operator").value = "subtract"
 
-_editor.add_node(node5, 19.017187102222, 19.990925234864)
+_editor.add_node(node5, -138.00760628621, -267.61238055026)
 
 var node6 = ::geograph::nodes::box::Box()
 node6.query_param("size").value.set(0.08, 0.2, 1)
 node6.query_param("pos").value.set(0, 0.15, 0)
+node6.query_param("offset_x").value = false
+node6.query_param("offset_y").value = false
+node6.query_param("offset_z").value = false
 
-_editor.add_node(node6, -131.81818181818, -76.227272727273)
+_editor.add_node(node6, -297.93388429752, -372.09504132232)
 
 var node7 = ::blueprint::nodes::output::Output()
 
@@ -103,7 +106,7 @@ var node17 = ::blueprint::nodes::load::Load()
 
 node17.var_name = "in_pos"
 
-_editor.add_node(node17, 27.98628713582, -48.777620675455)
+_editor.add_node(node17, 25.506948292845, -72.744562824216)
 
 var node18 = ::blueprint::nodes::load::Load()
 
@@ -125,6 +128,17 @@ var node21 = ::blueprint::nodes::add::Add()
 
 _editor.add_node(node21, 155.52543927021, 87.485221584934)
 
+var node22 = ::blueprint::nodes::property::Property()
+
+node22.var_name = "no_cut"
+node22.var_type = "bool"
+
+_editor.add_node(node22, -145.2238250595, -133.23182000742)
+
+var node23 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node23, 1.9348701122024, -142.06551687853)
+
 Blueprint.connect(node12, "var", node13, "var")
 Blueprint.connect(node13, "var", node20, "var")
 Blueprint.connect(node13, "var", node18, "var")
@@ -145,6 +159,9 @@ Blueprint.connect(node4, "pos_left", node19, "b")
 Blueprint.connect(node19, "v", node9, "var")
 Blueprint.connect(node4, "geo", node5, "a")
 Blueprint.connect(node6, "geo", node5, "b")
-Blueprint.connect(node5, "geo", node16, "obj")
+Blueprint.connect(node22, "var", node23, "cond")
+Blueprint.connect(node4, "geo", node23, "true")
+Blueprint.connect(node5, "geo", node23, "false")
+Blueprint.connect(node23, "result", node16, "obj")
 Blueprint.connect(node17, "var", node16, "translate")
 Blueprint.connect(node16, "obj", node7, "var")

@@ -1,0 +1,133 @@
+var node0 = ::blueprint::nodes::input::Input()
+
+node0.var_name = "pos"
+node0.var_type = "num3"
+
+_editor.add_node(node0, -931.88477469061, 279.4970711259)
+
+var node1 = ::blueprint::nodes::output::Output()
+
+node1.var_name = "gong_dou"
+node1.var_type = "array"
+
+_editor.add_node(node1, 958.09376764277, 118.88740063175)
+
+var node2 = ::blueprint::nodes::property::Property()
+
+node2.var_name = "vert"
+node2.var_type = "bool"
+
+_editor.add_node(node2, -931.38856014555, 352.70007947793)
+
+var node3 = ::blueprint::nodes::store::Store()
+
+node3.var_name = "vert"
+
+_editor.add_node(node3, -790.97352479724, 355.03143599444)
+
+var node4 = ::blueprint::nodes::store::Store()
+
+node4.var_name = "pos"
+
+_editor.add_node(node4, -790.53815806996, 282.20005659624)
+
+var node5 = ::blueprint::nodes::number3::Number3()
+
+node5.value.set(0.2012078166008, 0, 0)
+
+_editor.add_node(node5, -563.10869140625, 341.93987548828)
+
+var node6 = ::blueprint::nodes::store::Store()
+
+node6.var_name = "offset"
+
+_editor.add_node(node6, -427.5886328125, 364.08163386482)
+
+var node7 = ::blueprint::nodes::subgraph::Subgraph()
+node7.load_from_file(_editor, "13_guazi_gong.ves")
+node7.set_prop_value("no_cut", true)
+
+_editor.add_node(node7, -455.84273946639, 164.95918515422)
+
+var node8 = ::blueprint::nodes::subgraph::Subgraph()
+node8.load_from_file(_editor, "50_gong_add_dou.ves")
+
+_editor.add_node(node8, -216.84594425372, 135.36675400209)
+
+var node9 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node9, 85.479171560966, 190.90550302455)
+
+var node10 = ::blueprint::nodes::load::Load()
+
+node10.var_name = "offset"
+
+_editor.add_node(node10, -39.731414388739, 153.48920950537)
+
+var node11 = ::blueprint::nodes::load::Load()
+
+node11.var_name = "vert"
+
+_editor.add_node(node11, 499.69210234587, 275.7313236602)
+
+var node12 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node12, 646.81038983959, 174.05788137675)
+
+var node13 = ::geograph::nodes::rotate_y::RotateY()
+node13.query_param("angle").value = "90"
+
+_editor.add_node(node13, 506.72124916958, 203.755508869)
+
+var node14 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node14, 794.79324094579, 113.66365105416)
+
+var node15 = ::blueprint::nodes::load::Load()
+
+node15.var_name = "pos"
+
+_editor.add_node(node15, 651.18009304384, 84.605212079842)
+
+var node16 = ::blueprint::nodes::subgraph::Subgraph()
+node16.load_from_file(_editor, "81_conn_cut.ves")
+node16.set_prop_value("top", true)
+node16.set_prop_value("high", true)
+node16.set_prop_value("wide", true)
+node16.set_prop_value("cut_sides", false)
+node16.set_prop_value("rot90", false)
+node16.set_prop_value("er", 0)
+
+_editor.add_node(node16, -1.2829213949607, -384.74730693981)
+
+var node17 = ::blueprint::nodes::subgraph::Subgraph()
+node17.load_from_file(_editor, "81_conn_cut.ves")
+node17.set_prop_value("top", false)
+node17.set_prop_value("high", false)
+node17.set_prop_value("wide", true)
+node17.set_prop_value("cut_sides", false)
+node17.set_prop_value("rot90", false)
+node17.set_prop_value("er", 0)
+
+_editor.add_node(node17, 2.3595956050397, -102.09599193981)
+
+Blueprint.connect(node7, "geo", node8, "gong")
+Blueprint.connect(node7, "pos_left", node8, "pos_left")
+Blueprint.connect(node7, "pos_right", node8, "pos_right")
+Blueprint.connect(node5, "v3", node6, "var")
+Blueprint.connect(node6, "var", node10, "var")
+Blueprint.connect(node8, "gong_dou", node9, "geo")
+Blueprint.connect(node10, "var", node9, "xyz")
+Blueprint.connect(node9, "geo", node17, "geo")
+Blueprint.connect(node9, "geo", node16, "geo")
+Blueprint.connect(node9, "geo", node13, "geo")
+Blueprint.connect(node2, "var", node3, "var")
+Blueprint.connect(node3, "var", node11, "var")
+Blueprint.connect(node11, "var", node12, "cond")
+Blueprint.connect(node13, "geo", node12, "true")
+Blueprint.connect(node9, "geo", node12, "false")
+Blueprint.connect(node0, "var", node4, "var")
+Blueprint.connect(node4, "var", node15, "var")
+Blueprint.connect(node12, "result", node14, "geo")
+Blueprint.connect(node15, "var", node14, "xyz")
+Blueprint.connect(node14, "geo", node1, "var")

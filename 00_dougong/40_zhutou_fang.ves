@@ -61,12 +61,40 @@ node10.load_from_file(_editor, "50_gong_add_dou.ves")
 
 _editor.add_node(node10, 430.5635338145, -89.431902672631)
 
+var node11 = ::geograph::nodes::plane::Plane()
+node11.query_param("ori").value.set(0, 0, 0)
+node11.query_param("dir").value.set(0, -1, 0)
+
+_editor.add_node(node11, 344.7349506836, -399.34372290039)
+
+var node12 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node12, 493.44383545005, -376.49952818128)
+
+var node13 = ::blueprint::nodes::output::Output()
+
+node13.var_name = "down_plane"
+node13.var_type = "plane"
+
+_editor.add_node(node13, 630.08902397678, -345.68580283015)
+
+var node14 = ::blueprint::nodes::output::Output()
+
+node14.var_name = "cut"
+node14.var_type = "geo"
+
+_editor.add_node(node14, 438.9898961491, 137.99825744754)
+
+Blueprint.connect(node11, "plane", node12, "obj")
+Blueprint.connect(node1, "var", node12, "translate")
+Blueprint.connect(node12, "obj", node13, "var")
 Blueprint.connect(node1, "var", node6, "a")
 Blueprint.connect(node7, "v3", node6, "b")
 Blueprint.connect(node1, "var", node4, "a")
 Blueprint.connect(node5, "v3", node4, "b")
 Blueprint.connect(node0, "geo", node2, "obj")
 Blueprint.connect(node1, "var", node2, "translate")
+Blueprint.connect(node2, "obj", node14, "var")
 Blueprint.connect(node2, "obj", node10, "gong")
 Blueprint.connect(node4, "v", node10, "pos_left")
 Blueprint.connect(node6, "v", node10, "pos_right")

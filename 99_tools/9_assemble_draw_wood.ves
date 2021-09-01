@@ -1,9 +1,9 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(0, 0, 3)
-node0.cam.yaw = -79.1
-node0.cam.pitch = 5
-node0.cam.zoom = 45
+node0.cam.position.set(3.6572343965591, 2.2136051904922, 2.0536876954441)
+node0.cam.yaw = -512.3
+node0.cam.pitch = -14.8
+node0.cam.zoom = 18
 node0.cam.update_vectors()
 node0.speed = 0.079581126570702
 
@@ -21,7 +21,7 @@ _editor.add_node(node2, -30.745544026858, 237.66440039256)
 
 var node3 = ::blueprint::nodes::number::Number()
 
-node3.value = 1
+node3.value = 0.23382839560509
 
 _editor.add_node(node3, -235.04453452186, 253.86554621996)
 
@@ -94,9 +94,9 @@ var node16 = ::geograph::nodes::brush_merge::BrushMerge()
 _editor.add_node(node16, 297.03005304487, 262.21598778086)
 
 var node17 = ::blueprint::nodes::subgraph::Subgraph()
-node17.load_from_file(_editor, "draw_geos_deferred.ves")
+node17.load_from_file(_editor, "draw_wood_deferred.ves")
 
-_editor.add_node(node17, 688.10909100998, 185.2396697998)
+_editor.add_node(node17, 778.66544085817, 344.22862836766)
 
 Blueprint.connect(node15, "var", node13, "a")
 Blueprint.connect(node14, "v", node13, "b")
