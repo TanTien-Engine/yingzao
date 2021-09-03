@@ -467,6 +467,15 @@ node87.value.set(0, 0.0374, 0)
 
 _editor.add_node(node87, -261.89767187131, -1116.7925727087)
 
+var node88 = ::blueprint::nodes::global_get::GlobalGet()
+node88.query_param("key").value = "lod"
+
+_editor.add_node(node88, 377.750741972, 74.216894239959)
+
+var node89 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node89, 517.5480765481, 43.206716778579)
+
 Blueprint.connect(node68, "var", node69, "in")
 Blueprint.connect(node69, "out", node70, "cond")
 Blueprint.connect(node66, "v", node70, "true")
@@ -561,7 +570,11 @@ Blueprint.connect(node39, "v3", node26, "translate")
 Blueprint.connect(node72, "xyz", node26, "rotate")
 Blueprint.connect(node26, "obj", node40, "a")
 Blueprint.connect(node79, "geo", node40, "b")
-Blueprint.connect(node40, "geo", node52, "in0")
+Blueprint.connect(node88, "val", node89, "type")
+Blueprint.connect(node40, "geo", node89, "case0")
+Blueprint.connect(node26, "obj", node89, "case1")
+Blueprint.connect(node26, "obj", node89, "case2")
+Blueprint.connect(node89, "result", node52, "in0")
 Blueprint.connect(node53, "geo", node52, "in1")
 Blueprint.connect(node52, "list", node45, "obj")
 Blueprint.connect(node44, "var", node45, "translate")

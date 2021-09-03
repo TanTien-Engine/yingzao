@@ -33,7 +33,7 @@ var node4 = ::blueprint::nodes::output::Output()
 node4.var_name = "geo"
 node4.var_type = "geo"
 
-_editor.add_node(node4, 355.59090248271, 143.9710512469)
+_editor.add_node(node4, 478.53332444842, 135.77488978252)
 
 var node5 = ::blueprint::nodes::output::Output()
 
@@ -61,14 +61,40 @@ _editor.add_node(node8, 81.412045418141, -54.437945849604)
 
 var node9 = ::geograph::nodes::translate_f::TranslateF()
 
-_editor.add_node(node9, 223.73875242726, 132.69312039701)
+_editor.add_node(node9, 346.68117439297, 124.49695893263)
+
+var node10 = ::geograph::nodes::column::Column()
+node10.query_param("height").value = 0.1
+node10.query_param("generatrix").value = [ 0, 0.75, 0.4, 1, 1, 1 ]
+
+_editor.add_node(node10, -133.43704271937, 356.38939801252)
+
+var node11 = ::blueprint::nodes::global_get::GlobalGet()
+node11.query_param("key").value = "lod"
+
+_editor.add_node(node11, 51.41576757562, 228.39522167137)
+
+var node12 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node12, 191.21310215172, 197.38504420999)
+
+var node13 = ::geograph::nodes::poly_extrude::PolyExtrude()
+node13.query_param("distance").value = 0.1
+
+_editor.add_node(node13, -139.10736083984, 446.11358642578)
 
 Blueprint.connect(node6, "var", node7, "a")
 Blueprint.connect(node8, "v3", node7, "b")
 Blueprint.connect(node7, "v", node5, "var")
+Blueprint.connect(node0, "polytope", node13, "geo")
+Blueprint.connect(node0, "geo", node10, "base")
 Blueprint.connect(node0, "geo", node1, "base")
 Blueprint.connect(node1, "geo", node3, "a")
 Blueprint.connect(node2, "geo", node3, "b")
-Blueprint.connect(node3, "geo", node9, "geo")
+Blueprint.connect(node11, "val", node12, "type")
+Blueprint.connect(node3, "geo", node12, "case0")
+Blueprint.connect(node10, "geo", node12, "case1")
+Blueprint.connect(node13, "geo", node12, "case2")
+Blueprint.connect(node12, "result", node9, "geo")
 Blueprint.connect(node6, "var", node9, "xyz")
 Blueprint.connect(node9, "geo", node4, "var")

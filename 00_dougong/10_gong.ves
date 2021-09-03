@@ -386,7 +386,7 @@ _editor.add_node(node73, -125.35053508886, -220.95214398941)
 
 var node74 = ::blueprint::nodes::branch_f::BranchF()
 
-_editor.add_node(node74, 961.94924832567, 1246.0648554683)
+_editor.add_node(node74, 1118.2568211386, 1217.5357221221)
 
 var node75 = ::blueprint::nodes::input::Input()
 
@@ -441,6 +441,24 @@ node84.set_size(1821.3318937928, 650.7570189938)
 node84.title = "left"
 
 _editor.add_node(node84, 120.28457763022, 859.41677327509)
+
+var node85 = ::blueprint::nodes::global_get::GlobalGet()
+node85.query_param("key").value = "lod"
+
+_editor.add_node(node85, 809.90734177137, 1175.0325663063)
+
+var node86 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node86, 961.50731306678, 1140.9434401355)
+
+var node87 = ::blueprint::nodes::global_get::GlobalGet()
+node87.query_param("key").value = "lod"
+
+_editor.add_node(node87, 822.037424416, 581.37421919886)
+
+var node88 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node88, 961.8347589921, 550.36404173748)
 
 Blueprint.connect(node71, "var", node70, "cond")
 Blueprint.connect(node72, "v", node70, "true")
@@ -518,9 +536,13 @@ Blueprint.connect(node18, "list", node6, "list")
 Blueprint.connect(node5, "result", node6, "add")
 Blueprint.connect(node6, "list", node21, "list")
 Blueprint.connect(node20, "xy", node21, "add")
+Blueprint.connect(node85, "val", node86, "type")
+Blueprint.connect(node21, "list", node86, "case0")
+Blueprint.connect(node21, "list", node86, "case1")
+Blueprint.connect(node76, "list", node86, "case2")
 Blueprint.connect(node75, "var", node74, "cond")
 Blueprint.connect(node76, "list", node74, "true")
-Blueprint.connect(node21, "list", node74, "false")
+Blueprint.connect(node86, "result", node74, "false")
 Blueprint.connect(node74, "result", node81, "list")
 Blueprint.connect(node82, "xyz", node81, "add")
 Blueprint.connect(node74, "result", node24, "list")
@@ -529,9 +551,13 @@ Blueprint.connect(node24, "list", node37, "list")
 Blueprint.connect(node36, "list", node37, "add")
 Blueprint.connect(node37, "list", node29, "list")
 Blueprint.connect(node30, "xy", node29, "add")
+Blueprint.connect(node87, "val", node88, "type")
+Blueprint.connect(node29, "list", node88, "case0")
+Blueprint.connect(node29, "list", node88, "case1")
+Blueprint.connect(node81, "list", node88, "case2")
 Blueprint.connect(node80, "var", node79, "cond")
 Blueprint.connect(node81, "list", node79, "true")
-Blueprint.connect(node29, "list", node79, "false")
+Blueprint.connect(node88, "result", node79, "false")
 Blueprint.connect(node79, "result", node7, "list")
 Blueprint.connect(node8, "xy", node7, "add")
 Blueprint.connect(node7, "list", node0, "vertices")

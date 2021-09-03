@@ -17,6 +17,9 @@ _editor.add_node(node1, -316.18800235327, 242.06751426141)
 var node2 = ::geograph::nodes::box::Box()
 node2.query_param("size").value.set(1, 0.1, 0.1)
 node2.query_param("pos").value.set(0, 0.17, 0)
+node2.query_param("offset_x").value = false
+node2.query_param("offset_y").value = false
+node2.query_param("offset_z").value = false
 
 _editor.add_node(node2, -146.43006293232, 157.4600567992)
 
@@ -30,11 +33,14 @@ var node4 = ::blueprint::nodes::output::Output()
 node4.var_name = "geo"
 node4.var_type = "geo"
 
-_editor.add_node(node4, 1546.1117770538, 206.93056369677)
+_editor.add_node(node4, 1802.915273201, 561.83633569446)
 
 var node5 = ::geograph::nodes::box::Box()
 node5.query_param("size").value.set(0.04, 0.06, 0.04)
 node5.query_param("pos").value.set(0, 0.03, 0)
+node5.query_param("offset_x").value = false
+node5.query_param("offset_y").value = false
+node5.query_param("offset_z").value = false
 
 _editor.add_node(node5, 1087.8846741693, 115.99571289974)
 
@@ -74,6 +80,9 @@ _editor.add_node(node11, 1407.0499588802, 78.227488394554)
 var node12 = ::geograph::nodes::box::Box()
 node12.query_param("size").value.set(0.1, 0.1, 1)
 node12.query_param("pos").value.set(0, 0.17, 0)
+node12.query_param("offset_x").value = false
+node12.query_param("offset_y").value = false
+node12.query_param("offset_z").value = false
 
 _editor.add_node(node12, 181.16249905116, 107.79146175788)
 
@@ -85,6 +94,9 @@ _editor.add_node(node13, 332.05772678185, 222.51544845208)
 var node14 = ::geograph::nodes::box::Box()
 node14.query_param("size").value.set(1, 0.16, 0.16)
 node14.query_param("pos").value.set(0, 0.08, 0)
+node14.query_param("offset_x").value = false
+node14.query_param("offset_y").value = false
+node14.query_param("offset_z").value = false
 
 _editor.add_node(node14, 195.21003678764, -86.176846417779)
 
@@ -110,6 +122,9 @@ _editor.add_node(node17, 257.42733764649, 277.23168945312)
 var node18 = ::geograph::nodes::box::Box()
 node18.query_param("size").value.set(1, 0.08, 0.1)
 node18.query_param("pos").value.set(0, 0, 0)
+node18.query_param("offset_x").value = false
+node18.query_param("offset_y").value = false
+node18.query_param("offset_z").value = false
 
 _editor.add_node(node18, 532.79567917034, 165.44199875292)
 
@@ -137,6 +152,9 @@ _editor.add_node(node22, 688.39087246982, 154.73927112926)
 var node23 = ::geograph::nodes::box::Box()
 node23.query_param("size").value.set(0.399, 0.08, 10)
 node23.query_param("pos").value.set(0, 0, 0)
+node23.query_param("offset_x").value = false
+node23.query_param("offset_y").value = false
+node23.query_param("offset_z").value = false
 
 _editor.add_node(node23, 556.07749735216, -44.49436488345)
 
@@ -163,6 +181,20 @@ node27.var_type = "geo"
 
 _editor.add_node(node27, 1023.6236461293, -67.341219815342)
 
+var node28 = ::blueprint::nodes::global_get::GlobalGet()
+node28.query_param("key").value = "lod"
+
+_editor.add_node(node28, 1518.997424416, 564.43421919886)
+
+var node29 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node29, 1658.7947589921, 533.42404173748)
+
+var node30 = ::geograph::nodes::poly_extrude::PolyExtrude()
+node30.query_param("distance").value = 0.2
+
+_editor.add_node(node30, -293.10736083984, 416.11358642578)
+
 Blueprint.connect(node23, "geo", node26, "obj")
 Blueprint.connect(node20, "v3", node26, "translate")
 Blueprint.connect(node21, "v3", node26, "rotate")
@@ -177,6 +209,7 @@ Blueprint.connect(node14, "geo", node15, "b")
 Blueprint.connect(node9, "var", node11, "a")
 Blueprint.connect(node7, "v3", node11, "b")
 Blueprint.connect(node11, "v", node8, "var")
+Blueprint.connect(node0, "polytope", node30, "geo")
 Blueprint.connect(node0, "geo", node1, "base")
 Blueprint.connect(node1, "geo", node3, "a")
 Blueprint.connect(node2, "geo", node3, "b")
@@ -188,4 +221,8 @@ Blueprint.connect(node24, "geo", node6, "a")
 Blueprint.connect(node5, "geo", node6, "b")
 Blueprint.connect(node6, "geo", node10, "obj")
 Blueprint.connect(node9, "var", node10, "translate")
-Blueprint.connect(node10, "obj", node4, "var")
+Blueprint.connect(node28, "val", node29, "type")
+Blueprint.connect(node10, "obj", node29, "case0")
+Blueprint.connect(node1, "geo", node29, "case1")
+Blueprint.connect(node30, "geo", node29, "case2")
+Blueprint.connect(node29, "result", node4, "var")

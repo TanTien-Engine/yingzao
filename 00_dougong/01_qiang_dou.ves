@@ -17,6 +17,9 @@ _editor.add_node(node1, -131.38800235327, 260.76751426141)
 var node2 = ::geograph::nodes::box::Box()
 node2.query_param("size").value.set(1, 0.1, 0.1)
 node2.query_param("pos").value.set(0, 0.11, 0)
+node2.query_param("offset_x").value = false
+node2.query_param("offset_y").value = false
+node2.query_param("offset_z").value = false
 
 _editor.add_node(node2, -116.69204640339, 44.364189030609)
 
@@ -28,6 +31,9 @@ _editor.add_node(node3, 43.674016652767, 135.44069945952)
 var node4 = ::geograph::nodes::box::Box()
 node4.query_param("size").value.set(0.1, 0.1, 1)
 node4.query_param("pos").value.set(0, 0.13, 0)
+node4.query_param("offset_x").value = false
+node4.query_param("offset_y").value = false
+node4.query_param("offset_z").value = false
 
 _editor.add_node(node4, -95.816443341765, -187.70653606971)
 
@@ -44,12 +50,18 @@ _editor.add_node(node6, 330.59268917522, -97.749018217625)
 var node7 = ::geograph::nodes::box::Box()
 node7.query_param("size").value.set(0.1, 0.1, 1)
 node7.query_param("pos").value.set(0, 0.11, -0.565)
+node7.query_param("offset_x").value = false
+node7.query_param("offset_y").value = false
+node7.query_param("offset_z").value = false
 
 _editor.add_node(node7, 142.46357962361, -245.88266106374)
 
 var node8 = ::geograph::nodes::box::Box()
 node8.query_param("size").value.set(0.1, 0.1, 1)
 node8.query_param("pos").value.set(0, 0.11, 0.565)
+node8.query_param("offset_x").value = false
+node8.query_param("offset_y").value = false
+node8.query_param("offset_z").value = false
 
 _editor.add_node(node8, 333.70734712583, -304.62181822513)
 
@@ -68,6 +80,9 @@ _editor.add_node(node10, 922.88517292182, -246.25938349053)
 var node11 = ::geograph::nodes::box::Box()
 node11.query_param("size").value.set(0.02, 0.03, 0.02)
 node11.query_param("pos").value.set(0, 0.015, 0)
+node11.query_param("offset_x").value = false
+node11.query_param("offset_y").value = false
+node11.query_param("offset_z").value = false
 
 _editor.add_node(node11, 493.78753364042, -337.67712500935)
 
@@ -104,9 +119,31 @@ node17.value.set(0, 0.06, 0)
 
 _editor.add_node(node17, 649.87994541815, -431.98324584961)
 
+var node18 = ::blueprint::nodes::global_get::GlobalGet()
+node18.query_param("key").value = "lod"
+
+_editor.add_node(node18, 695.1913997237, -82.952365699713)
+
+var node19 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node19, 831.9097855904, -110.88359445171)
+
+var node20 = ::geograph::nodes::column::Column()
+node20.query_param("height").value = 0.1
+node20.query_param("generatrix").value = [ 0, 0.75, 0.4, 1, 1, 1 ]
+
+_editor.add_node(node20, -128.38800235327, 354.76751426141)
+
+var node21 = ::geograph::nodes::poly_extrude::PolyExtrude()
+node21.query_param("distance").value = 0.1
+
+_editor.add_node(node21, -139.10736083984, 446.11358642578)
+
 Blueprint.connect(node14, "var", node16, "a")
 Blueprint.connect(node17, "v3", node16, "b")
 Blueprint.connect(node16, "v", node13, "var")
+Blueprint.connect(node0, "polytope", node21, "geo")
+Blueprint.connect(node0, "geo", node20, "base")
 Blueprint.connect(node0, "geo", node1, "base")
 Blueprint.connect(node1, "geo", node3, "a")
 Blueprint.connect(node2, "geo", node3, "b")
@@ -118,6 +155,10 @@ Blueprint.connect(node6, "geo", node9, "a")
 Blueprint.connect(node8, "geo", node9, "b")
 Blueprint.connect(node9, "geo", node12, "a")
 Blueprint.connect(node11, "geo", node12, "b")
-Blueprint.connect(node12, "geo", node15, "obj")
+Blueprint.connect(node18, "val", node19, "type")
+Blueprint.connect(node12, "geo", node19, "case0")
+Blueprint.connect(node20, "geo", node19, "case1")
+Blueprint.connect(node21, "geo", node19, "case2")
+Blueprint.connect(node19, "result", node15, "obj")
 Blueprint.connect(node14, "var", node15, "translate")
 Blueprint.connect(node15, "obj", node10, "var")

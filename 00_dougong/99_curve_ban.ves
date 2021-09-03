@@ -100,7 +100,7 @@ var node19 = ::blueprint::nodes::output::Output()
 node19.var_name = "result"
 node19.var_type = "array"
 
-_editor.add_node(node19, 69.01776865924, 591.10219247819)
+_editor.add_node(node19, 238.52928985439, 703.23421078295)
 
 var node20 = ::blueprint::nodes::combine::Combine()
 
@@ -145,6 +145,15 @@ var node27 = ::blueprint::nodes::is_null::IsNull()
 
 _editor.add_node(node27, -1082.2677062673, 646.48657844262)
 
+var node28 = ::blueprint::nodes::global_get::GlobalGet()
+node28.query_param("key").value = "lod"
+
+_editor.add_node(node28, -43.197275584002, 704.54858919886)
+
+var node29 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node29, 96.600058992098, 673.53841173748)
+
 Blueprint.connect(node26, "var", node27, "in")
 Blueprint.connect(node27, "out", node25, "cond")
 Blueprint.connect(node24, "v", node25, "true")
@@ -178,7 +187,10 @@ Blueprint.connect(node13, "v", node14, "a")
 Blueprint.connect(node15, "v", node14, "b")
 Blueprint.connect(node14, "v", node12, "count")
 Blueprint.connect(node11, "pos", node12, "eval")
-Blueprint.connect(node12, "result", node19, "var")
+Blueprint.connect(node28, "val", node29, "type")
+Blueprint.connect(node12, "result", node29, "case0")
+Blueprint.connect(node12, "result", node29, "case1")
+Blueprint.connect(node29, "result", node19, "var")
 Blueprint.connect(node5, "list", node7, "in0")
 Blueprint.connect(node9, "geo", node7, "in1")
 Blueprint.connect(node12, "result", node7, "in2")

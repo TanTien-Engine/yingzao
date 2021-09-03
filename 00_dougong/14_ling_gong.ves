@@ -30,7 +30,7 @@ _editor.add_node(node4, -388.89062558029, 133.68099541574)
 var node5 = ::geograph::nodes::boolean::Boolean()
 node5.query_param("operator").value = "subtract"
 
-_editor.add_node(node5, -198.70018192995, -79.51047494272)
+_editor.add_node(node5, -429.35382580673, -189.20243587435)
 
 var node6 = ::geograph::nodes::box::Box()
 node6.query_param("size").value.set(0.08, 0.2, 1)
@@ -39,7 +39,7 @@ node6.query_param("offset_x").value = false
 node6.query_param("offset_y").value = false
 node6.query_param("offset_z").value = false
 
-_editor.add_node(node6, -343.38842975206, -104.83884297521)
+_editor.add_node(node6, -574.04207362884, -214.53080390684)
 
 var node7 = ::blueprint::nodes::output::Output()
 
@@ -212,6 +212,15 @@ var node37 = ::blueprint::nodes::branch_f::BranchF()
 
 _editor.add_node(node37, -883.75877844515, 329.28798721534)
 
+var node38 = ::blueprint::nodes::global_get::GlobalGet()
+node38.query_param("key").value = "lod"
+
+_editor.add_node(node38, -238.745399784, -196.53980835114)
+
+var node39 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node39, -98.948065207903, -227.54998581252)
+
 Blueprint.connect(node35, "var", node36, "in")
 Blueprint.connect(node22, "var", node24, "var")
 Blueprint.connect(node24, "var", node31, "var")
@@ -248,9 +257,13 @@ Blueprint.connect(node27, "result", node19, "b")
 Blueprint.connect(node19, "v", node9, "var")
 Blueprint.connect(node4, "geo", node5, "a")
 Blueprint.connect(node6, "geo", node5, "b")
+Blueprint.connect(node38, "val", node39, "type")
+Blueprint.connect(node5, "geo", node39, "case0")
+Blueprint.connect(node4, "geo", node39, "case1")
+Blueprint.connect(node4, "geo", node39, "case2")
 Blueprint.connect(node34, "var", node33, "cond")
 Blueprint.connect(node4, "geo", node33, "true")
-Blueprint.connect(node5, "geo", node33, "false")
+Blueprint.connect(node39, "result", node33, "false")
 Blueprint.connect(node33, "result", node26, "geo")
 Blueprint.connect(node25, "var", node23, "cond")
 Blueprint.connect(node26, "geo", node23, "true")

@@ -3,7 +3,7 @@ var node0 = ::blueprint::nodes::output::Output()
 node0.var_name = "geo"
 node0.var_type = "geo"
 
-_editor.add_node(node0, 528.33736033251, -167.49363383489)
+_editor.add_node(node0, 755.25588021413, -87.338335767253)
 
 var node1 = ::blueprint::nodes::input::Input()
 
@@ -164,6 +164,15 @@ var node28 = ::geograph::nodes::translate_f::TranslateF()
 
 _editor.add_node(node28, -408.49783905281, 129.70440144184)
 
+var node29 = ::blueprint::nodes::global_get::GlobalGet()
+node29.query_param("key").value = "lod"
+
+_editor.add_node(node29, 463.57398011852, -84.215200267707)
+
+var node30 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node30, 603.37131469462, -115.22537772909)
+
 Blueprint.connect(node27, "var", node26, "y")
 Blueprint.connect(node19, "var", node20, "in")
 Blueprint.connect(node20, "out", node21, "cond")
@@ -192,4 +201,8 @@ Blueprint.connect(node13, "list", node14, "geo")
 Blueprint.connect(node2, "var", node14, "xyz")
 Blueprint.connect(node1, "var", node4, "a")
 Blueprint.connect(node14, "geo", node4, "b")
-Blueprint.connect(node4, "geo", node0, "var")
+Blueprint.connect(node29, "val", node30, "type")
+Blueprint.connect(node4, "geo", node30, "case0")
+Blueprint.connect(node1, "var", node30, "case1")
+Blueprint.connect(node1, "var", node30, "case2")
+Blueprint.connect(node30, "result", node0, "var")

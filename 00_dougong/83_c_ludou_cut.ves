@@ -20,8 +20,21 @@ var node3 = ::blueprint::nodes::output::Output()
 node3.var_name = "geo"
 node3.var_type = [ "geo", "array" ]
 
-_editor.add_node(node3, -83.119499138846, 202.70296842261)
+_editor.add_node(node3, 131.38059428159, 318.42012408364)
+
+var node4 = ::blueprint::nodes::global_get::GlobalGet()
+node4.query_param("key").value = "lod"
+
+_editor.add_node(node4, -148.77897742832, 323.21617040956)
+
+var node5 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node5, -8.9816428522199, 292.20599294818)
 
 Blueprint.connect(node1, "var", node2, "a")
 Blueprint.connect(node0, "cut", node2, "b")
-Blueprint.connect(node2, "geo", node3, "var")
+Blueprint.connect(node4, "val", node5, "type")
+Blueprint.connect(node2, "geo", node5, "case0")
+Blueprint.connect(node1, "var", node5, "case1")
+Blueprint.connect(node1, "var", node5, "case2")
+Blueprint.connect(node5, "result", node3, "var")

@@ -79,7 +79,7 @@ var node13 = ::blueprint::nodes::store::Store()
 
 node13.var_name = "qi"
 
-_editor.add_node(node13, 427.19601364767, 515.34194870625)
+_editor.add_node(node13, 715.07354933512, 566.48394720362)
 
 var node14 = ::blueprint::nodes::load::Load()
 
@@ -125,7 +125,7 @@ var node22 = ::blueprint::nodes::store::Store()
 
 node22.var_name = "gong"
 
-_editor.add_node(node22, 231.80910233427, 781.80628298925)
+_editor.add_node(node22, 435.53287527186, 861.34579131501)
 
 var node23 = ::blueprint::nodes::load::Load()
 
@@ -324,6 +324,24 @@ node59.var_type = "int"
 
 _editor.add_node(node59, -1037.9614052609, 1.9761430906198)
 
+var node60 = ::blueprint::nodes::global_get::GlobalGet()
+node60.query_param("key").value = "lod"
+
+_editor.add_node(node60, 96.180243563761, 870.3897695891)
+
+var node61 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node61, 276.00391136186, 840.91906648241)
+
+var node62 = ::blueprint::nodes::global_get::GlobalGet()
+node62.query_param("key").value = "lod"
+
+_editor.add_node(node62, 366.75135257954, 601.42650009248)
+
+var node63 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node63, 546.57502037764, 571.95579698579)
+
 Blueprint.connect(node4, "var", node7, "var")
 Blueprint.connect(node7, "var", node32, "var")
 Blueprint.connect(node32, "var", node33, "in")
@@ -384,13 +402,19 @@ Blueprint.connect(node36, "var", node37, "cond")
 Blueprint.connect(node9, "geo", node37, "true")
 Blueprint.connect(node37, "result", node10, "in0")
 Blueprint.connect(node38, "result", node10, "in1")
-Blueprint.connect(node10, "list", node13, "var")
+Blueprint.connect(node62, "val", node63, "type")
+Blueprint.connect(node10, "list", node63, "case0")
+Blueprint.connect(node63, "result", node13, "var")
 Blueprint.connect(node13, "var", node24, "var")
 Blueprint.connect(node13, "var", node20, "var")
 Blueprint.connect(node2, "var", node5, "a")
 Blueprint.connect(node20, "var", node5, "b")
 Blueprint.connect(node5, "geo", node21, "list")
-Blueprint.connect(node21, "brush", node22, "var")
+Blueprint.connect(node60, "val", node61, "type")
+Blueprint.connect(node21, "brush", node61, "case0")
+Blueprint.connect(node2, "var", node61, "case1")
+Blueprint.connect(node2, "var", node61, "case2")
+Blueprint.connect(node61, "result", node22, "var")
 Blueprint.connect(node22, "var", node23, "var")
 Blueprint.connect(node23, "var", node26, "in0")
 Blueprint.connect(node24, "var", node26, "in1")

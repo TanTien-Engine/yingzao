@@ -3,7 +3,7 @@ var node0 = ::blueprint::nodes::output::Output()
 node0.var_name = "geo"
 node0.var_type = "geo"
 
-_editor.add_node(node0, 1178.2085824859, -88.60872367144)
+_editor.add_node(node0, 1317.2277817884, 34.08271732372)
 
 var node1 = ::blueprint::nodes::input::Input()
 
@@ -347,6 +347,15 @@ node61.var_name = "top"
 
 _editor.add_node(node61, -1492.19073666, 583.52630197784)
 
+var node62 = ::blueprint::nodes::global_get::GlobalGet()
+node62.query_param("key").value = "lod"
+
+_editor.add_node(node62, 1029.402384416, 42.628979198859)
+
+var node63 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node63, 1169.1997189921, 11.618801737479)
+
 Blueprint.connect(node58, "var", node59, "cond")
 Blueprint.connect(node54, "v", node59, "true")
 Blueprint.connect(node49, "v", node59, "false")
@@ -416,4 +425,8 @@ Blueprint.connect(node38, "result", node26, "geo")
 Blueprint.connect(node2, "var", node26, "xyz")
 Blueprint.connect(node1, "var", node11, "a")
 Blueprint.connect(node26, "geo", node11, "b")
-Blueprint.connect(node11, "geo", node0, "var")
+Blueprint.connect(node62, "val", node63, "type")
+Blueprint.connect(node11, "geo", node63, "case0")
+Blueprint.connect(node1, "var", node63, "case1")
+Blueprint.connect(node1, "var", node63, "case2")
+Blueprint.connect(node63, "result", node0, "var")
