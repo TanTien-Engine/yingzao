@@ -121,7 +121,7 @@ var node20 = ::blueprint::nodes::output::Output()
 node20.var_name = "geo"
 node20.var_type = "array"
 
-_editor.add_node(node20, 2202.4385643489, 450.89646328214)
+_editor.add_node(node20, 2570.0385643489, 524.94646328214)
 
 var node21 = ::blueprint::nodes::input::Input()
 
@@ -272,15 +272,15 @@ var node50 = ::blueprint::nodes::load::Load()
 
 node50.var_name = "in_pos"
 
-_editor.add_node(node50, 1779.5779982083, 349.64183466394)
+_editor.add_node(node50, 2147.5579982083, 453.75183466394)
 
 var node51 = ::geograph::nodes::translate_f::TranslateF()
 
-_editor.add_node(node51, 1942.4236221591, 442.04994495739)
+_editor.add_node(node51, 2297.0236221591, 517.09994495739)
 
 var node52 = ::geograph::nodes::brush_merge::BrushMerge()
 
-_editor.add_node(node52, 2072.9084634072, 452.82225452769)
+_editor.add_node(node52, 2440.5084634072, 526.87225452769)
 
 var node53 = ::blueprint::nodes::commentary::Commentary()
 
@@ -376,6 +376,22 @@ node67.var_type = "int"
 
 _editor.add_node(node67, 476.43377685547, 479.80502041903)
 
+var node68 = ::geograph::nodes::rotate_y::RotateY()
+node68.query_param("angle").value = "90"
+
+_editor.add_node(node68, 1968.3183985282, 506.99836898021)
+
+var node69 = ::blueprint::nodes::property::Property()
+
+node69.var_name = "rot"
+node69.var_type = "bool"
+
+_editor.add_node(node69, 1844.1505539245, 580.06377655649)
+
+var node70 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node70, 2136.4804680579, 528.15475590807)
+
 Blueprint.connect(node60, "geo", node61, "geo")
 Blueprint.connect(node62, "plane", node61, "plane")
 Blueprint.connect(node61, "geo", node64, "var")
@@ -440,7 +456,11 @@ Blueprint.connect(node48, "xyz", node47, "xyz")
 Blueprint.connect(node40, "geo", node23, "in0")
 Blueprint.connect(node47, "geo", node23, "in1")
 Blueprint.connect(node15, "geo", node23, "in2")
-Blueprint.connect(node23, "list", node51, "geo")
+Blueprint.connect(node23, "list", node68, "geo")
+Blueprint.connect(node69, "var", node70, "cond")
+Blueprint.connect(node68, "geo", node70, "true")
+Blueprint.connect(node23, "list", node70, "false")
+Blueprint.connect(node70, "result", node51, "geo")
 Blueprint.connect(node50, "var", node51, "xyz")
 Blueprint.connect(node51, "geo", node52, "list")
 Blueprint.connect(node52, "brush", node20, "var")

@@ -68,6 +68,7 @@ node11.set_prop_value("wide", true)
 node11.set_prop_value("cut_sides", false)
 node11.set_prop_value("rot90", false)
 node11.set_prop_value("er", 0)
+node11.set_prop_value("zu_cai", false)
 
 _editor.add_node(node11, -1.2829213949607, -384.74730693981)
 
@@ -79,6 +80,7 @@ node12.set_prop_value("wide", true)
 node12.set_prop_value("cut_sides", false)
 node12.set_prop_value("rot90", false)
 node12.set_prop_value("er", 0)
+node12.set_prop_value("zu_cai", false)
 
 _editor.add_node(node12, 2.3595956050397, -102.09599193981)
 
@@ -86,7 +88,7 @@ var node13 = ::blueprint::nodes::subgraph::Subgraph()
 node13.load_from_file(_editor, "40_zhutou_fang.ves")
 node13.set_prop_value("no_dou", false)
 
-_editor.add_node(node13, -447.90069824219, 8.6872677612306)
+_editor.add_node(node13, -830.41437403434, -69.269963178038)
 
 var node14 = ::blueprint::nodes::combine::Combine()
 
@@ -159,17 +161,37 @@ node26.var_type = "geo"
 
 _editor.add_node(node26, 349.37328860815, 239.38089450116)
 
+var node27 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node27, -630.17070309975, 106.18747263371)
+
+var node28 = ::blueprint::nodes::property::Property()
+
+node28.var_name = "no_dou"
+node28.var_type = "bool"
+
+_editor.add_node(node28, -795.9963214992, 162.80138233757)
+
+var node29 = ::blueprint::nodes::subgraph::Subgraph()
+node29.load_from_file(_editor, "40_zhutou_fang.ves")
+node29.set_prop_value("no_dou", true)
+
+_editor.add_node(node29, -830.80594395487, 62.684843910174)
+
 Blueprint.connect(node15, "var", node14, "x")
-Blueprint.connect(node13, "cut", node20, "geo")
-Blueprint.connect(node14, "xyz", node20, "xyz")
-Blueprint.connect(node20, "geo", node23, "geo")
-Blueprint.connect(node13, "geo", node5, "geo")
+Blueprint.connect(node28, "var", node27, "cond")
+Blueprint.connect(node29, "geo", node27, "true")
+Blueprint.connect(node13, "geo", node27, "false")
+Blueprint.connect(node27, "result", node5, "geo")
 Blueprint.connect(node14, "xyz", node5, "xyz")
 Blueprint.connect(node5, "geo", node12, "geo")
 Blueprint.connect(node19, "var", node12, "height")
 Blueprint.connect(node12, "geo", node8, "geo")
 Blueprint.connect(node5, "geo", node11, "geo")
 Blueprint.connect(node19, "var", node11, "height")
+Blueprint.connect(node13, "cut", node20, "geo")
+Blueprint.connect(node14, "xyz", node20, "xyz")
+Blueprint.connect(node20, "geo", node23, "geo")
 Blueprint.connect(node2, "var", node3, "var")
 Blueprint.connect(node3, "var", node21, "var")
 Blueprint.connect(node21, "var", node22, "cond")

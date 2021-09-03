@@ -1,8 +1,8 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(0, 0, 3)
-node0.cam.yaw = -79.1
-node0.cam.pitch = 5
+node0.cam.position.set(-1.2014902122748, 4.8191860474528, 3.4507988495859)
+node0.cam.yaw = -76.9
+node0.cam.pitch = -47.7
 node0.cam.zoom = 45
 node0.cam.update_vectors()
 node0.speed = 0.079581126570702
@@ -91,7 +91,7 @@ _editor.add_node(node15, -408.31940252131, 108.29043856534)
 
 var node16 = ::geograph::nodes::brush_merge::BrushMerge()
 
-_editor.add_node(node16, 297.03005304487, 262.21598778086)
+_editor.add_node(node16, 308.29977505839, 258.45941377635)
 
 var node17 = ::blueprint::nodes::subgraph::Subgraph()
 node17.load_from_file(_editor, "draw_geos_deferred.ves")
@@ -111,7 +111,7 @@ Blueprint.connect(node3, "v", node2, "dist")
 Blueprint.connect(node13, "v", node2, "offset")
 Blueprint.connect(node2, "objs", node6, "list")
 Blueprint.connect(node6, "list", node16, "list")
-Blueprint.connect(node6, "list", node1, "var")
+Blueprint.connect(node16, "brush", node1, "var")
 Blueprint.connect(node1, "var", node17, "geos")
 Blueprint.connect(node0, "this", node17, "view_cam")
 Blueprint.connect(node10, "v", node17, "light_pos")

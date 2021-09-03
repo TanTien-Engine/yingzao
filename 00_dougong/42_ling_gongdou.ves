@@ -1,37 +1,70 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "14_ling_gong.ves")
 
-_editor.add_node(node0, -99.772579902809, -52.396892265971)
+_editor.add_node(node0, -286.37365196196, -89.911367815038)
 
 var node1 = ::blueprint::nodes::subgraph::Subgraph()
 node1.load_from_file(_editor, "50_gong_add_dou.ves")
 
-_editor.add_node(node1, 130.47749685612, -41.670510568521)
+_editor.add_node(node1, -48.9393615478, -120.23763557605)
 
 var node2 = ::blueprint::nodes::input::Input()
 
 node2.var_name = "pos"
 node2.var_type = "num3"
 
-_editor.add_node(node2, -292.13423063353, -32.286323174468)
+_editor.add_node(node2, 310.26997672936, -109.74687914742)
 
 var node3 = ::blueprint::nodes::output::Output()
 
 node3.var_name = "gong_dou"
 node3.var_type = "array"
 
-_editor.add_node(node3, 320.06795282898, -23.061798452177)
+_editor.add_node(node3, 581.03498596068, -49.268265260519)
 
 var node4 = ::blueprint::nodes::property::Property()
 
 node4.var_name = "no_cut"
 node4.var_type = "bool"
 
-_editor.add_node(node4, -291.16655263247, -99.050239603873)
+_editor.add_node(node4, -476.74130845516, -107.31470241379)
 
-Blueprint.connect(node2, "var", node0, "pos")
+var node5 = ::blueprint::nodes::input::Input()
+
+node5.var_name = "length"
+node5.var_type = "num"
+
+_editor.add_node(node5, -479.40148968303, -175.14646353734)
+
+var node6 = ::blueprint::nodes::property::Property()
+
+node6.var_name = "rot"
+node6.var_type = "bool"
+
+_editor.add_node(node6, 141.958544941, 80.66441235784)
+
+var node7 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node7, 309.26197980042, -31.363855188946)
+
+var node8 = ::geograph::nodes::rotate_y::RotateY()
+node8.query_param("angle").value = "90"
+
+_editor.add_node(node8, 143.2361373844, 0.9047640851348)
+
+var node9 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node9, 448.4202123824, -61.153851263332)
+
 Blueprint.connect(node4, "var", node0, "no_cut")
+Blueprint.connect(node5, "var", node0, "length")
 Blueprint.connect(node0, "geo", node1, "gong")
 Blueprint.connect(node0, "pos_left", node1, "pos_left")
 Blueprint.connect(node0, "pos_right", node1, "pos_right")
-Blueprint.connect(node1, "gong_dou", node3, "var")
+Blueprint.connect(node1, "gong_dou", node8, "geo")
+Blueprint.connect(node6, "var", node7, "cond")
+Blueprint.connect(node8, "geo", node7, "true")
+Blueprint.connect(node1, "gong_dou", node7, "false")
+Blueprint.connect(node7, "result", node9, "geo")
+Blueprint.connect(node2, "var", node9, "xyz")
+Blueprint.connect(node9, "geo", node3, "var")

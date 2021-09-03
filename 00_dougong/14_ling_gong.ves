@@ -20,12 +20,12 @@ var node3 = ::blueprint::nodes::number::Number()
 
 node3.value = 0.72
 
-_editor.add_node(node3, -590.45640572732, 188.48060108939)
+_editor.add_node(node3, -1100.5355752486, 234.66483173015)
 
 var node4 = ::blueprint::nodes::subgraph::Subgraph()
 node4.load_from_file(_editor, "10_gong.ves")
 
-_editor.add_node(node4, -395.72076013394, 87.919093906279)
+_editor.add_node(node4, -388.89062558029, 133.68099541574)
 
 var node5 = ::geograph::nodes::boolean::Boolean()
 node5.query_param("operator").value = "subtract"
@@ -197,6 +197,22 @@ node34.var_type = "bool"
 
 _editor.add_node(node34, -181.97389713004, 23.905273941927)
 
+var node35 = ::blueprint::nodes::input::Input()
+
+node35.var_name = "length"
+node35.var_type = "num"
+
+_editor.add_node(node35, -1164.9694367892, 338.52486147961)
+
+var node36 = ::blueprint::nodes::is_null::IsNull()
+
+_editor.add_node(node36, -1015.127252463, 394.45908388727)
+
+var node37 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node37, -883.75877844515, 329.28798721534)
+
+Blueprint.connect(node35, "var", node36, "in")
 Blueprint.connect(node22, "var", node24, "var")
 Blueprint.connect(node24, "var", node31, "var")
 Blueprint.connect(node24, "var", node28, "var")
@@ -209,7 +225,10 @@ Blueprint.connect(node13, "var", node14, "var")
 Blueprint.connect(node14, "var", node15, "a")
 Blueprint.connect(node8, "v3", node15, "b")
 Blueprint.connect(node15, "v", node11, "var")
-Blueprint.connect(node3, "v", node4, "width")
+Blueprint.connect(node36, "out", node37, "cond")
+Blueprint.connect(node3, "v", node37, "true")
+Blueprint.connect(node35, "var", node37, "false")
+Blueprint.connect(node37, "result", node4, "width")
 Blueprint.connect(node0, "v", node4, "height")
 Blueprint.connect(node1, "v", node4, "c_width")
 Blueprint.connect(node2, "v", node4, "c_height")

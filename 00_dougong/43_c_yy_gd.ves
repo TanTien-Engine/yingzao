@@ -96,6 +96,7 @@ node16.set_prop_value("wide", true)
 node16.set_prop_value("cut_sides", false)
 node16.set_prop_value("rot90", false)
 node16.set_prop_value("er", 0)
+node16.set_prop_value("zu_cai", false)
 
 _editor.add_node(node16, -1.2829213949607, -384.74730693981)
 
@@ -107,6 +108,7 @@ node17.set_prop_value("wide", true)
 node17.set_prop_value("cut_sides", false)
 node17.set_prop_value("rot90", false)
 node17.set_prop_value("er", 0)
+node17.set_prop_value("zu_cai", false)
 
 _editor.add_node(node17, 2.3595956050397, -102.09599193981)
 
@@ -139,6 +141,20 @@ var node22 = ::blueprint::nodes::combine::Combine()
 
 _editor.add_node(node22, -316.38021711847, 505.07592692979)
 
+var node23 = ::blueprint::nodes::property::Property()
+
+node23.var_name = "rot_left"
+node23.var_type = "bool"
+
+_editor.add_node(node23, -472.38057952577, 78.228787138105)
+
+var node24 = ::blueprint::nodes::property::Property()
+
+node24.var_name = "rot_right"
+node24.var_type = "bool"
+
+_editor.add_node(node24, -474.24659529807, 11.984754829314)
+
 Blueprint.connect(node21, "var", node22, "x")
 Blueprint.connect(node22, "xyz", node6, "var")
 Blueprint.connect(node6, "var", node10, "var")
@@ -148,6 +164,8 @@ Blueprint.connect(node20, "var", node7, "right_len")
 Blueprint.connect(node7, "geo", node8, "gong")
 Blueprint.connect(node7, "pos_left", node8, "pos_left")
 Blueprint.connect(node7, "pos_right", node8, "pos_right")
+Blueprint.connect(node23, "var", node8, "rot_left")
+Blueprint.connect(node24, "var", node8, "rot_right")
 Blueprint.connect(node8, "gong_dou", node9, "geo")
 Blueprint.connect(node10, "var", node9, "xyz")
 Blueprint.connect(node9, "geo", node17, "geo")
