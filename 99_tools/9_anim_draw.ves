@@ -1,8 +1,8 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(1.180815628826, 2.8326613085628, 2.6185906179621)
-node0.cam.yaw = -111.7
-node0.cam.pitch = -33.2
+node0.cam.position.set(-0.44102251492781, 2.4592458160892, 2.7036349098832)
+node0.cam.yaw = -86.4
+node0.cam.pitch = -31.4
 node0.cam.zoom = 45
 node0.cam.update_vectors()
 node0.speed = 0.24232439696789
@@ -23,7 +23,7 @@ var node3 = ::blueprint::nodes::number::Number()
 
 node3.value = 2
 
-_editor.add_node(node3, -235.04453452186, 253.86554621996)
+_editor.add_node(node3, -667.27593948054, 184.44405861665)
 
 var node4 = ::blueprint::nodes::subgraph::Subgraph()
 node4.load_from_file(_editor, "draw_wood_deferred.ves")
@@ -36,7 +36,7 @@ _editor.add_node(node5, -234.80837255026, 322.64669495353)
 
 var node6 = ::blueprint::nodes::integer::Integer()
 
-node6.value = 2
+node6.value = 3
 
 _editor.add_node(node6, -376.41511212896, 278.70122185231)
 
@@ -58,7 +58,7 @@ _editor.add_node(node10, -258.72474012676, -336.72974418944)
 
 var node11 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node11, -413.36189303056, -343.14950599154)
+_editor.add_node(node11, -420.13558019121, -336.94029276095)
 
 var node12 = ::blueprint::nodes::store::Store()
 
@@ -82,11 +82,11 @@ var node15 = ::blueprint::nodes::load::Load()
 
 node15.var_name = "time"
 
-_editor.add_node(node15, -234.01297572696, 195.14646765686)
+_editor.add_node(node15, -229.05429804101, 107.54316187174)
 
 var node16 = ::blueprint::nodes::number::Number()
 
-node16.value = 105.4
+node16.value = 264.79713892937
 
 _editor.add_node(node16, -636.90956922826, -111.73656405594)
 
@@ -110,9 +110,9 @@ _editor.add_node(node20, -319.59138324006, -209.27527201254)
 
 var node21 = ::blueprint::nodes::number::Number()
 
-node21.value = 0.2
+node21.value = 0.3993923664093
 
-_editor.add_node(node21, -547.15348240446, -382.73075441244)
+_editor.add_node(node21, -558.94534280329, -367.58591886909)
 
 var node22 = ::blueprint::nodes::number::Number()
 
@@ -153,6 +153,23 @@ node28.var_type = "array"
 
 _editor.add_node(node28, -377, 348.5)
 
+var node29 = ::blueprint::nodes::integer::Integer()
+
+node29.value = 10
+
+_editor.add_node(node29, -555.0481635334, -438.43974033333)
+
+var node30 = ::blueprint::nodes::input::Input()
+
+node30.var_name = "tick"
+node30.var_type = "int"
+
+_editor.add_node(node30, -663.17919669663, 108.12082489266)
+
+var node31 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node31, -498.59347357632, 157.76907247748)
+
 Blueprint.connect(node23, "v3", node24, "a")
 Blueprint.connect(node25, "v3", node24, "b")
 Blueprint.connect(node24, "v", node26, "a")
@@ -174,6 +191,8 @@ Blueprint.connect(node8, "event", node9, "event")
 Blueprint.connect(node10, "next", node9, "action")
 Blueprint.connect(node28, "var", node5, "list")
 Blueprint.connect(node6, "v", node5, "deep")
+Blueprint.connect(node3, "v", node31, "a")
+Blueprint.connect(node30, "var", node31, "b")
 Blueprint.connect(node5, "list", node2, "objs")
 Blueprint.connect(node3, "v", node2, "dist")
 Blueprint.connect(node15, "var", node2, "offset")

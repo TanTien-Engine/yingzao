@@ -1,8 +1,8 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(1.8191471327349, 2.126929343552, 1.7445702719094)
-node0.cam.yaw = -136.2
-node0.cam.pitch = -23.4
+node0.cam.position.set(0.7489464154185, 2.9028773739015, 2.8525675928738)
+node0.cam.yaw = -107.7
+node0.cam.pitch = -33.7
 node0.cam.zoom = 45
 node0.cam.update_vectors()
 node0.speed = 0.24232439696789
@@ -31,7 +31,7 @@ _editor.add_node(node4, -234.80837255026, 322.64669495353)
 
 var node5 = ::blueprint::nodes::integer::Integer()
 
-node5.value = 2
+node5.value = 3
 
 _editor.add_node(node5, -376.41511212896, 278.70122185231)
 
@@ -81,7 +81,7 @@ _editor.add_node(node14, -234.01297572696, 195.14646765686)
 
 var node15 = ::blueprint::nodes::number::Number()
 
-node15.value = 15.35
+node15.value = 120
 
 _editor.add_node(node15, -636.90956922826, -111.73656405594)
 
@@ -105,9 +105,9 @@ _editor.add_node(node19, -319.59138324006, -209.27527201254)
 
 var node20 = ::blueprint::nodes::number::Number()
 
-node20.value = 0.2
+node20.value = 0.80692207813263
 
-_editor.add_node(node20, -547.87165855257, -382.97014646181)
+_editor.add_node(node20, -548.62297335347, -382.97014646181)
 
 var node21 = ::blueprint::nodes::number::Number()
 
@@ -153,6 +153,16 @@ node28.load_from_file(_editor, "draw_geos_deferred.ves")
 
 _editor.add_node(node28, 685, 147.5)
 
+var node29 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node29, 161.73318225084, 309.52080430016)
+
+var node30 = ::blueprint::nodes::integer::Integer()
+
+node30.value = 10
+
+_editor.add_node(node30, -550.98819980259, -450.45728323893)
+
 Blueprint.connect(node22, "v3", node23, "a")
 Blueprint.connect(node24, "v3", node23, "b")
 Blueprint.connect(node23, "v", node25, "a")
@@ -177,8 +187,9 @@ Blueprint.connect(node5, "v", node4, "deep")
 Blueprint.connect(node4, "list", node2, "objs")
 Blueprint.connect(node3, "v", node2, "dist")
 Blueprint.connect(node14, "var", node2, "offset")
+Blueprint.connect(node2, "objs", node29, "list")
+Blueprint.connect(node29, "brush", node1, "var")
 Blueprint.connect(node2, "objs", node6, "list")
-Blueprint.connect(node6, "list", node1, "var")
 Blueprint.connect(node1, "var", node28, "geos")
 Blueprint.connect(node0, "this", node28, "view_cam")
 Blueprint.connect(node25, "v", node28, "light_pos")

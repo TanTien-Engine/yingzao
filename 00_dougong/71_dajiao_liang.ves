@@ -1,0 +1,123 @@
+var node0 = ::geograph::nodes::box::Box()
+node0.query_param("size").value.set(5, 0.25, 0.15)
+node0.query_param("pos").value.set(0, 0, 0)
+node0.query_param("offset_x").value = true
+node0.query_param("offset_y").value = true
+node0.query_param("offset_z").value = false
+
+_editor.add_node(node0, -708.21896425919, 257.39819233352)
+
+var node1 = ::geograph::nodes::rotate_y::RotateY()
+node1.query_param("angle").value = "45"
+
+_editor.add_node(node1, 45.745117992206, 352.20954550352)
+
+var node2 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node2, 190.52342179631, 364.53112589302)
+
+var node3 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node3, 45.499292778506, 260.26100818282)
+
+var node4 = ::blueprint::nodes::number3::Number3()
+
+node4.value.set(0, 0.4, 0)
+
+_editor.add_node(node4, -114.83110414169, 209.84778907762)
+
+var node5 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node5, -425.88153688139, 351.22534076902)
+
+var node6 = ::blueprint::nodes::number3::Number3()
+
+node6.value.set(-0.5, 0, 0)
+
+_editor.add_node(node6, -562.71949353999, 283.02378924712)
+
+var node7 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node7, -265.54854667779, 305.00446581932)
+
+var node8 = ::blueprint::nodes::number3::Number3()
+
+node8.value.set(0, 0, 0.091531030833721)
+
+_editor.add_node(node8, -400.54854667779, 205.00446581932)
+
+var node9 = ::geograph::nodes::plane::Plane()
+node9.query_param("ori").value.set(0, 0, 0)
+node9.query_param("dir").value.set(0, 1, 0)
+
+_editor.add_node(node9, -670.20929092873, -247.25304828695)
+
+var node10 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node10, -286.79458147189, 7.3773777935229)
+
+var node11 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node11, -482.53257751049, 12.609260861623)
+
+var node12 = ::geograph::nodes::rotate_y::RotateY()
+node12.query_param("angle").value = "45"
+
+_editor.add_node(node12, 69.712060141006, 21.631033106823)
+
+var node13 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node13, 214.49036394511, 33.952613496323)
+
+var node14 = ::blueprint::nodes::output::Output()
+
+node14.var_name = "geo"
+node14.var_type = "geo"
+
+_editor.add_node(node14, 360.39521877825, 372.53394740081)
+
+var node15 = ::blueprint::nodes::output::Output()
+
+node15.var_name = "down_plane"
+node15.var_type = "geo"
+
+_editor.add_node(node15, -37.81965208448, -220.04456020387)
+
+var node16 = ::blueprint::nodes::input::Input()
+
+node16.var_name = "pos"
+node16.var_type = "num3"
+
+_editor.add_node(node16, -120.78677856537, 298.95186570853)
+
+var node17 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node17, -212.28464362619, -251.02710277474)
+
+var node18 = ::blueprint::nodes::number3::Number3()
+
+node18.value.set(0.06, 0, 0.06)
+
+_editor.add_node(node18, -437.91708374023, -320.45419311523)
+
+Blueprint.connect(node9, "geo", node11, "obj")
+Blueprint.connect(node6, "v3", node11, "translate")
+Blueprint.connect(node11, "obj", node10, "obj")
+Blueprint.connect(node8, "v3", node10, "rotate")
+Blueprint.connect(node10, "obj", node12, "geo")
+Blueprint.connect(node16, "var", node3, "a")
+Blueprint.connect(node4, "v3", node3, "b")
+Blueprint.connect(node9, "plane", node17, "obj")
+Blueprint.connect(node3, "v", node17, "translate")
+Blueprint.connect(node18, "v3", node17, "rotate")
+Blueprint.connect(node17, "obj", node15, "var")
+Blueprint.connect(node12, "geo", node13, "geo")
+Blueprint.connect(node3, "v", node13, "xyz")
+Blueprint.connect(node0, "geo", node5, "geo")
+Blueprint.connect(node6, "v3", node5, "xyz")
+Blueprint.connect(node5, "geo", node7, "obj")
+Blueprint.connect(node8, "v3", node7, "rotate")
+Blueprint.connect(node7, "obj", node1, "geo")
+Blueprint.connect(node1, "geo", node2, "geo")
+Blueprint.connect(node3, "v", node2, "xyz")
+Blueprint.connect(node2, "geo", node14, "var")

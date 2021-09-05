@@ -21,7 +21,7 @@ _editor.add_node(node2, 688.38699121384, 106.67103960836)
 
 var node3 = ::blueprint::nodes::list_flatten::ListFlatten()
 
-_editor.add_node(node3, 163.19290700034, 251.99847717131)
+_editor.add_node(node3, 170.70605500936, 215.93536672803)
 
 var node4 = ::blueprint::nodes::number3::Number3()
 
@@ -54,8 +54,13 @@ var node9 = ::blueprint::nodes::input::Input()
 node9.var_name = "list"
 node9.var_type = "array"
 
-_editor.add_node(node9, 24.740115412515, 254.73639733722)
+_editor.add_node(node9, -6.8151062253513, 249.47719373091)
 
+var node10 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node10, 144.13973999023, 413.57778930664)
+
+Blueprint.connect(node9, "var", node10, "list")
 Blueprint.connect(node9, "var", node3, "list")
 Blueprint.connect(node3, "list", node1, "var")
 Blueprint.connect(node4, "v3", node5, "a")
