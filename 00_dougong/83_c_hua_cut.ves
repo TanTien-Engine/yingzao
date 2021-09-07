@@ -34,7 +34,7 @@ _editor.add_node(node4, 5.0910029719094, 38.498967031778)
 var node5 = ::geograph::nodes::boolean::Boolean()
 node5.query_param("operator").value = "subtract"
 
-_editor.add_node(node5, 153.02489824063, 1.3089053206943)
+_editor.add_node(node5, 167.30608867099, 0.68798399763514)
 
 var node6 = ::geograph::nodes::rotate_y::RotateY()
 node6.query_param("angle").value = "45"
@@ -139,6 +139,7 @@ Blueprint.connect(node8, "v", node1, "xyz")
 Blueprint.connect(node4, "var", node5, "a")
 Blueprint.connect(node1, "geo", node5, "b")
 Blueprint.connect(node20, "val", node21, "type")
+Blueprint.connect(node5, "geo", node21, "default")
 Blueprint.connect(node5, "geo", node21, "case0")
 Blueprint.connect(node4, "var", node21, "case1")
 Blueprint.connect(node4, "var", node21, "case2")

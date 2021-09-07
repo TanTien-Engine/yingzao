@@ -1,0 +1,130 @@
+var node0 = ::blueprint::nodes::integer::Integer()
+
+node0.value = 2
+
+_editor.add_node(node0, -845.56857635632, 211.0336709355)
+
+var node1 = ::blueprint::nodes::subgraph::Subgraph()
+node1.load_from_file(_editor, "../01_beam_column/00_crescent_beam.ves")
+
+_editor.add_node(node1, -203.80586282044, -310.08714757487)
+
+var node2 = ::blueprint::nodes::number::Number()
+
+node2.value = 0.17
+
+_editor.add_node(node2, -411.14845090485, -262.55309060267)
+
+var node3 = ::blueprint::nodes::number::Number()
+
+node3.value = 0.23
+
+_editor.add_node(node3, -404.17605360475, -334.50032730507)
+
+var node4 = ::geograph::nodes::knife::Knife()
+node4.query_param("keep").value = "above"
+node4.query_param("seam").value = true
+
+_editor.add_node(node4, 19.967071192885, 71.381877850701)
+
+var node5 = ::geograph::nodes::plane::Plane()
+node5.query_param("ori").value.set(0, 0, 0)
+node5.query_param("dir").value.set(0, 1, 1)
+
+_editor.add_node(node5, -135.23298143052, -61.375084523899)
+
+var node6 = ::blueprint::nodes::subgraph::Subgraph()
+node6.load_from_file(_editor, "../00_dougong/11_hua_gong_no_cut.ves")
+node6.set_prop_value("corner", false)
+
+_editor.add_node(node6, -660.69753896572, 168.100982079)
+
+var node7 = ::blueprint::nodes::subgraph::Subgraph()
+node7.load_from_file(_editor, "../00_dougong/50_gong_add_dou.ves")
+
+_editor.add_node(node7, -161.22830655577, 151.0967487606)
+
+var node8 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node8, 328.3725901889, -60.961295948999)
+
+var node9 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node9, 192.01294844462, -79.014143211999)
+
+var node10 = ::blueprint::nodes::subgraph::Subgraph()
+node10.load_from_file(_editor, "../00_dougong/81_conn_cut.ves")
+node10.set_prop_value("top", false)
+node10.set_prop_value("high", false)
+node10.set_prop_value("wide", true)
+node10.set_prop_value("cut_sides", true)
+node10.set_prop_value("rot90", true)
+node10.set_prop_value("er", 0)
+node10.set_prop_value("zu_cai", false)
+
+_editor.add_node(node10, -419.05065467095, 186.73215460214)
+
+var node11 = ::blueprint::nodes::input::Input()
+
+node11.var_name = "pos"
+node11.var_type = "num3"
+
+_editor.add_node(node11, -848.61888327758, 64.11819905152)
+
+var node12 = ::blueprint::nodes::input::Input()
+
+node12.var_name = "conn_pos"
+node12.var_type = "num3"
+
+_editor.add_node(node12, -407.57839547524, -519.07600354637)
+
+var node13 = ::blueprint::nodes::output::Output()
+
+node13.var_name = "geo"
+node13.var_type = "geo"
+
+_editor.add_node(node13, 461.57624605794, -60.374529159194)
+
+var node14 = ::blueprint::nodes::input::Input()
+
+node14.var_name = "calc_step_len"
+node14.var_type = "func"
+
+_editor.add_node(node14, -841.19645730994, 143.69525542178)
+
+var node15 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node15, -16.88610423695, -241.56276078658)
+
+var node16 = ::blueprint::nodes::number::Number()
+
+node16.value = 1.725
+
+_editor.add_node(node16, -405.19139615476, -425.03430754028)
+
+var node17 = ::blueprint::nodes::input::Input()
+
+node17.var_name = "no_beam"
+node17.var_type = "bool"
+
+_editor.add_node(node17, -154.34943737214, -203.75703079335)
+
+Blueprint.connect(node2, "v", node1, "width")
+Blueprint.connect(node3, "v", node1, "height")
+Blueprint.connect(node16, "v", node1, "length")
+Blueprint.connect(node12, "var", node1, "pos")
+Blueprint.connect(node17, "var", node15, "cond")
+Blueprint.connect(node1, "geo", node15, "false")
+Blueprint.connect(node0, "v", node6, "hop_count")
+Blueprint.connect(node11, "var", node6, "pos")
+Blueprint.connect(node14, "var", node6, "calc_step_len")
+Blueprint.connect(node6, "geo", node10, "geo")
+Blueprint.connect(node11, "var", node10, "pos")
+Blueprint.connect(node10, "geo", node7, "gong")
+Blueprint.connect(node6, "pos_right", node7, "pos_right")
+Blueprint.connect(node7, "gong_dou", node4, "geo")
+Blueprint.connect(node5, "plane", node4, "plane")
+Blueprint.connect(node4, "geo", node9, "in0")
+Blueprint.connect(node15, "result", node9, "in1")
+Blueprint.connect(node9, "list", node8, "list")
+Blueprint.connect(node8, "brush", node13, "var")

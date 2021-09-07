@@ -126,7 +126,7 @@ _editor.add_node(node18, 788.228511916, -59.155252801141)
 
 var node19 = ::blueprint::nodes::switch_f::SwitchF()
 
-_editor.add_node(node19, 928.0258464921, -90.165430262521)
+_editor.add_node(node19, 930.2258464921, -108.86543026252)
 
 var node20 = ::geograph::nodes::poly_extrude::PolyExtrude()
 node20.query_param("distance").value = 0.2
@@ -149,6 +149,7 @@ Blueprint.connect(node8, "geo", node9, "b")
 Blueprint.connect(node9, "geo", node12, "a")
 Blueprint.connect(node11, "geo", node12, "b")
 Blueprint.connect(node18, "val", node19, "type")
+Blueprint.connect(node12, "geo", node19, "default")
 Blueprint.connect(node12, "geo", node19, "case0")
 Blueprint.connect(node1, "geo", node19, "case1")
 Blueprint.connect(node20, "geo", node19, "case2")

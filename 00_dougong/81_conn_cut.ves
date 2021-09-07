@@ -354,7 +354,7 @@ _editor.add_node(node62, 1029.402384416, 42.628979198859)
 
 var node63 = ::blueprint::nodes::switch_f::SwitchF()
 
-_editor.add_node(node63, 1169.1997189921, 11.618801737479)
+_editor.add_node(node63, 1187.641082287, -27.31296521833)
 
 Blueprint.connect(node58, "var", node59, "cond")
 Blueprint.connect(node54, "v", node59, "true")
@@ -426,6 +426,7 @@ Blueprint.connect(node2, "var", node26, "xyz")
 Blueprint.connect(node1, "var", node11, "a")
 Blueprint.connect(node26, "geo", node11, "b")
 Blueprint.connect(node62, "val", node63, "type")
+Blueprint.connect(node11, "geo", node63, "default")
 Blueprint.connect(node11, "geo", node63, "case0")
 Blueprint.connect(node1, "var", node63, "case1")
 Blueprint.connect(node1, "var", node63, "case2")

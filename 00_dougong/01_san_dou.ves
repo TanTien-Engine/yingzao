@@ -97,7 +97,7 @@ _editor.add_node(node14, 350.90542724524, 209.28527059781)
 var node15 = ::blueprint::nodes::global_get::GlobalGet()
 node15.query_param("key").value = "lod"
 
-_editor.add_node(node15, 963.1216997237, 59.065334300287)
+_editor.add_node(node15, 944.68033642884, 76.140670684414)
 
 var node16 = ::blueprint::nodes::switch_f::SwitchF()
 
@@ -124,7 +124,8 @@ Blueprint.connect(node5, "geo", node6, "b")
 Blueprint.connect(node6, "geo", node11, "obj")
 Blueprint.connect(node10, "var", node11, "translate")
 Blueprint.connect(node15, "val", node16, "type")
+Blueprint.connect(node11, "obj", node16, "default")
 Blueprint.connect(node11, "obj", node16, "case0")
-Blueprint.connect(node7, "geo", node16, "case1")
+Blueprint.connect(node1, "geo", node16, "case1")
 Blueprint.connect(node17, "geo", node16, "case2")
 Blueprint.connect(node16, "result", node4, "var")

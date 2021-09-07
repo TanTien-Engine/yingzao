@@ -237,6 +237,7 @@ node41.set_prop_value("wide", false)
 node41.set_prop_value("cut_sides", false)
 node41.set_prop_value("rot90", false)
 node41.set_prop_value("er", 0)
+node41.set_prop_value("zu_cai", false)
 
 _editor.add_node(node41, -745.67554259422, 87.942477299907)
 
@@ -290,6 +291,7 @@ _editor.add_node(node49, -1165.0599026779, -121.03669296448)
 
 var node50 = ::blueprint::nodes::subgraph::Subgraph()
 node50.load_from_file(_editor, "../00_dougong/11_hua_gong_no_cut.ves")
+node50.set_prop_value("corner", false)
 
 _editor.add_node(node50, -971.31913394335, -167.53385450732)
 
@@ -325,6 +327,7 @@ node55.set_prop_value("wide", false)
 node55.set_prop_value("cut_sides", true)
 node55.set_prop_value("rot90", true)
 node55.set_prop_value("er", 0)
+node55.set_prop_value("zu_cai", false)
 
 _editor.add_node(node55, -504.65851780083, -154.82591939431)
 
@@ -425,6 +428,7 @@ node71.set_prop_value("wide", false)
 node71.set_prop_value("cut_sides", false)
 node71.set_prop_value("rot90", false)
 node71.set_prop_value("er", 0)
+node71.set_prop_value("zu_cai", false)
 
 _editor.add_node(node71, 325.68541492646, -1.7361281546401)
 
@@ -466,6 +470,7 @@ _editor.add_node(node77, -137.21824152086, -199.4446433777)
 
 var node78 = ::blueprint::nodes::subgraph::Subgraph()
 node78.load_from_file(_editor, "../00_dougong/11_hua_gong_no_cut.ves")
+node78.set_prop_value("corner", false)
 
 _editor.add_node(node78, 56.522527213694, -245.94180492054)
 
@@ -477,6 +482,7 @@ node79.set_prop_value("wide", false)
 node79.set_prop_value("cut_sides", true)
 node79.set_prop_value("rot90", true)
 node79.set_prop_value("er", 0)
+node79.set_prop_value("zu_cai", false)
 
 _editor.add_node(node79, -24.79288970165, -435.57353922903)
 
@@ -511,6 +517,7 @@ node84.set_prop_value("wide", false)
 node84.set_prop_value("cut_sides", true)
 node84.set_prop_value("rot90", true)
 node84.set_prop_value("er", 0)
+node84.set_prop_value("zu_cai", false)
 
 _editor.add_node(node84, 228.92611856282, -435.57353922903)
 
@@ -582,6 +589,7 @@ _editor.add_node(node94, 1219.8308877049, 198.65441729588)
 var node95 = ::blueprint::nodes::subgraph::Subgraph()
 node95.load_from_file(_editor, "../00_dougong/42_ling_gongdou.ves")
 node95.set_prop_value("no_cut", false)
+node95.set_prop_value("rot", false)
 
 _editor.add_node(node95, 1036.6923384233, -52.303118896487)
 
@@ -594,6 +602,7 @@ _editor.add_node(node96, 832.79856178976, -55.679408957757)
 var node97 = ::blueprint::nodes::subgraph::Subgraph()
 node97.load_from_file(_editor, "../00_dougong/42_ling_gongdou.ves")
 node97.set_prop_value("no_cut", false)
+node97.set_prop_value("rot", false)
 
 _editor.add_node(node97, 1040.4178663617, -139.23210412477)
 
@@ -683,6 +692,7 @@ node111.set_prop_value("wide", false)
 node111.set_prop_value("cut_sides", false)
 node111.set_prop_value("rot90", false)
 node111.set_prop_value("er", 0)
+node111.set_prop_value("zu_cai", false)
 
 _editor.add_node(node111, 1267.3804388108, -255.1227627001)
 
@@ -713,6 +723,7 @@ _editor.add_node(node115, 861.74392388828, -1031.7267759213)
 var node116 = ::blueprint::nodes::subgraph::Subgraph()
 node116.load_from_file(_editor, "../00_dougong/41_shuatou.ves")
 node116.set_prop_value("head", 1)
+node116.set_prop_value("rot", false)
 
 _editor.add_node(node116, 1009.5054199219, -477.94654541016)
 
@@ -748,6 +759,7 @@ node121.set_prop_value("wide", true)
 node121.set_prop_value("cut_sides", true)
 node121.set_prop_value("rot90", true)
 node121.set_prop_value("er", 0)
+node121.set_prop_value("zu_cai", false)
 
 _editor.add_node(node121, 1252.4029656157, -468.61495108116)
 
@@ -765,6 +777,7 @@ node123.set_prop_value("wide", true)
 node123.set_prop_value("cut_sides", true)
 node123.set_prop_value("rot90", true)
 node123.set_prop_value("er", 2)
+node123.set_prop_value("zu_cai", false)
 
 _editor.add_node(node123, 1497.2107656157, -470.94705108116)
 
@@ -782,6 +795,7 @@ node125.set_prop_value("wide", true)
 node125.set_prop_value("cut_sides", true)
 node125.set_prop_value("rot90", true)
 node125.set_prop_value("er", 2)
+node125.set_prop_value("zu_cai", false)
 
 _editor.add_node(node125, 1030.0507656157, -717.99705108116)
 
@@ -962,17 +976,12 @@ node154.var_name = "luo_han_1"
 
 _editor.add_node(node154, 1874.1881347656, -549.44062500001)
 
-var node155 = ::blueprint::nodes::subgraph::Subgraph()
-node155.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+var node155 = ::blueprint::nodes::output::Output()
 
-node155.op_node.cam.position.set(2.1287644245057, 0.95325007215363, 0.52221947092223)
-node155.op_node.cam.yaw = -158.2
-node155.op_node.cam.pitch = -8.6
-node155.op_node.cam.zoom = 45
-node155.op_node.cam.update_vectors()
-node155.op_node.speed = 0.21526837348938
+node155.var_name = "waiyan_tween"
+node155.var_type = "array"
 
-_editor.add_node(node155, -1647.752142788, -526.93421620771)
+_editor.add_node(node155, -1692.2163993398, -518.53699478765)
 
 Blueprint.connect(node23, "curr_item", node25, "a")
 Blueprint.connect(node26, "v", node25, "b")
@@ -1134,7 +1143,7 @@ Blueprint.connect(node47, "var", node48, "in0")
 Blueprint.connect(node65, "var", node48, "in1")
 Blueprint.connect(node105, "var", node48, "in2")
 Blueprint.connect(node146, "var", node48, "in3")
-Blueprint.connect(node48, "list", node155, "list")
+Blueprint.connect(node48, "list", node155, "var")
 Blueprint.connect(node2, "func", node10, "func")
 Blueprint.connect(node25, "v", node10, "step")
 Blueprint.connect(node10, "len", node15, "v")

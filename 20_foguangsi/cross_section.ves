@@ -1,0 +1,61 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "50_waiyan_column.ves")
+
+_editor.add_node(node0, -56.255447032306, 184.4203606311)
+
+var node1 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node1, 222.90909090909, 213.31818181818)
+
+var node2 = ::blueprint::nodes::subgraph::Subgraph()
+node2.load_from_file(_editor, "51_neicao_column.ves")
+
+_editor.add_node(node2, -533.34217901613, 111.14834872412)
+
+var node3 = ::blueprint::nodes::subgraph::Subgraph()
+node3.load_from_file(_editor, "../../tantien/assets/blueprints/geograph/translate_z.ves")
+
+_editor.add_node(node3, -57.545454545455, 86.045454545455)
+
+var node4 = ::blueprint::nodes::number::Number()
+
+node4.value = -2.14
+
+_editor.add_node(node4, -295.19382643167, -8.7057497538444)
+
+var node5 = ::geograph::nodes::rotate_y::RotateY()
+node5.query_param("angle").value = "180"
+
+_editor.add_node(node5, -312.37215210764, 83.073444805172)
+
+var node6 = ::blueprint::nodes::global_set::GlobalSet()
+node6.query_param("key").value = "null"
+
+_editor.add_node(node6, 183.18746831308, 384.59280695869)
+
+var node7 = ::blueprint::nodes::integer::Integer()
+
+node7.value = 1
+
+_editor.add_node(node7, 38.7922323386, 363.28552752809)
+
+var node8 = ::blueprint::nodes::subgraph::Subgraph()
+node8.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+
+node8.op_node.cam.position.set(5.7452773821046, 0.87178386924501, -1.8943716139672)
+node8.op_node.cam.yaw = -163.7
+node8.op_node.cam.pitch = -5.1
+node8.op_node.cam.zoom = 45
+node8.op_node.cam.update_vectors()
+node8.op_node.speed = 0.21526837348938
+
+_editor.add_node(node8, 430.38139002776, 293.57464750936)
+
+Blueprint.connect(node7, "v", node6, "val")
+Blueprint.connect(node2, "neicao_column", node5, "geo")
+Blueprint.connect(node5, "geo", node3, "geo")
+Blueprint.connect(node4, "v", node3, "offset")
+Blueprint.connect(node0, "waiyan_column", node1, "in0")
+Blueprint.connect(node3, "geo", node1, "in1")
+Blueprint.connect(node6, "next", node8, "prev")
+Blueprint.connect(node1, "list", node8, "list")
