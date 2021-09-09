@@ -1,0 +1,204 @@
+var node0 = ::blueprint::nodes::for_each_f::ForEachF()
+
+_editor.add_node(node0, 766.36107191124, 687.31192884851)
+
+var node1 = ::geograph::nodes::brush_set_material::BrushSetMaterial()
+
+_editor.add_node(node1, 569.73954035346, 371.79297608706)
+
+var node2 = ::blueprint::nodes::integer::Integer()
+
+node2.value = 3
+
+_editor.add_node(node2, 215.81922777501, 279.62519586914)
+
+var node3 = ::geograph::nodes::brush_get_size::BrushGetSize()
+
+_editor.add_node(node3, -965.89072210498, 583.1718318877)
+
+var node4 = ::blueprint::nodes::split::Split()
+
+_editor.add_node(node4, -830.00649023116, 563.93731568869)
+
+var node5 = ::blueprint::nodes::compare::Compare()
+
+node5.cmp = "less"
+
+_editor.add_node(node5, 52.501212853046, 480.61166709711)
+
+var node6 = ::blueprint::nodes::number::Number()
+
+node6.value = 0.3201
+
+_editor.add_node(node6, -102.04424002151, 388.04965840489)
+
+var node7 = ::blueprint::nodes::a_n_d::AND()
+
+_editor.add_node(node7, 211.17889391686, 427.71906879519)
+
+var node8 = ::blueprint::nodes::compare::Compare()
+
+node8.cmp = "less"
+
+_editor.add_node(node8, 50.848320291067, 393.00836131199)
+
+var node9 = ::blueprint::nodes::a_n_d::AND()
+
+_editor.add_node(node9, 215.80699309042, 353.25625887784)
+
+var node10 = ::blueprint::nodes::compare::Compare()
+
+node10.cmp = "less"
+
+_editor.add_node(node10, 51.674766572055, 303.75216296487)
+
+var node11 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node11, 423.57556253228, 339.28934346349)
+
+var node12 = ::blueprint::nodes::compare::Compare()
+
+node12.cmp = "greater"
+
+_editor.add_node(node12, -178.54575872523, 164.51491685829)
+
+var node13 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node13, -319.79296115064, 154.74781250091)
+
+var node14 = ::blueprint::nodes::number::Number()
+
+node14.value = 1.5
+
+_editor.add_node(node14, -455.78097583614, 134.46229781267)
+
+var node15 = ::blueprint::nodes::a_n_d::AND()
+
+_editor.add_node(node15, -32.039383623795, 140.47282880753)
+
+var node16 = ::blueprint::nodes::compare::Compare()
+
+node16.cmp = "greater"
+
+_editor.add_node(node16, -174.03786991982, 74.357140750097)
+
+var node17 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node17, -325.05216475695, 66.843980795431)
+
+var node18 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node18, 137.00644951388, 129.20312167448)
+
+var node19 = ::blueprint::nodes::integer::Integer()
+
+node19.value = 1
+
+_editor.add_node(node19, -29.207730174139, 72.378046067074)
+
+var node20 = ::blueprint::nodes::compare::Compare()
+
+node20.cmp = "greater"
+
+_editor.add_node(node20, -336.94575872523, -88.815083141711)
+
+var node21 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node21, -478.19296115064, -98.582187499091)
+
+var node22 = ::blueprint::nodes::number::Number()
+
+node22.value = 1.5
+
+_editor.add_node(node22, -614.18097583614, -118.86770218733)
+
+var node23 = ::blueprint::nodes::a_n_d::AND()
+
+_editor.add_node(node23, -190.4393836238, -112.85717119247)
+
+var node24 = ::blueprint::nodes::compare::Compare()
+
+node24.cmp = "greater"
+
+_editor.add_node(node24, -332.43786991982, -178.9728592499)
+
+var node25 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node25, -483.45216475695, -186.48601920457)
+
+var node26 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node26, -21.39355048612, -124.12687832552)
+
+var node27 = ::blueprint::nodes::integer::Integer()
+
+node27.value = 2
+
+_editor.add_node(node27, -187.60773017414, -180.95195393293)
+
+var node28 = ::blueprint::nodes::integer::Integer()
+
+node28.value = 0
+
+_editor.add_node(node28, -187.39169034091, -255.02758372914)
+
+var node29 = ::blueprint::nodes::input::Input()
+
+node29.var_name = "geo"
+node29.var_type = "geo"
+
+_editor.add_node(node29, 292.33544921875, 935.61840820313)
+
+var node30 = ::blueprint::nodes::output::Output()
+
+node30.var_name = "geo"
+node30.var_type = "geo"
+
+_editor.add_node(node30, 911.63542480469, 704.61840820312)
+
+Blueprint.connect(node0, "curr_item", node3, "brush")
+Blueprint.connect(node3, "size", node4, "xyz")
+Blueprint.connect(node4, "y", node25, "a")
+Blueprint.connect(node22, "v", node25, "b")
+Blueprint.connect(node4, "z", node24, "a")
+Blueprint.connect(node25, "v", node24, "b")
+Blueprint.connect(node4, "x", node21, "a")
+Blueprint.connect(node22, "v", node21, "b")
+Blueprint.connect(node4, "z", node20, "a")
+Blueprint.connect(node21, "v", node20, "b")
+Blueprint.connect(node20, "out", node23, "a")
+Blueprint.connect(node24, "out", node23, "b")
+Blueprint.connect(node23, "out", node26, "cond")
+Blueprint.connect(node27, "v", node26, "true")
+Blueprint.connect(node28, "v", node26, "false")
+Blueprint.connect(node4, "z", node17, "a")
+Blueprint.connect(node14, "v", node17, "b")
+Blueprint.connect(node4, "x", node16, "a")
+Blueprint.connect(node17, "v", node16, "b")
+Blueprint.connect(node4, "y", node13, "a")
+Blueprint.connect(node14, "v", node13, "b")
+Blueprint.connect(node4, "x", node12, "a")
+Blueprint.connect(node13, "v", node12, "b")
+Blueprint.connect(node12, "out", node15, "a")
+Blueprint.connect(node16, "out", node15, "b")
+Blueprint.connect(node15, "out", node18, "cond")
+Blueprint.connect(node19, "v", node18, "true")
+Blueprint.connect(node26, "result", node18, "false")
+Blueprint.connect(node4, "z", node10, "a")
+Blueprint.connect(node6, "v", node10, "b")
+Blueprint.connect(node4, "y", node8, "a")
+Blueprint.connect(node6, "v", node8, "b")
+Blueprint.connect(node4, "x", node5, "a")
+Blueprint.connect(node6, "v", node5, "b")
+Blueprint.connect(node5, "out", node7, "a")
+Blueprint.connect(node8, "out", node7, "b")
+Blueprint.connect(node7, "out", node9, "a")
+Blueprint.connect(node10, "out", node9, "b")
+Blueprint.connect(node9, "out", node11, "cond")
+Blueprint.connect(node2, "v", node11, "true")
+Blueprint.connect(node18, "result", node11, "false")
+Blueprint.connect(node0, "curr_item", node1, "brush")
+Blueprint.connect(node11, "result", node1, "material")
+Blueprint.connect(node29, "var", node0, "items")
+Blueprint.connect(node1, "brush", node0, "eval")
+Blueprint.connect(node0, "result", node30, "var")

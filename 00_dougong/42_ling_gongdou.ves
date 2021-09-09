@@ -56,6 +56,23 @@ var node9 = ::geograph::nodes::translate_f::TranslateF()
 
 _editor.add_node(node9, 448.4202123824, -61.153851263332)
 
+var node10 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node10, 462.73320297367, -183.44806551342)
+
+var node11 = ::blueprint::nodes::number3::Number3()
+
+node11.value.set(0, 0.21, 0)
+
+_editor.add_node(node11, 320.58444163425, -235.51418462075)
+
+var node12 = ::blueprint::nodes::output::Output()
+
+node12.var_name = "pos"
+node12.var_type = "num3"
+
+_editor.add_node(node12, 598.27040894564, -171.87783800866)
+
 Blueprint.connect(node4, "var", node0, "no_cut")
 Blueprint.connect(node5, "var", node0, "length")
 Blueprint.connect(node0, "geo", node1, "gong")
@@ -65,6 +82,9 @@ Blueprint.connect(node1, "gong_dou", node8, "geo")
 Blueprint.connect(node6, "var", node7, "cond")
 Blueprint.connect(node8, "geo", node7, "true")
 Blueprint.connect(node1, "gong_dou", node7, "false")
+Blueprint.connect(node2, "var", node10, "a")
+Blueprint.connect(node11, "v3", node10, "b")
+Blueprint.connect(node10, "v", node12, "var")
 Blueprint.connect(node7, "result", node9, "geo")
 Blueprint.connect(node2, "var", node9, "xyz")
 Blueprint.connect(node9, "geo", node3, "var")

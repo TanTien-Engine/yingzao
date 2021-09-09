@@ -340,6 +340,23 @@ node60.load_from_file(_editor, "../../tantien/assets/blueprints/geograph/transla
 
 _editor.add_node(node60, 687.45830256525, -283.00744857784)
 
+var node61 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node61, -38.780858126553, -1917.5131392045)
+
+var node62 = ::blueprint::nodes::number3::Number3()
+
+node62.value.set(0, 0.1, 0)
+
+_editor.add_node(node62, -179.68992753462, -1972.9677956321)
+
+var node63 = ::blueprint::nodes::output::Output()
+
+node63.var_name = "pos"
+node63.var_type = "num3"
+
+_editor.add_node(node63, 93.946419455787, -1908.4223077947)
+
 Blueprint.connect(node34, "var", node33, "type")
 Blueprint.connect(node35, "v", node33, "default")
 Blueprint.connect(node35, "v", node33, "case0")
@@ -411,6 +428,9 @@ Blueprint.connect(node9, "geo", node12, "geo")
 Blueprint.connect(node10, "var", node11, "cond")
 Blueprint.connect(node12, "geo", node11, "true")
 Blueprint.connect(node9, "geo", node11, "false")
+Blueprint.connect(node1, "var", node61, "a")
+Blueprint.connect(node62, "v3", node61, "b")
+Blueprint.connect(node61, "v", node63, "var")
 Blueprint.connect(node11, "result", node2, "obj")
 Blueprint.connect(node1, "var", node2, "translate")
 Blueprint.connect(node2, "obj", node3, "var")

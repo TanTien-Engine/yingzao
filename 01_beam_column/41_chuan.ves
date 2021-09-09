@@ -3,18 +3,18 @@ var node0 = ::blueprint::nodes::input::Input()
 node0.var_name = "pos"
 node0.var_type = "num3"
 
-_editor.add_node(node0, 608.33768489394, -217.86909984545)
+_editor.add_node(node0, 582.87991064851, -207.9343586765)
 
 var node1 = ::scenegraph::nodes::transform3d::Transform3d()
 
-_editor.add_node(node1, 759.58563327974, -203.74825189993)
+_editor.add_node(node1, 770.85535529326, -206.00219630263)
 
 var node2 = ::blueprint::nodes::output::Output()
 
 node2.var_name = "geo"
 node2.var_type = "geo"
 
-_editor.add_node(node2, 915.64471548784, -172.49438218181)
+_editor.add_node(node2, 926.91443750136, -174.74832658451)
 
 var node3 = ::blueprint::nodes::input::Input()
 
@@ -146,36 +146,59 @@ var node26 = ::blueprint::nodes::load::Load()
 
 node26.var_name = "radius"
 
-_editor.add_node(node26, -619.3712286432, -335.66771354729)
+_editor.add_node(node26, -448.61786480193, -286.490744761)
 
-var node27 = ::blueprint::nodes::add::Add()
+var node27 = ::blueprint::nodes::subgraph::Subgraph()
+node27.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
 
-_editor.add_node(node27, -473.59234585747, -366.81958391093)
+_editor.add_node(node27, -1078.2875951216, 41.309749234595)
 
-var node28 = ::blueprint::nodes::number::Number()
+var node28 = ::blueprint::nodes::input::Input()
 
-node28.value = 0.1
+node28.var_name = "radius"
+node28.var_type = "num"
 
-_editor.add_node(node28, -621.80630448307, -395.50615157088)
+_editor.add_node(node28, -1265.3461289135, 70.412107322129)
 
-var node29 = ::blueprint::nodes::subgraph::Subgraph()
-node29.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+var node29 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node29, -1078.2875951216, 41.309749234595)
+_editor.add_node(node29, 788.85844333112, -317.03584579594)
 
-var node30 = ::blueprint::nodes::input::Input()
+var node30 = ::blueprint::nodes::load::Load()
 
 node30.var_name = "radius"
-node30.var_type = "num"
 
-_editor.add_node(node30, -1265.3461289135, 70.412107322129)
+_editor.add_node(node30, 347.83473535837, -345.39351975597)
 
-Blueprint.connect(node30, "var", node29, "val")
-Blueprint.connect(node23, "v", node29, "default")
-Blueprint.connect(node29, "val", node24, "var")
+var node31 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node31, 640.39472983037, -384.46469403592)
+
+var node32 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node32, 495.64401792839, -357.19349494554)
+
+var node33 = ::blueprint::nodes::integer::Integer()
+
+node33.value = 2
+
+_editor.add_node(node33, 350.18946692519, -401.73893561937)
+
+var node34 = ::blueprint::nodes::output::Output()
+
+node34.var_name = "pos"
+node34.var_type = "num3"
+
+_editor.add_node(node34, 925.22207414611, -305.21765288045)
+
+Blueprint.connect(node28, "var", node27, "val")
+Blueprint.connect(node23, "v", node27, "default")
+Blueprint.connect(node27, "val", node24, "var")
+Blueprint.connect(node24, "var", node30, "var")
+Blueprint.connect(node30, "var", node32, "a")
+Blueprint.connect(node33, "v", node32, "b")
+Blueprint.connect(node32, "v", node31, "y")
 Blueprint.connect(node24, "var", node26, "var")
-Blueprint.connect(node26, "var", node27, "a")
-Blueprint.connect(node28, "v", node27, "b")
 Blueprint.connect(node24, "var", node25, "var")
 Blueprint.connect(node25, "var", node13, "raduis")
 Blueprint.connect(node4, "var", node8, "x")
@@ -188,7 +211,7 @@ Blueprint.connect(node15, "var", node20, "var")
 Blueprint.connect(node20, "var", node19, "a")
 Blueprint.connect(node21, "v", node19, "b")
 Blueprint.connect(node19, "v", node22, "x")
-Blueprint.connect(node27, "v", node22, "y")
+Blueprint.connect(node26, "var", node22, "y")
 Blueprint.connect(node15, "var", node16, "var")
 Blueprint.connect(node13, "polytope", node14, "geo")
 Blueprint.connect(node16, "var", node14, "distance")
@@ -201,6 +224,9 @@ Blueprint.connect(node9, "geo", node12, "geo")
 Blueprint.connect(node10, "var", node11, "cond")
 Blueprint.connect(node12, "geo", node11, "true")
 Blueprint.connect(node9, "geo", node11, "false")
+Blueprint.connect(node0, "var", node29, "a")
+Blueprint.connect(node31, "xyz", node29, "b")
+Blueprint.connect(node29, "v", node34, "var")
 Blueprint.connect(node11, "result", node1, "obj")
 Blueprint.connect(node0, "var", node1, "translate")
 Blueprint.connect(node1, "obj", node2, "var")

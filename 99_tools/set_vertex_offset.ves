@@ -1,0 +1,38 @@
+var node0 = ::blueprint::nodes::for_each_f::ForEachF()
+
+_editor.add_node(node0, 337.45748168945, 378.41348632812)
+
+var node1 = ::geograph::nodes::brush_set_offset::BrushSetOffset()
+
+_editor.add_node(node1, 161.41336362224, 304.51116489379)
+
+var node2 = ::blueprint::nodes::length::Length()
+
+_editor.add_node(node2, -37.111616793211, 376.90783691406)
+
+var node3 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node3, -7.57837468928, 280.45331920277)
+
+var node4 = ::blueprint::nodes::input::Input()
+
+node4.var_name = "geo"
+node4.var_type = "geo"
+
+_editor.add_node(node4, -226.2631933349, 333.43974494927)
+
+var node5 = ::blueprint::nodes::output::Output()
+
+node5.var_name = "geo"
+node5.var_type = "geo"
+
+_editor.add_node(node5, 474.87545699842, 396.78093969699)
+
+Blueprint.connect(node4, "var", node3, "items")
+Blueprint.connect(node0, "curr_item", node3, "index")
+Blueprint.connect(node3, "item", node1, "brush")
+Blueprint.connect(node0, "curr_item", node1, "offset")
+Blueprint.connect(node4, "var", node2, "v")
+Blueprint.connect(node2, "v", node0, "count")
+Blueprint.connect(node1, "brush", node0, "eval")
+Blueprint.connect(node0, "result", node5, "var")

@@ -476,7 +476,7 @@ var node84 = ::blueprint::nodes::store::Store()
 
 node84.var_name = "geo"
 
-_editor.add_node(node84, 300.43795234071, -1777.7632803537)
+_editor.add_node(node84, 559.64155865175, -1810.8211315934)
 
 var node85 = ::geograph::nodes::box::Box()
 node85.query_param("size").value.set(1, 1, 1)
@@ -510,7 +510,7 @@ _editor.add_node(node89, 107.57800292968, -1873.4722900391)
 
 var node90 = ::blueprint::nodes::merge::Merge()
 
-_editor.add_node(node90, 232.57800292968, -1986.4722900391)
+_editor.add_node(node90, 238.58852133689, -1876.7803291075)
 
 var node91 = ::blueprint::nodes::combine::Combine()
 
@@ -646,7 +646,7 @@ _editor.add_node(node115, -782.72408130008, -1678.4332486202)
 var node116 = ::geograph::nodes::rotate_y::RotateY()
 node116.query_param("angle").value = "90"
 
-_editor.add_node(node116, 395.10816884856, -1863.0647732413)
+_editor.add_node(node116, 562.65136944961, -1893.1173652774)
 
 var node117 = ::blueprint::nodes::input::Input()
 
@@ -686,6 +686,10 @@ var node124 = ::blueprint::nodes::number::Number()
 node124.value = 0.05
 
 _editor.add_node(node124, 140.75811206018, -2152.0294358334)
+
+var node125 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node125, 375.46437807606, -1860.0162257217)
 
 Blueprint.connect(node3, "var", node18, "val")
 Blueprint.connect(node8, "v", node18, "default")
@@ -831,8 +835,9 @@ Blueprint.connect(node88, "plane", node87, "plane")
 Blueprint.connect(node87, "geo", node89, "geo")
 Blueprint.connect(node89, "geo", node90, "in0")
 Blueprint.connect(node87, "geo", node90, "in1")
-Blueprint.connect(node90, "list", node116, "geo")
+Blueprint.connect(node90, "list", node125, "list")
+Blueprint.connect(node125, "brush", node116, "geo")
 Blueprint.connect(node116, "geo", node118, "geo")
 Blueprint.connect(node119, "v", node118, "xyz")
 Blueprint.connect(node118, "geo", node95, "var")
-Blueprint.connect(node90, "list", node84, "var")
+Blueprint.connect(node125, "brush", node84, "var")

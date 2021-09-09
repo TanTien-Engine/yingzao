@@ -159,6 +159,29 @@ node26.var_type = "num"
 
 _editor.add_node(node26, -1077.4003245248, -93.318860662854)
 
+var node27 = ::blueprint::nodes::load::Load()
+
+node27.var_name = "pos"
+
+_editor.add_node(node27, 522.08918395293, -41.758424283794)
+
+var node28 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node28, 668.42884965376, -73.466919638894)
+
+var node29 = ::blueprint::nodes::number3::Number3()
+
+node29.value.set(0, 0.21, 0)
+
+_editor.add_node(node29, 524.79243607955, -130.73964136297)
+
+var node30 = ::blueprint::nodes::output::Output()
+
+node30.var_name = "pos"
+node30.var_type = "num3"
+
+_editor.add_node(node30, 801.15608354048, -66.194211092863)
+
 Blueprint.connect(node18, "var", node19, "in")
 Blueprint.connect(node19, "out", node20, "cond")
 Blueprint.connect(node21, "v", node20, "true")
@@ -188,6 +211,10 @@ Blueprint.connect(node11, "var", node12, "cond")
 Blueprint.connect(node13, "geo", node12, "true")
 Blueprint.connect(node25, "result", node12, "false")
 Blueprint.connect(node0, "var", node4, "var")
+Blueprint.connect(node4, "var", node27, "var")
+Blueprint.connect(node27, "var", node28, "a")
+Blueprint.connect(node29, "v3", node28, "b")
+Blueprint.connect(node28, "v", node30, "var")
 Blueprint.connect(node4, "var", node15, "var")
 Blueprint.connect(node12, "result", node14, "geo")
 Blueprint.connect(node15, "var", node14, "xyz")

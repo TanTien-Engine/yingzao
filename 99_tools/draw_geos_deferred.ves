@@ -31,10 +31,12 @@ var node5 = ::rendergraph::nodes::shader::Shader()
 
 node5.vs = "
 #version 330 core
-layout (location = 0) in vec3 aPos;
+layout (location = 0) in vec3  aPos;
+layout (location = 1) in float aMatID;
+layout (location = 2) in float aOffset;
 
 out VS_OUT {
-    vec3 frag_pos;
+    vec3  frag_pos;
 } vs_out;
 
 uniform UBO
@@ -42,12 +44,20 @@ uniform UBO
 	mat4 model;
 	mat4 view;
 	mat4 projection;
+
+	float offset;
 };
 
 void main()
 {
-	vs_out.frag_pos = vec3(model * vec4(aPos, 1.0));
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+	float dy = aOffset * 1.0;
+	dy = max(0.0, dy - offset);
+
+	vec3 pos = aPos;
+	pos.y += dy;
+
+	vs_out.frag_pos = vec3(model * vec4(pos, 1.0));
+    gl_Position = projection * view * model * vec4(pos, 1.0);
 }
 "
 node5.tcs = ""
@@ -108,7 +118,7 @@ void main()
 node5.cs = ""
 node5.render_gen()
 
-_editor.add_node(node5, 584.94667455228, -116.8877095474)
+_editor.add_node(node5, 595.69047620517, -125.97861863831)
 
 var node6 = ::rendergraph::nodes::clear::Clear()
 
@@ -479,6 +489,13 @@ var node38 = ::blueprint::nodes::viewport::Viewport()
 
 _editor.add_node(node38, 2133.8637990142, -891.18750354357)
 
+var node39 = ::blueprint::nodes::input::Input()
+
+node39.var_name = "offset"
+node39.var_type = "num"
+
+_editor.add_node(node39, 413.20924919696, -205.46166739976)
+
 Blueprint.connect(node38, "size", node29, "size")
 Blueprint.connect(node29, "tex", node31, "tex")
 Blueprint.connect(node29, "tex", node28, "col0")
@@ -514,6 +531,7 @@ Blueprint.connect(node10, "out", node13, "geos")
 Blueprint.connect(node14, "v", node13, "mat")
 Blueprint.connect(node8, "mat", node5, "view")
 Blueprint.connect(node7, "mat", node5, "projection")
+Blueprint.connect(node39, "var", node5, "offset")
 Blueprint.connect(node35, "result", node5, "light_pos")
 Blueprint.connect(node8, "pos", node5, "cam_pos")
 Blueprint.connect(node6, "next", node10, "prev")

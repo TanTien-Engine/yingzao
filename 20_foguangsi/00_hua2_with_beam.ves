@@ -7,7 +7,7 @@ _editor.add_node(node0, -845.56857635632, 211.0336709355)
 var node1 = ::blueprint::nodes::subgraph::Subgraph()
 node1.load_from_file(_editor, "../01_beam_column/00_crescent_beam.ves")
 
-_editor.add_node(node1, -203.80586282044, -310.08714757487)
+_editor.add_node(node1, -202.56402017432, -321.88465271299)
 
 var node2 = ::blueprint::nodes::number::Number()
 
@@ -25,13 +25,13 @@ var node4 = ::geograph::nodes::knife::Knife()
 node4.query_param("keep").value = "above"
 node4.query_param("seam").value = true
 
-_editor.add_node(node4, 19.967071192885, 71.381877850701)
+_editor.add_node(node4, -215.03292880712, 34.381877850701)
 
 var node5 = ::geograph::nodes::plane::Plane()
 node5.query_param("ori").value.set(0, 0, 0)
 node5.query_param("dir").value.set(0, 1, 1)
 
-_editor.add_node(node5, -135.23298143052, -61.375084523899)
+_editor.add_node(node5, -370.23298143052, -98.375084523899)
 
 var node6 = ::blueprint::nodes::subgraph::Subgraph()
 node6.load_from_file(_editor, "../00_dougong/11_hua_gong_no_cut.ves")
@@ -42,11 +42,11 @@ _editor.add_node(node6, -660.69753896572, 168.100982079)
 var node7 = ::blueprint::nodes::subgraph::Subgraph()
 node7.load_from_file(_editor, "../00_dougong/50_gong_add_dou.ves")
 
-_editor.add_node(node7, -161.22830655577, 151.0967487606)
+_editor.add_node(node7, 109.77169344423, 137.0967487606)
 
 var node8 = ::geograph::nodes::brush_merge::BrushMerge()
 
-_editor.add_node(node8, 328.3725901889, -60.961295948999)
+_editor.add_node(node8, 327.3725901889, -99.961295948999)
 
 var node9 = ::blueprint::nodes::merge::Merge()
 
@@ -109,10 +109,28 @@ node17.var_type = "bool"
 
 _editor.add_node(node17, -154.34943737214, -203.75703079335)
 
+var node18 = ::blueprint::nodes::output::Output()
+
+node18.var_name = "beam"
+node18.var_type = "geo"
+
+_editor.add_node(node18, -16.054350041161, -320.29614661351)
+
+var node19 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node19, -93, 207.5)
+
+var node20 = ::blueprint::nodes::boolean::Boolean()
+
+node20.value = true
+
+_editor.add_node(node20, -78.921112020422, 94.643500161117)
+
 Blueprint.connect(node2, "v", node1, "width")
 Blueprint.connect(node3, "v", node1, "height")
 Blueprint.connect(node16, "v", node1, "length")
 Blueprint.connect(node12, "var", node1, "pos")
+Blueprint.connect(node1, "geo", node18, "var")
 Blueprint.connect(node17, "var", node15, "cond")
 Blueprint.connect(node1, "geo", node15, "false")
 Blueprint.connect(node0, "v", node6, "hop_count")
@@ -120,11 +138,13 @@ Blueprint.connect(node11, "var", node6, "pos")
 Blueprint.connect(node14, "var", node6, "calc_step_len")
 Blueprint.connect(node6, "geo", node10, "geo")
 Blueprint.connect(node11, "var", node10, "pos")
-Blueprint.connect(node10, "geo", node7, "gong")
-Blueprint.connect(node6, "pos_right", node7, "pos_right")
-Blueprint.connect(node7, "gong_dou", node4, "geo")
+Blueprint.connect(node10, "geo", node4, "geo")
 Blueprint.connect(node5, "plane", node4, "plane")
-Blueprint.connect(node4, "geo", node9, "in0")
+Blueprint.connect(node4, "geo", node19, "list")
+Blueprint.connect(node19, "brush", node7, "gong")
+Blueprint.connect(node6, "pos_right", node7, "pos_right")
+Blueprint.connect(node20, "v", node7, "rot_right")
+Blueprint.connect(node7, "gong_dou", node9, "in0")
 Blueprint.connect(node15, "result", node9, "in1")
+Blueprint.connect(node9, "list", node13, "var")
 Blueprint.connect(node9, "list", node8, "list")
-Blueprint.connect(node8, "brush", node13, "var")

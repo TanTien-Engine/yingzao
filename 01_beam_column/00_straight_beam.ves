@@ -317,20 +317,20 @@ var node55 = ::blueprint::nodes::load::Load()
 
 node55.var_name = "cut_sides"
 
-_editor.add_node(node55, -237.2038269043, -1231.8098144531)
+_editor.add_node(node55, -373.80651797731, -1309.6733483647)
 
 var node56 = ::geograph::nodes::brush_merge::BrushMerge()
 
-_editor.add_node(node56, -91.203826904297, -1231.8098144531)
+_editor.add_node(node56, -227.80651797731, -1309.6733483647)
 
 var node57 = ::geograph::nodes::rotate_y::RotateY()
 node57.query_param("angle").value = "90"
 
-_editor.add_node(node57, 58.796173095703, -1250.8098144531)
+_editor.add_node(node57, 74.5054825691, -1232.3684511582)
 
 var node58 = ::geograph::nodes::translate_f::TranslateF()
 
-_editor.add_node(node58, 212.7961730957, -1239.8098144531)
+_editor.add_node(node58, 247.62985931932, -1267.1303526677)
 
 var node59 = ::blueprint::nodes::input::Input()
 
@@ -344,31 +344,31 @@ var node60 = ::blueprint::nodes::output::Output()
 node60.var_name = "geo"
 node60.var_type = "geo"
 
-_editor.add_node(node60, 362.05097921642, -1230.2200032232)
+_editor.add_node(node60, 396.88466544004, -1257.5405414378)
 
 var node61 = ::blueprint::nodes::combine::Combine()
 
-_editor.add_node(node61, -75.796655451277, -1427.1081165865)
+_editor.add_node(node61, -198.52392817855, -1522.562662041)
 
 var node62 = ::blueprint::nodes::load::Load()
 
 node62.var_name = "head"
 
-_editor.add_node(node62, -393.63405482279, -1367.2109535531)
+_editor.add_node(node62, -516.36132755006, -1462.6654990076)
 
 var node63 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node63, 59.164787622621, -1344.6668064298)
+_editor.add_node(node63, -63.562485104652, -1440.1213518843)
 
 var node64 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node64, -241.91245595093, -1397.6281137531)
+_editor.add_node(node64, -364.6397286782, -1493.0826592076)
 
 var node65 = ::blueprint::nodes::number::Number()
 
 node65.value = 0.05
 
-_editor.add_node(node65, -397.14276123047, -1433.1899414062)
+_editor.add_node(node65, -519.87003395774, -1528.6444868607)
 
 var node66 = ::geograph::nodes::plane::Plane()
 node66.query_param("ori").value.set(0, 0, 0)
@@ -403,7 +403,73 @@ var node71 = ::blueprint::nodes::load::Load()
 
 node71.var_name = "pos"
 
-_editor.add_node(node71, -75.361595018432, -1319.9635141583)
+_editor.add_node(node71, -198.08886774571, -1412.6907868856)
+
+var node72 = ::blueprint::nodes::store::Store()
+
+node72.var_name = "base"
+
+_editor.add_node(node72, 357.89809326172, -82.006415710449)
+
+var node73 = ::blueprint::nodes::load::Load()
+
+node73.var_name = "base"
+
+_editor.add_node(node73, -228.64766879464, -1247.3665915048)
+
+var node74 = ::blueprint::nodes::property::Property()
+
+node74.var_name = "no_cut_head"
+node74.var_type = "bool"
+
+_editor.add_node(node74, -225.59148035217, -1185.0687085087)
+
+var node75 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node75, -79.061320640783, -1226.7729820354)
+
+var node76 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node76, 603.36656482551, -1718.6532393547)
+
+var node77 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node77, 471.54500133618, -1804.0299863417)
+
+var node78 = ::blueprint::nodes::load::Load()
+
+node78.var_name = "height"
+
+_editor.add_node(node78, 322.36607350239, -1785.0323395448)
+
+var node79 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node79, 757.91667160882, -1799.8095803001)
+
+var node80 = ::blueprint::nodes::output::Output()
+
+node80.var_name = "up_plane"
+node80.var_type = "plane"
+
+_editor.add_node(node80, 891.52726115778, -1768.4932724926)
+
+var node81 = ::blueprint::nodes::output::Output()
+
+node81.var_name = "pos"
+node81.var_type = "num3"
+
+_editor.add_node(node81, 736.34938911576, -1709.2846038107)
+
+var node82 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node82, 74.754675534343, -1363.2861983458)
+
+var node83 = ::blueprint::nodes::property::Property()
+
+node83.var_name = "no_head"
+node83.var_type = "bool"
+
+_editor.add_node(node83, -60.394273560829, -1331.682390981)
 
 Blueprint.connect(node59, "var", node69, "var")
 Blueprint.connect(node69, "var", node71, "var")
@@ -418,6 +484,9 @@ Blueprint.connect(node65, "v", node64, "b")
 Blueprint.connect(node64, "v", node61, "z")
 Blueprint.connect(node71, "var", node63, "a")
 Blueprint.connect(node61, "xyz", node63, "b")
+Blueprint.connect(node83, "var", node82, "cond")
+Blueprint.connect(node71, "var", node82, "true")
+Blueprint.connect(node63, "v", node82, "false")
 Blueprint.connect(node41, "var", node45, "var")
 Blueprint.connect(node41, "var", node42, "var")
 Blueprint.connect(node42, "var", node43, "a")
@@ -438,6 +507,14 @@ Blueprint.connect(node19, "val", node20, "var")
 Blueprint.connect(node1, "var", node10, "val")
 Blueprint.connect(node5, "v", node10, "default")
 Blueprint.connect(node10, "val", node6, "var")
+Blueprint.connect(node6, "var", node78, "var")
+Blueprint.connect(node78, "var", node77, "y")
+Blueprint.connect(node70, "var", node76, "a")
+Blueprint.connect(node77, "xyz", node76, "b")
+Blueprint.connect(node76, "v", node81, "var")
+Blueprint.connect(node66, "plane", node79, "obj")
+Blueprint.connect(node76, "v", node79, "translate")
+Blueprint.connect(node79, "obj", node80, "var")
 Blueprint.connect(node6, "var", node31, "var")
 Blueprint.connect(node31, "var", node32, "a")
 Blueprint.connect(node33, "v", node32, "b")
@@ -455,6 +532,8 @@ Blueprint.connect(node25, "var", node21, "x")
 Blueprint.connect(node23, "var", node21, "y")
 Blueprint.connect(node22, "var", node21, "z")
 Blueprint.connect(node21, "xyz", node24, "size")
+Blueprint.connect(node24, "geo", node72, "var")
+Blueprint.connect(node72, "var", node73, "var")
 Blueprint.connect(node24, "geo", node26, "a")
 Blueprint.connect(node30, "geo", node26, "b")
 Blueprint.connect(node26, "geo", node34, "var")
@@ -479,7 +558,10 @@ Blueprint.connect(node53, "geo", node52, "b")
 Blueprint.connect(node52, "geo", node38, "var")
 Blueprint.connect(node38, "var", node55, "var")
 Blueprint.connect(node55, "var", node56, "list")
-Blueprint.connect(node56, "brush", node57, "geo")
+Blueprint.connect(node74, "var", node75, "cond")
+Blueprint.connect(node73, "var", node75, "true")
+Blueprint.connect(node56, "brush", node75, "false")
+Blueprint.connect(node75, "result", node57, "geo")
 Blueprint.connect(node57, "geo", node58, "geo")
-Blueprint.connect(node63, "v", node58, "xyz")
+Blueprint.connect(node82, "result", node58, "xyz")
 Blueprint.connect(node58, "geo", node60, "var")

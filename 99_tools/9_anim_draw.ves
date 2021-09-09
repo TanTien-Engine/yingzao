@@ -1,8 +1,8 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(-0.44102251492781, 2.4592458160892, 2.7036349098832)
-node0.cam.yaw = -86.4
-node0.cam.pitch = -31.4
+node0.cam.position.set(8.3194471273815, 0.84451510575436, -3.5160795669716)
+node0.cam.yaw = -175.8
+node0.cam.pitch = -2
 node0.cam.zoom = 45
 node0.cam.update_vectors()
 node0.speed = 0.24232439696789
@@ -12,12 +12,12 @@ _editor.add_node(node0, 440.85864088664, -80.516760880439)
 var node1 = ::blueprint::nodes::cache::Cache()
 node1.query_param("disable").value = false
 
-_editor.add_node(node1, 300.43639219054, 262.41520030689)
+_editor.add_node(node1, 458.96381518077, 252.64810789517)
 
 var node2 = ::blueprint::nodes::subgraph::Subgraph()
 node2.load_from_file(_editor, "compose.ves")
 
-_editor.add_node(node2, -30.745544026858, 237.66440039256)
+_editor.add_node(node2, -178.74554402686, 248.66440039256)
 
 var node3 = ::blueprint::nodes::number::Number()
 
@@ -32,17 +32,17 @@ _editor.add_node(node4, 688.38699121384, 106.67103960836)
 
 var node5 = ::blueprint::nodes::list_flatten::ListFlatten()
 
-_editor.add_node(node5, -234.80837255026, 322.64669495353)
+_editor.add_node(node5, -588.7580344586, 458.88486174542)
 
 var node6 = ::blueprint::nodes::integer::Integer()
 
-node6.value = 3
+node6.value = 5
 
-_editor.add_node(node6, -376.41511212896, 278.70122185231)
+_editor.add_node(node6, -730.3647740373, 414.9393886442)
 
 var node7 = ::blueprint::nodes::list_flatten::ListFlatten()
 
-_editor.add_node(node7, 163.19290700034, 251.99847717131)
+_editor.add_node(node7, -177.15269780807, 443.58375140121)
 
 var node8 = ::editorgraph::nodes::ticker::Ticker()
 
@@ -82,11 +82,11 @@ var node15 = ::blueprint::nodes::load::Load()
 
 node15.var_name = "time"
 
-_editor.add_node(node15, -229.05429804101, 107.54316187174)
+_editor.add_node(node15, -377.05429804101, 118.54316187174)
 
 var node16 = ::blueprint::nodes::number::Number()
 
-node16.value = 264.79713892937
+node16.value = 443.09582042694
 
 _editor.add_node(node16, -636.90956922826, -111.73656405594)
 
@@ -110,7 +110,7 @@ _editor.add_node(node20, -319.59138324006, -209.27527201254)
 
 var node21 = ::blueprint::nodes::number::Number()
 
-node21.value = 0.3993923664093
+node21.value = 0.95494788885117
 
 _editor.add_node(node21, -558.94534280329, -367.58591886909)
 
@@ -151,7 +151,7 @@ var node28 = ::blueprint::nodes::input::Input()
 node28.var_name = "list"
 node28.var_type = "array"
 
-_editor.add_node(node28, -377, 348.5)
+_editor.add_node(node28, -730.94966190834, 484.73816679189)
 
 var node29 = ::blueprint::nodes::integer::Integer()
 
@@ -170,6 +170,26 @@ var node31 = ::blueprint::nodes::multiply::Multiply()
 
 _editor.add_node(node31, -498.59347357632, 157.76907247748)
 
+var node32 = ::blueprint::nodes::subgraph::Subgraph()
+node32.load_from_file(_editor, "set_vertex_offset.ves")
+
+_editor.add_node(node32, -365.33229374428, 455.98569608876)
+
+var node33 = ::blueprint::nodes::load::Load()
+
+node33.var_name = "time"
+
+_editor.add_node(node33, 504.00355319866, -223.03535052495)
+
+var node34 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node34, 230.17768590455, 412.65687786879)
+
+var node35 = ::blueprint::nodes::subgraph::Subgraph()
+node35.load_from_file(_editor, "set_vertex_material.ves")
+
+_editor.add_node(node35, 16.479489000465, 445.88581583323)
+
 Blueprint.connect(node23, "v3", node24, "a")
 Blueprint.connect(node25, "v3", node24, "b")
 Blueprint.connect(node24, "v", node26, "a")
@@ -177,6 +197,7 @@ Blueprint.connect(node27, "v", node26, "b")
 Blueprint.connect(node17, "event", node18, "event")
 Blueprint.connect(node19, "next", node18, "action")
 Blueprint.connect(node16, "v", node12, "var")
+Blueprint.connect(node12, "var", node33, "var")
 Blueprint.connect(node12, "var", node20, "var")
 Blueprint.connect(node22, "v", node19, "src")
 Blueprint.connect(node20, "var", node19, "dst")
@@ -191,13 +212,17 @@ Blueprint.connect(node8, "event", node9, "event")
 Blueprint.connect(node10, "next", node9, "action")
 Blueprint.connect(node28, "var", node5, "list")
 Blueprint.connect(node6, "v", node5, "deep")
+Blueprint.connect(node5, "list", node32, "geo")
+Blueprint.connect(node32, "geo", node7, "list")
+Blueprint.connect(node7, "list", node35, "geo")
+Blueprint.connect(node35, "geo", node34, "list")
+Blueprint.connect(node34, "brush", node1, "var")
 Blueprint.connect(node3, "v", node31, "a")
 Blueprint.connect(node30, "var", node31, "b")
 Blueprint.connect(node5, "list", node2, "objs")
 Blueprint.connect(node3, "v", node2, "dist")
 Blueprint.connect(node15, "var", node2, "offset")
-Blueprint.connect(node2, "objs", node7, "list")
-Blueprint.connect(node7, "list", node1, "var")
 Blueprint.connect(node1, "var", node4, "geos")
 Blueprint.connect(node0, "this", node4, "view_cam")
 Blueprint.connect(node26, "v", node4, "light_pos")
+Blueprint.connect(node33, "var", node4, "offset")

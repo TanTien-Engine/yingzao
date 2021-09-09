@@ -21,6 +21,7 @@ _editor.add_node(node2, -451.99967568298, 250.02063287418)
 
 var node3 = ::blueprint::nodes::subgraph::Subgraph()
 node3.load_from_file(_editor, "11_hua_gong_no_cut.ves")
+node3.set_prop_value("corner", false)
 
 _editor.add_node(node3, -260.45434488955, 257.10312632905)
 
@@ -66,17 +67,17 @@ _editor.add_node(node9, -211.45424069829, 74.751989508812)
 
 var node10 = ::blueprint::nodes::property::Property()
 
-node10.var_name = "left_jiaohu"
-node10.var_type = "bool"
+node10.var_name = "left_dou"
+node10.var_type = "int"
 
-_editor.add_node(node10, -211.45425276361, 8.934332300552)
+_editor.add_node(node10, -208.90808784147, 6.4334837399771)
 
 var node11 = ::blueprint::nodes::property::Property()
 
-node11.var_name = "right_jiaohu"
-node11.var_type = "bool"
+node11.var_name = "right_dou"
+node11.var_type = "int"
 
-_editor.add_node(node11, -209.59149499767, -58.746082699886)
+_editor.add_node(node11, -207.40542453505, -61.184835512777)
 
 Blueprint.connect(node1, "var", node3, "hop_count")
 Blueprint.connect(node2, "var", node3, "pos")
@@ -88,6 +89,6 @@ Blueprint.connect(node3, "pos_left", node5, "pos_left")
 Blueprint.connect(node3, "pos_right", node5, "pos_right")
 Blueprint.connect(node8, "var", node5, "rot_left")
 Blueprint.connect(node9, "var", node5, "rot_right")
-Blueprint.connect(node10, "var", node5, "left_jiaohu")
-Blueprint.connect(node11, "var", node5, "right_jiaohu")
+Blueprint.connect(node10, "var", node5, "left_dou")
+Blueprint.connect(node11, "var", node5, "right_dou")
 Blueprint.connect(node5, "gong_dou", node0, "var")

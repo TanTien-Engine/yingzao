@@ -1,0 +1,232 @@
+var node0 = ::geograph::nodes::box::Box()
+node0.query_param("size").value.set(0, 0, 0)
+node0.query_param("pos").value.set(0, 0, 0)
+node0.query_param("offset_x").value = false
+node0.query_param("offset_y").value = true
+node0.query_param("offset_z").value = false
+
+_editor.add_node(node0, -263.86246194957, 45.927537926126)
+
+var node1 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node1, 179.02412430269, -15.001612535516)
+
+var node2 = ::blueprint::nodes::subgraph::Subgraph()
+node2.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node2, -261.86776859505, 660.21525169045)
+
+var node3 = ::blueprint::nodes::number::Number()
+
+node3.value = 0.5
+
+_editor.add_node(node3, -448.00353389428, 611.55127044838)
+
+var node4 = ::blueprint::nodes::input::Input()
+
+node4.var_name = "length"
+node4.var_type = "num"
+
+_editor.add_node(node4, -452.51142253919, 695.69851012771)
+
+var node5 = ::blueprint::nodes::store::Store()
+
+node5.var_name = "length"
+
+_editor.add_node(node5, -71.594814469633, 661.88938719235)
+
+var node6 = ::blueprint::nodes::subgraph::Subgraph()
+node6.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node6, -250.04958677686, 490.21525169045)
+
+var node7 = ::blueprint::nodes::number::Number()
+
+node7.value = 0.2
+
+_editor.add_node(node7, -436.18535207609, 441.55127044838)
+
+var node8 = ::blueprint::nodes::input::Input()
+
+node8.var_name = "width"
+node8.var_type = "num"
+
+_editor.add_node(node8, -440.693240721, 525.69851012771)
+
+var node9 = ::blueprint::nodes::store::Store()
+
+node9.var_name = "width"
+
+_editor.add_node(node9, -59.776632651452, 491.88938719235)
+
+var node10 = ::blueprint::nodes::subgraph::Subgraph()
+node10.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node10, -237.32231404959, 325.669797145)
+
+var node11 = ::blueprint::nodes::number::Number()
+
+node11.value = 0.1
+
+_editor.add_node(node11, -423.45807934882, 277.00581590293)
+
+var node12 = ::blueprint::nodes::input::Input()
+
+node12.var_name = "height"
+node12.var_type = "num"
+
+_editor.add_node(node12, -427.96596799373, 361.15305558226)
+
+var node13 = ::blueprint::nodes::store::Store()
+
+node13.var_name = "height"
+
+_editor.add_node(node13, -47.049359924179, 327.3439326469)
+
+var node14 = ::blueprint::nodes::load::Load()
+
+node14.var_name = "width"
+
+_editor.add_node(node14, -568.36852888628, 179.07078968395)
+
+var node15 = ::blueprint::nodes::load::Load()
+
+node15.var_name = "height"
+
+_editor.add_node(node15, -568.36853998358, 132.70715332031)
+
+var node16 = ::blueprint::nodes::load::Load()
+
+node16.var_name = "length"
+
+_editor.add_node(node16, -567.45943520286, 85.434370561079)
+
+var node17 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node17, -425.64124090021, 99.070822975852)
+
+var node18 = ::blueprint::nodes::input::Input()
+
+node18.var_name = "pos"
+node18.var_type = "num3"
+
+_editor.add_node(node18, 212.13381958008, 712.17883300781)
+
+var node19 = ::blueprint::nodes::store::Store()
+
+node19.var_name = "pos"
+
+_editor.add_node(node19, 349.13381958008, 710.17877197266)
+
+var node20 = ::blueprint::nodes::subgraph::Subgraph()
+node20.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node20, 336.87768595041, 559.969797145)
+
+var node21 = ::blueprint::nodes::number::Number()
+
+node21.value = 0
+
+_editor.add_node(node21, 150.74192065118, 511.30581590293)
+
+var node22 = ::blueprint::nodes::input::Input()
+
+node22.var_name = "offset"
+node22.var_type = "num"
+
+_editor.add_node(node22, 146.23403200627, 595.45305558226)
+
+var node23 = ::blueprint::nodes::store::Store()
+
+node23.var_name = "offset"
+
+_editor.add_node(node23, 527.15064007582, 555.7875326469)
+
+var node24 = ::blueprint::nodes::load::Load()
+
+node24.var_name = "pos"
+
+_editor.add_node(node24, -101.70415698686, -70.448630530895)
+
+var node25 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node25, 39.773992365057, -105.98355379972)
+
+var node26 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node26, -94.274957830256, -182.75564852628)
+
+var node27 = ::blueprint::nodes::load::Load()
+
+node27.var_name = "offset"
+
+_editor.add_node(node27, -242.27495783026, -164.75564852628)
+
+var node28 = ::blueprint::nodes::output::Output()
+
+node28.var_name = "geo"
+node28.var_type = "geo"
+
+_editor.add_node(node28, 314.11095775257, -3.6856744939633)
+
+var node29 = ::blueprint::nodes::output::Output()
+
+node29.var_name = "pos"
+node29.var_type = "num3"
+
+_editor.add_node(node29, 279.44513076319, -363.84689373279)
+
+var node30 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node30, 141.91011733546, -366.65371644847)
+
+var node31 = ::blueprint::nodes::load::Load()
+
+node31.var_name = "height"
+
+_editor.add_node(node31, -113.34324568378, -427.46359569515)
+
+var node32 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node32, 24.353591691776, -476.42620272587)
+
+var node33 = ::blueprint::nodes::load::Load()
+
+node33.var_name = "pos"
+
+_editor.add_node(node33, 12.359090059108, -356.63126832886)
+
+Blueprint.connect(node22, "var", node20, "val")
+Blueprint.connect(node21, "v", node20, "default")
+Blueprint.connect(node20, "val", node23, "var")
+Blueprint.connect(node23, "var", node27, "var")
+Blueprint.connect(node27, "var", node26, "z")
+Blueprint.connect(node18, "var", node19, "var")
+Blueprint.connect(node19, "var", node33, "var")
+Blueprint.connect(node19, "var", node24, "var")
+Blueprint.connect(node24, "var", node25, "a")
+Blueprint.connect(node26, "xyz", node25, "b")
+Blueprint.connect(node12, "var", node10, "val")
+Blueprint.connect(node11, "v", node10, "default")
+Blueprint.connect(node10, "val", node13, "var")
+Blueprint.connect(node13, "var", node31, "var")
+Blueprint.connect(node31, "var", node32, "y")
+Blueprint.connect(node33, "var", node30, "a")
+Blueprint.connect(node32, "xyz", node30, "b")
+Blueprint.connect(node30, "v", node29, "var")
+Blueprint.connect(node13, "var", node15, "var")
+Blueprint.connect(node8, "var", node6, "val")
+Blueprint.connect(node7, "v", node6, "default")
+Blueprint.connect(node6, "val", node9, "var")
+Blueprint.connect(node9, "var", node14, "var")
+Blueprint.connect(node4, "var", node2, "val")
+Blueprint.connect(node3, "v", node2, "default")
+Blueprint.connect(node2, "val", node5, "var")
+Blueprint.connect(node5, "var", node16, "var")
+Blueprint.connect(node14, "var", node17, "x")
+Blueprint.connect(node15, "var", node17, "y")
+Blueprint.connect(node16, "var", node17, "z")
+Blueprint.connect(node17, "xyz", node0, "size")
+Blueprint.connect(node0, "geo", node1, "geo")
+Blueprint.connect(node25, "v", node1, "xyz")
+Blueprint.connect(node1, "geo", node28, "var")

@@ -1,68 +1,74 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(2.3884455202832, 1.69826714812, 0.87534538831997)
-node0.cam.yaw = -155.3
-node0.cam.pitch = -16.1
+node0.cam.position.set(0.89791004446348, 1.4719646107326, 1.252167249158)
+node0.cam.yaw = -126.3
+node0.cam.pitch = -32.2
 node0.cam.zoom = 45
 node0.cam.update_vectors()
 node0.speed = 0.24232439696789
 
-_editor.add_node(node0, 439.85864088664, -80.516760880439)
+_editor.add_node(node0, 719.43514088664, -301.59095088044)
 
 var node1 = ::blueprint::nodes::cache::Cache()
 node1.query_param("disable").value = false
 
-_editor.add_node(node1, 300.43639219054, 262.41520030689)
+_editor.add_node(node1, 1001.1969897863, 282.88278039705)
 
 var node2 = ::blueprint::nodes::subgraph::Subgraph()
 node2.load_from_file(_editor, "draw_wood_deferred.ves")
 
-_editor.add_node(node2, 688.38699121384, 106.67103960836)
+_editor.add_node(node2, 1381.6731715294, 225.82198100581)
 
 var node3 = ::blueprint::nodes::list_flatten::ListFlatten()
 
-_editor.add_node(node3, 170.70605500936, 215.93536672803)
+_editor.add_node(node3, 429.23015515279, 291.07032132129)
 
 var node4 = ::blueprint::nodes::number3::Number3()
 
 node4.value.set(0.60332572460175, 0.61443686485291, 0.56999242305756)
 
-_editor.add_node(node4, 159.23238771264, 97.421113253561)
+_editor.add_node(node4, 438.80888771264, -123.65307674644)
 
 var node5 = ::blueprint::nodes::subtract::Subtract()
 
-_editor.add_node(node5, 305.73878691174, 131.98157570656)
+_editor.add_node(node5, 585.31528691174, -89.09261429344)
 
 var node6 = ::blueprint::nodes::number3::Number3()
 
-node6.value.set(0.48828125, 0.48828125, 0.48828125)
+node6.value.set(0.47861361503601, 0.48828125, 0.48828125)
 
-_editor.add_node(node6, 157.34826315454, -7.3892928597386)
+_editor.add_node(node6, 436.92476315454, -228.46348285974)
 
 var node7 = ::blueprint::nodes::multiply::Multiply()
 
-_editor.add_node(node7, 432.71108437954, 123.71713330276)
+_editor.add_node(node7, 712.28758437954, -97.35705669724)
 
 var node8 = ::blueprint::nodes::integer::Integer()
 
 node8.value = 100
 
-_editor.add_node(node8, 310.99799822194, 65.114568652361)
+_editor.add_node(node8, 590.57449822194, -155.95962134764)
 
 var node9 = ::blueprint::nodes::input::Input()
 
 node9.var_name = "list"
 node9.var_type = "array"
 
-_editor.add_node(node9, -6.8151062253513, 249.47719373091)
+_editor.add_node(node9, 239.75489242228, 293.97079868959)
 
 var node10 = ::geograph::nodes::brush_merge::BrushMerge()
 
-_editor.add_node(node10, 144.13973999023, 413.57778930664)
+_editor.add_node(node10, 864.93960331241, 296.73558535883)
 
-Blueprint.connect(node9, "var", node10, "list")
+var node11 = ::blueprint::nodes::subgraph::Subgraph()
+node11.load_from_file(_editor, "set_vertex_material.ves")
+
+_editor.add_node(node11, 641.11341584492, 294.16427718203)
+
 Blueprint.connect(node9, "var", node3, "list")
-Blueprint.connect(node3, "list", node1, "var")
+Blueprint.connect(node3, "list", node11, "geo")
+Blueprint.connect(node11, "geo", node10, "list")
+Blueprint.connect(node10, "brush", node1, "var")
 Blueprint.connect(node4, "v3", node5, "a")
 Blueprint.connect(node6, "v3", node5, "b")
 Blueprint.connect(node5, "v", node7, "a")
