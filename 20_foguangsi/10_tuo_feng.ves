@@ -1,16 +1,5 @@
 var node0 = ::geograph::nodes::polygon::Polygon()
-node0.query_param("vertices").value = [ 
-0, 0, 
-0, 0.07, 
--0.08, 0.07,
- -0.1, 0.12, 
- -0.15, 0.12,
- -0.18, 0.08, 
- -0.25, 0.12,
- -0.28, 0.1,
- -0.27, 0.08,
- -0.2, 0,
-  ]
+node0.query_param("vertices").value = [ 0, 0, 0, 0.07, -0.08, 0.07, -0.1, 0.12, -0.15, 0.12, -0.18, 0.08, -0.25, 0.12, -0.28, 0.1, -0.27, 0.08, -0.2, 0 ]
 node0.query_param("color").value.set(1, 0, 0)
 
 _editor.add_node(node0, -280, 125.5)
@@ -80,6 +69,10 @@ var node13 = ::blueprint::nodes::merge::Merge()
 
 _editor.add_node(node13, 749.86181475541, 348.00054642744)
 
+var node14 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node14, 897.11950683594, 386.0107421875)
+
 Blueprint.connect(node2, "v", node9, "val")
 Blueprint.connect(node9, "val", node12, "v")
 Blueprint.connect(node12, "v", node8, "x")
@@ -92,6 +85,7 @@ Blueprint.connect(node8, "xyz", node4, "xyz")
 Blueprint.connect(node4, "geo", node10, "geo")
 Blueprint.connect(node4, "geo", node13, "in0")
 Blueprint.connect(node10, "geo", node13, "in1")
-Blueprint.connect(node13, "list", node11, "geo")
+Blueprint.connect(node13, "list", node14, "list")
+Blueprint.connect(node14, "brush", node11, "geo")
 Blueprint.connect(node5, "var", node11, "xyz")
 Blueprint.connect(node11, "geo", node3, "var")

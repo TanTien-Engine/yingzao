@@ -1,8 +1,8 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(8.3194471273815, 0.84451510575436, -3.5160795669716)
-node0.cam.yaw = -175.8
-node0.cam.pitch = -2
+node0.cam.position.set(4.1183506337143, 3.7582791636362, 0.94308795790346)
+node0.cam.yaw = -144.5
+node0.cam.pitch = -23.9
 node0.cam.zoom = 45
 node0.cam.update_vectors()
 node0.speed = 0.24232439696789
@@ -36,7 +36,7 @@ _editor.add_node(node5, -588.7580344586, 458.88486174542)
 
 var node6 = ::blueprint::nodes::integer::Integer()
 
-node6.value = 5
+node6.value = 3
 
 _editor.add_node(node6, -730.3647740373, 414.9393886442)
 
@@ -86,7 +86,7 @@ _editor.add_node(node15, -377.05429804101, 118.54316187174)
 
 var node16 = ::blueprint::nodes::number::Number()
 
-node16.value = 443.09582042694
+node16.value = 138.35416781902
 
 _editor.add_node(node16, -636.90956922826, -111.73656405594)
 
@@ -110,7 +110,7 @@ _editor.add_node(node20, -319.59138324006, -209.27527201254)
 
 var node21 = ::blueprint::nodes::number::Number()
 
-node21.value = 0.95494788885117
+node21.value = 0.099392361938953
 
 _editor.add_node(node21, -558.94534280329, -367.58591886909)
 
@@ -122,7 +122,7 @@ _editor.add_node(node22, -323.48995766686, -147.75569303124)
 
 var node23 = ::blueprint::nodes::number3::Number3()
 
-node23.value.set(0.60332572460175, 0.61443686485291, 0.56999242305756)
+node23.value.set(0.64186233282089, 0.53075122833252, 0.66408455371857)
 
 _editor.add_node(node23, 159.23238771264, 97.421113253561)
 
@@ -157,7 +157,7 @@ var node29 = ::blueprint::nodes::integer::Integer()
 
 node29.value = 10
 
-_editor.add_node(node29, -555.0481635334, -438.43974033333)
+_editor.add_node(node29, 234.7518364666, -212.93974033333)
 
 var node30 = ::blueprint::nodes::input::Input()
 
@@ -179,7 +179,7 @@ var node33 = ::blueprint::nodes::load::Load()
 
 node33.var_name = "time"
 
-_editor.add_node(node33, 504.00355319866, -223.03535052495)
+_editor.add_node(node33, 454.50355319866, -199.93535052495)
 
 var node34 = ::geograph::nodes::brush_merge::BrushMerge()
 
@@ -190,6 +190,18 @@ node35.load_from_file(_editor, "set_vertex_material.ves")
 
 _editor.add_node(node35, 16.479489000465, 445.88581583323)
 
+var node36 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node36, 460.99466552734, -255.76450500488)
+
+var node37 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node37, 465.39466552734, -321.76450500488)
+
+Blueprint.connect(node29, "v", node36, "a")
+Blueprint.connect(node29, "v", node36, "b")
+Blueprint.connect(node36, "v", node37, "a")
+Blueprint.connect(node29, "v", node37, "b")
 Blueprint.connect(node23, "v3", node24, "a")
 Blueprint.connect(node25, "v3", node24, "b")
 Blueprint.connect(node24, "v", node26, "a")
