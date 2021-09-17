@@ -1,0 +1,35 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "layer_dougong.ves")
+
+_editor.add_node(node0, -271.07196456194, 220.32729771892)
+
+var node1 = ::blueprint::nodes::subgraph::Subgraph()
+node1.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+
+node1.op_node.cam.position.set(17.766613788836, 3.3328698615911, 3.6911535980774)
+node1.op_node.cam.yaw = -128
+node1.op_node.cam.pitch = -21.1
+node1.op_node.cam.zoom = 45
+node1.op_node.cam.update_vectors()
+node1.op_node.speed = 0.21526837348938
+
+_editor.add_node(node1, 111.39430073441, 307.55525338653)
+
+var node2 = ::blueprint::nodes::subgraph::Subgraph()
+node2.load_from_file(_editor, "layer_column.ves")
+
+_editor.add_node(node2, -271.56041317197, 311.52613020934)
+
+var node3 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node3, -85.075200354559, 277.78497420265)
+
+var node4 = ::blueprint::nodes::subgraph::Subgraph()
+node4.load_from_file(_editor, "layer_beam.ves")
+
+_editor.add_node(node4, -270.27065923034, 132.64112018128)
+
+Blueprint.connect(node2, "columns", node3, "in0")
+Blueprint.connect(node0, "dougong", node3, "in1")
+Blueprint.connect(node4, "beams", node3, "in2")
+Blueprint.connect(node3, "list", node1, "list")

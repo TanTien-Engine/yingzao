@@ -1,18 +1,18 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(3.6572343965591, 2.2136051904922, 2.0536876954441)
-node0.cam.yaw = -512.3
-node0.cam.pitch = -14.8
+node0.cam.position.set(17.020660005925, 7.393336120731, 5.9633394890241)
+node0.cam.yaw = -513.1
+node0.cam.pitch = -11.4
 node0.cam.zoom = 18
 node0.cam.update_vectors()
-node0.speed = 0.079581126570702
+node0.speed = 0.23672397434711
 
 _editor.add_node(node0, 439.85864088664, -80.516760880439)
 
 var node1 = ::blueprint::nodes::cache::Cache()
 node1.query_param("disable").value = false
 
-_editor.add_node(node1, 445.44014876454, 244.38364508525)
+_editor.add_node(node1, 636.62014876454, 562.61364508525)
 
 var node2 = ::blueprint::nodes::subgraph::Subgraph()
 node2.load_from_file(_editor, "compose.ves")
@@ -31,7 +31,7 @@ _editor.add_node(node4, -234.80837255026, 322.64669495353)
 
 var node5 = ::blueprint::nodes::integer::Integer()
 
-node5.value = 2
+node5.value = 3
 
 _editor.add_node(node5, -376.41511212896, 278.70122185231)
 
@@ -98,6 +98,24 @@ node17.load_from_file(_editor, "draw_wood_deferred.ves")
 
 _editor.add_node(node17, 778.66544085817, 344.22862836766)
 
+var node18 = ::blueprint::nodes::list_flatten::ListFlatten()
+
+_editor.add_node(node18, 63.63730219193, 639.60375140121)
+
+var node19 = ::blueprint::nodes::subgraph::Subgraph()
+node19.load_from_file(_editor, "set_vertex_offset.ves")
+
+_editor.add_node(node19, -124.54229374428, 652.00569608876)
+
+var node20 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node20, 470.96768590455, 608.67687786879)
+
+var node21 = ::blueprint::nodes::subgraph::Subgraph()
+node21.load_from_file(_editor, "set_vertex_material.ves")
+
+_editor.add_node(node21, 257.26948900047, 641.90581583323)
+
 Blueprint.connect(node15, "var", node13, "a")
 Blueprint.connect(node14, "v", node13, "b")
 Blueprint.connect(node7, "v3", node8, "a")
@@ -106,12 +124,17 @@ Blueprint.connect(node8, "v", node10, "a")
 Blueprint.connect(node11, "v", node10, "b")
 Blueprint.connect(node12, "var", node4, "list")
 Blueprint.connect(node5, "v", node4, "deep")
+Blueprint.connect(node4, "list", node19, "geo")
+Blueprint.connect(node19, "geo", node18, "list")
+Blueprint.connect(node18, "list", node21, "geo")
+Blueprint.connect(node21, "geo", node20, "list")
+Blueprint.connect(node20, "brush", node1, "var")
 Blueprint.connect(node4, "list", node2, "objs")
 Blueprint.connect(node3, "v", node2, "dist")
 Blueprint.connect(node13, "v", node2, "offset")
 Blueprint.connect(node2, "objs", node6, "list")
 Blueprint.connect(node6, "list", node16, "list")
-Blueprint.connect(node6, "list", node1, "var")
 Blueprint.connect(node1, "var", node17, "geos")
 Blueprint.connect(node0, "this", node17, "view_cam")
 Blueprint.connect(node10, "v", node17, "light_pos")
+Blueprint.connect(node13, "v", node17, "offset")

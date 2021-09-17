@@ -53,7 +53,7 @@ var node8 = ::blueprint::nodes::store::Store()
 
 node8.var_name = "width"
 
-_editor.add_node(node8, -688.95712560489, 594.29266398901)
+_editor.add_node(node8, -537.11363842042, 709.44534571998)
 
 var node9 = ::blueprint::nodes::store::Store()
 
@@ -172,6 +172,23 @@ var node30 = ::blueprint::nodes::negate::Negate()
 
 _editor.add_node(node30, -951.93459856018, -373.99964173372)
 
+var node31 = ::blueprint::nodes::property::Property()
+
+node31.var_name = "narrow"
+node31.var_type = "bool"
+
+_editor.add_node(node31, -835.81185837423, 728.52160240993)
+
+var node32 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node32, -674.654881501, 698.76950199348)
+
+var node33 = ::blueprint::nodes::number::Number()
+
+node33.value = 0.08
+
+_editor.add_node(node33, -837.46471461777, 659.92656613184)
+
 Blueprint.connect(node26, "var", node24, "val")
 Blueprint.connect(node25, "v", node24, "default")
 Blueprint.connect(node24, "val", node27, "var")
@@ -179,7 +196,10 @@ Blueprint.connect(node27, "var", node28, "var")
 Blueprint.connect(node28, "var", node30, "v")
 Blueprint.connect(node7, "v", node9, "var")
 Blueprint.connect(node9, "var", node11, "var")
-Blueprint.connect(node6, "v", node8, "var")
+Blueprint.connect(node31, "var", node32, "cond")
+Blueprint.connect(node33, "v", node32, "true")
+Blueprint.connect(node6, "v", node32, "false")
+Blueprint.connect(node32, "result", node8, "var")
 Blueprint.connect(node8, "var", node10, "var")
 Blueprint.connect(node23, "var", node22, "val")
 Blueprint.connect(node4, "v", node22, "default")

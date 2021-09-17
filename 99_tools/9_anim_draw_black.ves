@@ -1,8 +1,8 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(0.7489464154185, 2.9028773739015, 2.8525675928738)
-node0.cam.yaw = -107.7
-node0.cam.pitch = -33.7
+node0.cam.position.set(1.3546573268643, 2.6320018534488, 2.4455166533114)
+node0.cam.yaw = -50.3
+node0.cam.pitch = -25.4
 node0.cam.zoom = 45
 node0.cam.update_vectors()
 node0.speed = 0.24232439696789
@@ -31,7 +31,7 @@ _editor.add_node(node4, -234.80837255026, 322.64669495353)
 
 var node5 = ::blueprint::nodes::integer::Integer()
 
-node5.value = 1
+node5.value = 2
 
 _editor.add_node(node5, -376.41511212896, 278.70122185231)
 
@@ -81,7 +81,7 @@ _editor.add_node(node14, -234.01297572696, 195.14646765686)
 
 var node15 = ::blueprint::nodes::number::Number()
 
-node15.value = 1.3355292081833
+node15.value = 24.964122891426
 
 _editor.add_node(node15, -636.90956922826, -111.73656405594)
 
@@ -155,7 +155,7 @@ _editor.add_node(node28, 804, 288.5)
 
 var node29 = ::geograph::nodes::brush_merge::BrushMerge()
 
-_editor.add_node(node29, 375.49351282935, 619.42989520925)
+_editor.add_node(node29, 313.28855415166, 579.10758115966)
 
 var node30 = ::blueprint::nodes::integer::Integer()
 
@@ -174,6 +174,8 @@ node32.load_from_file(_editor, "set_vertex_offset.ves")
 
 _editor.add_node(node32, 67.896347454481, 572.83229011372)
 
+Blueprint.connect(node27, "var", node29, "list")
+Blueprint.connect(node29, "brush", node1, "var")
 Blueprint.connect(node22, "v3", node23, "a")
 Blueprint.connect(node24, "v3", node23, "b")
 Blueprint.connect(node23, "v", node25, "a")
@@ -197,8 +199,6 @@ Blueprint.connect(node9, "next", node8, "action")
 Blueprint.connect(node27, "var", node4, "list")
 Blueprint.connect(node5, "v", node4, "deep")
 Blueprint.connect(node4, "list", node32, "geo")
-Blueprint.connect(node32, "geo", node29, "list")
-Blueprint.connect(node29, "brush", node1, "var")
 Blueprint.connect(node4, "list", node2, "objs")
 Blueprint.connect(node3, "v", node2, "dist")
 Blueprint.connect(node14, "var", node2, "offset")

@@ -1,0 +1,118 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "50_waiyan_column.ves")
+node0.set_prop_value("no_beam", false)
+
+_editor.add_node(node0, -415.6574251183, -494.71142969392)
+
+var node1 = ::blueprint::nodes::subgraph::Subgraph()
+node1.load_from_file(_editor, "50_waiyan_corner.ves")
+
+_editor.add_node(node1, -162, 16.5)
+
+var node2 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node2, 45.9132934175, -312.52895898024)
+
+var node3 = ::blueprint::nodes::number3::Number3()
+
+node3.value.set(2.14, 0, 0)
+
+_editor.add_node(node3, -122.95042194683, -368.217203005)
+
+var node4 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node4, 249.95041322314, -301.9214876033)
+
+var node5 = ::blueprint::nodes::subgraph::Subgraph()
+node5.load_from_file(_editor, "50_waiyan_tween.ves")
+
+_editor.add_node(node5, -425.3711136723, -297.55830869968)
+
+var node6 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node6, 43.780157725306, -120.19173909337)
+
+var node7 = ::blueprint::nodes::number3::Number3()
+
+node7.value.set(1.07, 0, 0)
+
+_editor.add_node(node7, -134.33229364078, -200.87596124137)
+
+var node8 = ::blueprint::nodes::global_set::GlobalSet()
+node8.query_param("key").value = "lod"
+
+_editor.add_node(node8, 228.22216593192, 62.803175184795)
+
+var node9 = ::blueprint::nodes::integer::Integer()
+
+node9.value = 0
+
+_editor.add_node(node9, 56.321348313036, 47.927162682175)
+
+var node10 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node10, 49.727258872045, -738.79654170751)
+
+var node11 = ::blueprint::nodes::number3::Number3()
+
+node11.value.set(0, 0, -2.14)
+
+_editor.add_node(node11, -90.045547401378, -805.06329812896)
+
+var node12 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node12, 40.321395907124, -521.91386727519)
+
+var node13 = ::blueprint::nodes::number3::Number3()
+
+node13.value.set(0, 0, -1.07)
+
+_editor.add_node(node13, -110.27039430194, -582.68073405129)
+
+var node14 = ::geograph::nodes::rotate_y::RotateY()
+node14.query_param("angle").value = "270"
+
+_editor.add_node(node14, -94.987054998224, -708.75564701301)
+
+var node15 = ::geograph::nodes::rotate_y::RotateY()
+node15.query_param("angle").value = "270"
+
+_editor.add_node(node15, -115.64821202302, -485.28457263284)
+
+var node16 = ::blueprint::nodes::output::Output()
+
+node16.var_name = "corner_outer"
+node16.var_type = "array"
+
+_editor.add_node(node16, 428.60998798832, -357.32229671579)
+
+var node17 = ::blueprint::nodes::subgraph::Subgraph()
+node17.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+
+node17.op_node.cam.position.set(2.1330069247308, 1.4483681493092, 2.7325291030885)
+node17.op_node.cam.yaw = -106.9
+node17.op_node.cam.pitch = -8.9000000000001
+node17.op_node.cam.zoom = 45
+node17.op_node.cam.update_vectors()
+node17.op_node.speed = 0.21526837348938
+
+_editor.add_node(node17, 525.33389404297, -216.87468383789)
+
+Blueprint.connect(node9, "v", node8, "val")
+Blueprint.connect(node5, "waiyan_tween", node15, "geo")
+Blueprint.connect(node15, "geo", node12, "geo")
+Blueprint.connect(node13, "v3", node12, "xyz")
+Blueprint.connect(node5, "waiyan_tween", node6, "geo")
+Blueprint.connect(node7, "v3", node6, "xyz")
+Blueprint.connect(node0, "waiyan_column", node14, "geo")
+Blueprint.connect(node14, "geo", node10, "geo")
+Blueprint.connect(node11, "v3", node10, "xyz")
+Blueprint.connect(node0, "waiyan_column", node2, "geo")
+Blueprint.connect(node3, "v3", node2, "xyz")
+Blueprint.connect(node1, "waiyan_corner", node4, "in0")
+Blueprint.connect(node2, "geo", node4, "in1")
+Blueprint.connect(node10, "geo", node4, "in2")
+Blueprint.connect(node6, "geo", node4, "in3")
+Blueprint.connect(node12, "geo", node4, "in4")
+Blueprint.connect(node4, "list", node17, "list")
+Blueprint.connect(node4, "list", node16, "var")

@@ -357,11 +357,18 @@ node63.var_type = "num3"
 
 _editor.add_node(node63, 93.946419455787, -1908.4223077947)
 
+var node64 = ::blueprint::nodes::number::Number()
+
+node64.value = 1.8
+
+_editor.add_node(node64, -1306.5939941406, -214.7934625799)
+
 Blueprint.connect(node34, "var", node33, "type")
 Blueprint.connect(node35, "v", node33, "default")
 Blueprint.connect(node35, "v", node33, "case0")
 Blueprint.connect(node36, "v", node33, "case1")
 Blueprint.connect(node37, "v", node33, "case2")
+Blueprint.connect(node64, "v", node33, "case3")
 Blueprint.connect(node33, "result", node15, "var")
 Blueprint.connect(node15, "var", node58, "var")
 Blueprint.connect(node15, "var", node39, "var")

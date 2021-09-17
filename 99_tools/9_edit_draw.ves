@@ -9,9 +9,9 @@ _editor.add_node(node1, 310.32222335393, 61.165749136804)
 
 var node2 = ::blueprint::nodes::camera3d::Camera3d()
 
-node2.cam.position.set(0, 0, 3)
-node2.cam.yaw = -90
-node2.cam.pitch = 0
+node2.cam.position.set(3.3768185682288, 8.4237169500199, 4.8832440638222)
+node2.cam.yaw = -92.7
+node2.cam.pitch = -47.9
 node2.cam.zoom = 45
 node2.cam.update_vectors()
 node2.speed = 0.21526837348938
@@ -23,16 +23,16 @@ var node3 = ::blueprint::nodes::input::Input()
 node3.var_name = "list"
 node3.var_type = "array"
 
-_editor.add_node(node3, -353.50868796896, 76.720201459437)
+_editor.add_node(node3, -452.85609965842, 55.270192117393)
 
 var node4 = ::geograph::nodes::brush_merge::BrushMerge()
 
-_editor.add_node(node4, -101.72475498218, 199.41130921233)
+_editor.add_node(node4, -204.63125099898, 204.46989918468)
 
 var node5 = ::blueprint::nodes::cache::Cache()
 node5.query_param("disable").value = false
 
-_editor.add_node(node5, 37.321968525819, 196.26509887637)
+_editor.add_node(node5, -38.882012031441, 190.62035957583)
 
 Blueprint.connect(node3, "var", node4, "list")
 Blueprint.connect(node4, "brush", node5, "var")

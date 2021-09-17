@@ -1,0 +1,49 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "50_waiyan_column.ves")
+node0.set_prop_value("no_beam", true)
+
+_editor.add_node(node0, -393.78512396694, 152.17355371901)
+
+var node1 = ::blueprint::nodes::subgraph::Subgraph()
+node1.load_from_file(_editor, "51_neicao_column_shan.ves")
+node1.set_prop_value("no_beam", false)
+
+_editor.add_node(node1, -564.10556904335, -148.39923378309)
+
+var node2 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node2, 224, -13.5)
+
+var node3 = ::blueprint::nodes::subgraph::Subgraph()
+node3.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+
+node3.op_node.cam.position.set(4.8857710991445, 2.0796846633642, 0.086704198086802)
+node3.op_node.cam.yaw = -164.5
+node3.op_node.cam.pitch = -10.6
+node3.op_node.cam.zoom = 45
+node3.op_node.cam.update_vectors()
+node3.op_node.speed = 0.21526837348938
+
+_editor.add_node(node3, 624.45969910153, 30.474088953189)
+
+var node4 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node4, 107.95956572699, -186.25336014915)
+
+var node5 = ::blueprint::nodes::number3::Number3()
+
+node5.value.set(0, 0, -2.14)
+
+_editor.add_node(node5, -136.99646850654, -339.44645335515)
+
+var node6 = ::geograph::nodes::rotate_y::RotateY()
+node6.query_param("angle").value = "180"
+
+_editor.add_node(node6, -19, -89.5)
+
+Blueprint.connect(node1, "neicao_column_shan", node6, "geo")
+Blueprint.connect(node6, "geo", node4, "geo")
+Blueprint.connect(node5, "v3", node4, "xyz")
+Blueprint.connect(node0, "waiyan_column", node2, "in0")
+Blueprint.connect(node4, "geo", node2, "in1")
+Blueprint.connect(node2, "list", node3, "list")

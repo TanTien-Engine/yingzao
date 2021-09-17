@@ -58,10 +58,19 @@ void main()
     vec3 pos = aPos;
     pos.y += dy;
 
+    float rad = offset * 0.1;
+    float s = sin(rad);
+    float c = cos(rad);
+    mat4 rot_mat = mat4(1.0);
+    rot_mat[0][0] = c;  rot_mat[0][2] = -s;
+    rot_mat[2][0] = s;  rot_mat[2][2] =  c;
+
+    mat4 new_model = rot_mat * model;
+
 	vs_out.frag_pos = vec3(model * vec4(pos, 1.0));
-	vs_out.view_pos = vec3(view * model * vec4(pos, 1.0));
+	vs_out.view_pos = vec3(view * new_model * vec4(pos, 1.0));
     vs_out.mat_id = aMatID;
-    gl_Position = projection * view * model * vec4(pos, 1.0);
+    gl_Position = projection * view * new_model * vec4(pos, 1.0);
 }
 "
 node5.tcs = ""

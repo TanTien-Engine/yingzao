@@ -1,0 +1,124 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "51_neicao_corner.ves")
+
+_editor.add_node(node0, -531.69421487603, 146.95116453794)
+
+var node1 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node1, 272, -86.5)
+
+var node2 = ::blueprint::nodes::subgraph::Subgraph()
+node2.load_from_file(_editor, "51_neicao_column.ves")
+node2.set_prop_value("no_beam", true)
+
+_editor.add_node(node2, -549.34710743802, -139.23027798648)
+
+var node3 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node3, -163.73102930127, -97.913223140498)
+
+var node4 = ::blueprint::nodes::number3::Number3()
+
+node4.value.set(2.46, 0, 0)
+
+_editor.add_node(node4, -283.69346356123, -230.6645379414)
+
+var node5 = ::geograph::nodes::rotate_y::RotateY()
+node5.query_param("angle").value = "90"
+
+_editor.add_node(node5, -125.69496150199, -353.91482786985)
+
+var node6 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node6, 18.312546957178, -362.67655897821)
+
+var node7 = ::blueprint::nodes::number3::Number3()
+
+node7.value.set(0, 0, -2.46)
+
+_editor.add_node(node7, -132.30652399443, -467.96439396537)
+
+var node8 = ::geograph::nodes::rotate_y::RotateY()
+node8.query_param("angle").value = "180"
+
+_editor.add_node(node8, -269.51796744767, 125.24170130523)
+
+var node9 = ::geograph::nodes::rotate_y::RotateY()
+node9.query_param("angle").value = "180"
+
+_editor.add_node(node9, -299.24868051025, -112.74277678044)
+
+var node10 = ::blueprint::nodes::output::Output()
+
+node10.var_name = "corner_inner"
+node10.var_type = "array"
+
+_editor.add_node(node10, 472.50911292849, 61.41818640808)
+
+var node11 = ::blueprint::nodes::subgraph::Subgraph()
+node11.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+
+node11.op_node.cam.position.set(1.4330778249431, 2.0735024300839, 0.58558735717133)
+node11.op_node.cam.yaw = -115.5
+node11.op_node.cam.pitch = -22.9
+node11.op_node.cam.zoom = 45
+node11.op_node.cam.update_vectors()
+node11.op_node.speed = 0.21526837348938
+
+_editor.add_node(node11, 465.53249316406, -60.940450866699)
+
+var node12 = ::blueprint::nodes::subgraph::Subgraph()
+node12.load_from_file(_editor, "51_neicao_tween.ves")
+
+_editor.add_node(node12, -797.32659912109, -435.59301757812)
+
+var node13 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node13, -348.76850197532, -490.34929865057)
+
+var node14 = ::blueprint::nodes::number3::Number3()
+
+node14.value.set(1.23, 0, 0)
+
+_editor.add_node(node14, -507.8594082919, -588.53115012429)
+
+var node15 = ::geograph::nodes::rotate_y::RotateY()
+node15.query_param("angle").value = "180"
+
+_editor.add_node(node15, -589.10853715376, -426.66109119762)
+
+var node16 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node16, -388.5512217349, -784.96694088812)
+
+var node17 = ::blueprint::nodes::number3::Number3()
+
+node17.value.set(0, 0, -1.23)
+
+_editor.add_node(node17, -547.64212805148, -883.14879236184)
+
+var node18 = ::geograph::nodes::rotate_y::RotateY()
+node18.query_param("angle").value = "90"
+
+_editor.add_node(node18, -628.89125691334, -721.27873343517)
+
+Blueprint.connect(node12, "geo", node18, "geo")
+Blueprint.connect(node18, "geo", node16, "geo")
+Blueprint.connect(node17, "v3", node16, "xyz")
+Blueprint.connect(node12, "geo", node15, "geo")
+Blueprint.connect(node15, "geo", node13, "geo")
+Blueprint.connect(node14, "v3", node13, "xyz")
+Blueprint.connect(node2, "neicao_column", node9, "geo")
+Blueprint.connect(node9, "geo", node3, "geo")
+Blueprint.connect(node4, "v3", node3, "xyz")
+Blueprint.connect(node2, "neicao_column", node5, "geo")
+Blueprint.connect(node5, "geo", node6, "geo")
+Blueprint.connect(node7, "v3", node6, "xyz")
+Blueprint.connect(node0, "geo", node8, "geo")
+Blueprint.connect(node8, "geo", node1, "in0")
+Blueprint.connect(node3, "geo", node1, "in1")
+Blueprint.connect(node6, "geo", node1, "in2")
+Blueprint.connect(node13, "geo", node1, "in3")
+Blueprint.connect(node16, "geo", node1, "in4")
+Blueprint.connect(node1, "list", node11, "list")
+Blueprint.connect(node1, "list", node10, "var")

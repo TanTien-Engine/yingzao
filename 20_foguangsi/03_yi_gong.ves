@@ -1,0 +1,57 @@
+var node0 = ::geograph::nodes::polygon::Polygon()
+node0.query_param("vertices").value = [ 0, 0, 0.05, 0, 0.1, -0.02, 0.2, -0.05, 0.3, -0.02, 0.35, 0.05, 0.34, 0.1, 0.28, 0.15, 0.2, 0.17, 0.1, 0.15, 0.05, 0.05, 0, 0.05 ]
+node0.query_param("color").value.set(1, 0, 0)
+
+_editor.add_node(node0, -505.21789799658, 482.65822486938)
+
+var node1 = ::blueprint::nodes::output::Output()
+
+node1.var_name = "geo"
+node1.var_type = "geo"
+
+_editor.add_node(node1, 768.31284124201, 565.05893776633)
+
+var node2 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node2, 636.70581054687, 558.97326660156)
+
+var node3 = ::blueprint::nodes::input::Input()
+
+node3.var_name = "pos"
+node3.var_type = "num3"
+
+_editor.add_node(node3, 480.97368605464, 530.42935486811)
+
+var node4 = ::geograph::nodes::rotate_x::RotateX()
+node4.query_param("angle").value = "270"
+
+_editor.add_node(node4, -38.72567749023, 617.30786132812)
+
+var node5 = ::geograph::nodes::rotate_y::RotateY()
+node5.query_param("angle").value = "180"
+
+_editor.add_node(node5, 171.05035400391, 512.23803710937)
+
+var node6 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node6, 313.05035400391, 593.23803710938)
+
+var node7 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node7, 479.05035400391, 597.23803710937)
+
+var node8 = ::blueprint::nodes::subgraph::Subgraph()
+node8.load_from_file(_editor, "../../tantien/assets/blueprints/geograph/poly_extrude_and_offset.ves")
+node8.set_prop_value("distance", 0.1)
+
+_editor.add_node(node8, -271.13394291145, 613.44957184594)
+
+Blueprint.connect(node0, "polytope", node8, "geo")
+Blueprint.connect(node8, "geo", node4, "geo")
+Blueprint.connect(node4, "geo", node5, "geo")
+Blueprint.connect(node4, "geo", node6, "in0")
+Blueprint.connect(node5, "geo", node6, "in1")
+Blueprint.connect(node6, "list", node7, "list")
+Blueprint.connect(node7, "brush", node2, "geo")
+Blueprint.connect(node3, "var", node2, "xyz")
+Blueprint.connect(node2, "geo", node1, "var")
