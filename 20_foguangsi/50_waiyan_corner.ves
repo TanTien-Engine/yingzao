@@ -19,7 +19,7 @@ _editor.add_node(node2, -2150.2456876916, -1522.6371806172)
 
 var node3 = ::blueprint::nodes::merge::Merge()
 
-_editor.add_node(node3, -1906.7914386264, -1663.3903596249)
+_editor.add_node(node3, -1911.1914386264, -1684.2903596249)
 
 var node4 = ::blueprint::nodes::commentary::Commentary()
 
@@ -518,7 +518,7 @@ var node89 = ::blueprint::nodes::load::Load()
 
 node89.var_name = "man_v"
 
-_editor.add_node(node89, -1083.1305419222, -1471.3934679645)
+_editor.add_node(node89, -1083.1305419222, -1476.7081509645)
 
 var node90 = ::blueprint::nodes::commentary::Commentary()
 
@@ -3040,7 +3040,7 @@ _editor.add_node(node485, 5724.5107024955, -1262.4749528876)
 
 var node486 = ::blueprint::nodes::commentary::Commentary()
 
-node486.set_size(1245.4088864931, 2306.3198644408)
+node486.set_size(1402.7483439889, 2364.3073501861)
 node486.title = "8"
 
 _editor.add_node(node486, 7440.743646875, 479.31526484375)
@@ -3053,7 +3053,7 @@ var node488 = ::blueprint::nodes::store::Store()
 
 node488.var_name = "8"
 
-_editor.add_node(node488, 7658.4347373134, -1591.7013688219)
+_editor.add_node(node488, 7658.4347373134, -1564.7013688219)
 
 var node489 = ::blueprint::nodes::load::Load()
 
@@ -3422,13 +3422,13 @@ var node549 = ::blueprint::nodes::load::Load()
 
 node549.var_name = "ang3_pos"
 
-_editor.add_node(node549, 7019.3280145926, -1399.5204232527)
+_editor.add_node(node549, 6820.8575241822, -1332.7102004012)
 
 var node550 = ::blueprint::nodes::store::Store()
 
 node550.var_name = "jiao_liang"
 
-_editor.add_node(node550, 7867.7837884298, -1334.1756424483)
+_editor.add_node(node550, 7895.1043266444, -1340.4593662377)
 
 var node551 = ::blueprint::nodes::load::Load()
 
@@ -3439,7 +3439,7 @@ _editor.add_node(node551, 7183.9859174942, -1807.2993809382)
 var node552 = ::blueprint::nodes::subgraph::Subgraph()
 node552.load_from_file(_editor, "../00_dougong/71_dajiao_liang.ves")
 
-_editor.add_node(node552, 7208.721128554, -1408.1324445384)
+_editor.add_node(node552, 7164.1559117763, -1362.4495693791)
 
 var node553 = ::blueprint::nodes::store::Store()
 
@@ -3474,11 +3474,11 @@ _editor.add_node(node557, 2144.3441508368, -2653.1383169155)
 var node558 = ::geograph::nodes::boolean::Boolean()
 node558.query_param("operator").value = "subtract"
 
-_editor.add_node(node558, 7736.5433642908, -1343.0123260384)
+_editor.add_node(node558, 7739.2754181123, -1349.8424605921)
 
 var node559 = ::blueprint::nodes::merge::Merge()
 
-_editor.add_node(node559, 7591.1433642908, -1363.4123260384)
+_editor.add_node(node559, 7582.2641893711, -1392.7819046191)
 
 var node560 = ::blueprint::nodes::subtract::Subtract()
 
@@ -3495,7 +3495,7 @@ var node562 = ::blueprint::nodes::output::Output()
 node562.var_name = "waiyan_corner"
 node562.var_type = "array"
 
-_editor.add_node(node562, -1754.5777779571, -1583.561494181)
+_editor.add_node(node562, -1752.1577779571, -1602.921494181)
 
 var node563 = ::blueprint::nodes::subgraph::Subgraph()
 node563.load_from_file(_editor, "../00_dougong/43_c_nidao_gd.ves")
@@ -3702,6 +3702,16 @@ node596.query_param("keep").value = "below"
 node596.query_param("seam").value = true
 
 _editor.add_node(node596, 3826.9519486861, -1599.1063676314)
+
+var node597 = ::blueprint::nodes::subtract::Subtract()
+
+_editor.add_node(node597, 6974.6194098178, -1352.8311471391)
+
+var node598 = ::blueprint::nodes::number3::Number3()
+
+node598.value.set(0, 0.075, 0)
+
+_editor.add_node(node598, 6823.2712748286, -1415.8297850629)
 
 Blueprint.connect(node584, "geo", node591, "geo")
 Blueprint.connect(node542, "v", node543, "v")
@@ -3980,7 +3990,9 @@ Blueprint.connect(node472, "v", node510, "a")
 Blueprint.connect(node507, "xyz", node510, "b")
 Blueprint.connect(node510, "v", node473, "var")
 Blueprint.connect(node473, "var", node549, "var")
-Blueprint.connect(node549, "var", node552, "pos")
+Blueprint.connect(node549, "var", node597, "a")
+Blueprint.connect(node598, "v3", node597, "b")
+Blueprint.connect(node597, "v", node552, "pos")
 Blueprint.connect(node552, "geo", node558, "a")
 Blueprint.connect(node559, "list", node558, "b")
 Blueprint.connect(node558, "geo", node550, "var")

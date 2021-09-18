@@ -18,6 +18,7 @@ _editor.add_node(node2, 489.11265156641, 676.30772584647)
 
 var node3 = ::blueprint::nodes::subgraph::Subgraph()
 node3.load_from_file(_editor, "../01_beam_column/50_dian_mu.ves")
+node3.set_prop_value("rot", false)
 
 _editor.add_node(node3, 282.72380786182, 621.54205044297)
 
@@ -53,7 +54,7 @@ var node9 = ::blueprint::nodes::load::Load()
 
 node9.var_name = "dian0"
 
-_editor.add_node(node9, -71.568044145785, -475.57777216358)
+_editor.add_node(node9, -214.22600101392, -478.65672087296)
 
 var node10 = ::blueprint::nodes::add::Add()
 
@@ -73,6 +74,7 @@ _editor.add_node(node12, 598.70375927672, 430.74414200777)
 
 var node13 = ::blueprint::nodes::subgraph::Subgraph()
 node13.load_from_file(_editor, "../01_beam_column/50_dian_mu.ves")
+node13.set_prop_value("rot", false)
 
 _editor.add_node(node13, 274.29421901412, 381.39277859627)
 
@@ -132,6 +134,7 @@ _editor.add_node(node22, 592.34250352542, 97.090483228853)
 
 var node23 = ::blueprint::nodes::subgraph::Subgraph()
 node23.load_from_file(_editor, "../01_beam_column/50_dian_mu.ves")
+node23.set_prop_value("rot", false)
 
 _editor.add_node(node23, 278.69421901412, 46.992778596263)
 
@@ -234,7 +237,7 @@ var node40 = ::blueprint::nodes::load::Load()
 
 node40.var_name = "chuan"
 
-_editor.add_node(node40, -66.670132355985, -667.31734435814)
+_editor.add_node(node40, -202.58980997363, -739.03375717147)
 
 var node41 = ::blueprint::nodes::store::Store()
 
@@ -302,6 +305,21 @@ node51.value = 2.46
 
 _editor.add_node(node51, -29.168711531306, 663.54635489312)
 
+var node52 = ::blueprint::nodes::property::Property()
+
+node52.var_name = "no_chuan"
+node52.var_type = "bool"
+
+_editor.add_node(node52, -346.3322666251, -640.99558623999)
+
+var node53 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node53, -68.978299127577, -690.87155323538)
+
+var node54 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node54, -67.951982891116, -458.9240837951)
+
 Blueprint.connect(node0, "v3", node1, "var")
 Blueprint.connect(node1, "var", node7, "var")
 Blueprint.connect(node7, "var", node10, "a")
@@ -331,6 +349,8 @@ Blueprint.connect(node36, "v", node34, "radius")
 Blueprint.connect(node34, "pos", node41, "var")
 Blueprint.connect(node34, "geo", node35, "var")
 Blueprint.connect(node35, "var", node40, "var")
+Blueprint.connect(node52, "var", node53, "cond")
+Blueprint.connect(node40, "var", node53, "false")
 Blueprint.connect(node29, "geo", node30, "var")
 Blueprint.connect(node30, "var", node39, "var")
 Blueprint.connect(node23, "pos", node48, "var")
@@ -351,9 +371,11 @@ Blueprint.connect(node44, "var", node43, "b")
 Blueprint.connect(node43, "geo", node12, "var")
 Blueprint.connect(node12, "var", node21, "var")
 Blueprint.connect(node2, "var", node9, "var")
-Blueprint.connect(node9, "var", node8, "in0")
+Blueprint.connect(node52, "var", node54, "cond")
+Blueprint.connect(node9, "var", node54, "false")
+Blueprint.connect(node54, "result", node8, "in0")
 Blueprint.connect(node21, "var", node8, "in1")
 Blueprint.connect(node28, "var", node8, "in2")
 Blueprint.connect(node39, "var", node8, "in3")
-Blueprint.connect(node40, "var", node8, "in4")
+Blueprint.connect(node53, "result", node8, "in4")
 Blueprint.connect(node8, "list", node47, "var")

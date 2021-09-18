@@ -33,11 +33,11 @@ var node5 = ::blueprint::nodes::load::Load()
 
 node5.var_name = "gong"
 
-_editor.add_node(node5, -256.1122831571, -462.25582887263)
+_editor.add_node(node5, -256.1122831571, -600.49775223852)
 
 var node6 = ::blueprint::nodes::merge::Merge()
 
-_editor.add_node(node6, -112.86488202635, -409.29207295059)
+_editor.add_node(node6, -72.076001485403, -624.10800082437)
 
 var node7 = ::blueprint::nodes::subgraph::Subgraph()
 node7.load_from_file(_editor, "../01_beam_column/40_ti_mu.ves")
@@ -86,13 +86,13 @@ var node14 = ::blueprint::nodes::load::Load()
 
 node14.var_name = "ti_mu"
 
-_editor.add_node(node14, -255.5372769573, -512.96830853064)
+_editor.add_node(node14, -255.5372769573, -651.21023189653)
 
 var node15 = ::blueprint::nodes::load::Load()
 
 node15.var_name = "chuan"
 
-_editor.add_node(node15, -255.5373657357, -562.05915103774)
+_editor.add_node(node15, -388.59521697537, -790.38371903173)
 
 var node16 = ::blueprint::nodes::subgraph::Subgraph()
 node16.load_from_file(_editor, "../01_beam_column/51_cha_shou.ves")
@@ -170,7 +170,7 @@ var node26 = ::blueprint::nodes::output::Output()
 node26.var_name = "geo"
 node26.var_type = "array"
 
-_editor.add_node(node26, 21.830940471175, -356.46423382366)
+_editor.add_node(node26, 79.184116568411, -595.26201724743)
 
 var node27 = ::geograph::nodes::rotate_y::RotateY()
 node27.query_param("angle").value = "180"
@@ -187,7 +187,7 @@ _editor.add_node(node28, -272.48407156677, 262.37172336134)
 var node29 = ::blueprint::nodes::subgraph::Subgraph()
 node29.load_from_file(_editor, "../../tantien/assets/blueprints/geograph/translate_z.ves")
 
-_editor.add_node(node29, -368.0117658672, -376.73800740981)
+_editor.add_node(node29, -328.0117658672, -394.91982559163)
 
 var node30 = ::blueprint::nodes::number::Number()
 
@@ -200,6 +200,33 @@ var node31 = ::blueprint::nodes::number::Number()
 node31.value = 2.46
 
 _editor.add_node(node31, -476.21009009766, -227.06552529297)
+
+var node32 = ::blueprint::nodes::property::Property()
+
+node32.var_name = "no_chuan"
+node32.var_type = "bool"
+
+_editor.add_node(node32, -391.07370222107, -722.08993069415)
+
+var node33 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node33, -254.68564574186, -732.41720725503)
+
+var node34 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node34, -94.02265514027, -355.48097922585)
+
+var node35 = ::blueprint::nodes::store::Store()
+
+node35.var_name = "cha_shou"
+
+_editor.add_node(node35, 47.795535000888, -343.66279463335)
+
+var node36 = ::blueprint::nodes::load::Load()
+
+node36.var_name = "cha_shou"
+
+_editor.add_node(node36, -252.20445390181, -546.39006736062)
 
 Blueprint.connect(node0, "v3", node1, "var")
 Blueprint.connect(node1, "var", node17, "var")
@@ -216,6 +243,10 @@ Blueprint.connect(node18, "var", node23, "var")
 Blueprint.connect(node23, "var", node27, "geo")
 Blueprint.connect(node27, "geo", node29, "geo")
 Blueprint.connect(node30, "v", node29, "offset")
+Blueprint.connect(node23, "var", node34, "in0")
+Blueprint.connect(node29, "geo", node34, "in1")
+Blueprint.connect(node34, "list", node35, "var")
+Blueprint.connect(node35, "var", node36, "var")
 Blueprint.connect(node2, "var", node3, "pos")
 Blueprint.connect(node3, "gong_dou", node24, "geo")
 Blueprint.connect(node2, "var", node24, "pos")
@@ -230,11 +261,12 @@ Blueprint.connect(node13, "v", node11, "radius")
 Blueprint.connect(node11, "pos", node22, "var")
 Blueprint.connect(node11, "geo", node12, "var")
 Blueprint.connect(node12, "var", node15, "var")
+Blueprint.connect(node32, "var", node33, "cond")
+Blueprint.connect(node15, "var", node33, "false")
 Blueprint.connect(node7, "geo", node8, "var")
 Blueprint.connect(node8, "var", node14, "var")
-Blueprint.connect(node23, "var", node6, "in0")
-Blueprint.connect(node29, "geo", node6, "in1")
-Blueprint.connect(node5, "var", node6, "in2")
-Blueprint.connect(node14, "var", node6, "in3")
-Blueprint.connect(node15, "var", node6, "in4")
+Blueprint.connect(node36, "var", node6, "in0")
+Blueprint.connect(node5, "var", node6, "in1")
+Blueprint.connect(node14, "var", node6, "in2")
+Blueprint.connect(node33, "result", node6, "in3")
 Blueprint.connect(node6, "list", node26, "var")

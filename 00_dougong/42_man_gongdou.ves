@@ -1,13 +1,13 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "16_man_gong.ves")
+node0.set_prop_value("no_cut", false)
 
-_editor.add_node(node0, -99.772579902809, -52.396892265971)
+_editor.add_node(node0, -100.39350122587, -52.396892265971)
 
 var node1 = ::blueprint::nodes::subgraph::Subgraph()
 node1.load_from_file(_editor, "50_gong_add_dou.ves")
-node1.set_prop_value("jiao_hu", false)
 
-_editor.add_node(node1, 130.47749685612, -41.670510568521)
+_editor.add_node(node1, 259.00821072937, -80.167632598189)
 
 var node2 = ::blueprint::nodes::input::Input()
 
@@ -21,7 +21,7 @@ var node3 = ::blueprint::nodes::output::Output()
 node3.var_name = "gong_dou"
 node3.var_type = "array"
 
-_editor.add_node(node3, 320.06795282898, -23.061798452177)
+_editor.add_node(node3, 459.32833644705, -18.640241502549)
 
 var node4 = ::blueprint::nodes::property::Property()
 
@@ -30,9 +30,51 @@ node4.var_type = "bool"
 
 _editor.add_node(node4, -290.17950926939, -103.74852702274)
 
+var node5 = ::blueprint::nodes::subgraph::Subgraph()
+node5.load_from_file(_editor, "16_man_gong.ves")
+node5.set_prop_value("no_cut", true)
+
+_editor.add_node(node5, -94.184287995278, -220.04564949194)
+
+var node6 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node6, -20.469789991296, 229.89002204891)
+
+var node7 = ::blueprint::nodes::number3::Number3()
+
+node7.value.set(0, 0.21, 0)
+
+_editor.add_node(node7, -162.61855133072, 177.82390294158)
+
+var node8 = ::blueprint::nodes::output::Output()
+
+node8.var_name = "pos"
+node8.var_type = "num3"
+
+_editor.add_node(node8, 115.06741598067, 241.46024955367)
+
+var node9 = ::blueprint::nodes::property::Property()
+
+node9.var_name = "no_cut"
+node9.var_type = "bool"
+
+_editor.add_node(node9, -53.599531478132, 57.30299329215)
+
+var node10 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node10, 78.652830817221, 20.868969910998)
+
+Blueprint.connect(node2, "var", node6, "a")
+Blueprint.connect(node7, "v3", node6, "b")
+Blueprint.connect(node6, "v", node8, "var")
+Blueprint.connect(node2, "var", node5, "pos")
+Blueprint.connect(node4, "var", node5, "cut_up")
 Blueprint.connect(node2, "var", node0, "pos")
 Blueprint.connect(node4, "var", node0, "cut_up")
-Blueprint.connect(node0, "geo", node1, "gong")
+Blueprint.connect(node9, "var", node10, "cond")
+Blueprint.connect(node5, "geo", node10, "true")
+Blueprint.connect(node0, "geo", node10, "false")
+Blueprint.connect(node10, "result", node1, "gong")
 Blueprint.connect(node0, "pos_left", node1, "pos_left")
 Blueprint.connect(node0, "pos_right", node1, "pos_right")
 Blueprint.connect(node1, "gong_dou", node3, "var")
