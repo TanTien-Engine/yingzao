@@ -77,7 +77,7 @@ var node12 = ::blueprint::nodes::output::Output()
 node12.var_name = "geo"
 node12.var_type = "geo"
 
-_editor.add_node(node12, 343.18883822627, -13.267058927387)
+_editor.add_node(node12, 814.57605685885, -73.68368852919)
 
 var node13 = ::blueprint::nodes::input::Input()
 
@@ -118,13 +118,8 @@ _editor.add_node(node19, 198.52256818662, -26.023382823277)
 
 var node20 = ::geograph::nodes::column::Column()
 node20.query_param("height").value = 1
-node20.query_param("generatrix").value = [ 
-0, 1.0,
-6/9, 1.0,
-7/9, 0.98,
-8/9, 0.95,
-9/9, 0.91,
- ]
+node20.query_param("generatrix").value = [ 0, 1, 0.66666666666667, 1, 0.77777777777778, 0.98, 0.88888888888889, 0.95, 1, 0.91 ]
+node20.query_param("offset_z_absolute").value = false
 
 _editor.add_node(node20, -0.18440385298254, 63.121978759766)
 
@@ -134,6 +129,95 @@ node21.var_name = "height"
 
 _editor.add_node(node21, -184.8267073771, 84.543867402111)
 
+var node22 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node22, 549.34230222592, -95.293438166849)
+
+var node23 = ::geograph::nodes::box::Box()
+node23.query_param("size").value.set(0.04, 0.06, 0.04)
+node23.query_param("pos").value.set(0, 0, 0)
+node23.query_param("offset_x").value = false
+node23.query_param("offset_y").value = true
+node23.query_param("offset_z").value = false
+
+_editor.add_node(node23, 384.17619560305, -243.2611891071)
+
+var node24 = ::geograph::nodes::boolean::Boolean()
+node24.query_param("operator").value = "subtract"
+
+_editor.add_node(node24, 365.82872912056, -64.02264372842)
+
+var node25 = ::geograph::nodes::box::Box()
+node25.query_param("size").value.set(0.1, 0.2, 0.12)
+node25.query_param("pos").value.set(-0.11, -0.1, 0)
+node25.query_param("offset_x").value = false
+node25.query_param("offset_y").value = false
+node25.query_param("offset_z").value = false
+
+_editor.add_node(node25, 605.93876357906, 997.6662318848)
+
+var node26 = ::geograph::nodes::box::Box()
+node26.query_param("size").value.set(0.1, 0.2, 0.12)
+node26.query_param("pos").value.set(0.11, -0.1, 0)
+node26.query_param("offset_x").value = false
+node26.query_param("offset_y").value = false
+node26.query_param("offset_z").value = false
+
+_editor.add_node(node26, 600.47401390349, 737.6854450533)
+
+var node27 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node27, 800.07921222532, 961.92814627798)
+
+var node28 = ::geograph::nodes::box::Box()
+node28.query_param("size").value.set(0.1, 0.2, 0.12)
+node28.query_param("pos").value.set(0, -0.1, -0.11)
+node28.query_param("offset_x").value = false
+node28.query_param("offset_y").value = false
+node28.query_param("offset_z").value = false
+
+_editor.add_node(node28, 611.90382456704, 467.04236480215)
+
+var node29 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node29, 787.7505725133, 640.04020989533)
+
+var node30 = ::blueprint::nodes::property::Property()
+
+node30.var_name = "corner"
+node30.var_type = "bool"
+
+_editor.add_node(node30, 829.8128320312, 825.4659765625)
+
+var node31 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node31, 983.81288085938, 821.0660009766)
+
+var node32 = ::blueprint::nodes::store::Store()
+
+node32.var_name = "cut"
+
+_editor.add_node(node32, 1126.7675317383, 826.7371435547)
+
+var node33 = ::blueprint::nodes::load::Load()
+
+node33.var_name = "cut"
+
+_editor.add_node(node33, 209.16432128906, -95.926411132817)
+
+var node34 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node34, 679.4632350999, -76.163946551547)
+
+Blueprint.connect(node28, "geo", node29, "in0")
+Blueprint.connect(node26, "geo", node29, "in1")
+Blueprint.connect(node25, "geo", node27, "in0")
+Blueprint.connect(node26, "geo", node27, "in1")
+Blueprint.connect(node30, "var", node31, "cond")
+Blueprint.connect(node29, "list", node31, "true")
+Blueprint.connect(node27, "list", node31, "false")
+Blueprint.connect(node31, "result", node32, "var")
+Blueprint.connect(node32, "var", node33, "var")
 Blueprint.connect(node13, "var", node14, "var")
 Blueprint.connect(node14, "var", node15, "var")
 Blueprint.connect(node8, "var", node7, "val")
@@ -154,6 +238,11 @@ Blueprint.connect(node0, "geo", node20, "base")
 Blueprint.connect(node21, "var", node20, "height")
 Blueprint.connect(node20, "geo", node19, "geo")
 Blueprint.connect(node16, "v", node19, "xyz")
-Blueprint.connect(node19, "geo", node12, "var")
+Blueprint.connect(node19, "geo", node24, "a")
+Blueprint.connect(node33, "var", node24, "b")
+Blueprint.connect(node24, "geo", node22, "in0")
+Blueprint.connect(node23, "geo", node22, "in1")
+Blueprint.connect(node22, "list", node34, "list")
+Blueprint.connect(node34, "brush", node12, "var")
 Blueprint.connect(node0, "polytope", node1, "geo")
 Blueprint.connect(node11, "var", node1, "distance")

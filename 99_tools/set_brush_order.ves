@@ -1,0 +1,90 @@
+var node0 = ::blueprint::nodes::list_flatten::ListFlatten()
+
+_editor.add_node(node0, -137.78413438417, 262.21170824551)
+
+var node1 = ::blueprint::nodes::integer::Integer()
+
+node1.value = 3
+
+_editor.add_node(node1, -524.59270443893, 171.82132017946)
+
+var node2 = ::blueprint::nodes::input::Input()
+
+node2.var_name = "geo"
+node2.var_type = "array"
+
+_editor.add_node(node2, -278.60973492318, 294.21213439026)
+
+var node3 = ::blueprint::nodes::subgraph::Subgraph()
+node3.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node3, -326.42569188796, 206.55402918346)
+
+var node4 = ::blueprint::nodes::input::Input()
+
+node4.var_name = "deep"
+node4.var_type = "int"
+
+_editor.add_node(node4, -525.86564112319, 240.70471110949)
+
+var node5 = ::blueprint::nodes::for_each_f::ForEachF()
+
+_editor.add_node(node5, 341.56143539175, 149.18088436811)
+
+var node6 = ::blueprint::nodes::integer::Integer()
+
+node6.value = 0
+
+_editor.add_node(node6, -554.45902007807, -67.481757727538)
+
+var node7 = ::blueprint::nodes::subgraph::Subgraph()
+node7.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node7, -356.2920075271, -32.749048723538)
+
+var node8 = ::blueprint::nodes::input::Input()
+
+node8.var_name = "start"
+node8.var_type = "int"
+
+_editor.add_node(node8, -555.73195676233, 1.4016332024916)
+
+var node9 = ::blueprint::nodes::length::Length()
+
+_editor.add_node(node9, 10.305374461814, 272.35277928864)
+
+var node10 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node10, -91.912503195268, 115.63428045783)
+
+var node11 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node11, -151.22540277954, -50.491386081351)
+
+var node12 = ::geograph::nodes::brush_set_order::BrushSetOrder()
+
+_editor.add_node(node12, 90.933927308611, 67.483703407495)
+
+var node13 = ::blueprint::nodes::output::Output()
+
+node13.var_name = "geo"
+node13.var_type = "array"
+
+_editor.add_node(node13, 480.89802422672, 169.41591142697)
+
+Blueprint.connect(node8, "var", node7, "val")
+Blueprint.connect(node6, "v", node7, "default")
+Blueprint.connect(node7, "val", node11, "a")
+Blueprint.connect(node5, "curr_item", node11, "b")
+Blueprint.connect(node4, "var", node3, "val")
+Blueprint.connect(node1, "v", node3, "default")
+Blueprint.connect(node2, "var", node0, "list")
+Blueprint.connect(node3, "val", node0, "deep")
+Blueprint.connect(node0, "list", node10, "items")
+Blueprint.connect(node5, "curr_item", node10, "index")
+Blueprint.connect(node10, "item", node12, "geo")
+Blueprint.connect(node11, "v", node12, "order")
+Blueprint.connect(node0, "list", node9, "v")
+Blueprint.connect(node9, "v", node5, "count")
+Blueprint.connect(node12, "geo", node5, "eval")
+Blueprint.connect(node5, "result", node13, "var")

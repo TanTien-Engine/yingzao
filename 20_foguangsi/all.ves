@@ -4,32 +4,32 @@ node0.load_from_file(_editor, "layer_dougong.ves")
 _editor.add_node(node0, -271.07196456194, 220.32729771892)
 
 var node1 = ::blueprint::nodes::subgraph::Subgraph()
-node1.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+node1.load_from_file(_editor, "layer_column.ves")
 
-node1.op_node.cam.position.set(6.7254770847267, -1.7103199831019, -4.3076882505125)
-node1.op_node.cam.yaw = -17.2
-node1.op_node.cam.pitch = 22.4
-node1.op_node.cam.zoom = 45
-node1.op_node.cam.update_vectors()
-node1.op_node.speed = 0.21526837348938
+_editor.add_node(node1, -271.56041317197, 311.52613020934)
 
-_editor.add_node(node1, 111.39430073441, 307.55525338653)
+var node2 = ::blueprint::nodes::merge::Merge()
 
-var node2 = ::blueprint::nodes::subgraph::Subgraph()
-node2.load_from_file(_editor, "layer_column.ves")
+_editor.add_node(node2, -85.075200354559, 277.78497420265)
 
-_editor.add_node(node2, -271.56041317197, 311.52613020934)
+var node3 = ::blueprint::nodes::subgraph::Subgraph()
+node3.load_from_file(_editor, "layer_beam.ves")
 
-var node3 = ::blueprint::nodes::merge::Merge()
-
-_editor.add_node(node3, -85.075200354559, 277.78497420265)
+_editor.add_node(node3, -270.27065923034, 132.64112018128)
 
 var node4 = ::blueprint::nodes::subgraph::Subgraph()
-node4.load_from_file(_editor, "layer_beam.ves")
+node4.load_from_file(_editor, "../99_tools/9_anim_draw.ves")
 
-_editor.add_node(node4, -270.27065923034, 132.64112018128)
+node4.op_node.cam.position.set(1.583411259026, 3.9645491874498, 3.0996221528363)
+node4.op_node.cam.yaw = -57.3
+node4.op_node.cam.pitch = -19.4
+node4.op_node.cam.zoom = 45
+node4.op_node.cam.update_vectors()
+node4.op_node.speed = 0.24232439696789
 
-Blueprint.connect(node2, "columns", node3, "in0")
-Blueprint.connect(node0, "dougong", node3, "in1")
-Blueprint.connect(node4, "beams", node3, "in2")
-Blueprint.connect(node3, "list", node1, "list")
+_editor.add_node(node4, 125.04000091553, 317.27001953125)
+
+Blueprint.connect(node1, "columns", node2, "in0")
+Blueprint.connect(node0, "dougong", node2, "in1")
+Blueprint.connect(node3, "beams", node2, "in2")
+Blueprint.connect(node2, "list", node4, "list")

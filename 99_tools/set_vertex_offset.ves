@@ -28,10 +28,23 @@ node5.var_type = "geo"
 
 _editor.add_node(node5, 474.87545699842, 396.78093969699)
 
+var node6 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node6, 21.512449503182, 179.50111545532)
+
+var node7 = ::blueprint::nodes::input::Input()
+
+node7.var_name = "start"
+node7.var_type = "int"
+
+_editor.add_node(node7, -129.76655469482, 154.09979552917)
+
+Blueprint.connect(node0, "curr_item", node6, "a")
+Blueprint.connect(node7, "var", node6, "b")
 Blueprint.connect(node4, "var", node3, "items")
 Blueprint.connect(node0, "curr_item", node3, "index")
 Blueprint.connect(node3, "item", node1, "brush")
-Blueprint.connect(node0, "curr_item", node1, "offset")
+Blueprint.connect(node6, "v", node1, "offset")
 Blueprint.connect(node4, "var", node2, "v")
 Blueprint.connect(node2, "v", node0, "count")
 Blueprint.connect(node1, "brush", node0, "eval")

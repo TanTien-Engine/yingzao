@@ -1,8 +1,8 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(2.8145721501905, 3.0462211298164, 1.2253588214577)
-node0.cam.yaw = -152.1
-node0.cam.pitch = -31.8
+node0.cam.position.set(1.1487581660366, -5.5313512308961, -3.1182601060197)
+node0.cam.yaw = -30.7
+node0.cam.pitch = 71.7
 node0.cam.zoom = 45
 node0.cam.update_vectors()
 node0.speed = 0.24232439696789
@@ -86,7 +86,7 @@ _editor.add_node(node15, -377.05429804101, 118.54316187174)
 
 var node16 = ::blueprint::nodes::number::Number()
 
-node16.value = 11.43012162298
+node16.value = 177.11718897521
 
 _editor.add_node(node16, -636.90956922826, -111.73656405594)
 
@@ -151,7 +151,7 @@ var node28 = ::blueprint::nodes::input::Input()
 node28.var_name = "list"
 node28.var_type = "array"
 
-_editor.add_node(node28, -730.94966190834, 484.73816679189)
+_editor.add_node(node28, -563.92182600543, 345.03086910358)
 
 var node29 = ::blueprint::nodes::integer::Integer()
 
@@ -202,6 +202,10 @@ Blueprint.connect(node29, "v", node36, "a")
 Blueprint.connect(node29, "v", node36, "b")
 Blueprint.connect(node36, "v", node37, "a")
 Blueprint.connect(node29, "v", node37, "b")
+Blueprint.connect(node28, "var", node35, "geo")
+Blueprint.connect(node28, "var", node34, "list")
+Blueprint.connect(node34, "brush", node1, "var")
+Blueprint.connect(node28, "var", node7, "list")
 Blueprint.connect(node23, "v3", node24, "a")
 Blueprint.connect(node25, "v3", node24, "b")
 Blueprint.connect(node24, "v", node26, "a")
@@ -225,10 +229,6 @@ Blueprint.connect(node10, "next", node9, "action")
 Blueprint.connect(node28, "var", node5, "list")
 Blueprint.connect(node6, "v", node5, "deep")
 Blueprint.connect(node5, "list", node32, "geo")
-Blueprint.connect(node32, "geo", node7, "list")
-Blueprint.connect(node7, "list", node35, "geo")
-Blueprint.connect(node35, "geo", node34, "list")
-Blueprint.connect(node34, "brush", node1, "var")
 Blueprint.connect(node3, "v", node31, "a")
 Blueprint.connect(node30, "var", node31, "b")
 Blueprint.connect(node5, "list", node2, "objs")

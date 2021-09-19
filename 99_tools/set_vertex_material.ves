@@ -147,7 +147,7 @@ var node29 = ::blueprint::nodes::input::Input()
 node29.var_name = "geo"
 node29.var_type = "geo"
 
-_editor.add_node(node29, 292.33544921875, 935.61840820313)
+_editor.add_node(node29, 108.86437483858, 981.89939993867)
 
 var node30 = ::blueprint::nodes::output::Output()
 
@@ -156,6 +156,11 @@ node30.var_type = "geo"
 
 _editor.add_node(node30, 911.63542480469, 704.61840820312)
 
+var node31 = ::blueprint::nodes::list_flatten::ListFlatten()
+
+_editor.add_node(node31, 277.13663526803, 977.2939917194)
+
+Blueprint.connect(node29, "var", node31, "list")
 Blueprint.connect(node0, "curr_item", node3, "brush")
 Blueprint.connect(node3, "size", node4, "xyz")
 Blueprint.connect(node4, "y", node25, "a")
@@ -199,6 +204,6 @@ Blueprint.connect(node2, "v", node11, "true")
 Blueprint.connect(node18, "result", node11, "false")
 Blueprint.connect(node0, "curr_item", node1, "brush")
 Blueprint.connect(node11, "result", node1, "material")
-Blueprint.connect(node29, "var", node0, "items")
+Blueprint.connect(node31, "list", node0, "items")
 Blueprint.connect(node1, "brush", node0, "eval")
 Blueprint.connect(node0, "result", node30, "var")

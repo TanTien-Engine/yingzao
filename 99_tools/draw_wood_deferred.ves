@@ -1,6 +1,6 @@
 var node0 = ::geograph::nodes::brush_to_gltf::BrushToGltf()
 
-_editor.add_node(node0, -20.676023581753, -291.10174525378)
+_editor.add_node(node0, -395.05618887101, -272.91992707196)
 
 var node1 = ::blueprint::nodes::fetch::Fetch()
 node1.index = "node0"
@@ -34,6 +34,7 @@ node5.vs = "
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in float aMatID;
 layout (location = 2) in float aOffset;
+layout (location = 3) in mat4 aInstanceMatrix;
 
 out VS_OUT {
     vec3 frag_pos;
@@ -48,6 +49,8 @@ uniform UBO
 	mat4 projection;
 
     float offset;    
+
+    bool use_inst_mat;
 };
 
 void main()
@@ -58,6 +61,8 @@ void main()
     vec3 pos = aPos;
     pos.y += dy;
 
+    mat4 model_mat = use_inst_mat ? aInstanceMatrix : model;
+
     float rad = offset * 0.1;
     float s = sin(rad);
     float c = cos(rad);
@@ -65,9 +70,10 @@ void main()
     rot_mat[0][0] = c;  rot_mat[0][2] = -s;
     rot_mat[2][0] = s;  rot_mat[2][2] =  c;
 
-    mat4 new_model = rot_mat * model;
+//    mat4 new_model = rot_mat * model_mat;
+    mat4 new_model = model_mat;
 
-	vs_out.frag_pos = vec3(model * vec4(pos, 1.0));
+	vs_out.frag_pos = vec3(model_mat * vec4(pos, 1.0));
 	vs_out.view_pos = vec3(view * new_model * vec4(pos, 1.0));
     vs_out.mat_id = aMatID;
     gl_Position = projection * view * new_model * vec4(pos, 1.0);
@@ -954,6 +960,34 @@ node61.var_type = "num"
 
 _editor.add_node(node61, 161.93579101563, -80.546089172363)
 
+var node62 = ::blueprint::nodes::length::Length()
+
+_editor.add_node(node62, -219.07866794113, -467.17077870529)
+
+var node63 = ::blueprint::nodes::compare::Compare()
+
+node63.cmp = "greater"
+
+_editor.add_node(node63, -88.295981244168, -505.78257432473)
+
+var node64 = ::blueprint::nodes::integer::Integer()
+
+node64.value = 0
+
+_editor.add_node(node64, -223.53261793835, -523.06280858922)
+
+var node65 = ::blueprint::nodes::is_null::IsNull()
+
+_editor.add_node(node65, -270.17418274477, -404.82648916748)
+
+var node66 = ::blueprint::nodes::n_o_t::NOT()
+
+_editor.add_node(node66, -143.9659395884, -408.42069517182)
+
+var node67 = ::blueprint::nodes::a_n_d::AND()
+
+_editor.add_node(node67, 97.731541527352, -429.97333666518)
+
 Blueprint.connect(node60, "size", node34, "size")
 Blueprint.connect(node60, "size", node19, "size")
 Blueprint.connect(node60, "size", node18, "size")
@@ -1015,6 +1049,13 @@ Blueprint.connect(node6, "next", node10, "prev")
 Blueprint.connect(node3, "var", node10, "in")
 Blueprint.connect(node12, "next", node10, "do")
 Blueprint.connect(node10, "out", node0, "brush")
+Blueprint.connect(node0, "inst_mats", node65, "in")
+Blueprint.connect(node65, "out", node66, "in")
+Blueprint.connect(node0, "inst_mats", node62, "v")
+Blueprint.connect(node62, "v", node63, "a")
+Blueprint.connect(node64, "v", node63, "b")
+Blueprint.connect(node66, "out", node67, "a")
+Blueprint.connect(node63, "out", node67, "b")
 Blueprint.connect(node0, "gltf", node11, "in")
 Blueprint.connect(node11, "out", node12, "cond")
 Blueprint.connect(node13, "next", node12, "true")
@@ -1025,9 +1066,11 @@ Blueprint.connect(node56, "var", node5, "model")
 Blueprint.connect(node8, "mat", node5, "view")
 Blueprint.connect(node7, "mat", node5, "projection")
 Blueprint.connect(node61, "var", node5, "offset")
+Blueprint.connect(node67, "out", node5, "use_inst_mat")
 Blueprint.connect(node55, "result", node5, "light_pos")
 Blueprint.connect(node8, "pos", node5, "cam_pos")
 Blueprint.connect(node52, "item", node5, "size")
 Blueprint.connect(node1, "item", node2, "items")
 Blueprint.connect(node5, "out", node4, "shader")
 Blueprint.connect(node2, "item", node4, "va")
+Blueprint.connect(node0, "inst_mats", node4, "inst_mats")
