@@ -1,0 +1,56 @@
+var node0 = ::blueprint::nodes::func_in::FuncIn()
+
+node0.var_name = "step"
+node0.var_type = "int"
+
+_editor.add_node(node0, -441.4801145454, 153.83661645154)
+
+var node1 = ::blueprint::nodes::func_out::FuncOut()
+
+node1.var_name = "len"
+node1.var_type = "num"
+
+_editor.add_node(node1, 24.977543642734, 156.08413587903)
+
+var node2 = ::blueprint::nodes::function::Function()
+
+node2.set_size(695.63215773907, 304.38241580623)
+node2.title = "calc_step_len"
+
+_editor.add_node(node2, -175.2113985315, 204.9880801818)
+
+var node3 = ::blueprint::nodes::output::Output()
+
+node3.var_name = "func"
+node3.var_type = "func"
+
+_editor.add_node(node3, 260.51840721262, 205.7486851991)
+
+var node4 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node4, -126.06311505187, 120.51578201305)
+
+var node5 = ::blueprint::nodes::number::Number()
+
+node5.value = 0.21
+
+_editor.add_node(node5, -271.06687931832, 116.75920611696)
+
+var node6 = ::blueprint::nodes::number::Number()
+
+node6.value = 0
+
+_editor.add_node(node6, -267.31029779332, 51.394818564629)
+
+var node7 = ::blueprint::nodes::number::Number()
+
+node7.value = 0.29
+
+_editor.add_node(node7, -269.56423695691, -14.720894645158)
+
+Blueprint.connect(node2, "func", node3, "var")
+Blueprint.connect(node0, "var", node4, "type")
+Blueprint.connect(node5, "v", node4, "default")
+Blueprint.connect(node6, "v", node4, "case0")
+Blueprint.connect(node7, "v", node4, "case1")
+Blueprint.connect(node4, "result", node1, "var")
