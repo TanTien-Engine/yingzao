@@ -1,7 +1,8 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "13_guazi_gong.ves")
+node0.set_prop_value("no_cut", false)
 
-_editor.add_node(node0, -99.772579902809, -52.396892265971)
+_editor.add_node(node0, -107.21059643173, -16.033255902334)
 
 var node1 = ::blueprint::nodes::subgraph::Subgraph()
 node1.load_from_file(_editor, "50_gong_add_dou.ves")
@@ -13,7 +14,7 @@ var node2 = ::blueprint::nodes::input::Input()
 node2.var_name = "pos"
 node2.var_type = "num3"
 
-_editor.add_node(node2, -292.13423063353, -32.286323174468)
+_editor.add_node(node2, -298.74580088146, 3.2508669081768)
 
 var node3 = ::blueprint::nodes::output::Output()
 
@@ -22,7 +23,15 @@ node3.var_type = "array"
 
 _editor.add_node(node3, 320.06795282898, -23.061798452177)
 
+var node4 = ::blueprint::nodes::input::Input()
+
+node4.var_name = "length"
+node4.var_type = "num"
+
+_editor.add_node(node4, -295.95122181589, -60.616859497478)
+
 Blueprint.connect(node2, "var", node0, "pos")
+Blueprint.connect(node4, "var", node0, "length")
 Blueprint.connect(node0, "geo", node1, "gong")
 Blueprint.connect(node0, "pos_left", node1, "pos_left")
 Blueprint.connect(node0, "pos_right", node1, "pos_right")

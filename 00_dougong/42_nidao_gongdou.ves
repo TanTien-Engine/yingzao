@@ -1,29 +1,78 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "12_nidao_gong.ves")
+node0.set_prop_value("corner", false)
 
-_editor.add_node(node0, -99.772579902809, -52.396892265971)
+_editor.add_node(node0, -366.71472866314, -21.818379869277)
 
 var node1 = ::blueprint::nodes::subgraph::Subgraph()
 node1.load_from_file(_editor, "50_gong_add_dou.ves")
 
-_editor.add_node(node1, 130.47749685612, -41.670510568521)
+_editor.add_node(node1, 341.03005474151, -30.202714652941)
 
 var node2 = ::blueprint::nodes::input::Input()
 
 node2.var_name = "pos"
 node2.var_type = "num3"
 
-_editor.add_node(node2, -292.13423063353, -32.286323174468)
+_editor.add_node(node2, -561.55571823684, 19.779792528011)
 
 var node3 = ::blueprint::nodes::output::Output()
 
 node3.var_name = "gong_dou"
 node3.var_type = "array"
 
-_editor.add_node(node3, 320.06795282898, -23.061798452177)
+_editor.add_node(node3, 528.1411718714, 31.381204074973)
 
+var node4 = ::blueprint::nodes::input::Input()
+
+node4.var_name = "length"
+node4.var_type = "num"
+
+_editor.add_node(node4, -559.1250221946, -46.038836518597)
+
+var node5 = ::blueprint::nodes::property::Property()
+
+node5.var_name = "hide"
+node5.var_type = "bool"
+
+_editor.add_node(node5, -27.700545070103, 189.93389282087)
+
+var node6 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node6, 103.04918762345, 143.732777028)
+
+var node7 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node7, -152.09872888419, 112.46081841662)
+
+var node8 = ::geograph::nodes::box::Box()
+node8.query_param("size").value.set(2, 0.15, 0.08)
+node8.query_param("pos").value.set(0, 0, 0)
+node8.query_param("offset_x").value = false
+node8.query_param("offset_y").value = true
+node8.query_param("offset_z").value = false
+
+_editor.add_node(node8, -485.64772616904, 247.36660509179)
+
+var node9 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node9, -27.441304725533, 134.0273497864)
+
+var node10 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node10, -305.69698234263, 179.47727471578)
+
+Blueprint.connect(node8, "geo", node10, "geo")
+Blueprint.connect(node2, "var", node10, "xyz")
 Blueprint.connect(node2, "var", node0, "pos")
-Blueprint.connect(node0, "geo", node1, "gong")
+Blueprint.connect(node4, "var", node0, "length")
+Blueprint.connect(node10, "geo", node7, "in0")
+Blueprint.connect(node0, "geo", node7, "in1")
+Blueprint.connect(node7, "list", node9, "list")
+Blueprint.connect(node5, "var", node6, "cond")
+Blueprint.connect(node9, "brush", node6, "true")
+Blueprint.connect(node0, "geo", node6, "false")
+Blueprint.connect(node6, "result", node1, "gong")
 Blueprint.connect(node0, "pos_left", node1, "pos_left")
 Blueprint.connect(node0, "pos_right", node1, "pos_right")
 Blueprint.connect(node1, "gong_dou", node3, "var")

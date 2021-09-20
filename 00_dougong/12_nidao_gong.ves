@@ -20,7 +20,7 @@ var node3 = ::blueprint::nodes::number::Number()
 
 node3.value = 0.62
 
-_editor.add_node(node3, -380.11773727719, 194.93822390185)
+_editor.add_node(node3, -1157.8177372772, 271.93822390185)
 
 var node4 = ::blueprint::nodes::subgraph::Subgraph()
 node4.load_from_file(_editor, "10_gong.ves")
@@ -167,6 +167,30 @@ var node28 = ::blueprint::nodes::branch_f::BranchF()
 
 _editor.add_node(node28, 168.66273628687, 3.2789263764678)
 
+var node29 = ::blueprint::nodes::subgraph::Subgraph()
+node29.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node29, -950.8068359375, 322.68840332031)
+
+var node30 = ::blueprint::nodes::input::Input()
+
+node30.var_name = "length"
+node30.var_type = "num"
+
+_editor.add_node(node30, -1160.9068847656, 343.58843994141)
+
+var node31 = ::blueprint::nodes::store::Store()
+
+node31.var_name = "length"
+
+_editor.add_node(node31, -764.90686035156, 321.58843994141)
+
+var node32 = ::blueprint::nodes::load::Load()
+
+node32.var_name = "length"
+
+_editor.add_node(node32, -382.10686035156, 185.18843994141)
+
 Blueprint.connect(node22, "var", node23, "var")
 Blueprint.connect(node23, "var", node25, "var")
 Blueprint.connect(node25, "var", node26, "in")
@@ -180,7 +204,11 @@ Blueprint.connect(node13, "var", node14, "var")
 Blueprint.connect(node14, "var", node15, "a")
 Blueprint.connect(node8, "v3", node15, "b")
 Blueprint.connect(node15, "v", node11, "var")
-Blueprint.connect(node3, "v", node4, "width")
+Blueprint.connect(node30, "var", node29, "val")
+Blueprint.connect(node3, "v", node29, "default")
+Blueprint.connect(node29, "val", node31, "var")
+Blueprint.connect(node31, "var", node32, "var")
+Blueprint.connect(node32, "var", node4, "width")
 Blueprint.connect(node0, "v", node4, "height")
 Blueprint.connect(node1, "v", node4, "c_width")
 Blueprint.connect(node2, "v", node4, "c_height")
