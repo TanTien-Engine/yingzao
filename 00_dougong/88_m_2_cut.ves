@@ -1,0 +1,82 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "84_m_conn_cut.ves")
+node0.set_prop_value("top", true)
+node0.set_prop_value("high", true)
+node0.set_prop_value("zu_cai", false)
+node0.set_prop_value("rot", false)
+
+_editor.add_node(node0, -150.72870027344, 317.77062607422)
+
+var node1 = ::blueprint::nodes::subgraph::Subgraph()
+node1.load_from_file(_editor, "84_m_conn_cut.ves")
+node1.set_prop_value("top", false)
+node1.set_prop_value("high", false)
+node1.set_prop_value("zu_cai", false)
+node1.set_prop_value("rot", true)
+
+_editor.add_node(node1, -153.08197427344, 69.504389174221)
+
+var node2 = ::blueprint::nodes::input::Input()
+
+node2.var_name = "pos"
+node2.var_type = "num3"
+
+_editor.add_node(node2, -383.21026611328, 534.93487548828)
+
+var node3 = ::blueprint::nodes::store::Store()
+
+node3.var_name = "pos"
+
+_editor.add_node(node3, -241.68592834473, 536.15905761719)
+
+var node4 = ::blueprint::nodes::input::Input()
+
+node4.var_name = "gong0"
+node4.var_type = "geo"
+
+_editor.add_node(node4, -351.68591308594, 333.15905761719)
+
+var node5 = ::blueprint::nodes::input::Input()
+
+node5.var_name = "gong1"
+node5.var_type = "geo"
+
+_editor.add_node(node5, -344.85946680495, 74.588809683306)
+
+var node6 = ::blueprint::nodes::load::Load()
+
+node6.var_name = "pos"
+
+_editor.add_node(node6, -343.42146553481, 182.05161960066)
+
+var node7 = ::blueprint::nodes::output::Output()
+
+node7.var_name = "gong0"
+node7.var_type = "geo"
+
+_editor.add_node(node7, 33.731636186074, 337.81881325461)
+
+var node8 = ::blueprint::nodes::output::Output()
+
+node8.var_name = "gong1"
+node8.var_type = "geo"
+
+_editor.add_node(node8, 40.797110262789, 85.906095747515)
+
+var node9 = ::blueprint::nodes::input::Input()
+
+node9.var_name = "height"
+node9.var_type = "num"
+
+_editor.add_node(node9, -339.2484188472, 252.45961845111)
+
+Blueprint.connect(node2, "var", node3, "var")
+Blueprint.connect(node3, "var", node6, "var")
+Blueprint.connect(node5, "var", node1, "geo")
+Blueprint.connect(node6, "var", node1, "pos")
+Blueprint.connect(node9, "var", node1, "height")
+Blueprint.connect(node1, "geo", node8, "var")
+Blueprint.connect(node4, "var", node0, "geo")
+Blueprint.connect(node6, "var", node0, "pos")
+Blueprint.connect(node9, "var", node0, "height")
+Blueprint.connect(node0, "geo", node7, "var")

@@ -344,7 +344,7 @@ _editor.add_node(node63, 546.57502037764, 571.95579698579)
 
 var node64 = ::blueprint::nodes::null::Null()
 
-_editor.add_node(node64, -1185.0536634871, -322.84500824292)
+_editor.add_node(node64, -1184.484447976, -586.31152167373)
 
 var node65 = ::blueprint::nodes::is_null::IsNull()
 
@@ -382,6 +382,20 @@ var node72 = ::blueprint::nodes::a_n_d::AND()
 
 _editor.add_node(node72, -815.07819035639, 354.96896821372)
 
+var node73 = ::blueprint::nodes::subgraph::Subgraph()
+node73.load_from_file(_editor, "01_mi_san_dou.ves")
+node73.set_prop_value("no_arc", false)
+node73.set_prop_value("rot", false)
+
+_editor.add_node(node73, -1235.8423550417, -354.18748965933)
+
+var node74 = ::blueprint::nodes::subgraph::Subgraph()
+node74.load_from_file(_editor, "01_mi_san_dou.ves")
+node74.set_prop_value("no_arc", false)
+node74.set_prop_value("rot", true)
+
+_editor.add_node(node74, -1238.32677415, -480.64573749838)
+
 Blueprint.connect(node4, "var", node7, "var")
 Blueprint.connect(node7, "var", node32, "var")
 Blueprint.connect(node32, "var", node33, "in")
@@ -399,7 +413,9 @@ Blueprint.connect(node1, "geo", node58, "default")
 Blueprint.connect(node1, "geo", node58, "case0")
 Blueprint.connect(node44, "geo", node58, "case1")
 Blueprint.connect(node57, "geo", node58, "case2")
-Blueprint.connect(node64, "null", node58, "case3")
+Blueprint.connect(node73, "geo", node58, "case3")
+Blueprint.connect(node74, "geo", node58, "case4")
+Blueprint.connect(node64, "null", node58, "case5")
 Blueprint.connect(node58, "result", node70, "var")
 Blueprint.connect(node70, "var", node67, "in")
 Blueprint.connect(node67, "out", node68, "in")
@@ -423,7 +439,9 @@ Blueprint.connect(node1, "geo", node55, "default")
 Blueprint.connect(node1, "geo", node55, "case0")
 Blueprint.connect(node44, "geo", node55, "case1")
 Blueprint.connect(node57, "geo", node55, "case2")
-Blueprint.connect(node64, "null", node55, "case3")
+Blueprint.connect(node73, "geo", node55, "case3")
+Blueprint.connect(node74, "geo", node55, "case4")
+Blueprint.connect(node64, "null", node55, "case5")
 Blueprint.connect(node55, "result", node69, "var")
 Blueprint.connect(node69, "var", node65, "in")
 Blueprint.connect(node65, "out", node66, "in")
