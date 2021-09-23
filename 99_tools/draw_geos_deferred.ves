@@ -140,7 +140,7 @@ node7.aspect = 0
 node7.znear = 0.01
 node7.zfar = 100
 
-_editor.add_node(node7, 413.60400748731, -99.260075321102)
+_editor.add_node(node7, -35.39599251269, 251.7399246789)
 
 var node8 = ::blueprint::nodes::proxy::Proxy()
 
@@ -174,7 +174,7 @@ _editor.add_node(node13, 783.1307712437, 32.615556424757)
 
 var node14 = ::blueprint::nodes::multiply::Multiply()
 
-_editor.add_node(node14, 560.9265762203, 75.875717541404)
+_editor.add_node(node14, 583.27974385043, 110.02639030966)
 
 var node15 = ::rendergraph::nodes::render_target::RenderTarget()
 
@@ -319,7 +319,6 @@ void main()
 node23.cs = ""
 node23.render_gen()
 node23.set_uniform("scale", [ 1 ])
-node23.set_uniform("depthThreshold", [ 0.026350911706686 ])
 node23.set_uniform("normalThreshold", [ 0.35301756858826 ])
 
 _editor.add_node(node23, 1456.0473424022, -843.15563683398)
@@ -530,6 +529,98 @@ var node45 = ::blueprint::nodes::a_n_d::AND()
 
 _editor.add_node(node45, -253.66468770139, -422.33304670692)
 
+var node46 = ::blueprint::nodes::orthographic::Orthographic()
+
+node46.left = -1.5
+node46.right = 0.5
+node46.bottom = 0
+node46.top = 1
+node46.near = 1
+node46.far = -1
+
+_editor.add_node(node46, -140.40334984564, 399.31072114281)
+
+var node47 = ::blueprint::nodes::viewport::Viewport()
+
+_editor.add_node(node47, -546.92415431579, 409.2175287042)
+
+var node48 = ::blueprint::nodes::split::Split()
+
+_editor.add_node(node48, -415.96621321593, 408.65306990171)
+
+var node49 = ::blueprint::nodes::divide::Divide()
+
+_editor.add_node(node49, -278.23458011229, 438.57017137206)
+
+var node50 = ::blueprint::nodes::number::Number()
+
+node50.value = 0.73397219181061
+
+_editor.add_node(node50, -277.05748675399, 370.4335289185)
+
+var node51 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node51, 103.40640258789, 445.70220947266)
+
+var node52 = ::blueprint::nodes::input::Input()
+
+node52.var_name = "ortho"
+node52.var_type = "bool"
+
+_editor.add_node(node52, -187.82443756782, 598.41099214835)
+
+var node53 = ::blueprint::nodes::store::Store()
+
+node53.var_name = "ortho"
+
+_editor.add_node(node53, -31.490615907779, 596.88507075492)
+
+var node54 = ::blueprint::nodes::load::Load()
+
+node54.var_name = "ortho"
+
+_editor.add_node(node54, -65.299777345493, 498.462791162)
+
+var node55 = ::blueprint::nodes::load::Load()
+
+node55.var_name = "ortho"
+
+_editor.add_node(node55, 997.57368297679, -1026.9346942078)
+
+var node56 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node56, 1136.9570067209, -1047.0249629162)
+
+var node57 = ::blueprint::nodes::number::Number()
+
+node57.value = 0.0001
+
+_editor.add_node(node57, 996.93920714177, -1083.2246731741)
+
+var node58 = ::blueprint::nodes::number::Number()
+
+node58.value = 0.05
+
+_editor.add_node(node58, 993.5241920331, -1150.159968538)
+
+var node59 = ::blueprint::nodes::number2::Number2()
+
+node59.value.set(0.65123289823532, 0.64530503749847)
+
+_editor.add_node(node59, -273.07745511134, 293.90839682106)
+
+Blueprint.connect(node52, "var", node53, "var")
+Blueprint.connect(node53, "var", node55, "var")
+Blueprint.connect(node55, "var", node56, "cond")
+Blueprint.connect(node57, "v", node56, "true")
+Blueprint.connect(node58, "v", node56, "false")
+Blueprint.connect(node53, "var", node54, "var")
+Blueprint.connect(node47, "size", node48, "xy")
+Blueprint.connect(node48, "x", node49, "a")
+Blueprint.connect(node48, "y", node49, "b")
+Blueprint.connect(node49, "v", node46, "aspect")
+Blueprint.connect(node50, "v", node46, "scale")
+Blueprint.connect(node59, "v2", node46, "offset")
 Blueprint.connect(node38, "size", node29, "size")
 Blueprint.connect(node29, "tex", node31, "tex")
 Blueprint.connect(node29, "tex", node28, "col0")
@@ -537,6 +628,7 @@ Blueprint.connect(node37, "size", node19, "size")
 Blueprint.connect(node37, "size", node18, "size")
 Blueprint.connect(node37, "size", node17, "size")
 Blueprint.connect(node37, "size", node16, "size")
+Blueprint.connect(node56, "result", node23, "depthThreshold")
 Blueprint.connect(node17, "tex", node23, "cam_depth_tex")
 Blueprint.connect(node18, "tex", node23, "cam_normal_tex")
 Blueprint.connect(node16, "tex", node23, "main_tex")
@@ -559,7 +651,10 @@ Blueprint.connect(node36, "out", node35, "cond")
 Blueprint.connect(node9, "v3", node35, "true")
 Blueprint.connect(node34, "var", node35, "false")
 Blueprint.connect(node8, "zoom", node7, "fovy")
-Blueprint.connect(node7, "mat", node14, "a")
+Blueprint.connect(node54, "var", node51, "cond")
+Blueprint.connect(node46, "mat", node51, "true")
+Blueprint.connect(node7, "mat", node51, "false")
+Blueprint.connect(node51, "result", node14, "a")
 Blueprint.connect(node8, "mat", node14, "b")
 Blueprint.connect(node10, "out", node13, "geos")
 Blueprint.connect(node14, "v", node13, "mat")
@@ -575,7 +670,7 @@ Blueprint.connect(node42, "v", node41, "b")
 Blueprint.connect(node44, "out", node45, "a")
 Blueprint.connect(node41, "out", node45, "b")
 Blueprint.connect(node8, "mat", node5, "view")
-Blueprint.connect(node7, "mat", node5, "projection")
+Blueprint.connect(node51, "result", node5, "projection")
 Blueprint.connect(node39, "var", node5, "offset")
 Blueprint.connect(node45, "out", node5, "use_inst_mat")
 Blueprint.connect(node35, "result", node5, "light_pos")

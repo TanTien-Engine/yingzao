@@ -1,13 +1,13 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(6.3910194745929, 5.2199498291221, 0.38867724584088)
-node0.cam.yaw = -148.9
-node0.cam.pitch = -34.1
+node0.cam.position.set(-0.071940746046505, -0.002907353147836, 0.6681097864807)
+node0.cam.yaw = -85.4
+node0.cam.pitch = 5.4
 node0.cam.zoom = 45
 node0.cam.update_vectors()
 node0.speed = 0.29386684298515
 
-_editor.add_node(node0, 439.85864088664, -80.516760880439)
+_editor.add_node(node0, 400.92687393083, -186.38384646203)
 
 var node1 = ::blueprint::nodes::cache::Cache()
 node1.query_param("disable").value = false
@@ -31,7 +31,7 @@ _editor.add_node(node4, -234.80837255026, 322.64669495353)
 
 var node5 = ::blueprint::nodes::integer::Integer()
 
-node5.value = 3
+node5.value = 2
 
 _editor.add_node(node5, -376.41511212896, 278.70122185231)
 
@@ -96,13 +96,54 @@ _editor.add_node(node16, 308.29977505839, 258.45941377635)
 var node17 = ::blueprint::nodes::subgraph::Subgraph()
 node17.load_from_file(_editor, "draw_geos_deferred.ves")
 
-_editor.add_node(node17, 675, 198.5)
+_editor.add_node(node17, 672, 198.5)
 
 var node18 = ::blueprint::nodes::subgraph::Subgraph()
 node18.load_from_file(_editor, "set_vertex_offset.ves")
 
 _editor.add_node(node18, -36, 426.5)
 
+var node19 = ::blueprint::nodes::number3::Number3()
+
+node19.value.set(0.014525011181831, 0, 0)
+
+_editor.add_node(node19, 97.35108656031, -202.13885522138)
+
+var node20 = ::blueprint::nodes::property::Property()
+
+node20.var_name = "ortho"
+node20.var_type = "bool"
+
+_editor.add_node(node20, 229.7305353338, 604.75603138317)
+
+var node21 = ::blueprint::nodes::store::Store()
+
+node21.var_name = "ortho"
+
+_editor.add_node(node21, 370.34049294212, 605.06468616832)
+
+var node22 = ::blueprint::nodes::load::Load()
+
+node22.var_name = "ortho"
+
+_editor.add_node(node22, 460.34047907049, 65.064708362926)
+
+var node23 = ::blueprint::nodes::load::Load()
+
+node23.var_name = "ortho"
+
+_editor.add_node(node23, 112.07251314189, -123.15726227589)
+
+var node24 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node24, 240.2373921282, -145.52156933082)
+
+Blueprint.connect(node20, "var", node21, "var")
+Blueprint.connect(node21, "var", node23, "var")
+Blueprint.connect(node21, "var", node22, "var")
+Blueprint.connect(node23, "var", node24, "cond")
+Blueprint.connect(node19, "v3", node24, "true")
+Blueprint.connect(node24, "result", node0, "eye")
 Blueprint.connect(node15, "var", node13, "a")
 Blueprint.connect(node14, "v", node13, "b")
 Blueprint.connect(node7, "v3", node8, "a")
@@ -115,10 +156,11 @@ Blueprint.connect(node4, "list", node18, "geo")
 Blueprint.connect(node18, "geo", node6, "list")
 Blueprint.connect(node6, "list", node16, "list")
 Blueprint.connect(node16, "brush", node1, "var")
-Blueprint.connect(node4, "list", node2, "objs")
-Blueprint.connect(node3, "v", node2, "dist")
-Blueprint.connect(node13, "v", node2, "offset")
 Blueprint.connect(node1, "var", node17, "geos")
 Blueprint.connect(node0, "this", node17, "view_cam")
 Blueprint.connect(node10, "v", node17, "light_pos")
 Blueprint.connect(node13, "v", node17, "offset")
+Blueprint.connect(node22, "var", node17, "ortho")
+Blueprint.connect(node4, "list", node2, "objs")
+Blueprint.connect(node3, "v", node2, "dist")
+Blueprint.connect(node13, "v", node2, "offset")
