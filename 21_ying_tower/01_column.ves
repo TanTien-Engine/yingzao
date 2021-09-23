@@ -1,5 +1,6 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "00_calc_step_len.ves")
+node0.set_prop_value("rot", false)
 
 _editor.add_node(node0, -620.74597154633, 760.66353009042)
 
@@ -70,6 +71,7 @@ _editor.add_node(node11, -561.88657961523, -224.83315788474)
 
 var node12 = ::blueprint::nodes::subgraph::Subgraph()
 node12.load_from_file(_editor, "../00_dougong/42_nidao_gongdou.ves")
+node12.set_prop_value("hide", false)
 
 _editor.add_node(node12, -361.41370926361, 274.25671544487)
 
@@ -267,9 +269,9 @@ _editor.add_node(node41, 679.21244913247, 141.73939753554)
 var node42 = ::blueprint::nodes::subgraph::Subgraph()
 node42.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
 
-node42.op_node.cam.position.set(2.0348177448053, 0.47298528097113, 1.7782528223671)
-node42.op_node.cam.yaw = -124.4
-node42.op_node.cam.pitch = 8.5
+node42.op_node.cam.position.set(1.7054575814149, 1.8117849251414, 0.52970973717257)
+node42.op_node.cam.yaw = -157.9
+node42.op_node.cam.pitch = -37.4
 node42.op_node.cam.zoom = 45
 node42.op_node.cam.update_vectors()
 node42.op_node.speed = 0.29386684298515
@@ -376,7 +378,7 @@ node58.set_prop_value("left_head", 1)
 node58.set_prop_value("right_head", 3)
 node58.set_prop_value("rot_left", false)
 node58.set_prop_value("rot_right", false)
-node58.set_prop_value("left_dou", 3)
+node58.set_prop_value("left_dou", 5)
 node58.set_prop_value("right_dou", 0)
 
 _editor.add_node(node58, 1312.4615216121, -215.61944385018)

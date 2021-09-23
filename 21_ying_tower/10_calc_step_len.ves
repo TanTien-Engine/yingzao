@@ -10,11 +10,11 @@ var node1 = ::blueprint::nodes::func_out::FuncOut()
 node1.var_name = "len"
 node1.var_type = "num"
 
-_editor.add_node(node1, 25.920958188189, -235.05542184448)
+_editor.add_node(node1, 10.218478849346, -447.45211605936)
 
 var node2 = ::blueprint::nodes::function::Function()
 
-node2.set_size(605.17805773907, 507.68133580623)
+node2.set_size(691.12847096221, 709.33422836821)
 node2.title = "calc_step_len"
 
 _editor.add_node(node2, -191.72594398605, 192.9880801818)
@@ -28,7 +28,7 @@ _editor.add_node(node3, 249.86798721262, 188.8481751991)
 
 var node4 = ::blueprint::nodes::switch_f::SwitchF()
 
-_editor.add_node(node4, -249.52424596096, 68.095442922142)
+_editor.add_node(node4, -253.65647736592, -79.011995094387)
 
 var node5 = ::blueprint::nodes::number::Number()
 
@@ -50,36 +50,54 @@ _editor.add_node(node7, -397.57082241146, -58.050324645159)
 
 var node8 = ::blueprint::nodes::branch_f::BranchF()
 
-_editor.add_node(node8, -108.92186836226, -258.33168849472)
+_editor.add_node(node8, -124.6243477011, -470.7283827096)
 
 var node9 = ::blueprint::nodes::property::Property()
 
 node9.var_name = "rot"
 node9.var_type = "bool"
 
-_editor.add_node(node9, -250.48242847836, -252.33733676879)
+_editor.add_node(node9, -266.1849078172, -464.73403098367)
 
 var node10 = ::blueprint::nodes::pi::Pi()
 
-_editor.add_node(node10, -381.05933446822, -155.52258427734)
+_editor.add_node(node10, -409.15850802194, -407.58869997982)
 
 var node11 = ::blueprint::nodes::cos::Cos()
 
-_editor.add_node(node11, -246.57398746845, -113.44895079534)
+_editor.add_node(node11, -255.66489655936, -344.02746319203)
 
 var node12 = ::blueprint::nodes::number::Number()
 
 node12.value = 1
 
-_editor.add_node(node12, -244.85946990944, -49.972436431726)
+_editor.add_node(node12, -253.95037900035, -280.55094882842)
 
 var node13 = ::blueprint::nodes::divide::Divide()
 
-_editor.add_node(node13, -109.72297252715, -71.209629763293)
+_editor.add_node(node13, -118.81388161806, -301.78814215999)
 
 var node14 = ::blueprint::nodes::multiply::Multiply()
 
-_editor.add_node(node14, -104.95540959955, 108.73870744139)
+_editor.add_node(node14, 60.333846598797, -152.418317352)
+
+var node15 = ::blueprint::nodes::number::Number()
+
+node15.value = 0.21
+
+_editor.add_node(node15, -395.68271277506, -123.16548252782)
+
+var node16 = ::blueprint::nodes::number::Number()
+
+node16.value = 0.27
+
+_editor.add_node(node16, -396.42834580467, -189.310621073)
+
+var node17 = ::blueprint::nodes::number::Number()
+
+node17.value = 0.29
+
+_editor.add_node(node17, -394.54023616827, -254.42577895566)
 
 Blueprint.connect(node10, "pi/6", node11, "v")
 Blueprint.connect(node12, "v", node13, "a")
@@ -89,6 +107,9 @@ Blueprint.connect(node0, "var", node4, "type")
 Blueprint.connect(node5, "v", node4, "default")
 Blueprint.connect(node6, "v", node4, "case0")
 Blueprint.connect(node7, "v", node4, "case1")
+Blueprint.connect(node15, "v", node4, "case2")
+Blueprint.connect(node16, "v", node4, "case3")
+Blueprint.connect(node17, "v", node4, "case4")
 Blueprint.connect(node4, "result", node14, "a")
 Blueprint.connect(node13, "v", node14, "b")
 Blueprint.connect(node9, "var", node8, "cond")
