@@ -7,7 +7,7 @@ _editor.add_node(node0, -100.39350122587, -52.396892265971)
 var node1 = ::blueprint::nodes::subgraph::Subgraph()
 node1.load_from_file(_editor, "50_gong_add_dou.ves")
 
-_editor.add_node(node1, 773.80911230713, -58.852831696612)
+_editor.add_node(node1, 732.48679825755, -55.877625085041)
 
 var node2 = ::blueprint::nodes::input::Input()
 
@@ -21,7 +21,7 @@ var node3 = ::blueprint::nodes::output::Output()
 node3.var_name = "gong_dou"
 node3.var_type = "array"
 
-_editor.add_node(node3, 974.12923802481, 2.6745593990285)
+_editor.add_node(node3, 1106.4432876116, 92.922493283326)
 
 var node4 = ::blueprint::nodes::property::Property()
 
@@ -62,7 +62,7 @@ _editor.add_node(node9, -53.599531478132, 57.30299329215)
 
 var node10 = ::blueprint::nodes::branch_f::BranchF()
 
-_editor.add_node(node10, 105.92555808995, -25.494666452638)
+_editor.add_node(node10, 142.28919445359, 22.439217844883)
 
 var node11 = ::blueprint::nodes::input::Input()
 
@@ -133,6 +133,17 @@ node22.var_name = "pos"
 
 _editor.add_node(node22, -156.86131116097, 128.05355638569)
 
+var node23 = ::blueprint::nodes::property::Property()
+
+node23.var_name = "no_dou"
+node23.var_type = "bool"
+
+_editor.add_node(node23, 831.2077515157, 103.77375003702)
+
+var node24 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node24, 966.5077515157, 77.373701208889)
+
 Blueprint.connect(node2, "var", node17, "var")
 Blueprint.connect(node17, "var", node22, "var")
 Blueprint.connect(node15, "geo", node21, "geo")
@@ -157,7 +168,10 @@ Blueprint.connect(node10, "result", node13, "false")
 Blueprint.connect(node13, "result", node1, "gong")
 Blueprint.connect(node0, "pos_left", node1, "pos_left")
 Blueprint.connect(node0, "pos_right", node1, "pos_right")
-Blueprint.connect(node1, "gong_dou", node3, "var")
+Blueprint.connect(node23, "var", node24, "cond")
+Blueprint.connect(node13, "result", node24, "true")
+Blueprint.connect(node1, "gong_dou", node24, "false")
+Blueprint.connect(node24, "result", node3, "var")
 Blueprint.connect(node17, "var", node18, "var")
 Blueprint.connect(node18, "var", node6, "a")
 Blueprint.connect(node7, "v3", node6, "b")

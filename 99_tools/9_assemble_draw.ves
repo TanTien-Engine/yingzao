@@ -1,8 +1,8 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(-0.071940746046505, -0.002907353147836, 0.6681097864807)
-node0.cam.yaw = -85.4
-node0.cam.pitch = 5.4
+node0.cam.position.set(3.6562217486908, 1.5711618163728, 0.52640151558026)
+node0.cam.yaw = -172.3
+node0.cam.pitch = -5.7
 node0.cam.zoom = 45
 node0.cam.update_vectors()
 node0.speed = 0.29386684298515
@@ -105,7 +105,7 @@ _editor.add_node(node18, -36, 426.5)
 
 var node19 = ::blueprint::nodes::number3::Number3()
 
-node19.value.set(0.014525011181831, 0, 0)
+node19.value.set(0, 0, 0)
 
 _editor.add_node(node19, 97.35108656031, -202.13885522138)
 
@@ -138,12 +138,23 @@ var node24 = ::blueprint::nodes::branch_f::BranchF()
 
 _editor.add_node(node24, 240.2373921282, -145.52156933082)
 
+var node25 = ::blueprint::nodes::number3::Number3()
+
+node25.value.set(0.48011863231659, 0, 0)
+
+_editor.add_node(node25, 99.789320411699, -312.35891843117)
+
+var node26 = ::blueprint::nodes::negate::Negate()
+
+_editor.add_node(node26, 233.70059798182, -283.09685064892)
+
+Blueprint.connect(node25, "v3", node26, "v")
 Blueprint.connect(node20, "var", node21, "var")
 Blueprint.connect(node21, "var", node23, "var")
-Blueprint.connect(node21, "var", node22, "var")
 Blueprint.connect(node23, "var", node24, "cond")
-Blueprint.connect(node19, "v3", node24, "true")
+Blueprint.connect(node25, "v3", node24, "true")
 Blueprint.connect(node24, "result", node0, "eye")
+Blueprint.connect(node21, "var", node22, "var")
 Blueprint.connect(node15, "var", node13, "a")
 Blueprint.connect(node14, "v", node13, "b")
 Blueprint.connect(node7, "v3", node8, "a")

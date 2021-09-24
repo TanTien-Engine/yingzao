@@ -250,12 +250,34 @@ node47.var_type = "num3"
 
 _editor.add_node(node47, 152.12433537154, -187.43048783738)
 
+var node48 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node48, -119.80193805202, -383.75433470022)
+
+var node49 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node49, 19.898098569079, -382.65433470022)
+
+var node50 = ::blueprint::nodes::load::Load()
+
+node50.var_name = "in_pos"
+
+_editor.add_node(node50, -117.28988969638, -441.68945115152)
+
+var node51 = ::blueprint::nodes::output::Output()
+
+node51.var_name = "pos_middle"
+node51.var_type = "num3"
+
+_editor.add_node(node51, 151.53731386377, -372.43076440834)
+
 Blueprint.connect(node13, "v", node14, "var")
 Blueprint.connect(node14, "var", node22, "var")
 Blueprint.connect(node14, "var", node18, "var")
 Blueprint.connect(node12, "var", node29, "in")
 Blueprint.connect(node11, "var", node26, "in")
 Blueprint.connect(node6, "var", node7, "var")
+Blueprint.connect(node7, "var", node50, "var")
 Blueprint.connect(node7, "var", node46, "var")
 Blueprint.connect(node7, "var", node42, "var")
 Blueprint.connect(node7, "var", node9, "var")
@@ -286,6 +308,11 @@ Blueprint.connect(node35, "var", node10, "width")
 Blueprint.connect(node0, "v", node10, "height")
 Blueprint.connect(node1, "v", node10, "c_width")
 Blueprint.connect(node2, "v", node10, "c_height")
+Blueprint.connect(node10, "pos_left", node48, "a")
+Blueprint.connect(node23, "xyz", node48, "b")
+Blueprint.connect(node48, "v", node49, "a")
+Blueprint.connect(node50, "var", node49, "b")
+Blueprint.connect(node49, "v", node51, "var")
 Blueprint.connect(node10, "pos_right", node44, "a")
 Blueprint.connect(node23, "xyz", node44, "b")
 Blueprint.connect(node44, "v", node45, "a")

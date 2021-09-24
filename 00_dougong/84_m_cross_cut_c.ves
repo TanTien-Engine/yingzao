@@ -66,7 +66,7 @@ _editor.add_node(node10, -1538.6446546226, 221.31916910655)
 
 var node11 = ::blueprint::nodes::branch_f::BranchF()
 
-_editor.add_node(node11, -1370.7299288525, 172.81318910571)
+_editor.add_node(node11, -1347.5894329847, 177.77186679166)
 
 var node12 = ::blueprint::nodes::combine::Combine()
 
@@ -99,7 +99,7 @@ var node17 = ::blueprint::nodes::input::Input()
 node17.var_name = "offset"
 node17.var_type = "num"
 
-_editor.add_node(node17, -1154.9484222639, -42.253978472816)
+_editor.add_node(node17, -1005.3484222639, -78.553978472816)
 
 var node18 = ::geograph::nodes::translate_f::TranslateF()
 
@@ -118,69 +118,48 @@ var node21 = ::blueprint::nodes::pi::Pi()
 
 _editor.add_node(node21, -502.01925747454, 11.446178593911)
 
-var node22 = ::geograph::nodes::rotate_y::RotateY()
-node22.query_param("angle").value = "0"
+var node22 = ::blueprint::nodes::subtract::Subtract()
 
-_editor.add_node(node22, -201.71086915109, 21.585626011929)
+_editor.add_node(node22, -371.83744622853, 43.173484613088)
 
-var node23 = ::blueprint::nodes::add::Add()
+var node23 = ::geograph::nodes::rotate_y::RotateY()
+node23.query_param("angle").value = "0"
 
-_editor.add_node(node23, -1001.4575422761, -58.844509216469)
+_editor.add_node(node23, -201.71086915109, 21.585626011929)
 
-var node24 = ::blueprint::nodes::number::Number()
+var node24 = ::blueprint::nodes::multiply::Multiply()
 
-node24.value = 0.05
+_editor.add_node(node24, -368.19191849133, -35.800355264964)
 
-_editor.add_node(node24, -1151.720563354, -113.69049076851)
+var node25 = ::blueprint::nodes::integer::Integer()
 
-var node25 = ::blueprint::nodes::negate::Negate()
+node25.value = 2
 
-_editor.add_node(node25, -354.76651717363, -0.42451902801744)
+_editor.add_node(node25, -499.59687187258, -91.998686672242)
 
-var node26 = ::geograph::nodes::brush_get_size::BrushGetSize()
-
-_editor.add_node(node26, -1859.6928417969, -46.296788330095)
-
-var node27 = ::blueprint::nodes::split::Split()
-
-_editor.add_node(node27, -1731.0563671875, -67.582351074231)
-
-var node28 = ::blueprint::nodes::subtract::Subtract()
-
-_editor.add_node(node28, -1280.595401205, -235.09333632748)
-
-var node29 = ::blueprint::nodes::number::Number()
-
-node29.value = 0.15
-
-_editor.add_node(node29, -1420.9681376307, -265.9535809982)
-
-Blueprint.connect(node21, "pi/6", node25, "v")
-Blueprint.connect(node17, "var", node23, "a")
-Blueprint.connect(node24, "v", node23, "b")
+Blueprint.connect(node21, "pi/2", node22, "a")
+Blueprint.connect(node21, "pi/6", node22, "b")
+Blueprint.connect(node22, "v", node24, "a")
+Blueprint.connect(node25, "v", node24, "b")
+Blueprint.connect(node17, "var", node16, "y")
 Blueprint.connect(node9, "var", node10, "in")
 Blueprint.connect(node10, "out", node11, "cond")
 Blueprint.connect(node15, "v", node11, "true")
 Blueprint.connect(node9, "var", node11, "false")
-Blueprint.connect(node29, "v", node28, "a")
-Blueprint.connect(node11, "result", node28, "b")
-Blueprint.connect(node28, "v", node16, "y")
 Blueprint.connect(node13, "v", node12, "x")
 Blueprint.connect(node11, "result", node12, "y")
 Blueprint.connect(node14, "v", node12, "z")
 Blueprint.connect(node12, "xyz", node3, "size")
 Blueprint.connect(node3, "geo", node18, "geo")
 Blueprint.connect(node16, "xyz", node18, "xyz")
-Blueprint.connect(node18, "geo", node22, "geo")
-Blueprint.connect(node25, "v", node22, "angle")
+Blueprint.connect(node18, "geo", node23, "geo")
+Blueprint.connect(node24, "v", node23, "angle")
 Blueprint.connect(node18, "geo", node5, "geo")
-Blueprint.connect(node21, "pi/6", node5, "angle")
+Blueprint.connect(node22, "v", node5, "angle")
 Blueprint.connect(node5, "geo", node6, "in0")
-Blueprint.connect(node22, "geo", node6, "in1")
+Blueprint.connect(node23, "geo", node6, "in1")
 Blueprint.connect(node6, "list", node7, "geo")
 Blueprint.connect(node2, "var", node7, "xyz")
-Blueprint.connect(node1, "var", node26, "brush")
-Blueprint.connect(node26, "size", node27, "xyz")
 Blueprint.connect(node1, "var", node4, "a")
 Blueprint.connect(node7, "geo", node4, "b")
 Blueprint.connect(node19, "val", node20, "type")

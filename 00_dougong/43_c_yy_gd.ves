@@ -155,18 +155,31 @@ node24.var_type = "bool"
 
 _editor.add_node(node24, -474.24659529807, 11.984754829314)
 
+var node25 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node25, -218.64359077666, -58.897151611696)
+
+var node26 = ::blueprint::nodes::subgraph::Subgraph()
+node26.load_from_file(_editor, "01_san_dou.ves")
+node26.set_prop_value("no_arc", false)
+
+_editor.add_node(node26, -516.57028198242, -169.30688476562)
+
 Blueprint.connect(node21, "var", node22, "x")
 Blueprint.connect(node22, "xyz", node6, "var")
 Blueprint.connect(node6, "var", node10, "var")
 Blueprint.connect(node21, "var", node18, "v")
 Blueprint.connect(node19, "var", node7, "left_len")
 Blueprint.connect(node20, "var", node7, "right_len")
+Blueprint.connect(node7, "pos_middle", node26, "pos")
 Blueprint.connect(node7, "geo", node8, "gong")
 Blueprint.connect(node7, "pos_left", node8, "pos_left")
 Blueprint.connect(node7, "pos_right", node8, "pos_right")
 Blueprint.connect(node23, "var", node8, "rot_left")
 Blueprint.connect(node24, "var", node8, "rot_right")
-Blueprint.connect(node8, "gong_dou", node9, "geo")
+Blueprint.connect(node8, "gong_dou", node25, "in0")
+Blueprint.connect(node26, "geo", node25, "in1")
+Blueprint.connect(node25, "list", node9, "geo")
 Blueprint.connect(node10, "var", node9, "xyz")
 Blueprint.connect(node9, "geo", node17, "geo")
 Blueprint.connect(node9, "geo", node16, "geo")

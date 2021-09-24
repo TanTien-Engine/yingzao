@@ -203,11 +203,15 @@ var node33 = ::blueprint::nodes::load::Load()
 
 node33.var_name = "cut"
 
-_editor.add_node(node33, 209.16432128906, -95.926411132817)
+_editor.add_node(node33, 91.013765273608, -269.48219343791)
 
 var node34 = ::geograph::nodes::brush_merge::BrushMerge()
 
 _editor.add_node(node34, 679.4632350999, -76.163946551547)
+
+var node35 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node35, 218.97479658345, -283.56065326432)
 
 Blueprint.connect(node28, "geo", node29, "in0")
 Blueprint.connect(node26, "geo", node29, "in1")
@@ -220,6 +224,9 @@ Blueprint.connect(node31, "result", node32, "var")
 Blueprint.connect(node32, "var", node33, "var")
 Blueprint.connect(node13, "var", node14, "var")
 Blueprint.connect(node14, "var", node15, "var")
+Blueprint.connect(node33, "var", node35, "geo")
+Blueprint.connect(node15, "var", node35, "xyz")
+Blueprint.connect(node15, "var", node23, "pos")
 Blueprint.connect(node8, "var", node7, "val")
 Blueprint.connect(node9, "v", node7, "default")
 Blueprint.connect(node7, "val", node10, "var")
@@ -239,7 +246,7 @@ Blueprint.connect(node21, "var", node20, "height")
 Blueprint.connect(node20, "geo", node19, "geo")
 Blueprint.connect(node16, "v", node19, "xyz")
 Blueprint.connect(node19, "geo", node24, "a")
-Blueprint.connect(node33, "var", node24, "b")
+Blueprint.connect(node35, "geo", node24, "b")
 Blueprint.connect(node24, "geo", node22, "in0")
 Blueprint.connect(node23, "geo", node22, "in1")
 Blueprint.connect(node22, "list", node34, "list")

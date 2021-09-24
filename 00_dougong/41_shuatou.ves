@@ -305,7 +305,7 @@ var node56 = ::blueprint::nodes::store::Store()
 
 node56.var_name = "head"
 
-_editor.add_node(node56, 759.13199092752, 449.31130042641)
+_editor.add_node(node56, 760.23199092752, 449.31130042641)
 
 var node57 = ::blueprint::nodes::load::Load()
 
@@ -392,6 +392,86 @@ var node70 = ::blueprint::nodes::branch_f::BranchF()
 
 _editor.add_node(node70, 2136.4804680579, 528.15475590807)
 
+var node71 = ::geograph::nodes::polygon::Polygon()
+node71.query_param("vertices").value = [  ]
+node71.query_param("color").value.set(1, 0, 0)
+
+_editor.add_node(node71, 8.3147106927098, -852.3339367531)
+
+var node72 = ::geograph::nodes::poly_extrude::PolyExtrude()
+node72.query_param("distance").value = 0.1
+
+_editor.add_node(node72, 174.60195700448, -850.89797280772)
+
+var node73 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node73, 464.06107262657, -918.99482347422)
+
+var node74 = ::blueprint::nodes::array::Array()
+node74.query_param("serialize").value = true
+
+node74.list = [ ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.48, -0.12)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.5, -0.1)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.48, -0.08)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.5, -0.06)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.48, -0.04)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.5, -0.02)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.46, 0)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.42, -0.02)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.38, 0)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.34, -0.02)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.3, 0)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.15, 0)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.15, -0.15)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.3, -0.15)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.36, -0.12)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.43, -0.15)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.45, -0.14)) ]
+
+_editor.add_node(node74, -127.89350511428, -816.54608559062)
+
+var node75 = ::blueprint::nodes::store::Store()
+
+node75.var_name = "head2"
+
+_editor.add_node(node75, 619.64460417119, -806.79245735702)
+
+var node76 = ::blueprint::nodes::load::Load()
+
+node76.var_name = "head2"
+
+_editor.add_node(node76, 479.36182631439, 331.50100506079)
+
+var node77 = ::blueprint::nodes::print::Print()
+
+_editor.add_node(node77, 912.09059937532, 523.2147020072)
+
+var node78 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node78, 255.48492169992, -1121.0623801232)
+
+var node79 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node79, -81.30428660115, -1137.8984287805)
+
+var node80 = ::blueprint::nodes::negate::Negate()
+
+_editor.add_node(node80, 96.32574523371, -1172.912560038)
+
+var node81 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node81, 62.11353957428, -1094.6957034356)
+
+var node82 = ::blueprint::nodes::number3::Number3()
+
+node82.value.set(0.05, 0.15, -0.2)
+
+_editor.add_node(node82, 168.83613725142, -978.7794966264)
+
+var node83 = ::blueprint::nodes::commentary::Commentary()
+
+node83.set_size(943.4, 474.8)
+node83.title = "head2"
+
+_editor.add_node(node83, 240.8255859375, -738.40213623047)
+
+Blueprint.connect(node79, "pi/2", node81, "a")
+Blueprint.connect(node79, "pi", node81, "b")
+Blueprint.connect(node79, "pi/2", node80, "v")
+Blueprint.connect(node81, "v", node78, "x")
+Blueprint.connect(node80, "v", node78, "y")
+Blueprint.connect(node74, "all", node71, "vertices")
+Blueprint.connect(node71, "polytope", node72, "geo")
+Blueprint.connect(node72, "geo", node73, "obj")
+Blueprint.connect(node82, "v3", node73, "translate")
+Blueprint.connect(node78, "xyz", node73, "rotate")
+Blueprint.connect(node73, "obj", node75, "var")
+Blueprint.connect(node75, "var", node76, "var")
+Blueprint.connect(node67, "var", node77, "value")
 Blueprint.connect(node60, "geo", node61, "geo")
 Blueprint.connect(node62, "plane", node61, "plane")
 Blueprint.connect(node61, "geo", node64, "var")
@@ -446,6 +526,7 @@ Blueprint.connect(node54, "var", node55, "var")
 Blueprint.connect(node67, "var", node66, "type")
 Blueprint.connect(node55, "var", node66, "case0")
 Blueprint.connect(node65, "var", node66, "case1")
+Blueprint.connect(node76, "var", node66, "case2")
 Blueprint.connect(node66, "result", node56, "var")
 Blueprint.connect(node56, "var", node57, "var")
 Blueprint.connect(node57, "var", node63, "geo")
