@@ -185,25 +185,25 @@ var node33 = ::blueprint::nodes::property::Property()
 node33.var_name = "length"
 node33.var_type = "int"
 
-_editor.add_node(node33, -1313.9177685832, 52.814804002583)
+_editor.add_node(node33, -1311.8687282171, 69.89014038671)
 
 var node34 = ::blueprint::nodes::number::Number()
 
 node34.value = 0.96
 
-_editor.add_node(node34, -1308.3295426281, -14.865614234866)
+_editor.add_node(node34, -1313.1106368157, -64.725596476516)
 
 var node35 = ::blueprint::nodes::number::Number()
 
 node35.value = 1.04
 
-_editor.add_node(node35, -1310.8131546362, -78.820506165897)
+_editor.add_node(node35, -1315.5942488238, -128.68048840755)
 
 var node36 = ::blueprint::nodes::number::Number()
 
 node36.value = 1.26
 
-_editor.add_node(node36, -1308.9504099328, -144.63817541322)
+_editor.add_node(node36, -1313.7315041204, -194.49815765487)
 
 var node37 = ::blueprint::nodes::subgraph::Subgraph()
 node37.load_from_file(_editor, "../09_tools/00_entasis.ves")
@@ -349,7 +349,7 @@ var node62 = ::blueprint::nodes::number::Number()
 
 node62.value = 1.8
 
-_editor.add_node(node62, -1306.5939941406, -214.7934625799)
+_editor.add_node(node62, -1311.3750883282, -264.65344482155)
 
 var node63 = ::blueprint::nodes::branch_f::BranchF()
 
@@ -444,6 +444,13 @@ var node79 = ::blueprint::nodes::combine::Combine()
 
 _editor.add_node(node79, -321.77419141748, -2151.5517496568)
 
+var node80 = ::blueprint::nodes::input::Input()
+
+node80.var_name = "length"
+node80.var_type = "num"
+
+_editor.add_node(node80, -1312.690744539, 4.0237213712142)
+
 Blueprint.connect(node71, "var", node70, "val")
 Blueprint.connect(node72, "v", node70, "default")
 Blueprint.connect(node70, "val", node73, "var")
@@ -460,7 +467,7 @@ Blueprint.connect(node68, "var", node66, "cond")
 Blueprint.connect(node78, "xyz", node66, "true")
 Blueprint.connect(node79, "xyz", node66, "false")
 Blueprint.connect(node33, "var", node32, "type")
-Blueprint.connect(node34, "v", node32, "default")
+Blueprint.connect(node80, "var", node32, "default")
 Blueprint.connect(node34, "v", node32, "case0")
 Blueprint.connect(node35, "v", node32, "case1")
 Blueprint.connect(node36, "v", node32, "case2")

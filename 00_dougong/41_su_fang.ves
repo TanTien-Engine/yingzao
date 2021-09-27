@@ -23,7 +23,7 @@ var node3 = ::blueprint::nodes::output::Output()
 node3.var_name = "geo"
 node3.var_type = "geo"
 
-_editor.add_node(node3, 596.34148077713, 42.767600462816)
+_editor.add_node(node3, 1215.4972761463, -92.375490856089)
 
 var node4 = ::blueprint::nodes::number::Number()
 
@@ -210,6 +210,69 @@ node37.var_type = "num3"
 
 _editor.add_node(node37, 143.22936453921, -338.33130257447)
 
+var node38 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node38, 660.82867331199, -319.69670541632)
+
+var node39 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node39, 673.9813099107, -428.24279611876)
+
+var node40 = ::blueprint::nodes::subgraph::Subgraph()
+node40.load_from_file(_editor, "50_gong_add_dou.ves")
+
+_editor.add_node(node40, 1000.3982976353, -222.23210938665)
+
+var node41 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node41, 501.85411033946, -446.00882437211)
+
+var node42 = ::blueprint::nodes::load::Load()
+
+node42.var_name = "length"
+
+_editor.add_node(node42, 105.29519539244, -522.74686380699)
+
+var node43 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node43, 371.57603455737, -467.79291275907)
+
+var node44 = ::blueprint::nodes::negate::Negate()
+
+_editor.add_node(node44, 230.55499774293, -523.19411486276)
+
+var node45 = ::blueprint::nodes::number::Number()
+
+node45.value = 0.25
+
+_editor.add_node(node45, 229.30631254384, -578.90861523842)
+
+var node46 = ::blueprint::nodes::number::Number()
+
+node46.value = 0.15
+
+_editor.add_node(node46, 367.32209015465, -534.78615092587)
+
+var node47 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node47, 502.3482801366, -617.21080784318)
+
+var node48 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node48, 375.82677835902, -613.4501929995)
+
+var node49 = ::blueprint::nodes::number::Number()
+
+node49.value = 0.75
+
+_editor.add_node(node49, 233.62668820123, -648.80462575682)
+
+var node50 = ::blueprint::nodes::boolean::Boolean()
+
+node50.value = true
+
+_editor.add_node(node50, 789.17520217265, -251.5681997252)
+
 Blueprint.connect(node26, "var", node24, "val")
 Blueprint.connect(node25, "v", node24, "default")
 Blueprint.connect(node24, "val", node27, "var")
@@ -227,6 +290,16 @@ Blueprint.connect(node8, "var", node10, "var")
 Blueprint.connect(node23, "var", node22, "val")
 Blueprint.connect(node4, "v", node22, "default")
 Blueprint.connect(node22, "val", node5, "var")
+Blueprint.connect(node5, "var", node42, "var")
+Blueprint.connect(node42, "var", node44, "v")
+Blueprint.connect(node44, "v", node48, "a")
+Blueprint.connect(node49, "v", node48, "b")
+Blueprint.connect(node46, "v", node47, "y")
+Blueprint.connect(node48, "v", node47, "z")
+Blueprint.connect(node44, "v", node43, "a")
+Blueprint.connect(node45, "v", node43, "b")
+Blueprint.connect(node46, "v", node41, "y")
+Blueprint.connect(node43, "v", node41, "z")
 Blueprint.connect(node5, "var", node19, "var")
 Blueprint.connect(node10, "var", node13, "x")
 Blueprint.connect(node11, "var", node13, "y")
@@ -242,6 +315,10 @@ Blueprint.connect(node21, "var", node20, "cond")
 Blueprint.connect(node29, "v", node20, "true")
 Blueprint.connect(node16, "v", node20, "false")
 Blueprint.connect(node20, "result", node15, "z")
+Blueprint.connect(node1, "var", node39, "a")
+Blueprint.connect(node47, "xyz", node39, "b")
+Blueprint.connect(node1, "var", node38, "a")
+Blueprint.connect(node41, "xyz", node38, "b")
 Blueprint.connect(node1, "var", node34, "a")
 Blueprint.connect(node36, "xyz", node34, "b")
 Blueprint.connect(node34, "v", node37, "var")
@@ -249,4 +326,9 @@ Blueprint.connect(node1, "var", node14, "a")
 Blueprint.connect(node15, "xyz", node14, "b")
 Blueprint.connect(node0, "geo", node2, "obj")
 Blueprint.connect(node14, "v", node2, "translate")
+Blueprint.connect(node2, "obj", node40, "gong")
+Blueprint.connect(node38, "v", node40, "pos_left")
+Blueprint.connect(node39, "v", node40, "pos_right")
+Blueprint.connect(node50, "v", node40, "rot_left")
+Blueprint.connect(node50, "v", node40, "rot_right")
 Blueprint.connect(node2, "obj", node3, "var")

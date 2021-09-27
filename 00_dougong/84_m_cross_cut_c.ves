@@ -40,7 +40,7 @@ _editor.add_node(node5, -209.08427260714, 113.74490474972)
 
 var node6 = ::blueprint::nodes::merge::Merge()
 
-_editor.add_node(node6, -59.2850266286, 108.94506600764)
+_editor.add_node(node6, -45.01004541147, 114.20426961395)
 
 var node7 = ::geograph::nodes::translate_f::TranslateF()
 
@@ -116,31 +116,56 @@ _editor.add_node(node20, 673.18668659545, 144.5410685519)
 
 var node21 = ::blueprint::nodes::pi::Pi()
 
-_editor.add_node(node21, -502.01925747454, 11.446178593911)
+_editor.add_node(node21, -506.8003516621, 23.057407335117)
 
 var node22 = ::blueprint::nodes::subtract::Subtract()
 
-_editor.add_node(node22, -371.83744622853, 43.173484613088)
+_editor.add_node(node22, -375.59402023304, -10.921181051821)
 
 var node23 = ::geograph::nodes::rotate_y::RotateY()
 node23.query_param("angle").value = "0"
 
-_editor.add_node(node23, -201.71086915109, 21.585626011929)
+_editor.add_node(node23, -101.03468583028, -35.514298856591)
 
-var node24 = ::blueprint::nodes::multiply::Multiply()
+var node24 = ::blueprint::nodes::property::Property()
 
-_editor.add_node(node24, -368.19191849133, -35.800355264964)
+node24.var_name = "hex"
+node24.var_type = "bool"
 
-var node25 = ::blueprint::nodes::integer::Integer()
+_editor.add_node(node24, -579.90432373048, 456.77594238281)
 
-node25.value = 2
+var node25 = ::blueprint::nodes::branch_f::BranchF()
 
-_editor.add_node(node25, -499.59687187258, -91.998686672242)
+_editor.add_node(node25, -440.80901543807, 442.37410921591)
 
+var node26 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node26, -577.4476787287, 348.34429468218)
+
+var node27 = ::blueprint::nodes::store::Store()
+
+node27.var_name = "angle"
+
+_editor.add_node(node27, -309.56873277442, 454.29337271651)
+
+var node28 = ::blueprint::nodes::load::Load()
+
+node28.var_name = "angle"
+
+_editor.add_node(node28, -504.43986909817, -73.498534926974)
+
+var node29 = ::blueprint::nodes::negate::Negate()
+
+_editor.add_node(node29, -243.25819406144, -28.351208865235)
+
+Blueprint.connect(node24, "var", node25, "cond")
+Blueprint.connect(node26, "pi/6", node25, "true")
+Blueprint.connect(node26, "pi/8", node25, "false")
+Blueprint.connect(node25, "result", node27, "var")
+Blueprint.connect(node27, "var", node28, "var")
 Blueprint.connect(node21, "pi/2", node22, "a")
-Blueprint.connect(node21, "pi/6", node22, "b")
-Blueprint.connect(node22, "v", node24, "a")
-Blueprint.connect(node25, "v", node24, "b")
+Blueprint.connect(node28, "var", node22, "b")
+Blueprint.connect(node22, "v", node29, "v")
 Blueprint.connect(node17, "var", node16, "y")
 Blueprint.connect(node9, "var", node10, "in")
 Blueprint.connect(node10, "out", node11, "cond")
@@ -153,7 +178,7 @@ Blueprint.connect(node12, "xyz", node3, "size")
 Blueprint.connect(node3, "geo", node18, "geo")
 Blueprint.connect(node16, "xyz", node18, "xyz")
 Blueprint.connect(node18, "geo", node23, "geo")
-Blueprint.connect(node24, "v", node23, "angle")
+Blueprint.connect(node29, "v", node23, "angle")
 Blueprint.connect(node18, "geo", node5, "geo")
 Blueprint.connect(node22, "v", node5, "angle")
 Blueprint.connect(node5, "geo", node6, "in0")

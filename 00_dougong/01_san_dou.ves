@@ -3,6 +3,7 @@ node0.query_param("x").value = -0.07
 node0.query_param("y").value = -0.08
 node0.query_param("w").value = 0.14
 node0.query_param("h").value = 0.16
+node0.query_param("offset").value = false
 node0.query_param("fill").value = false
 node0.query_param("color").value.set(1, 0, 0)
 
@@ -11,6 +12,7 @@ _editor.add_node(node0, 201.95792637115, 17.483471074375)
 var node1 = ::geograph::nodes::column::Column()
 node1.query_param("height").value = 0.1
 node1.query_param("generatrix").value = [ 0, 0.75, 0.1, 0.77, 0.2, 0.82, 0.3, 0.9, 0.4, 1, 1, 1 ]
+node1.query_param("offset_z_absolute").value = false
 
 _editor.add_node(node1, 351.09568293897, 129.06563100704)
 
@@ -33,7 +35,7 @@ var node4 = ::blueprint::nodes::output::Output()
 node4.var_name = "geo"
 node4.var_type = "geo"
 
-_editor.add_node(node4, 1245.1790143419, 48.365018378792)
+_editor.add_node(node4, 1377.2659139745, 87.313719552503)
 
 var node5 = ::geograph::nodes::box::Box()
 node5.query_param("size").value.set(0.02, 0.03, 0.02)
@@ -52,6 +54,7 @@ _editor.add_node(node6, 668.55172548907, -90.543239833584)
 var node7 = ::geograph::nodes::column::Column()
 node7.query_param("height").value = 0.1
 node7.query_param("generatrix").value = [ 0, 0.75, 0.4, 1, 1, 1 ]
+node7.query_param("offset_z_absolute").value = false
 
 _editor.add_node(node7, 352.95844690815, 35.927432548165)
 
@@ -108,6 +111,16 @@ node17.query_param("distance").value = 0.1
 
 _editor.add_node(node17, 358.09263916016, 292.11358642578)
 
+var node18 = ::geograph::nodes::brush_set_lock::BrushSetLock()
+
+_editor.add_node(node18, 1236.4153124982, 73.98351017637)
+
+var node19 = ::blueprint::nodes::boolean::Boolean()
+
+node19.value = true
+
+_editor.add_node(node19, 1098.6836767603, -82.375782222333)
+
 Blueprint.connect(node10, "var", node12, "a")
 Blueprint.connect(node8, "v3", node12, "b")
 Blueprint.connect(node12, "v", node9, "var")
@@ -128,4 +141,6 @@ Blueprint.connect(node11, "obj", node16, "default")
 Blueprint.connect(node11, "obj", node16, "case0")
 Blueprint.connect(node1, "geo", node16, "case1")
 Blueprint.connect(node17, "geo", node16, "case2")
-Blueprint.connect(node16, "result", node4, "var")
+Blueprint.connect(node16, "result", node18, "geo")
+Blueprint.connect(node19, "v", node18, "lock")
+Blueprint.connect(node18, "geo", node4, "var")

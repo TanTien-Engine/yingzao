@@ -1,0 +1,87 @@
+var node0 = ::blueprint::nodes::input::Input()
+
+node0.var_name = "calc_step_len"
+node0.var_type = "func"
+
+_editor.add_node(node0, -422.92656984308, -1.0115828082402)
+
+var node1 = ::blueprint::nodes::function::Function()
+
+node1.set_size(1120.7663410969, 329.72201352367)
+node1.title = "calc_step_len_hua"
+
+_editor.add_node(node1, -346.2207155193, 57.931484279155)
+
+var node2 = ::blueprint::nodes::func_call::FuncCall()
+node2.imports.add(::blueprint::pin::Pin(node2, "step", "int"))
+node2.exports.add(::blueprint::pin::Pin(node2, "len", "num"))
+node2.layout()
+
+_editor.add_node(node2, -291.05243850861, -19.52178328489)
+
+var node3 = ::blueprint::nodes::func_in::FuncIn()
+
+node3.var_name = "step"
+node3.var_type = "int"
+
+_editor.add_node(node3, -425.10060006601, -56.431781929871)
+
+var node4 = ::blueprint::nodes::divide::Divide()
+
+_editor.add_node(node4, -148.37091236257, -45.27141508128)
+
+var node5 = ::blueprint::nodes::cos::Cos()
+
+_editor.add_node(node5, -298.42920935016, -120.99337633596)
+
+var node6 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node6, -723.29481872893, -198.55675133917)
+
+var node7 = ::blueprint::nodes::func_out::FuncOut()
+
+node7.var_name = "len"
+node7.var_type = "num"
+
+_editor.add_node(node7, -10.751911796186, -38.26449422567)
+
+var node8 = ::blueprint::nodes::output::Output()
+
+node8.var_name = "func"
+node8.var_type = "func"
+
+_editor.add_node(node8, 383.85123966942, 59.359504132231)
+
+var node9 = ::blueprint::nodes::property::Property()
+
+node9.var_name = "hex"
+node9.var_type = "bool"
+
+_editor.add_node(node9, -724.87610250511, -93.969876871114)
+
+var node10 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node10, -584.5636457646, -135.90970741483)
+
+var node11 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node11, -434.15343037342, -203.30047682959)
+
+var node12 = ::blueprint::nodes::integer::Integer()
+
+node12.value = 2
+
+_editor.add_node(node12, -583.42319043154, -213.86026669309)
+
+Blueprint.connect(node9, "var", node10, "cond")
+Blueprint.connect(node6, "pi/6", node10, "true")
+Blueprint.connect(node6, "pi/8", node10, "false")
+Blueprint.connect(node10, "result", node11, "a")
+Blueprint.connect(node12, "v", node11, "b")
+Blueprint.connect(node10, "result", node5, "v")
+Blueprint.connect(node1, "func", node8, "var")
+Blueprint.connect(node0, "var", node2, "func")
+Blueprint.connect(node3, "var", node2, "step")
+Blueprint.connect(node2, "len", node4, "a")
+Blueprint.connect(node5, "v", node4, "b")
+Blueprint.connect(node4, "v", node7, "var")

@@ -137,7 +137,7 @@ _editor.add_node(node23, 1187.641082287, -27.31296521833)
 
 var node24 = ::blueprint::nodes::pi::Pi()
 
-_editor.add_node(node24, -64.754560546875, -294.78885986328)
+_editor.add_node(node24, -63.482267691758, -232.02241234415)
 
 var node25 = ::blueprint::nodes::subtract::Subtract()
 
@@ -145,7 +145,7 @@ _editor.add_node(node25, 80.70500337425, -259.61412106715)
 
 var node26 = ::blueprint::nodes::negate::Negate()
 
-_editor.add_node(node26, 222.62624049517, -264.51993511664)
+_editor.add_node(node26, 224.95877739622, -264.05342773643)
 
 var node27 = ::blueprint::nodes::branch_f::BranchF()
 
@@ -175,7 +175,7 @@ var node32 = ::blueprint::nodes::load::Load()
 
 node32.var_name = "height"
 
-_editor.add_node(node32, -550.86491364176, -78.429425227985)
+_editor.add_node(node32, -549.76491364176, -78.429425227985)
 
 var node33 = ::blueprint::nodes::branch_f::BranchF()
 
@@ -231,11 +231,43 @@ var node42 = ::blueprint::nodes::subtract::Subtract()
 
 _editor.add_node(node42, -545.29616213957, -146.54121040832)
 
+var node43 = ::blueprint::nodes::property::Property()
+
+node43.var_name = "hex"
+node43.var_type = "bool"
+
+_editor.add_node(node43, 195.70567626953, 292.21594238281)
+
+var node44 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node44, 334.80098456194, 277.81410921591)
+
+var node45 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node45, 198.16232127131, 183.78429468218)
+
+var node46 = ::blueprint::nodes::store::Store()
+
+node46.var_name = "angle"
+
+_editor.add_node(node46, 466.04126722559, 289.73337271651)
+
+var node47 = ::blueprint::nodes::load::Load()
+
+node47.var_name = "angle"
+
+_editor.add_node(node47, -62.375788459596, -329.90147043001)
+
+Blueprint.connect(node43, "var", node44, "cond")
+Blueprint.connect(node45, "pi/6", node44, "true")
+Blueprint.connect(node45, "pi/8", node44, "false")
+Blueprint.connect(node44, "result", node46, "var")
+Blueprint.connect(node46, "var", node47, "var")
 Blueprint.connect(node37, "v", node38, "var")
 Blueprint.connect(node38, "var", node40, "var")
 Blueprint.connect(node38, "var", node39, "var")
 Blueprint.connect(node24, "pi/2", node25, "a")
-Blueprint.connect(node24, "pi/6", node25, "b")
+Blueprint.connect(node47, "var", node25, "b")
 Blueprint.connect(node25, "v", node26, "v")
 Blueprint.connect(node28, "var", node27, "cond")
 Blueprint.connect(node26, "v", node27, "true")

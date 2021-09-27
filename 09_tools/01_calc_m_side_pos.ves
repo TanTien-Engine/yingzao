@@ -1,0 +1,178 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "01_calc_step_pos.ves")
+
+_editor.add_node(node0, -761.14790473675, 126.71556511488)
+
+var node1 = ::blueprint::nodes::input::Input()
+
+node1.var_name = "calc_step_len"
+node1.var_type = "func"
+
+_editor.add_node(node1, -875.68384662107, 706.37596618494)
+
+var node2 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node2, -318.80465815177, -50.398572501879)
+
+var node3 = ::blueprint::nodes::property::Property()
+
+node3.var_name = "neg"
+node3.var_type = "bool"
+
+_editor.add_node(node3, -476.53193087904, 24.510518407212)
+
+var node4 = ::blueprint::nodes::output::Output()
+
+node4.var_name = "pos"
+node4.var_type = "num3"
+
+_editor.add_node(node4, 178.82945154019, 100.14387678437)
+
+var node5 = ::blueprint::nodes::function::Function()
+
+node5.set_size(806.71675432006, 548.64763335838)
+node5.title = "calc_step_len_hua"
+
+_editor.add_node(node5, -764.32196886235, 780.683929067)
+
+var node6 = ::blueprint::nodes::func_call::FuncCall()
+node6.imports.add(::blueprint::pin::Pin(node6, "step", "int"))
+node6.exports.add(::blueprint::pin::Pin(node6, "len", "num"))
+node6.layout()
+
+_editor.add_node(node6, -732.25757819823, 685.7270756823)
+
+var node7 = ::blueprint::nodes::func_in::FuncIn()
+
+node7.var_name = "step"
+node7.var_type = "int"
+
+_editor.add_node(node7, -862.80160752421, 652.28815141752)
+
+var node8 = ::blueprint::nodes::divide::Divide()
+
+_editor.add_node(node8, -595.57605205219, 659.97744388595)
+
+var node9 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node9, -925.10942663024, 538.00450080364)
+
+var node10 = ::blueprint::nodes::func_out::FuncOut()
+
+node10.var_name = "len"
+node10.var_type = "num"
+
+_editor.add_node(node10, -457.9570514858, 666.9843647416)
+
+var node11 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node11, -931.99916597258, 412.64794523024)
+
+var node12 = ::blueprint::nodes::load::Load()
+
+node12.var_name = "hex"
+
+_editor.add_node(node12, -1087.11114515, 500.18699843273)
+
+var node13 = ::blueprint::nodes::sin::Sin()
+
+_editor.add_node(node13, -740.55524711382, 603.2919052837)
+
+var node14 = ::blueprint::nodes::divide::Divide()
+
+_editor.add_node(node14, -756.30318415806, 480.9534598126)
+
+var node15 = ::blueprint::nodes::integer::Integer()
+
+node15.value = 6
+
+_editor.add_node(node15, -1086.8816370329, 439.63115030281)
+
+var node16 = ::blueprint::nodes::integer::Integer()
+
+node16.value = 8
+
+_editor.add_node(node16, -1084.4023294641, 370.20966925701)
+
+var node17 = ::geograph::nodes::rotate_y::RotateY()
+node17.query_param("angle").value = "0"
+
+_editor.add_node(node17, 21.437529073096, 80.967343119012)
+
+var node18 = ::blueprint::nodes::property::Property()
+
+node18.var_name = "hex"
+node18.var_type = "bool"
+
+_editor.add_node(node18, 90.251130814984, 693.1250332919)
+
+var node19 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node19, 229.34643910739, 678.723200125)
+
+var node20 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node20, 92.707775816764, 584.69338559127)
+
+var node21 = ::blueprint::nodes::store::Store()
+
+node21.var_name = "angle"
+
+_editor.add_node(node21, 532.40490358923, 685.18791817106)
+
+var node22 = ::blueprint::nodes::subtract::Subtract()
+
+_editor.add_node(node22, 386.79082697088, 686.60518022017)
+
+var node23 = ::blueprint::nodes::load::Load()
+
+node23.var_name = "angle"
+
+_editor.add_node(node23, -621.93191844731, -60.622501456409)
+
+var node24 = ::blueprint::nodes::negate::Negate()
+
+_editor.add_node(node24, -485.92934777126, -37.964974395501)
+
+var node25 = ::blueprint::nodes::input::Input()
+
+node25.var_name = "x"
+node25.var_type = "int"
+
+_editor.add_node(node25, -941.2758622603, 179.05267888849)
+
+var node26 = ::blueprint::nodes::input::Input()
+
+node26.var_name = "y"
+node26.var_type = "int"
+
+_editor.add_node(node26, -946.73040771484, 111.77994745428)
+
+Blueprint.connect(node18, "var", node19, "cond")
+Blueprint.connect(node20, "pi/6", node19, "true")
+Blueprint.connect(node20, "pi/8", node19, "false")
+Blueprint.connect(node20, "pi/2", node22, "a")
+Blueprint.connect(node19, "result", node22, "b")
+Blueprint.connect(node22, "v", node21, "var")
+Blueprint.connect(node21, "var", node23, "var")
+Blueprint.connect(node23, "var", node24, "v")
+Blueprint.connect(node12, "var", node11, "cond")
+Blueprint.connect(node15, "v", node11, "true")
+Blueprint.connect(node16, "v", node11, "false")
+Blueprint.connect(node9, "pi*2", node14, "a")
+Blueprint.connect(node11, "result", node14, "b")
+Blueprint.connect(node14, "v", node13, "v")
+Blueprint.connect(node25, "var", node0, "x")
+Blueprint.connect(node26, "var", node0, "y")
+Blueprint.connect(node5, "func", node0, "calc_step_len")
+Blueprint.connect(node3, "var", node2, "cond")
+Blueprint.connect(node24, "v", node2, "true")
+Blueprint.connect(node23, "var", node2, "false")
+Blueprint.connect(node0, "pos", node17, "geo")
+Blueprint.connect(node2, "result", node17, "angle")
+Blueprint.connect(node17, "geo", node4, "var")
+Blueprint.connect(node1, "var", node6, "func")
+Blueprint.connect(node7, "var", node6, "step")
+Blueprint.connect(node6, "len", node8, "a")
+Blueprint.connect(node13, "v", node8, "b")
+Blueprint.connect(node8, "v", node10, "var")
