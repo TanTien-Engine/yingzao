@@ -159,6 +159,17 @@ var node30 = ::blueprint::nodes::subtract::Subtract()
 
 _editor.add_node(node30, -360.00562790748, 168.16727041627)
 
+var node31 = ::blueprint::nodes::property::Property()
+
+node31.var_name = "mirror"
+node31.var_type = "bool"
+
+_editor.add_node(node31, -735.19171697443, 906.94573419744)
+
+var node32 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node32, -596.69932972301, 894.43579101562)
+
 Blueprint.connect(node24, "var", node25, "cond")
 Blueprint.connect(node26, "pi/6", node25, "true")
 Blueprint.connect(node26, "pi/8", node25, "false")
@@ -180,17 +191,20 @@ Blueprint.connect(node0, "var", node22, "geo")
 Blueprint.connect(node23, "var", node21, "cond")
 Blueprint.connect(node22, "geo", node21, "true")
 Blueprint.connect(node0, "var", node21, "false")
-Blueprint.connect(node21, "result", node9, "geo")
+Blueprint.connect(node0, "var", node15, "geo")
+Blueprint.connect(node17, "var", node14, "cond")
+Blueprint.connect(node15, "geo", node14, "true")
+Blueprint.connect(node0, "var", node14, "false")
+Blueprint.connect(node31, "var", node32, "cond")
+Blueprint.connect(node14, "result", node32, "true")
+Blueprint.connect(node21, "result", node32, "false")
+Blueprint.connect(node32, "result", node9, "geo")
 Blueprint.connect(node10, "xyz", node9, "xyz")
 Blueprint.connect(node9, "geo", node1, "geo")
 Blueprint.connect(node30, "v", node1, "angle")
 Blueprint.connect(node1, "geo", node3, "geo")
 Blueprint.connect(node4, "var", node3, "xyz")
 Blueprint.connect(node3, "geo", node7, "var")
-Blueprint.connect(node0, "var", node15, "geo")
-Blueprint.connect(node17, "var", node14, "cond")
-Blueprint.connect(node15, "geo", node14, "true")
-Blueprint.connect(node0, "var", node14, "false")
 Blueprint.connect(node14, "result", node12, "geo")
 Blueprint.connect(node10, "xyz", node12, "xyz")
 Blueprint.connect(node12, "geo", node2, "geo")
