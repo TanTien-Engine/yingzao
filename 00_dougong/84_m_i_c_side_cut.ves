@@ -7,24 +7,28 @@ _editor.add_node(node0, 264.38095091533, 401.33223198217)
 var node1 = ::blueprint::nodes::output::Output()
 
 node1.var_name = "o_gong_0"
+node1.var_type = "any"
 
 _editor.add_node(node1, 448.11687089673, 444.90506861787)
 
 var node2 = ::blueprint::nodes::output::Output()
 
 node2.var_name = "o_gong_1"
+node2.var_type = "any"
 
 _editor.add_node(node2, 446.2677162983, 281.06789633577)
 
 var node3 = ::blueprint::nodes::output::Output()
 
 node3.var_name = "c_gong_0"
+node3.var_type = "any"
 
 _editor.add_node(node3, 446.08847502987, 214.91204580447)
 
 var node4 = ::blueprint::nodes::output::Output()
 
 node4.var_name = "c_gong_1"
+node4.var_type = "any"
 
 _editor.add_node(node4, 447.65421247888, 375.97063651797)
 
@@ -33,7 +37,7 @@ node5.load_from_file(_editor, "../09_tools/01_calc_m_side_pos.ves")
 node5.set_prop_value("neg", false)
 node5.set_prop_value("hex", false)
 
-_editor.add_node(node5, -105.70402815933, 398.68342965407)
+_editor.add_node(node5, -436.65493725024, 396.26342965407)
 
 var node6 = ::blueprint::nodes::subgraph::Subgraph()
 node6.load_from_file(_editor, "88_m_2_cut_c.ves")
@@ -46,28 +50,28 @@ node7.load_from_file(_editor, "../09_tools/01_calc_m_side_pos.ves")
 node7.set_prop_value("neg", true)
 node7.set_prop_value("hex", false)
 
-_editor.add_node(node7, -108.73793815933, 240.40915965407)
+_editor.add_node(node7, -442.69793815933, 52.85915965407)
 
 var node8 = ::blueprint::nodes::input::Input()
 
 node8.var_name = "calc_step_len"
 node8.var_type = "func"
 
-_editor.add_node(node8, -376.46244458372, 381.35633788206)
+_editor.add_node(node8, -698.32244458372, 378.93633788206)
 
 var node9 = ::blueprint::nodes::property::Property()
 
 node9.var_name = "x"
 node9.var_type = "int"
 
-_editor.add_node(node9, -374.20453039855, 312.49049209042)
+_editor.add_node(node9, -696.06453039855, 310.07049209042)
 
 var node10 = ::blueprint::nodes::property::Property()
 
 node10.var_name = "y"
 node10.var_type = "int"
 
-_editor.add_node(node10, -370.81768533325, 248.14048762936)
+_editor.add_node(node10, -692.67768533325, 245.72048762936)
 
 var node11 = ::blueprint::nodes::input::Input()
 
@@ -97,10 +101,48 @@ node14.var_type = "geo"
 
 _editor.add_node(node14, 75.667857286358, 335.10326467393)
 
+var node15 = ::blueprint::nodes::subgraph::Subgraph()
+node15.load_from_file(_editor, "../09_tools/01_calc_m_side_pos.ves")
+node15.set_prop_value("neg", true)
+node15.set_prop_value("hex", false)
+
+_editor.add_node(node15, -435.44738995839, 253.05737153645)
+
+var node16 = ::blueprint::nodes::subgraph::Subgraph()
+node16.load_from_file(_editor, "../09_tools/01_calc_m_side_pos.ves")
+node16.set_prop_value("neg", false)
+node16.set_prop_value("hex", false)
+
+_editor.add_node(node16, -444.2679216304, -94.447146131054)
+
+var node17 = ::blueprint::nodes::property::Property()
+
+node17.var_name = "inner"
+node17.var_type = "bool"
+
+_editor.add_node(node17, -384.03655173562, 497.65154474432)
+
+var node18 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node18, -159.49111175537, 365.83330743963)
+
+var node19 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node19, -172.33243406942, 28.356327725129)
+
+Blueprint.connect(node8, "var", node16, "calc_step_len")
+Blueprint.connect(node9, "var", node16, "x")
+Blueprint.connect(node10, "var", node16, "y")
+Blueprint.connect(node8, "var", node15, "calc_step_len")
+Blueprint.connect(node9, "var", node15, "x")
+Blueprint.connect(node10, "var", node15, "y")
 Blueprint.connect(node8, "var", node7, "calc_step_len")
 Blueprint.connect(node9, "var", node7, "x")
 Blueprint.connect(node10, "var", node7, "y")
-Blueprint.connect(node7, "pos", node6, "pos")
+Blueprint.connect(node17, "var", node19, "cond")
+Blueprint.connect(node16, "pos", node19, "true")
+Blueprint.connect(node7, "pos", node19, "false")
+Blueprint.connect(node19, "result", node6, "pos")
 Blueprint.connect(node12, "var", node6, "gong0")
 Blueprint.connect(node13, "var", node6, "gong1")
 Blueprint.connect(node6, "gong1", node3, "var")
@@ -108,7 +150,10 @@ Blueprint.connect(node6, "gong0", node2, "var")
 Blueprint.connect(node8, "var", node5, "calc_step_len")
 Blueprint.connect(node9, "var", node5, "x")
 Blueprint.connect(node10, "var", node5, "y")
-Blueprint.connect(node5, "pos", node0, "pos")
+Blueprint.connect(node17, "var", node18, "cond")
+Blueprint.connect(node15, "pos", node18, "true")
+Blueprint.connect(node5, "pos", node18, "false")
+Blueprint.connect(node18, "result", node0, "pos")
 Blueprint.connect(node11, "var", node0, "gong0")
 Blueprint.connect(node14, "var", node0, "gong1")
 Blueprint.connect(node0, "gong1", node4, "var")

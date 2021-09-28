@@ -30,14 +30,14 @@ _editor.add_node(node5, 326.54798272727, -609.13335545455)
 var node6 = ::blueprint::nodes::subgraph::Subgraph()
 node6.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
 
-node6.op_node.cam.position.set(-3.46518046337, 3.8641827812893, -6.4964178319234)
-node6.op_node.cam.yaw = 37.5
-node6.op_node.cam.pitch = -23.5
+node6.op_node.cam.position.set(-1.2144278998667, 3.2095916679524, 3.7011856676976)
+node6.op_node.cam.yaw = 184.6
+node6.op_node.cam.pitch = -33.7
 node6.op_node.cam.zoom = 44
 node6.op_node.cam.update_vectors()
 node6.op_node.speed = 0.21526837348938
 
-_editor.add_node(node6, 584.18808984623, 135.280914952)
+_editor.add_node(node6, 602.24466385074, 102.63192922698)
 
 var node7 = ::blueprint::nodes::subgraph::Subgraph()
 node7.load_from_file(_editor, "43_outer_corner.ves")
@@ -196,12 +196,12 @@ Blueprint.connect(node20, "var", node15, "diameter")
 Blueprint.connect(node15, "geo", node31, "in0")
 Blueprint.connect(node16, "geo", node31, "in1")
 Blueprint.connect(node28, "geo", node31, "in2")
-Blueprint.connect(node31, "list", node6, "list")
 Blueprint.connect(node15, "geo", node14, "in0")
 Blueprint.connect(node16, "geo", node14, "in1")
 Blueprint.connect(node18, "geo", node14, "in2")
 Blueprint.connect(node25, "geo", node14, "in3")
 Blueprint.connect(node28, "geo", node14, "in4")
+Blueprint.connect(node14, "list", node6, "list")
 Blueprint.connect(node4, "v", node3, "degree")
 Blueprint.connect(node3, "radian", node2, "v")
 Blueprint.connect(node0, "v", node1, "a")

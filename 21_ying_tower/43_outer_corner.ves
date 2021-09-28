@@ -2152,6 +2152,7 @@ var node355 = ::blueprint::nodes::subgraph::Subgraph()
 node355.load_from_file(_editor, "../00_dougong/84_m_i_c_side_cut.ves")
 node355.set_prop_value("x", 1)
 node355.set_prop_value("y", 1)
+node355.set_prop_value("inner", false)
 
 _editor.add_node(node355, 315.16855361307, -1846.5694558745)
 
@@ -2159,6 +2160,7 @@ var node356 = ::blueprint::nodes::subgraph::Subgraph()
 node356.load_from_file(_editor, "../00_dougong/84_m_i_c_side_cut.ves")
 node356.set_prop_value("x", 1)
 node356.set_prop_value("y", 2)
+node356.set_prop_value("inner", false)
 
 _editor.add_node(node356, 1436.9894695916, -1231.2325053585)
 
@@ -2166,13 +2168,25 @@ var node357 = ::blueprint::nodes::subgraph::Subgraph()
 node357.load_from_file(_editor, "../00_dougong/84_m_i_c_side_cut.ves")
 node357.set_prop_value("x", 2)
 node357.set_prop_value("y", 2)
+node357.set_prop_value("inner", false)
 
 _editor.add_node(node357, 1432.7330182132, -1426.7056798108)
+
+var node358 = ::blueprint::nodes::load::Load()
+
+node358.var_name = "no_beam"
+
+_editor.add_node(node358, 3276.8779930804, -1322.332713329)
+
+var node359 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node359, 3415.8060550462, -1341.0038595339)
 
 Blueprint.connect(node352, "v", node353, "v")
 Blueprint.connect(node215, "v", node216, "a")
 Blueprint.connect(node217, "v", node216, "b")
 Blueprint.connect(node209, "var", node210, "var")
+Blueprint.connect(node210, "var", node358, "var")
 Blueprint.connect(node210, "var", node213, "var")
 Blueprint.connect(node210, "var", node211, "var")
 Blueprint.connect(node200, "up_h", node204, "var")
@@ -2454,6 +2468,8 @@ Blueprint.connect(node30, "var", node351, "var")
 Blueprint.connect(node351, "var", node349, "pos")
 Blueprint.connect(node354, "v", node349, "length")
 Blueprint.connect(node353, "v", node349, "offset")
+Blueprint.connect(node358, "var", node359, "cond")
+Blueprint.connect(node349, "geo", node359, "false")
 Blueprint.connect(node30, "var", node179, "var")
 Blueprint.connect(node30, "var", node65, "var")
 Blueprint.connect(node63, "v", node64, "hop_count")
@@ -2462,7 +2478,7 @@ Blueprint.connect(node86, "func", node64, "calc_step_len")
 Blueprint.connect(node64, "geo", node72, "geo")
 Blueprint.connect(node73, "plane", node72, "plane")
 Blueprint.connect(node72, "geo", node350, "in0")
-Blueprint.connect(node349, "geo", node350, "in1")
+Blueprint.connect(node359, "result", node350, "in1")
 Blueprint.connect(node350, "list", node33, "var")
 Blueprint.connect(node33, "var", node178, "var")
 Blueprint.connect(node30, "var", node32, "var")

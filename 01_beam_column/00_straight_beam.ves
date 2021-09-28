@@ -354,17 +354,17 @@ var node62 = ::blueprint::nodes::load::Load()
 
 node62.var_name = "head"
 
-_editor.add_node(node62, -516.36132755006, -1462.6654990076)
+_editor.add_node(node62, -591.16132755006, -1527.5654990076)
 
 var node63 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node63, -364.6397286782, -1493.0826592076)
+_editor.add_node(node63, -452.6397286782, -1563.4826592076)
 
 var node64 = ::blueprint::nodes::number::Number()
 
 node64.value = 0.05
 
-_editor.add_node(node64, -519.87003395774, -1528.6444868607)
+_editor.add_node(node64, -594.67003395774, -1593.5444868607)
 
 var node65 = ::geograph::nodes::plane::Plane()
 node65.query_param("ori").value.set(0, 0, 0)
@@ -487,6 +487,17 @@ var node86 = ::geograph::nodes::translate_f::TranslateF()
 
 _editor.add_node(node86, 727.04608771902, -1212.6180242748)
 
+var node87 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node87, -287.65979614258, -1648.7697998047)
+
+var node88 = ::blueprint::nodes::input::Input()
+
+node88.var_name = "offset"
+node88.var_type = "num"
+
+_editor.add_node(node88, -457.05979003906, -1654.2697753906)
+
 Blueprint.connect(node59, "var", node68, "var")
 Blueprint.connect(node68, "var", node70, "var")
 Blueprint.connect(node68, "var", node69, "var")
@@ -497,7 +508,9 @@ Blueprint.connect(node40, "v", node41, "var")
 Blueprint.connect(node41, "var", node62, "var")
 Blueprint.connect(node62, "var", node63, "a")
 Blueprint.connect(node64, "v", node63, "b")
-Blueprint.connect(node63, "v", node61, "z")
+Blueprint.connect(node63, "v", node87, "a")
+Blueprint.connect(node88, "var", node87, "b")
+Blueprint.connect(node87, "v", node61, "z")
 Blueprint.connect(node82, "var", node81, "cond")
 Blueprint.connect(node61, "xyz", node81, "false")
 Blueprint.connect(node41, "var", node45, "var")
