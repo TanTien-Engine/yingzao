@@ -1,0 +1,251 @@
+var node0 = ::blueprint::nodes::number::Number()
+
+node0.value = 10.388
+
+_editor.add_node(node0, -255.86810689224, -847.50608558632)
+
+var node1 = ::blueprint::nodes::divide::Divide()
+
+_editor.add_node(node1, -75.3844216, -987.1145326)
+
+var node2 = ::blueprint::nodes::tan::Tan()
+
+_editor.add_node(node2, -240.3844216, -1011.1145326)
+
+var node3 = ::blueprint::nodes::subgraph::Subgraph()
+node3.load_from_file(_editor, "../../tantien/assets/blueprints/tools/radian.ves")
+
+_editor.add_node(node3, -439.3844216, -1013.1145326)
+
+var node4 = ::blueprint::nodes::number::Number()
+
+node4.value = 22.5
+
+_editor.add_node(node4, -643.3844216, -1033.1145326)
+
+var node5 = ::blueprint::nodes::print::Print()
+
+_editor.add_node(node5, 334.34285112727, -1010.5690780546)
+
+var node6 = ::blueprint::nodes::subgraph::Subgraph()
+node6.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+
+node6.op_node.cam.position.set(3.1480515972461, 5.3033428558178, -8.0659401630399)
+node6.op_node.cam.yaw = -246.8
+node6.op_node.cam.pitch = -29.8
+node6.op_node.cam.zoom = 45
+node6.op_node.cam.update_vectors()
+node6.op_node.speed = 0.21526837348938
+
+_editor.add_node(node6, 564.39342418132, 161.30961517739)
+
+var node7 = ::blueprint::nodes::subgraph::Subgraph()
+node7.load_from_file(_editor, "34_outer_corner.ves")
+node7.set_prop_value("no_beam", true)
+
+_editor.add_node(node7, -179.78716699842, 648.31847256747)
+
+var node8 = ::blueprint::nodes::number::Number()
+
+node8.value = 14.068
+
+_editor.add_node(node8, -779.13471371806, 667.17966663707)
+
+var node9 = ::blueprint::nodes::divide::Divide()
+
+_editor.add_node(node9, 84.345891787783, -1001.2630782987)
+
+var node10 = ::blueprint::nodes::number::Number()
+
+node10.value = 1.7
+
+_editor.add_node(node10, -80.19957246781, -1052.1721747564)
+
+var node11 = ::blueprint::nodes::number::Number()
+
+node11.value = 6.047
+
+_editor.add_node(node11, -259.98697275405, -913.33262942935)
+
+var node12 = ::blueprint::nodes::subgraph::Subgraph()
+node12.load_from_file(_editor, "37_inner_corner.ves")
+
+_editor.add_node(node12, -166.57329735301, 480.40909595332)
+
+var node13 = ::blueprint::nodes::number::Number()
+
+node13.value = 8.504
+
+_editor.add_node(node13, -774.31436401517, 594.48984285454)
+
+var node14 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node14, 369.27554468655, 92.052859905398)
+
+var node15 = ::blueprint::nodes::subgraph::Subgraph()
+node15.load_from_file(_editor, "../04_layout/01_octagon_corner.ves")
+
+_editor.add_node(node15, 59.450042434443, 627.45604218652)
+
+var node16 = ::blueprint::nodes::subgraph::Subgraph()
+node16.load_from_file(_editor, "../04_layout/01_octagon_corner.ves")
+
+_editor.add_node(node16, 86.770580649046, 459.00008724057)
+
+var node17 = ::blueprint::nodes::subgraph::Subgraph()
+node17.load_from_file(_editor, "33_outer_tween_1.ves")
+
+_editor.add_node(node17, -172.62922403635, 273.40898775463)
+
+var node18 = ::blueprint::nodes::subgraph::Subgraph()
+node18.load_from_file(_editor, "../04_layout/01_octagon_tween.ves")
+
+_editor.add_node(node18, 83.840047536807, 257.87755742349)
+
+var node19 = ::blueprint::nodes::store::Store()
+
+node19.var_name = "outer_d"
+
+_editor.add_node(node19, -642.93141941193, 665.19028102793)
+
+var node20 = ::blueprint::nodes::load::Load()
+
+node20.var_name = "outer_d"
+
+_editor.add_node(node20, -127.15602728275, 583.15445073228)
+
+var node21 = ::blueprint::nodes::store::Store()
+
+node21.var_name = "inner_d"
+
+_editor.add_node(node21, -644.19718823571, 596.81476003083)
+
+var node22 = ::blueprint::nodes::load::Load()
+
+node22.var_name = "inner_d"
+
+_editor.add_node(node22, -116.22782892634, 415.13310052124)
+
+var node23 = ::blueprint::nodes::load::Load()
+
+node23.var_name = "outer_d"
+
+_editor.add_node(node23, -118.71719113767, 205.65210675428)
+
+var node24 = ::blueprint::nodes::subgraph::Subgraph()
+node24.load_from_file(_editor, "36_inner_tween_1.ves")
+
+_editor.add_node(node24, -168.50997924805, 121.62016296387)
+
+var node25 = ::blueprint::nodes::subgraph::Subgraph()
+node25.load_from_file(_editor, "../04_layout/01_octagon_tween.ves")
+
+_editor.add_node(node25, 97.473244474423, 99.073532611471)
+
+var node26 = ::blueprint::nodes::load::Load()
+
+node26.var_name = "inner_d"
+
+_editor.add_node(node26, -119.62025120251, 58.827954946233)
+
+var node27 = ::blueprint::nodes::subgraph::Subgraph()
+node27.load_from_file(_editor, "31_outer_column.ves")
+node27.set_prop_value("no_beam", true)
+
+_editor.add_node(node27, -150.72219848633, -52.03567199707)
+
+var node28 = ::blueprint::nodes::subgraph::Subgraph()
+node28.load_from_file(_editor, "../04_layout/01_octagon_tween2.ves")
+
+_editor.add_node(node28, 89.355713349192, -99.454535718613)
+
+var node29 = ::blueprint::nodes::load::Load()
+
+node29.var_name = "outer_d"
+
+_editor.add_node(node29, -105.78173659222, -118.36062051845)
+
+var node30 = ::blueprint::nodes::number::Number()
+
+node30.value = 1.35
+
+_editor.add_node(node30, -102.79634409649, -176.06328591949)
+
+var node31 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node31, 384.11850096648, 355.94728721429)
+
+var node32 = ::blueprint::nodes::subgraph::Subgraph()
+node32.load_from_file(_editor, "32_outer_tween_0.ves")
+
+_editor.add_node(node32, -145.7605515027, -290.08916140038)
+
+var node33 = ::blueprint::nodes::subgraph::Subgraph()
+node33.load_from_file(_editor, "35_inner_tween_0.ves")
+
+_editor.add_node(node33, -147.98171416016, -431.17819027876)
+
+var node34 = ::blueprint::nodes::subgraph::Subgraph()
+node34.load_from_file(_editor, "../04_layout/01_octagon_tween.ves")
+
+_editor.add_node(node34, 89.513011536807, -307.21035057651)
+
+var node35 = ::blueprint::nodes::load::Load()
+
+node35.var_name = "outer_d"
+
+_editor.add_node(node35, -113.04422713767, -359.43580124572)
+
+var node36 = ::blueprint::nodes::subgraph::Subgraph()
+node36.load_from_file(_editor, "../04_layout/01_octagon_tween.ves")
+
+_editor.add_node(node36, 86.64417174715, -449.78611284308)
+
+var node37 = ::blueprint::nodes::load::Load()
+
+node37.var_name = "inner_d"
+
+_editor.add_node(node37, -95.903869384328, -495.48623596286)
+
+Blueprint.connect(node13, "v", node21, "var")
+Blueprint.connect(node21, "var", node37, "var")
+Blueprint.connect(node33, "geo", node36, "geo")
+Blueprint.connect(node37, "var", node36, "diameter")
+Blueprint.connect(node21, "var", node26, "var")
+Blueprint.connect(node24, "geo", node25, "geo")
+Blueprint.connect(node26, "var", node25, "diameter")
+Blueprint.connect(node21, "var", node22, "var")
+Blueprint.connect(node12, "geo", node16, "geo")
+Blueprint.connect(node22, "var", node16, "diameter")
+Blueprint.connect(node8, "v", node19, "var")
+Blueprint.connect(node19, "var", node35, "var")
+Blueprint.connect(node32, "geo", node34, "geo")
+Blueprint.connect(node35, "var", node34, "diameter")
+Blueprint.connect(node19, "var", node29, "var")
+Blueprint.connect(node27, "geo", node28, "geo")
+Blueprint.connect(node29, "var", node28, "diameter")
+Blueprint.connect(node30, "v", node28, "offset")
+Blueprint.connect(node19, "var", node23, "var")
+Blueprint.connect(node17, "geo", node18, "geo")
+Blueprint.connect(node23, "var", node18, "diameter")
+Blueprint.connect(node19, "var", node20, "var")
+Blueprint.connect(node7, "geo", node15, "geo")
+Blueprint.connect(node20, "var", node15, "diameter")
+Blueprint.connect(node15, "geo", node31, "in0")
+Blueprint.connect(node16, "geo", node31, "in1")
+Blueprint.connect(node28, "geo", node31, "in2")
+Blueprint.connect(node15, "geo", node14, "in0")
+Blueprint.connect(node16, "geo", node14, "in1")
+Blueprint.connect(node18, "geo_main", node14, "in2")
+Blueprint.connect(node25, "geo_main", node14, "in3")
+Blueprint.connect(node28, "geo", node14, "in4")
+Blueprint.connect(node34, "geo_side", node14, "in5")
+Blueprint.connect(node36, "geo_side", node14, "in6")
+Blueprint.connect(node14, "list", node6, "list")
+Blueprint.connect(node4, "v", node3, "degree")
+Blueprint.connect(node3, "radian", node2, "v")
+Blueprint.connect(node0, "v", node1, "a")
+Blueprint.connect(node2, "v", node1, "b")
+Blueprint.connect(node1, "v", node9, "a")
+Blueprint.connect(node10, "v", node9, "b")
+Blueprint.connect(node9, "v", node5, "value")

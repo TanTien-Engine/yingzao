@@ -3,7 +3,7 @@ var node0 = ::blueprint::nodes::input::Input()
 node0.var_name = "geo"
 node0.var_type = "geo"
 
-_editor.add_node(node0, -27.266811096955, -141.24409660479)
+_editor.add_node(node0, 235.38290855707, -58.661560637922)
 
 var node1 = ::blueprint::nodes::input::Input()
 
@@ -17,7 +17,7 @@ var node2 = ::blueprint::nodes::output::Output()
 node2.var_name = "geo"
 node2.var_type = "array"
 
-_editor.add_node(node2, 374.5364701246, -138.40075322702)
+_editor.add_node(node2, 634.08158316332, -61.406509167682)
 
 var node3 = ::blueprint::nodes::multiply::Multiply()
 
@@ -64,11 +64,11 @@ _editor.add_node(node12, -56.10469206058, -338.09954084318)
 
 var node13 = ::geograph::nodes::brush_merge::BrushMerge()
 
-_editor.add_node(node13, 109.20792650955, -145.49803107265)
+_editor.add_node(node13, 371.85764616357, -62.915495105782)
 
 var node14 = ::geograph::nodes::brush_instanced::BrushInstanced()
 
-_editor.add_node(node14, 237.51636536841, -155.24900579046)
+_editor.add_node(node14, 500.16608502243, -72.666469823592)
 
 var node15 = ::blueprint::nodes::multiply::Multiply()
 
@@ -106,6 +106,140 @@ var node23 = ::blueprint::nodes::multiply::Multiply()
 
 _editor.add_node(node23, -766.67126672449, -145.48570642914)
 
+var node24 = ::blueprint::nodes::expand::Expand()
+
+_editor.add_node(node24, 134.32790876172, -371.34856893376)
+
+var node25 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node25, 338.92141123779, -383.08758003439)
+
+var node26 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node26, 338.30046981324, -512.23921915901)
+
+var node27 = ::blueprint::nodes::output::Output()
+
+node27.var_name = "geo_main"
+node27.var_type = "array"
+
+_editor.add_node(node27, 612.07206506036, -343.33302250818)
+
+var node28 = ::geograph::nodes::brush_instanced::BrushInstanced()
+
+_editor.add_node(node28, 478.15656691947, -354.59298316409)
+
+var node29 = ::blueprint::nodes::output::Output()
+
+node29.var_name = "geo_side"
+node29.var_type = "array"
+
+_editor.add_node(node29, 619.36317160425, -471.59754741023)
+
+var node30 = ::geograph::nodes::brush_instanced::BrushInstanced()
+
+_editor.add_node(node30, 485.44767346336, -482.85750806614)
+
+var node31 = ::blueprint::nodes::store::Store()
+
+node31.var_name = "mats"
+
+_editor.add_node(node31, 232.06875531536, -204.59109169196)
+
+var node32 = ::blueprint::nodes::load::Load()
+
+node32.var_name = "mats"
+
+_editor.add_node(node32, -64.001571810075, -427.68785834251)
+
+var node33 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node33, -113.11792098722, -603.64335178445)
+
+var node34 = ::blueprint::nodes::integer::Integer()
+
+node34.value = 0
+
+_editor.add_node(node34, -275.17637162642, -603.43502286044)
+
+var node35 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node35, 210.18813578324, -651.68744730712)
+
+var node36 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node36, 209.56719435869, -780.83908643174)
+
+var node37 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node37, -114.23596098722, -710.47909178445)
+
+var node38 = ::blueprint::nodes::integer::Integer()
+
+node38.value = 1
+
+_editor.add_node(node38, -276.29441162642, -710.27076286044)
+
+var node39 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node39, -111.76030098722, -817.56651178445)
+
+var node40 = ::blueprint::nodes::integer::Integer()
+
+node40.value = 2
+
+_editor.add_node(node40, -280.47375162642, -821.35118286044)
+
+var node41 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node41, -108.86246098722, -925.74986178445)
+
+var node42 = ::blueprint::nodes::integer::Integer()
+
+node42.value = 3
+
+_editor.add_node(node42, -282.89991162642, -921.54853286044)
+
+var node43 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node43, -108.08488088722, -1035.4412380845)
+
+var node44 = ::blueprint::nodes::integer::Integer()
+
+node44.value = 4
+
+_editor.add_node(node44, -270.14333152642, -1035.2329091604)
+
+var node45 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node45, -109.20292088722, -1142.2769780845)
+
+var node46 = ::blueprint::nodes::integer::Integer()
+
+node46.value = 5
+
+_editor.add_node(node46, -271.26137152642, -1142.0686491604)
+
+var node47 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node47, -106.72726088722, -1249.3643980845)
+
+var node48 = ::blueprint::nodes::integer::Integer()
+
+node48.value = 6
+
+_editor.add_node(node48, -275.44071152642, -1253.1490691604)
+
+var node49 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node49, -103.82942088722, -1357.5477480845)
+
+var node50 = ::blueprint::nodes::integer::Integer()
+
+node50.value = 7
+
+_editor.add_node(node50, -277.86687152642, -1353.3464191604)
+
 Blueprint.connect(node21, "pi/8", node22, "v")
 Blueprint.connect(node10, "curr_item", node15, "a")
 Blueprint.connect(node16, "pi/4", node15, "b")
@@ -130,7 +264,48 @@ Blueprint.connect(node8, "v", node12, "translate")
 Blueprint.connect(node17, "xyz", node12, "rotate")
 Blueprint.connect(node11, "v", node10, "count")
 Blueprint.connect(node12, "mat", node10, "eval")
+Blueprint.connect(node10, "result", node31, "var")
+Blueprint.connect(node31, "var", node32, "var")
+Blueprint.connect(node32, "var", node49, "items")
+Blueprint.connect(node50, "v", node49, "index")
+Blueprint.connect(node32, "var", node47, "items")
+Blueprint.connect(node48, "v", node47, "index")
+Blueprint.connect(node32, "var", node45, "items")
+Blueprint.connect(node46, "v", node45, "index")
+Blueprint.connect(node32, "var", node43, "items")
+Blueprint.connect(node44, "v", node43, "index")
+Blueprint.connect(node32, "var", node41, "items")
+Blueprint.connect(node42, "v", node41, "index")
+Blueprint.connect(node32, "var", node39, "items")
+Blueprint.connect(node40, "v", node39, "index")
+Blueprint.connect(node32, "var", node37, "items")
+Blueprint.connect(node38, "v", node37, "index")
+Blueprint.connect(node37, "item", node36, "in0")
+Blueprint.connect(node41, "item", node36, "in1")
+Blueprint.connect(node45, "item", node36, "in2")
+Blueprint.connect(node49, "item", node36, "in3")
+Blueprint.connect(node32, "var", node33, "items")
+Blueprint.connect(node34, "v", node33, "index")
+Blueprint.connect(node33, "item", node35, "in0")
+Blueprint.connect(node39, "item", node35, "in1")
+Blueprint.connect(node43, "item", node35, "in2")
+Blueprint.connect(node47, "item", node35, "in3")
+Blueprint.connect(node32, "var", node24, "data")
+Blueprint.connect(node24, "1", node26, "in0")
+Blueprint.connect(node24, "3", node26, "in1")
+Blueprint.connect(node24, "5", node26, "in2")
+Blueprint.connect(node24, "7", node26, "in3")
+Blueprint.connect(node24, "0", node25, "in0")
+Blueprint.connect(node24, "2", node25, "in1")
+Blueprint.connect(node24, "4", node25, "in2")
+Blueprint.connect(node24, "6", node25, "in3")
 Blueprint.connect(node0, "var", node13, "list")
+Blueprint.connect(node13, "brush", node30, "brush")
+Blueprint.connect(node36, "list", node30, "transforms")
+Blueprint.connect(node30, "instanced", node29, "var")
+Blueprint.connect(node13, "brush", node28, "brush")
+Blueprint.connect(node35, "list", node28, "transforms")
+Blueprint.connect(node28, "instanced", node27, "var")
 Blueprint.connect(node13, "brush", node14, "brush")
-Blueprint.connect(node10, "result", node14, "transforms")
+Blueprint.connect(node32, "var", node14, "transforms")
 Blueprint.connect(node14, "instanced", node2, "var")

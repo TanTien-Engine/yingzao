@@ -210,23 +210,37 @@ _editor.add_node(node37, 237.74323789165, -18.108408812561)
 
 var node38 = ::blueprint::nodes::pi::Pi()
 
-_editor.add_node(node38, -227.68126211303, -313.31502331764)
+_editor.add_node(node38, -437.04977435116, -389.77558293402)
 
 var node39 = ::blueprint::nodes::negate::Negate()
 
-_editor.add_node(node39, -87.680537937865, -266.24655206007)
+_editor.add_node(node39, -111.28581137648, -337.57553049414)
 
 var node40 = ::blueprint::nodes::load::Load()
 
 node40.var_name = "top"
 
-_editor.add_node(node40, -95.289938462782, -202.51577822712)
+_editor.add_node(node40, -113.25047260086, -288.21318397165)
 
 var node41 = ::blueprint::nodes::branch_f::BranchF()
 
-_editor.add_node(node41, 50.94302645596, -197.34388455479)
+_editor.add_node(node41, 23.232488071502, -374.89659346261)
 
-Blueprint.connect(node38, "pi/6", node39, "v")
+var node42 = ::blueprint::nodes::property::Property()
+
+node42.var_name = "acute"
+node42.var_type = "bool"
+
+_editor.add_node(node42, -435.50512768699, -285.53194345424)
+
+var node43 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node43, -291.50164031986, -334.46933121227)
+
+Blueprint.connect(node42, "var", node43, "cond")
+Blueprint.connect(node38, "pi/6", node43, "true")
+Blueprint.connect(node38, "pi/4", node43, "false")
+Blueprint.connect(node43, "result", node39, "v")
 Blueprint.connect(node31, "v", node32, "var")
 Blueprint.connect(node32, "var", node34, "var")
 Blueprint.connect(node32, "var", node33, "var")
@@ -247,7 +261,7 @@ Blueprint.connect(node3, "var", node18, "var")
 Blueprint.connect(node18, "var", node40, "var")
 Blueprint.connect(node40, "var", node41, "cond")
 Blueprint.connect(node39, "v", node41, "true")
-Blueprint.connect(node38, "pi/6", node41, "false")
+Blueprint.connect(node43, "result", node41, "false")
 Blueprint.connect(node18, "var", node28, "var")
 Blueprint.connect(node18, "var", node19, "var")
 Blueprint.connect(node19, "var", node11, "cond")

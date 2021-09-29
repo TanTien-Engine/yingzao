@@ -1,0 +1,95 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "41_shuatou.ves")
+node0.set_prop_value("head", 1)
+node0.set_prop_value("rot", false)
+node0.set_prop_value("zu_cai", false)
+node0.set_prop_value("no_head", false)
+node0.set_prop_value("one_head", false)
+
+_editor.add_node(node0, 296.00965452417, 3.9083114249688)
+
+var node1 = ::blueprint::nodes::subgraph::Subgraph()
+node1.load_from_file(_editor, "82_compose_gong.ves")
+
+_editor.add_node(node1, 551.17661761677, 13.217565013069)
+
+var node2 = ::blueprint::nodes::subgraph::Subgraph()
+node2.load_from_file(_editor, "41_su_fang.ves")
+node2.set_prop_value("outside", false)
+node2.set_prop_value("narrow", false)
+
+_editor.add_node(node2, 294.46749977197, -197.36643245743)
+
+var node3 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node3, 500.63838778227, -90.517774772831)
+
+var node4 = ::blueprint::nodes::input::Input()
+
+node4.var_name = "calc_step_len"
+node4.var_type = "func"
+
+_editor.add_node(node4, 88.152330485962, -89.373277226699)
+
+var node5 = ::blueprint::nodes::subgraph::Subgraph()
+node5.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node5, 34.783891099415, 56.876786469048)
+
+var node6 = ::blueprint::nodes::integer::Integer()
+
+node6.value = 1
+
+_editor.add_node(node6, -148.92672185225, 18.389935499148)
+
+var node7 = ::blueprint::nodes::input::Input()
+
+node7.var_name = "hop_count"
+node7.var_type = "int"
+
+_editor.add_node(node7, -147.3872490889, 87.666280458748)
+
+var node8 = ::blueprint::nodes::output::Output()
+
+node8.var_name = "geo"
+node8.var_type = "array"
+
+_editor.add_node(node8, 905.46951333746, -90.565338281285)
+
+var node9 = ::blueprint::nodes::subgraph::Subgraph()
+node9.load_from_file(_editor, "50_gong_add_dou.ves")
+
+_editor.add_node(node9, 709.74488022464, -153.70964482666)
+
+var node10 = ::blueprint::nodes::number3::Number3()
+
+node10.value.set(0, 0.15, -1)
+
+_editor.add_node(node10, 509.3566090979, -198.867571651)
+
+var node11 = ::blueprint::nodes::number3::Number3()
+
+node11.value.set(0, 0.15, 0)
+
+_editor.add_node(node11, 510.48556534301, -320.22945323243)
+
+var node12 = ::blueprint::nodes::boolean::Boolean()
+
+node12.value = true
+
+_editor.add_node(node12, 370.79286845596, -308.26201676748)
+
+Blueprint.connect(node7, "var", node5, "val")
+Blueprint.connect(node6, "v", node5, "default")
+Blueprint.connect(node5, "val", node0, "hop_count")
+Blueprint.connect(node4, "var", node0, "calc_step_len")
+Blueprint.connect(node0, "geo", node3, "in0")
+Blueprint.connect(node2, "geo", node3, "in1")
+Blueprint.connect(node3, "list", node9, "gong")
+Blueprint.connect(node10, "v3", node9, "pos_left")
+Blueprint.connect(node11, "v3", node9, "pos_right")
+Blueprint.connect(node12, "v", node9, "rot_left")
+Blueprint.connect(node12, "v", node9, "rot_right")
+Blueprint.connect(node9, "gong_dou", node8, "var")
+Blueprint.connect(node0, "geo", node1, "gong0")
+Blueprint.connect(node2, "geo", node1, "gong1")

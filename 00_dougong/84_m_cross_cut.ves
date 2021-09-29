@@ -48,7 +48,7 @@ _editor.add_node(node7, 281.47507628326, 36.296179844743)
 
 var node8 = ::blueprint::nodes::commentary::Commentary()
 
-node8.set_size(782.85950413224, 344)
+node8.set_size(768.33950413224, 490.41)
 node8.title = "cross"
 
 _editor.add_node(node8, -357.16284558005, 184.94694027231)
@@ -116,7 +116,7 @@ _editor.add_node(node20, 673.18668659545, 144.5410685519)
 
 var node21 = ::blueprint::nodes::pi::Pi()
 
-_editor.add_node(node21, -502.01925747454, 11.446178593911)
+_editor.add_node(node21, -631.48925747454, -165.21382140609)
 
 var node22 = ::geograph::nodes::rotate_y::RotateY()
 node22.query_param("angle").value = "0"
@@ -135,7 +135,7 @@ _editor.add_node(node24, -1151.720563354, -113.69049076851)
 
 var node25 = ::blueprint::nodes::negate::Negate()
 
-_editor.add_node(node25, -354.76651717363, -0.42451902801744)
+_editor.add_node(node25, -338.96124713212, -39.937694131782)
 
 var node26 = ::geograph::nodes::brush_get_size::BrushGetSize()
 
@@ -155,7 +155,21 @@ node29.value = 0.15
 
 _editor.add_node(node29, -1420.9681376307, -265.9535809982)
 
-Blueprint.connect(node21, "pi/6", node25, "v")
+var node30 = ::blueprint::nodes::property::Property()
+
+node30.var_name = "acute"
+node30.var_type = "bool"
+
+_editor.add_node(node30, -518.42127292847, 16.935758430794)
+
+var node31 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node31, -471.36121688661, -106.9993028186)
+
+Blueprint.connect(node30, "var", node31, "cond")
+Blueprint.connect(node21, "pi/6", node31, "true")
+Blueprint.connect(node21, "pi/4", node31, "false")
+Blueprint.connect(node31, "result", node25, "v")
 Blueprint.connect(node17, "var", node23, "a")
 Blueprint.connect(node24, "v", node23, "b")
 Blueprint.connect(node9, "var", node10, "in")
@@ -174,7 +188,7 @@ Blueprint.connect(node16, "xyz", node18, "xyz")
 Blueprint.connect(node18, "geo", node22, "geo")
 Blueprint.connect(node25, "v", node22, "angle")
 Blueprint.connect(node18, "geo", node5, "geo")
-Blueprint.connect(node21, "pi/6", node5, "angle")
+Blueprint.connect(node31, "result", node5, "angle")
 Blueprint.connect(node5, "geo", node6, "in0")
 Blueprint.connect(node22, "geo", node6, "in1")
 Blueprint.connect(node6, "list", node7, "geo")
