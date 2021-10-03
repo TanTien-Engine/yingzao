@@ -1,0 +1,56 @@
+var node0 = ::blueprint::nodes::number::Number()
+
+node0.value = 0.18
+
+_editor.add_node(node0, -254.95559371587, 100.0636276129)
+
+var node1 = ::blueprint::nodes::number::Number()
+
+node1.value = 0.28
+
+_editor.add_node(node1, -254.95557655707, 33.811306434404)
+
+var node2 = ::blueprint::nodes::number::Number()
+
+node2.value = 0.17
+
+_editor.add_node(node2, -252.17616924217, -38.975253915878)
+
+var node3 = ::blueprint::nodes::number::Number()
+
+node3.value = 0.26
+
+_editor.add_node(node3, -252.17615208337, -105.22757509438)
+
+var node4 = ::blueprint::nodes::output::Output()
+
+node4.var_name = "down_w"
+node4.var_type = "num"
+
+_editor.add_node(node4, -117.04417177003, 103.78046115538)
+
+var node5 = ::blueprint::nodes::output::Output()
+
+node5.var_name = "down_h"
+node5.var_type = "num"
+
+_editor.add_node(node5, -115.91522507997, 40.559384814444)
+
+var node6 = ::blueprint::nodes::output::Output()
+
+node6.var_name = "up_w"
+node6.var_type = "num"
+
+_editor.add_node(node6, -113.65732425417, -29.43537641483)
+
+var node7 = ::blueprint::nodes::output::Output()
+
+node7.var_name = "up_h"
+node7.var_type = "num"
+
+_editor.add_node(node7, -114.78627770265, -90.963059630783)
+
+Blueprint.connect(node3, "v", node7, "var")
+Blueprint.connect(node2, "v", node6, "var")
+Blueprint.connect(node1, "v", node5, "var")
+Blueprint.connect(node0, "v", node4, "var")
