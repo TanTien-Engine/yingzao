@@ -1,0 +1,20 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../../tantien/assets/blueprints/tools/radian.ves")
+
+_editor.add_node(node0, 291.7029701211, 238.1813556373)
+
+var node1 = ::blueprint::nodes::number::Number()
+
+node1.value = 22.5
+
+_editor.add_node(node1, 102.3552162149, 223.14035832285)
+
+var node2 = ::blueprint::nodes::output::Output()
+
+node2.var_name = "ang_angle"
+node2.var_type = "num"
+
+_editor.add_node(node2, 472.32, 239.31)
+
+Blueprint.connect(node1, "v", node0, "degree")
+Blueprint.connect(node0, "radian", node2, "var")

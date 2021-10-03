@@ -179,7 +179,20 @@ node34.value.set(0, 0.15, 0)
 
 _editor.add_node(node34, 389.37177043316, -655.59835134459)
 
+var node35 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node35, 881.43267425339, -520.16861923692)
+
+var node36 = ::blueprint::nodes::property::Property()
+
+node36.var_name = "no_mid_dou"
+node36.var_type = "bool"
+
+_editor.add_node(node36, 736.41420537537, -468.2065974866)
+
 Blueprint.connect(node34, "v3", node33, "pos")
+Blueprint.connect(node36, "var", node35, "cond")
+Blueprint.connect(node33, "geo", node35, "false")
 Blueprint.connect(node0, "var", node6, "var")
 Blueprint.connect(node6, "var", node11, "var")
 Blueprint.connect(node6, "var", node8, "var")
@@ -215,7 +228,7 @@ Blueprint.connect(node15, "brush", node20, "gong")
 Blueprint.connect(node31, "xyz", node20, "pos_left")
 Blueprint.connect(node28, "xyz", node20, "pos_right")
 Blueprint.connect(node20, "gong_dou", node32, "list")
-Blueprint.connect(node33, "geo", node32, "add")
+Blueprint.connect(node35, "result", node32, "add")
 Blueprint.connect(node32, "list", node17, "geo")
 Blueprint.connect(node18, "var", node17, "xyz")
 Blueprint.connect(node17, "geo", node16, "var")
