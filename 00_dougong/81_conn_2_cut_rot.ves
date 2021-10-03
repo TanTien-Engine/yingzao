@@ -45,7 +45,7 @@ node6.query_param("offset_x").value = false
 node6.query_param("offset_y").value = true
 node6.query_param("offset_z").value = false
 
-_editor.add_node(node6, 200.21407392705, 467.79242403614)
+_editor.add_node(node6, -118.45711749422, 320.0028859857)
 
 var node7 = ::blueprint::nodes::store::Store()
 
@@ -75,7 +75,7 @@ node11.query_param("offset_x").value = false
 node11.query_param("offset_y").value = true
 node11.query_param("offset_z").value = false
 
-_editor.add_node(node11, 203.73126065341, 45.832058948867)
+_editor.add_node(node11, -142.85573239961, -142.13775975904)
 
 var node12 = ::geograph::nodes::translate_f::TranslateF()
 
@@ -122,12 +122,72 @@ node19.query_param("angle").value = "0"
 
 _editor.add_node(node19, 486.72070624462, 126.17035859311)
 
+var node20 = ::blueprint::nodes::property::Property()
+
+node20.var_name = "height2"
+node20.var_type = "bool"
+
+_editor.add_node(node20, -443.06639987347, 538.7389743963)
+
+var node21 = ::blueprint::nodes::store::Store()
+
+node21.var_name = "height2"
+
+_editor.add_node(node21, -312.2110600952, 538.22586510175)
+
+var node22 = ::blueprint::nodes::load::Load()
+
+node22.var_name = "height2"
+
+_editor.add_node(node22, -146.97416792824, 586.97586882324)
+
+var node23 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node23, -0.21095315662679, 565.93639021383)
+
+var node24 = ::geograph::nodes::box::Box()
+node24.query_param("size").value.set(0.1, 0.1, 1)
+node24.query_param("pos").value.set(0, 0.1, 0)
+node24.query_param("offset_x").value = false
+node24.query_param("offset_y").value = true
+node24.query_param("offset_z").value = false
+
+_editor.add_node(node24, -293.50766741755, 357.49370494552)
+
+var node25 = ::blueprint::nodes::load::Load()
+
+node25.var_name = "height2"
+
+_editor.add_node(node25, -188.14085550285, 91.133957423683)
+
+var node26 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node26, -41.377640731237, 70.094478814273)
+
+var node27 = ::geograph::nodes::box::Box()
+node27.query_param("size").value.set(1, 0.05, 0.1)
+node27.query_param("pos").value.set(0, 0, 0)
+node27.query_param("offset_x").value = false
+node27.query_param("offset_y").value = true
+node27.query_param("offset_z").value = false
+
+_editor.add_node(node27, -379.62093551709, -126.19701597432)
+
+Blueprint.connect(node20, "var", node21, "var")
+Blueprint.connect(node21, "var", node25, "var")
+Blueprint.connect(node21, "var", node22, "var")
 Blueprint.connect(node14, "var", node15, "var")
 Blueprint.connect(node15, "var", node18, "var")
 Blueprint.connect(node15, "var", node16, "var")
-Blueprint.connect(node11, "geo", node19, "geo")
+Blueprint.connect(node25, "var", node26, "cond")
+Blueprint.connect(node27, "geo", node26, "true")
+Blueprint.connect(node11, "geo", node26, "false")
+Blueprint.connect(node26, "result", node19, "geo")
 Blueprint.connect(node18, "var", node19, "angle")
-Blueprint.connect(node6, "geo", node17, "geo")
+Blueprint.connect(node22, "var", node23, "cond")
+Blueprint.connect(node24, "geo", node23, "true")
+Blueprint.connect(node6, "geo", node23, "false")
+Blueprint.connect(node23, "result", node17, "geo")
 Blueprint.connect(node16, "var", node17, "angle")
 Blueprint.connect(node0, "var", node7, "var")
 Blueprint.connect(node7, "var", node13, "var")

@@ -10,7 +10,7 @@ var node1 = ::blueprint::nodes::input::Input()
 node1.var_name = "diameter"
 node1.var_type = "num"
 
-_editor.add_node(node1, -738.5030877756, -210.34550690493)
+_editor.add_node(node1, -1007.9110998467, -221.12182738777)
 
 var node2 = ::blueprint::nodes::output::Output()
 
@@ -21,36 +21,36 @@ _editor.add_node(node2, 374.5364701246, -138.40075322702)
 
 var node3 = ::blueprint::nodes::multiply::Multiply()
 
-_editor.add_node(node3, -923.4374167086, -31.512047209742)
+_editor.add_node(node3, -1192.8454287797, -42.288367692587)
 
 var node4 = ::blueprint::nodes::pi::Pi()
 
-_editor.add_node(node4, -1066.8702505945, -86.153124509492)
+_editor.add_node(node4, -1336.2782626656, -96.929444992337)
 
 var node5 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node5, -789.3184166718, -45.793238029452)
+_editor.add_node(node5, -1058.7264287429, -56.569558512297)
 
 var node6 = ::blueprint::nodes::sin::Sin()
 
-_editor.add_node(node6, -639.5685925965, -67.463904570523)
+_editor.add_node(node6, -908.97660466762, -78.240225053368)
 
 var node7 = ::blueprint::nodes::cos::Cos()
 
-_editor.add_node(node7, -640.2972906815, -11.160200619822)
+_editor.add_node(node7, -909.70530275262, -21.936521102667)
 
 var node8 = ::blueprint::nodes::combine::Combine()
 
-_editor.add_node(node8, -504.24461493966, -77.256402910733)
+_editor.add_node(node8, -773.65262701078, -88.032723393578)
 
 var node9 = ::blueprint::nodes::multiply::Multiply()
 
-_editor.add_node(node9, -362.10422578233, -121.57884343197)
+_editor.add_node(node9, -631.51223785345, -132.35516391481)
 
 var node10 = ::blueprint::nodes::subgraph::Subgraph()
 node10.load_from_file(_editor, "../../tantien/assets/blueprints/tools/half.ves")
 
-_editor.add_node(node10, -551.29896789272, -201.5845636294)
+_editor.add_node(node10, -820.70697996384, -212.36088411224)
 
 var node11 = ::blueprint::nodes::for_each_f::ForEachF()
 
@@ -76,28 +76,44 @@ _editor.add_node(node15, 237.51636536841, -155.24900579046)
 
 var node16 = ::blueprint::nodes::multiply::Multiply()
 
-_editor.add_node(node16, -787.48804982475, -343.44174714945)
+_editor.add_node(node16, -905.00125889958, -509.19181933797)
 
 var node17 = ::blueprint::nodes::pi::Pi()
 
-_editor.add_node(node17, -951.96036655811, -405.26703810443)
+_editor.add_node(node17, -1069.4735756329, -571.01711029295)
 
 var node18 = ::blueprint::nodes::combine::Combine()
 
-_editor.add_node(node18, -354.25833332694, -421.87299067355)
+_editor.add_node(node18, -471.77154240177, -587.62306286207)
 
 var node19 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node19, -519.58556271667, -399.19025367247)
+_editor.add_node(node19, -637.0987717915, -564.94032586099)
 
 var node20 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node20, -709.40655012968, -429.39663871507)
+_editor.add_node(node20, -826.91975920451, -595.14671090359)
 
 var node21 = ::blueprint::nodes::negate::Negate()
 
-_editor.add_node(node21, -649.3922947088, -331.57857931575)
+_editor.add_node(node21, -766.90550378363, -497.32865150427)
 
+var node22 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node22, -480.41620448332, -253.52896443165)
+
+var node23 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node23, -625.61737598555, -328.75186500133)
+
+var node24 = ::blueprint::nodes::input::Input()
+
+node24.var_name = "dy"
+node24.var_type = "num"
+
+_editor.add_node(node24, -769.65222622339, -314.00035862996)
+
+Blueprint.connect(node24, "var", node23, "y")
 Blueprint.connect(node17, "pi/8", node20, "a")
 Blueprint.connect(node17, "pi/4", node20, "b")
 Blueprint.connect(node11, "curr_item", node16, "a")
@@ -117,7 +133,9 @@ Blueprint.connect(node6, "v", node8, "z")
 Blueprint.connect(node1, "var", node10, "val")
 Blueprint.connect(node8, "xyz", node9, "a")
 Blueprint.connect(node10, "val", node9, "b")
-Blueprint.connect(node9, "v", node13, "translate")
+Blueprint.connect(node9, "v", node22, "a")
+Blueprint.connect(node23, "xyz", node22, "b")
+Blueprint.connect(node22, "v", node13, "translate")
 Blueprint.connect(node18, "xyz", node13, "rotate")
 Blueprint.connect(node12, "v", node11, "count")
 Blueprint.connect(node13, "mat", node11, "eval")

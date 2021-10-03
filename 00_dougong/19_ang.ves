@@ -237,7 +237,7 @@ var node43 = ::blueprint::nodes::input::Input()
 node43.var_name = "pos"
 node43.var_type = "num3"
 
-_editor.add_node(node43, 67.204237964367, -534.96070409331)
+_editor.add_node(node43, -1059.8787002608, -688.5467775037)
 
 var node44 = ::scenegraph::nodes::transform3d::Transform3d()
 
@@ -549,6 +549,29 @@ node103.value.set(0, 0.06, 0)
 
 _editor.add_node(node103, 70.433869795366, -623.11842484908)
 
+var node104 = ::blueprint::nodes::subgraph::Subgraph()
+node104.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node104, -865.2925750086, -732.49754726494)
+
+var node105 = ::blueprint::nodes::number3::Number3()
+
+node105.value.set(0, 0, 0)
+
+_editor.add_node(node105, -1054.149707317, -794.95563061777)
+
+var node106 = ::blueprint::nodes::store::Store()
+
+node106.var_name = "pos"
+
+_editor.add_node(node106, -678.11262785806, -731.49278511963)
+
+var node107 = ::blueprint::nodes::load::Load()
+
+node107.var_name = "pos"
+
+_editor.add_node(node107, 67.564719376302, -544.8125641101)
+
 Blueprint.connect(node89, "var", node101, "a")
 Blueprint.connect(node100, "var", node101, "b")
 Blueprint.connect(node101, "out", node90, "var")
@@ -586,7 +609,11 @@ Blueprint.connect(node49, "v", node45, "case2")
 Blueprint.connect(node45, "result", node50, "y")
 Blueprint.connect(node71, "xyz", node80, "a")
 Blueprint.connect(node50, "xyz", node80, "b")
-Blueprint.connect(node43, "var", node102, "a")
+Blueprint.connect(node43, "var", node104, "val")
+Blueprint.connect(node105, "v3", node104, "default")
+Blueprint.connect(node104, "val", node106, "var")
+Blueprint.connect(node106, "var", node107, "var")
+Blueprint.connect(node107, "var", node102, "a")
 Blueprint.connect(node103, "v3", node102, "b")
 Blueprint.connect(node99, "v3", node77, "a")
 Blueprint.connect(node102, "v", node77, "b")

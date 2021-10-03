@@ -154,7 +154,7 @@ var node26 = ::blueprint::nodes::number::Number()
 
 node26.value = 2
 
-_editor.add_node(node26, -981.04772949219, 278.08325195312)
+_editor.add_node(node26, -1437.2452965993, 262.6885084062)
 
 var node27 = ::blueprint::nodes::number::Number()
 
@@ -162,11 +162,25 @@ node27.value = 0.1
 
 _editor.add_node(node27, -984.9990856427, 164.6239845874)
 
+var node28 = ::blueprint::nodes::subgraph::Subgraph()
+node28.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node28, -1246.3090602683, 304.23487691185)
+
+var node29 = ::blueprint::nodes::input::Input()
+
+node29.var_name = "length"
+node29.var_type = "num"
+
+_editor.add_node(node29, -1436.5780952725, 330.42867536674)
+
+Blueprint.connect(node29, "var", node28, "val")
+Blueprint.connect(node26, "v", node28, "default")
 Blueprint.connect(node21, "var", node20, "val")
 Blueprint.connect(node22, "v", node20, "default")
 Blueprint.connect(node20, "val", node23, "var")
 Blueprint.connect(node23, "var", node24, "var")
-Blueprint.connect(node26, "v", node25, "x")
+Blueprint.connect(node28, "val", node25, "x")
 Blueprint.connect(node24, "var", node25, "y")
 Blueprint.connect(node27, "v", node25, "z")
 Blueprint.connect(node25, "xyz", node1, "size")
