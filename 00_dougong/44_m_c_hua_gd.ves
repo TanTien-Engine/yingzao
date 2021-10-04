@@ -395,6 +395,13 @@ node72.var_name = "hide"
 
 _editor.add_node(node72, 295.49917062469, 939.19838057078)
 
+var node73 = ::blueprint::nodes::property::Property()
+
+node73.var_name = "head"
+node73.var_type = "int"
+
+_editor.add_node(node73, -1152.5019757882, 21.442515551337)
+
 Blueprint.connect(node67, "var", node69, "var")
 Blueprint.connect(node69, "var", node72, "var")
 Blueprint.connect(node69, "var", node70, "var")
@@ -444,6 +451,7 @@ Blueprint.connect(node13, "var", node15, "var")
 Blueprint.connect(node13, "var", node14, "var")
 Blueprint.connect(node0, "var", node27, "hop_count")
 Blueprint.connect(node18, "func", node27, "calc_step_len")
+Blueprint.connect(node73, "var", node27, "right_head")
 Blueprint.connect(node27, "geo", node28, "gong")
 Blueprint.connect(node27, "pos_left", node28, "pos_left")
 Blueprint.connect(node27, "pos_right", node28, "pos_right")
@@ -451,6 +459,7 @@ Blueprint.connect(node29, "v", node28, "rot_left")
 Blueprint.connect(node36, "var", node28, "right_dou")
 Blueprint.connect(node0, "var", node2, "hop_count")
 Blueprint.connect(node18, "func", node2, "calc_step_len")
+Blueprint.connect(node73, "var", node2, "right_head")
 Blueprint.connect(node2, "geo", node4, "gong")
 Blueprint.connect(node2, "pos_left", node4, "pos_left")
 Blueprint.connect(node2, "pos_right", node4, "pos_right")
