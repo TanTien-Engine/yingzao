@@ -1,0 +1,71 @@
+var node0 = ::blueprint::nodes::input::Input()
+
+node0.var_name = "hua"
+node0.var_type = "array"
+
+_editor.add_node(node0, -651.91390038559, 598.40191143748)
+
+var node1 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node1, -321.01983026575, 671.94813025003)
+
+var node2 = ::blueprint::nodes::integer::Integer()
+
+node2.value = 0
+
+_editor.add_node(node2, -484.29740501416, 668.68261212108)
+
+var node3 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node3, -318.51958396152, 559.84071539559)
+
+var node4 = ::blueprint::nodes::integer::Integer()
+
+node4.value = 1
+
+_editor.add_node(node4, -481.79715870993, 556.57519726664)
+
+var node5 = ::blueprint::nodes::fetch::Fetch()
+
+_editor.add_node(node5, -314.9181469863, 439.41370122397)
+
+var node6 = ::blueprint::nodes::integer::Integer()
+
+node6.value = 2
+
+_editor.add_node(node6, -478.19572173471, 436.14818309502)
+
+var node7 = ::blueprint::nodes::subgraph::Subgraph()
+node7.load_from_file(_editor, "41_su_fang.ves")
+node7.set_prop_value("outside", false)
+node7.set_prop_value("narrow", true)
+
+_editor.add_node(node7, -252.84934509885, 867.00416247261)
+
+var node8 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node8, 265.90685480898, 693.69665503536)
+
+var node9 = ::blueprint::nodes::output::Output()
+
+node9.var_name = "hua"
+node9.var_type = "array"
+
+_editor.add_node(node9, 400.08873257573, 724.93039024314)
+
+var node10 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node10, -7.1658584468455, 841.90675395668)
+
+Blueprint.connect(node0, "var", node5, "items")
+Blueprint.connect(node6, "v", node5, "index")
+Blueprint.connect(node0, "var", node3, "items")
+Blueprint.connect(node4, "v", node3, "index")
+Blueprint.connect(node0, "var", node1, "items")
+Blueprint.connect(node2, "v", node1, "index")
+Blueprint.connect(node1, "item", node10, "in0")
+Blueprint.connect(node7, "geo", node10, "in1")
+Blueprint.connect(node10, "list", node8, "in0")
+Blueprint.connect(node3, "item", node8, "in1")
+Blueprint.connect(node5, "item", node8, "in2")
+Blueprint.connect(node8, "list", node9, "var")

@@ -53,9 +53,9 @@ _editor.add_node(node8, -2300.1202542679, -643.1143890987)
 
 var node9 = ::blueprint::nodes::number::Number()
 
-node9.value = 1
+node9.value = 0.3528265953064
 
-_editor.add_node(node9, -2301.139942632, -851.58851504153)
+_editor.add_node(node9, -2300.7543993426, -851.58851504153)
 
 var node10 = ::blueprint::nodes::multiply::Multiply()
 
@@ -250,6 +250,7 @@ _editor.add_node(node42, -2301.9296746957, -737.65336438284)
 var node43 = ::blueprint::nodes::subgraph::Subgraph()
 node43.load_from_file(_editor, "../../00_dougong/40_zhutou_fang.ves")
 node43.set_prop_value("no_dou", true)
+node43.set_prop_value("no_cut", true)
 
 _editor.add_node(node43, 961.64049657335, 239.56275144742)
 
@@ -491,6 +492,7 @@ _editor.add_node(node81, 1381.8373301369, 321.257200868)
 var node82 = ::blueprint::nodes::subgraph::Subgraph()
 node82.load_from_file(_editor, "../../00_dougong/40_zhutou_fang.ves")
 node82.set_prop_value("no_dou", false)
+node82.set_prop_value("no_cut", true)
 
 _editor.add_node(node82, 969.20496484533, 6.6985666465191)
 

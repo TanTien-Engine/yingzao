@@ -78,7 +78,7 @@ _editor.add_node(node12, -925.62672472024, -744.15313903922)
 
 var node13 = ::blueprint::nodes::merge::Merge()
 
-_editor.add_node(node13, -776.25815857097, -791.38382332297)
+_editor.add_node(node13, -784.45432003535, -796.84793096589)
 
 var node14 = ::blueprint::nodes::subgraph::Subgraph()
 node14.load_from_file(_editor, "../../09_tools/01_calc_step_pos.ves")
@@ -181,6 +181,7 @@ _editor.add_node(node28, 1608.9730126464, 683.12642556484)
 var node29 = ::blueprint::nodes::subgraph::Subgraph()
 node29.load_from_file(_editor, "../../00_dougong/40_zhutou_fang.ves")
 node29.set_prop_value("no_dou", false)
+node29.set_prop_value("no_cut", true)
 
 _editor.add_node(node29, 1215.4409569516, 305.75150933024)
 
@@ -528,6 +529,7 @@ _editor.add_node(node86, 159.55883919445, -444.51796987892)
 var node87 = ::blueprint::nodes::subgraph::Subgraph()
 node87.load_from_file(_editor, "../../00_dougong/42_guazi_gongdou.ves")
 node87.set_prop_value("no_cut", true)
+node87.set_prop_value("rot_dou", false)
 
 _editor.add_node(node87, 266.06554115292, -358.1332363023)
 
@@ -600,6 +602,7 @@ _editor.add_node(node98, 1326.2664145226, -1065.2732406212)
 var node99 = ::blueprint::nodes::subgraph::Subgraph()
 node99.load_from_file(_editor, "../../00_dougong/40_zhutou_fang.ves")
 node99.set_prop_value("no_dou", true)
+node99.set_prop_value("no_cut", true)
 
 _editor.add_node(node99, 2417.8928485775, 251.357544078)
 
@@ -1085,6 +1088,7 @@ node177.set_prop_value("ping_dou", false)
 node177.set_prop_value("hex", false)
 node177.set_prop_value("skew", true)
 node177.set_prop_value("hide", true)
+node177.set_prop_value("head", 0)
 
 _editor.add_node(node177, -592.17750655624, 225.76845179942)
 
@@ -1172,6 +1176,7 @@ _editor.add_node(node190, 1278.8273356943, 171.36777362192)
 
 var node191 = ::blueprint::nodes::subgraph::Subgraph()
 node191.load_from_file(_editor, "../../00_dougong/82_yy_gong.ves")
+node191.set_prop_value("no_mid_dou", false)
 
 _editor.add_node(node191, 472.33100751739, 268.63702582619)
 
@@ -1641,7 +1646,7 @@ _editor.add_node(node267, 3181.6301220261, -607.27429327216)
 
 var node268 = ::blueprint::nodes::number::Number()
 
-node268.value = 0.89229667186737
+node268.value = 0.90340781211853
 
 _editor.add_node(node268, -709.30671293098, -942.90239794922)
 
@@ -1659,6 +1664,7 @@ var node271 = ::blueprint::nodes::subgraph::Subgraph()
 node271.load_from_file(_editor, "../../00_dougong/84_m_i_c_side_cut.ves")
 node271.set_prop_value("x", 2)
 node271.set_prop_value("y", 1)
+node271.set_prop_value("inner", false)
 
 _editor.add_node(node271, 267.48610958101, -600.26390904324)
 

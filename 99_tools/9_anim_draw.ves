@@ -1,8 +1,8 @@
 var node0 = ::blueprint::nodes::camera3d::Camera3d()
 
-node0.cam.position.set(1.1487581660366, -5.5313512308961, -3.1182601060197)
-node0.cam.yaw = -30.7
-node0.cam.pitch = 71.7
+node0.cam.position.set(0.81668814191495, 2.7277018850291, 1.7844940727703)
+node0.cam.yaw = -120.1
+node0.cam.pitch = -46.7
 node0.cam.zoom = 45
 node0.cam.update_vectors()
 node0.speed = 0.24232439696789
@@ -86,7 +86,7 @@ _editor.add_node(node15, -377.05429804101, 118.54316187174)
 
 var node16 = ::blueprint::nodes::number::Number()
 
-node16.value = 177.11718897521
+node16.value = 63.555836349726
 
 _editor.add_node(node16, -636.90956922826, -111.73656405594)
 
@@ -110,9 +110,9 @@ _editor.add_node(node20, -319.59138324006, -209.27527201254)
 
 var node21 = ::blueprint::nodes::number::Number()
 
-node21.value = 0.099392361938953
+node21.value = 0.059231907129288
 
-_editor.add_node(node21, -558.94534280329, -367.58591886909)
+_editor.add_node(node21, -559.33088609272, -367.58591886909)
 
 var node22 = ::blueprint::nodes::number::Number()
 
@@ -122,9 +122,9 @@ _editor.add_node(node22, -323.48995766686, -147.75569303124)
 
 var node23 = ::blueprint::nodes::number3::Number3()
 
-node23.value.set(0.54186230897903, 0.71964007616043, 0.47519564628601)
+node23.value.set(0.33075121045113, 0.76630675792694, 0.62186229228973)
 
-_editor.add_node(node23, 159.23238771264, 97.421113253561)
+_editor.add_node(node23, 157.03238771264, 101.82111325356)
 
 var node24 = ::blueprint::nodes::subtract::Subtract()
 
@@ -202,10 +202,6 @@ Blueprint.connect(node29, "v", node36, "a")
 Blueprint.connect(node29, "v", node36, "b")
 Blueprint.connect(node36, "v", node37, "a")
 Blueprint.connect(node29, "v", node37, "b")
-Blueprint.connect(node28, "var", node35, "geo")
-Blueprint.connect(node28, "var", node34, "list")
-Blueprint.connect(node34, "brush", node1, "var")
-Blueprint.connect(node28, "var", node7, "list")
 Blueprint.connect(node23, "v3", node24, "a")
 Blueprint.connect(node25, "v3", node24, "b")
 Blueprint.connect(node24, "v", node26, "a")
@@ -229,6 +225,10 @@ Blueprint.connect(node10, "next", node9, "action")
 Blueprint.connect(node28, "var", node5, "list")
 Blueprint.connect(node6, "v", node5, "deep")
 Blueprint.connect(node5, "list", node32, "geo")
+Blueprint.connect(node32, "geo", node7, "list")
+Blueprint.connect(node7, "list", node35, "geo")
+Blueprint.connect(node35, "geo", node34, "list")
+Blueprint.connect(node34, "brush", node1, "var")
 Blueprint.connect(node3, "v", node31, "a")
 Blueprint.connect(node30, "var", node31, "b")
 Blueprint.connect(node5, "list", node2, "objs")

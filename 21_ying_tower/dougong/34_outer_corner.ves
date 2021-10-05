@@ -169,6 +169,7 @@ _editor.add_node(node26, 3802.1536190347, 736.88760950522)
 var node27 = ::blueprint::nodes::subgraph::Subgraph()
 node27.load_from_file(_editor, "../../00_dougong/40_zhutou_fang.ves")
 node27.set_prop_value("no_dou", false)
+node27.set_prop_value("no_cut", true)
 
 _editor.add_node(node27, 3408.6215633399, 359.51269327062)
 
@@ -456,6 +457,7 @@ _editor.add_node(node74, 3553.9697330548, -1339.4778220482)
 var node75 = ::blueprint::nodes::subgraph::Subgraph()
 node75.load_from_file(_editor, "../../00_dougong/40_zhutou_fang.ves")
 node75.set_prop_value("no_dou", true)
+node75.set_prop_value("no_cut", true)
 
 _editor.add_node(node75, 4617.3503117192, 405.54843607346)
 
@@ -886,6 +888,7 @@ node144.set_prop_value("ping_dou", false)
 node144.set_prop_value("hex", false)
 node144.set_prop_value("skew", true)
 node144.set_prop_value("hide", false)
+node144.set_prop_value("head", 0)
 
 _editor.add_node(node144, 488.11879017154, 289.34844932132)
 
@@ -1262,7 +1265,7 @@ var node207 = ::blueprint::nodes::number::Number()
 
 node207.value = 1
 
-_editor.add_node(node207, -663.54365996508, -1181.6244647564)
+_editor.add_node(node207, -663.07715258487, -1181.6244647564)
 
 var node208 = ::blueprint::nodes::multiply::Multiply()
 
@@ -1317,6 +1320,7 @@ node216.set_prop_value("ping_dou", false)
 node216.set_prop_value("hex", false)
 node216.set_prop_value("skew", true)
 node216.set_prop_value("hide", true)
+node216.set_prop_value("head", 0)
 
 _editor.add_node(node216, 1340.7939952983, 342.07022923208)
 
@@ -1608,6 +1612,7 @@ _editor.add_node(node263, 2939.0893553602, 500.48795292635)
 
 var node264 = ::blueprint::nodes::subgraph::Subgraph()
 node264.load_from_file(_editor, "../../00_dougong/82_yy_gong.ves")
+node264.set_prop_value("no_mid_dou", false)
 
 _editor.add_node(node264, 2687.4141871964, 77.928907425181)
 
@@ -1742,6 +1747,7 @@ _editor.add_node(node285, 2709.1501454122, -2241.0634923579)
 var node286 = ::blueprint::nodes::subgraph::Subgraph()
 node286.load_from_file(_editor, "../../00_dougong/40_zhutou_fang.ves")
 node286.set_prop_value("no_dou", true)
+node286.set_prop_value("no_cut", true)
 
 _editor.add_node(node286, 3469.0169652933, 94.667479145893)
 
@@ -1826,6 +1832,7 @@ _editor.add_node(node299, 3513.0164546415, -267.84348490617)
 var node300 = ::blueprint::nodes::subgraph::Subgraph()
 node300.load_from_file(_editor, "../../00_dougong/40_zhutou_fang.ves")
 node300.set_prop_value("no_dou", true)
+node300.set_prop_value("no_cut", true)
 
 _editor.add_node(node300, 3475.2831041027, -149.79079705273)
 
@@ -2055,6 +2062,7 @@ node337.set_prop_value("ping_dou", false)
 node337.set_prop_value("hex", false)
 node337.set_prop_value("skew", true)
 node337.set_prop_value("hide", true)
+node337.set_prop_value("head", 0)
 
 _editor.add_node(node337, 494.74641023636, -634.38281204031)
 
@@ -2150,6 +2158,7 @@ _editor.add_node(node352, -868.70637560634, -1075.4550219876)
 
 var node353 = ::blueprint::nodes::subgraph::Subgraph()
 node353.load_from_file(_editor, "../../00_dougong/82_yy_gong.ves")
+node353.set_prop_value("no_mid_dou", false)
 
 _editor.add_node(node353, 1554.4435768821, 135.33758461693)
 
@@ -2198,6 +2207,7 @@ _editor.add_node(node360, 1819.7131761361, -81.802342641798)
 
 var node361 = ::blueprint::nodes::subgraph::Subgraph()
 node361.load_from_file(_editor, "../../00_dougong/82_yy_gong.ves")
+node361.set_prop_value("no_mid_dou", false)
 
 _editor.add_node(node361, 1586.1333537416, -64.209200507038)
 
@@ -2253,6 +2263,7 @@ _editor.add_node(node369, 1177.8540376386, -1355.5277808238)
 var node370 = ::blueprint::nodes::subgraph::Subgraph()
 node370.load_from_file(_editor, "../../00_dougong/40_zhutou_fang.ves")
 node370.set_prop_value("no_dou", false)
+node370.set_prop_value("no_cut", true)
 
 _editor.add_node(node370, 2346.2048540987, -162.53656292774)
 
@@ -2277,6 +2288,18 @@ var node374 = ::blueprint::nodes::load::Load()
 node374.var_name = "7"
 
 _editor.add_node(node374, -870.95902243312, -1219.8944543083)
+
+var node375 = ::blueprint::nodes::subgraph::Subgraph()
+node375.load_from_file(_editor, "../../99_tools/9_anim_draw.ves")
+
+node375.op_node.cam.position.set(0.81668814191495, 2.7277018850291, 1.7844940727703)
+node375.op_node.cam.yaw = -120.1
+node375.op_node.cam.pitch = -46.7
+node375.op_node.cam.zoom = 45
+node375.op_node.cam.update_vectors()
+node375.op_node.speed = 0.24232439696789
+
+_editor.add_node(node375, -434.73, -1059.88)
 
 Blueprint.connect(node318, "v", node319, "v")
 Blueprint.connect(node207, "v", node208, "a")
@@ -2756,4 +2779,5 @@ Blueprint.connect(node352, "var", node13, "in3")
 Blueprint.connect(node355, "var", node13, "in4")
 Blueprint.connect(node373, "var", node13, "in5")
 Blueprint.connect(node374, "var", node13, "in6")
+Blueprint.connect(node13, "list", node375, "list")
 Blueprint.connect(node13, "list", node191, "var")
