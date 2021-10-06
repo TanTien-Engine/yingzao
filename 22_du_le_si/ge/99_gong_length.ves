@@ -1,0 +1,56 @@
+var node0 = ::blueprint::nodes::number::Number()
+
+node0.value = 0.68
+
+_editor.add_node(node0, -69.436809997533, 265.96389678456)
+
+var node1 = ::blueprint::nodes::output::Output()
+
+node1.var_name = "ni_dao"
+node1.var_type = "num"
+
+_editor.add_node(node1, 74, 275.5)
+
+var node2 = ::blueprint::nodes::number::Number()
+
+node2.value = 1.12
+
+_editor.add_node(node2, -65.436809997533, 192.96389678456)
+
+var node3 = ::blueprint::nodes::output::Output()
+
+node3.var_name = "man"
+node3.var_type = "num"
+
+_editor.add_node(node3, 78, 202.5)
+
+var node4 = ::blueprint::nodes::number::Number()
+
+node4.value = 0.68
+
+_editor.add_node(node4, -58.436809997533, 116.96389678456)
+
+var node5 = ::blueprint::nodes::output::Output()
+
+node5.var_name = "gua_zi"
+node5.var_type = "num"
+
+_editor.add_node(node5, 85, 126.5)
+
+var node6 = ::blueprint::nodes::number::Number()
+
+node6.value = 0.62
+
+_editor.add_node(node6, -59.463446361169, 45.016078602742)
+
+var node7 = ::blueprint::nodes::output::Output()
+
+node7.var_name = "ling"
+node7.var_type = "num"
+
+_editor.add_node(node7, 83.973363636364, 54.552181818182)
+
+Blueprint.connect(node6, "v", node7, "var")
+Blueprint.connect(node4, "v", node5, "var")
+Blueprint.connect(node2, "v", node3, "var")
+Blueprint.connect(node0, "v", node1, "var")

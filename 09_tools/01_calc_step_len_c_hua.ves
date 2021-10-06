@@ -1,0 +1,61 @@
+var node0 = ::blueprint::nodes::input::Input()
+
+node0.var_name = "calc_step_len"
+node0.var_type = "func"
+
+_editor.add_node(node0, -211.12689078056, 0.6815432162421)
+
+var node1 = ::blueprint::nodes::function::Function()
+
+node1.set_size(587.08189813697, 305.93013713297)
+node1.title = "calc_step_len_hua"
+
+_editor.add_node(node1, -15.461654503302, 60.557625064057)
+
+var node2 = ::blueprint::nodes::func_call::FuncCall()
+node2.imports.add(::blueprint::pin::Pin(node2, "step", "int"))
+node2.exports.add(::blueprint::pin::Pin(node2, "len", "num"))
+node2.layout()
+
+_editor.add_node(node2, -79.252759446094, -17.828657260408)
+
+var node3 = ::blueprint::nodes::func_in::FuncIn()
+
+node3.var_name = "step"
+node3.var_type = "int"
+
+_editor.add_node(node3, -213.30092100349, -54.738655905389)
+
+var node4 = ::blueprint::nodes::divide::Divide()
+
+_editor.add_node(node4, 63.428766699946, -43.578289056798)
+
+var node5 = ::blueprint::nodes::cos::Cos()
+
+_editor.add_node(node5, -86.629530287644, -119.30025031148)
+
+var node6 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node6, -217.77545861341, -167.89718734102)
+
+var node7 = ::blueprint::nodes::func_out::FuncOut()
+
+node7.var_name = "len"
+node7.var_type = "num"
+
+_editor.add_node(node7, 201.04776726633, -36.571368201188)
+
+var node8 = ::blueprint::nodes::output::Output()
+
+node8.var_name = "func"
+node8.var_type = "func"
+
+_editor.add_node(node8, 383.85123966942, 59.359504132231)
+
+Blueprint.connect(node6, "pi/4", node5, "v")
+Blueprint.connect(node1, "func", node8, "var")
+Blueprint.connect(node0, "var", node2, "func")
+Blueprint.connect(node3, "var", node2, "step")
+Blueprint.connect(node2, "len", node4, "a")
+Blueprint.connect(node5, "v", node4, "b")
+Blueprint.connect(node4, "v", node7, "var")

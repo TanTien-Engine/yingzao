@@ -1,0 +1,85 @@
+var node0 = ::blueprint::nodes::input::Input()
+
+node0.var_name = "hop_count"
+node0.var_type = "int"
+
+_editor.add_node(node0, -527.91888530204, 272.00694803661)
+
+var node1 = ::blueprint::nodes::input::Input()
+
+node1.var_name = "calc_step_len"
+node1.var_type = "func"
+
+_editor.add_node(node1, -527.90708923, 204.39570715249)
+
+var node2 = ::blueprint::nodes::subgraph::Subgraph()
+node2.load_from_file(_editor, "82_compose_gong.ves")
+
+_editor.add_node(node2, 60.703717507438, 185.17798363)
+
+var node3 = ::blueprint::nodes::subgraph::Subgraph()
+node3.load_from_file(_editor, "50_gong_add_fang.ves")
+node3.set_prop_value("one_side", true)
+
+_editor.add_node(node3, 674.69557751401, 297.31525161621)
+
+var node4 = ::blueprint::nodes::output::Output()
+
+node4.var_name = "geo"
+node4.var_type = "geo"
+
+_editor.add_node(node4, 882.36234257662, 306.35122255251)
+
+var node5 = ::geograph::nodes::rotate_y::RotateY()
+node5.query_param("angle").value = "90"
+
+_editor.add_node(node5, -162.05592203586, 28.890361247898)
+
+var node6 = ::blueprint::nodes::property::Property()
+
+node6.var_name = "rot_dou"
+node6.var_type = "bool"
+
+_editor.add_node(node6, 183.71099526684, 98.683840127179)
+
+var node7 = ::blueprint::nodes::subgraph::Subgraph()
+node7.load_from_file(_editor, "11_single_hua_gong.ves")
+
+_editor.add_node(node7, -297.97409461364, 234.45358123581)
+
+var node8 = ::blueprint::nodes::subgraph::Subgraph()
+node8.load_from_file(_editor, "16_man_gong.ves")
+node8.set_prop_value("no_cut", true)
+
+_editor.add_node(node8, -357.74630200611, -13.644038950327)
+
+var node9 = ::blueprint::nodes::subgraph::Subgraph()
+node9.load_from_file(_editor, "50_gong_add_dou.ves")
+node9.set_prop_value("no_cut", true)
+
+_editor.add_node(node9, 429.11691016129, 232.04156354788)
+
+var node10 = ::geograph::nodes::rotate_y::RotateY()
+node10.query_param("angle").value = "90"
+
+_editor.add_node(node10, -167.31512564217, -62.770044462095)
+
+var node11 = ::blueprint::nodes::boolean::Boolean()
+
+node11.value = true
+
+_editor.add_node(node11, 221.15878286727, 27.600545125111)
+
+Blueprint.connect(node8, "pos_right", node10, "geo")
+Blueprint.connect(node8, "geo", node5, "geo")
+Blueprint.connect(node0, "var", node7, "hop_count")
+Blueprint.connect(node1, "var", node7, "calc_step_len")
+Blueprint.connect(node7, "geo", node2, "gong0")
+Blueprint.connect(node5, "geo", node2, "gong1")
+Blueprint.connect(node2, "gong", node9, "gong")
+Blueprint.connect(node7, "pos_left", node9, "pos_left")
+Blueprint.connect(node10, "geo", node9, "pos_right")
+Blueprint.connect(node6, "var", node9, "rot_left")
+Blueprint.connect(node11, "v", node9, "rot_right")
+Blueprint.connect(node9, "gong_dou", node3, "geo")
+Blueprint.connect(node3, "geo", node4, "var")

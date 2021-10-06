@@ -1,0 +1,77 @@
+var node0 = ::blueprint::nodes::output::Output()
+
+node0.var_name = "geo"
+node0.var_type = "geo"
+
+_editor.add_node(node0, 195.63801300286, 480.87490042595)
+
+var node1 = ::blueprint::nodes::input::Input()
+
+node1.var_name = "hop_count"
+node1.var_type = "int"
+
+_editor.add_node(node1, -468.83310695334, 524.883141899)
+
+var node2 = ::blueprint::nodes::input::Input()
+
+node2.var_name = "pos"
+node2.var_type = "num3"
+
+_editor.add_node(node2, -468.23651170192, 457.81282600473)
+
+var node3 = ::blueprint::nodes::input::Input()
+
+node3.var_name = "calc_step_len"
+node3.var_type = "func"
+
+_editor.add_node(node3, -469.62473070261, 388.74430037006)
+
+var node4 = ::blueprint::nodes::subgraph::Subgraph()
+node4.load_from_file(_editor, "50_gong_add_dou.ves")
+
+_editor.add_node(node4, 3.0569031137885, 417.95300134457)
+
+var node5 = ::blueprint::nodes::property::Property()
+
+node5.var_name = "rot_left"
+node5.var_type = "bool"
+
+_editor.add_node(node5, -217.33439316172, 336.79320935473)
+
+var node6 = ::blueprint::nodes::property::Property()
+
+node6.var_name = "rot_right"
+node6.var_type = "bool"
+
+_editor.add_node(node6, -216.7134443046, 271.59646734503)
+
+var node7 = ::blueprint::nodes::property::Property()
+
+node7.var_name = "left_dou"
+node7.var_type = "int"
+
+_editor.add_node(node7, -214.16729144778, 203.27796157619)
+
+var node8 = ::blueprint::nodes::property::Property()
+
+node8.var_name = "right_dou"
+node8.var_type = "int"
+
+_editor.add_node(node8, -212.66462814136, 135.65964232344)
+
+var node9 = ::blueprint::nodes::subgraph::Subgraph()
+node9.load_from_file(_editor, "11_single_hua_gong.ves")
+
+_editor.add_node(node9, -271.7631638754, 449.43895764426)
+
+Blueprint.connect(node1, "var", node9, "hop_count")
+Blueprint.connect(node2, "var", node9, "pos")
+Blueprint.connect(node3, "var", node9, "calc_step_len")
+Blueprint.connect(node9, "geo", node4, "gong")
+Blueprint.connect(node9, "pos_left", node4, "pos_left")
+Blueprint.connect(node9, "pos_right", node4, "pos_right")
+Blueprint.connect(node5, "var", node4, "rot_left")
+Blueprint.connect(node6, "var", node4, "rot_right")
+Blueprint.connect(node7, "var", node4, "left_dou")
+Blueprint.connect(node8, "var", node4, "right_dou")
+Blueprint.connect(node4, "gong_dou", node0, "var")

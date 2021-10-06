@@ -6,21 +6,21 @@ _editor.add_node(node0, -107.21059643173, -16.033255902334)
 var node1 = ::blueprint::nodes::subgraph::Subgraph()
 node1.load_from_file(_editor, "50_gong_add_dou.ves")
 
-_editor.add_node(node1, 130.47749685612, -41.670510568521)
+_editor.add_node(node1, 551.01057474618, -152.30740085906)
 
 var node2 = ::blueprint::nodes::input::Input()
 
 node2.var_name = "pos"
 node2.var_type = "num3"
 
-_editor.add_node(node2, -298.74580088146, 3.2508669081768)
+_editor.add_node(node2, -472.60377133802, 559.8221619412)
 
 var node3 = ::blueprint::nodes::output::Output()
 
 node3.var_name = "gong_dou"
 node3.var_type = "array"
 
-_editor.add_node(node3, 320.06795282898, -23.061798452177)
+_editor.add_node(node3, 740.60103071904, -133.69868874272)
 
 var node4 = ::blueprint::nodes::input::Input()
 
@@ -41,12 +41,73 @@ var node6 = ::blueprint::nodes::property::Property()
 node6.var_name = "rot_dou"
 node6.var_type = "bool"
 
-_editor.add_node(node6, -53.656771599377, -123.16587081286)
+_editor.add_node(node6, 277.68942534219, -284.04094087819)
 
-Blueprint.connect(node2, "var", node0, "pos")
+var node7 = ::blueprint::nodes::property::Property()
+
+node7.var_name = "hide"
+node7.var_type = "bool"
+
+_editor.add_node(node7, 427.96505154215, 231.87774911484)
+
+var node8 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node8, 558.7147842357, 185.67663332197)
+
+var node9 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node9, 303.56686772806, 154.40467471059)
+
+var node10 = ::geograph::nodes::box::Box()
+node10.query_param("size").value.set(2, 0.15, 0.08)
+node10.query_param("pos").value.set(0, 0, 0)
+node10.query_param("offset_x").value = false
+node10.query_param("offset_y").value = true
+node10.query_param("offset_z").value = false
+
+_editor.add_node(node10, -157.80126759381, 275.37015676176)
+
+var node11 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node11, 428.22429188672, 175.97120608037)
+
+var node12 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node12, 22.149476232608, 207.48082638575)
+
+var node13 = ::blueprint::nodes::load::Load()
+
+node13.var_name = "pos"
+
+_editor.add_node(node13, -156.86131116097, 128.05355638569)
+
+var node14 = ::blueprint::nodes::store::Store()
+
+node14.var_name = "pos"
+
+_editor.add_node(node14, -324.31178137818, 559.50956033447)
+
+var node15 = ::blueprint::nodes::load::Load()
+
+node15.var_name = "pos"
+
+_editor.add_node(node15, -293.2657174341, 0.68037648125741)
+
+Blueprint.connect(node2, "var", node14, "var")
+Blueprint.connect(node14, "var", node15, "var")
+Blueprint.connect(node15, "var", node0, "pos")
 Blueprint.connect(node4, "var", node0, "length")
 Blueprint.connect(node5, "var", node0, "no_cut")
-Blueprint.connect(node0, "geo", node1, "gong")
+Blueprint.connect(node14, "var", node13, "var")
+Blueprint.connect(node10, "geo", node12, "geo")
+Blueprint.connect(node13, "var", node12, "xyz")
+Blueprint.connect(node12, "geo", node9, "in0")
+Blueprint.connect(node0, "geo", node9, "in1")
+Blueprint.connect(node9, "list", node11, "list")
+Blueprint.connect(node7, "var", node8, "cond")
+Blueprint.connect(node11, "brush", node8, "true")
+Blueprint.connect(node0, "geo", node8, "false")
+Blueprint.connect(node8, "result", node1, "gong")
 Blueprint.connect(node0, "pos_left", node1, "pos_left")
 Blueprint.connect(node0, "pos_right", node1, "pos_right")
 Blueprint.connect(node6, "var", node1, "rot_left")

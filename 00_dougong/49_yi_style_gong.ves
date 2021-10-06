@@ -2,7 +2,7 @@ var node0 = ::geograph::nodes::polygon::Polygon()
 node0.query_param("vertices").value = [ 0, 0, 0, 0.07, -0.08, 0.07, -0.1, 0.12, -0.15, 0.12, -0.18, 0.08, -0.25, 0.12, -0.28, 0.1, -0.27, 0.08, -0.2, 0 ]
 node0.query_param("color").value.set(1, 0, 0)
 
-_editor.add_node(node0, -280, 125.5)
+_editor.add_node(node0, -580.68521142609, 190.52713317078)
 
 var node1 = ::geograph::nodes::poly_extrude::PolyExtrude()
 node1.query_param("distance").value = 0
@@ -20,7 +20,7 @@ var node3 = ::blueprint::nodes::output::Output()
 node3.var_name = "geo"
 node3.var_type = "geo"
 
-_editor.add_node(node3, 1301.9134966281, 322.52597596131)
+_editor.add_node(node3, 1616.4794231035, 269.15753166532)
 
 var node4 = ::geograph::nodes::translate_f::TranslateF()
 
@@ -31,7 +31,7 @@ var node5 = ::blueprint::nodes::input::Input()
 node5.var_name = "pos"
 node5.var_type = "num3"
 
-_editor.add_node(node5, 1033.4494572865, 269.47693559522)
+_editor.add_node(node5, 1353.1469649442, 217.64796565392)
 
 var node6 = ::geograph::nodes::rotate_x::RotateX()
 node6.query_param("angle").value = "270"
@@ -59,7 +59,7 @@ _editor.add_node(node10, 637.80577699588, 244.37573962136)
 
 var node11 = ::geograph::nodes::translate_f::TranslateF()
 
-_editor.add_node(node11, 1168.4161262299, 309.5207167577)
+_editor.add_node(node11, 1488.1136338876, 257.6917468164)
 
 var node12 = ::blueprint::nodes::negate::Negate()
 
@@ -78,10 +78,58 @@ node15.query_param("angle").value = "90"
 
 _editor.add_node(node15, 1026.9994159735, 352.35125349914)
 
+var node16 = ::geograph::nodes::polygon::Polygon()
+node16.query_param("vertices").value = [ 0, 0, 0, 0.15, -0.08, 0.15, -0.1, 0.12, -0.15, 0.12, -0.18, 0.08, -0.25, 0.12, -0.28, 0.1, -0.27, 0.08, -0.2, 0 ]
+node16.query_param("color").value.set(1, 0, 0)
+
+_editor.add_node(node16, -576.14397967695, 327.82981586997)
+
+var node17 = ::blueprint::nodes::property::Property()
+
+node17.var_name = "full"
+node17.var_type = "bool"
+
+_editor.add_node(node17, -438.07752506165, 450.6235389832)
+
+var node18 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node18, -255.3299744261, 350.38228759973)
+
+var node19 = ::blueprint::nodes::property::Property()
+
+node19.var_name = "hide"
+node19.var_type = "bool"
+
+_editor.add_node(node19, 1472.8190714319, 801.00031096486)
+
+var node20 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node20, 1603.5688041255, 754.79919517199)
+
+var node21 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node21, 1348.4208876178, 723.52723656061)
+
+var node22 = ::geograph::nodes::box::Box()
+node22.query_param("size").value.set(2, 0.15, 0.08)
+node22.query_param("pos").value.set(0, 0, 0)
+node22.query_param("offset_x").value = false
+node22.query_param("offset_y").value = true
+node22.query_param("offset_z").value = false
+
+_editor.add_node(node22, 887.05275229594, 844.49271861178)
+
+var node23 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node23, 1473.0783117765, 745.09376793039)
+
 Blueprint.connect(node2, "v", node9, "val")
 Blueprint.connect(node9, "val", node12, "v")
 Blueprint.connect(node12, "v", node8, "x")
-Blueprint.connect(node0, "polytope", node1, "geo")
+Blueprint.connect(node17, "var", node18, "cond")
+Blueprint.connect(node16, "polytope", node18, "true")
+Blueprint.connect(node0, "polytope", node18, "false")
+Blueprint.connect(node18, "result", node1, "geo")
 Blueprint.connect(node2, "v", node1, "distance")
 Blueprint.connect(node1, "geo", node6, "geo")
 Blueprint.connect(node6, "geo", node7, "geo")
@@ -92,6 +140,12 @@ Blueprint.connect(node4, "geo", node13, "in0")
 Blueprint.connect(node10, "geo", node13, "in1")
 Blueprint.connect(node13, "list", node14, "list")
 Blueprint.connect(node14, "brush", node15, "geo")
-Blueprint.connect(node15, "geo", node11, "geo")
+Blueprint.connect(node22, "geo", node21, "in0")
+Blueprint.connect(node15, "geo", node21, "in1")
+Blueprint.connect(node21, "list", node23, "list")
+Blueprint.connect(node19, "var", node20, "cond")
+Blueprint.connect(node23, "brush", node20, "true")
+Blueprint.connect(node15, "geo", node20, "false")
+Blueprint.connect(node20, "result", node11, "geo")
 Blueprint.connect(node5, "var", node11, "xyz")
 Blueprint.connect(node11, "geo", node3, "var")

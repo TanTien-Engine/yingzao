@@ -1,0 +1,80 @@
+var node0 = ::blueprint::nodes::number::Number()
+
+node0.value = 0.3
+
+_editor.add_node(node0, -289.58164271851, 264.42442242987)
+
+var node1 = ::blueprint::nodes::output::Output()
+
+node1.var_name = "column"
+node1.var_type = "num"
+
+_editor.add_node(node1, 74, 275.5)
+
+var node2 = ::blueprint::nodes::number::Number()
+
+node2.value = 0.21
+
+_editor.add_node(node2, -285.58164271851, 191.42442242987)
+
+var node3 = ::blueprint::nodes::output::Output()
+
+node3.var_name = "chuan"
+node3.var_type = "num"
+
+_editor.add_node(node3, 78, 202.5)
+
+var node4 = ::blueprint::nodes::number::Number()
+
+node4.value = 0.19
+
+_editor.add_node(node4, -271.37198320617, 49.689291582133)
+
+var node5 = ::blueprint::nodes::output::Output()
+
+node5.var_name = "liao_yan_chuan"
+node5.var_type = "num"
+
+_editor.add_node(node5, 92.209659512332, 60.764869152265)
+
+var node6 = ::blueprint::nodes::number::Number()
+
+node6.value = 0.09
+
+_editor.add_node(node6, -278.7600838454, -93.082828867891)
+
+var node7 = ::blueprint::nodes::output::Output()
+
+node7.var_name = "yuan"
+node7.var_type = "num"
+
+_editor.add_node(node7, 84.821558873109, -82.007251297758)
+
+var node8 = ::blueprint::nodes::subgraph::Subgraph()
+node8.load_from_file(_editor, "../../../tantien/assets/blueprints/tools/half.ves")
+
+_editor.add_node(node8, -108.43710220801, 277.99278850598)
+
+var node9 = ::blueprint::nodes::subgraph::Subgraph()
+node9.load_from_file(_editor, "../../../tantien/assets/blueprints/tools/half.ves")
+
+_editor.add_node(node9, -102.22352077195, 176.93350677995)
+
+var node10 = ::blueprint::nodes::subgraph::Subgraph()
+node10.load_from_file(_editor, "../../../tantien/assets/blueprints/tools/half.ves")
+
+_editor.add_node(node10, -86.531908892167, 53.945197451934)
+
+var node11 = ::blueprint::nodes::subgraph::Subgraph()
+node11.load_from_file(_editor, "../../../tantien/assets/blueprints/tools/half.ves")
+
+_editor.add_node(node11, -97.134349351479, -78.797357098655)
+
+Blueprint.connect(node6, "v", node11, "val")
+Blueprint.connect(node11, "val", node7, "var")
+Blueprint.connect(node4, "v", node10, "val")
+Blueprint.connect(node10, "val", node5, "var")
+Blueprint.connect(node2, "v", node9, "val")
+Blueprint.connect(node9, "val", node3, "var")
+Blueprint.connect(node0, "v", node8, "val")
+Blueprint.connect(node8, "val", node1, "var")

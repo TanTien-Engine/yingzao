@@ -1,0 +1,68 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "01_calc_step_pos.ves")
+
+_editor.add_node(node0, -693.4674805233, 321.68486055545)
+
+var node1 = ::blueprint::nodes::input::Input()
+
+node1.var_name = "calc_step_len"
+node1.var_type = "func"
+
+_editor.add_node(node1, -880.73069513489, 233.57666658419)
+
+var node2 = ::blueprint::nodes::input::Input()
+
+node2.var_name = "x"
+node2.var_type = "int"
+
+_editor.add_node(node2, -873.59543804685, 374.02197432906)
+
+var node3 = ::blueprint::nodes::input::Input()
+
+node3.var_name = "y"
+node3.var_type = "int"
+
+_editor.add_node(node3, -879.04998350139, 306.74924289485)
+
+var node4 = ::geograph::nodes::rotate_y::RotateY()
+node4.query_param("angle").value = "0"
+
+_editor.add_node(node4, -365.37909066352, 488.86439558776)
+
+var node5 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node5, -651.00290518946, 472.72043176525)
+
+var node6 = ::blueprint::nodes::negate::Negate()
+
+_editor.add_node(node6, -516.26295944964, 485.75978855255)
+
+var node7 = ::blueprint::nodes::output::Output()
+
+node7.var_name = "pos0"
+node7.var_type = "num3"
+
+_editor.add_node(node7, -228.62199166719, 415.74443753187)
+
+var node8 = ::geograph::nodes::rotate_y::RotateY()
+node8.query_param("angle").value = "0"
+
+_editor.add_node(node8, -358.2712145796, 396.04427034267)
+
+var node9 = ::blueprint::nodes::output::Output()
+
+node9.var_name = "pos1"
+node9.var_type = "num3"
+
+_editor.add_node(node9, -233.61066614576, 509.48533430699)
+
+Blueprint.connect(node5, "pi/4", node6, "v")
+Blueprint.connect(node2, "var", node0, "x")
+Blueprint.connect(node3, "var", node0, "y")
+Blueprint.connect(node1, "var", node0, "calc_step_len")
+Blueprint.connect(node0, "pos", node8, "geo")
+Blueprint.connect(node5, "pi/4", node8, "angle")
+Blueprint.connect(node8, "geo", node7, "var")
+Blueprint.connect(node0, "pos", node4, "geo")
+Blueprint.connect(node6, "v", node4, "angle")
+Blueprint.connect(node4, "geo", node9, "var")

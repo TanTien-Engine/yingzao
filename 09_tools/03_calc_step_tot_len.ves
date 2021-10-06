@@ -1,0 +1,46 @@
+var node0 = ::blueprint::nodes::input::Input()
+
+node0.var_name = "calc_step_len"
+node0.var_type = "func"
+
+_editor.add_node(node0, -266.66673578483, -12.842502044696)
+
+var node1 = ::blueprint::nodes::subgraph::Subgraph()
+node1.load_from_file(_editor, "01_calc_step_pos.ves")
+
+_editor.add_node(node1, -76.133576117183, 96.766060710768)
+
+var node2 = ::blueprint::nodes::integer::Integer()
+
+node2.value = 0
+
+_editor.add_node(node2, -269.52211007663, 61.565959113589)
+
+var node3 = ::blueprint::nodes::input::Input()
+
+node3.var_name = "steps"
+node3.var_type = "int"
+
+_editor.add_node(node3, -269.09799859305, 128.99748821301)
+
+var node4 = ::blueprint::nodes::split::Split()
+
+_editor.add_node(node4, 119.79951618472, 98.462442884642)
+
+var node5 = ::blueprint::nodes::abs::Abs()
+
+_editor.add_node(node5, 253.81437021074, 98.886577107602)
+
+var node6 = ::blueprint::nodes::output::Output()
+
+node6.var_name = "len"
+node6.var_type = "num"
+
+_editor.add_node(node6, 386.13282129165, 100.5829384571)
+
+Blueprint.connect(node3, "var", node1, "x")
+Blueprint.connect(node2, "v", node1, "y")
+Blueprint.connect(node0, "var", node1, "calc_step_len")
+Blueprint.connect(node1, "pos", node4, "xyz")
+Blueprint.connect(node4, "z", node5, "v")
+Blueprint.connect(node5, "v", node6, "var")

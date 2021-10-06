@@ -14,7 +14,7 @@ _editor.add_node(node1, -485.34580777565, -237.00636074801)
 
 var node2 = ::geograph::nodes::knife::Knife()
 node2.query_param("keep").value = "below"
-node2.query_param("seam").value = false
+node2.query_param("seam").value = true
 
 _editor.add_node(node2, -340.75056318285, -246.52881765337)
 
@@ -33,7 +33,7 @@ _editor.add_node(node4, -440.93365878137, 84.548334317889)
 
 var node5 = ::geograph::nodes::knife::Knife()
 node5.query_param("keep").value = "above"
-node5.query_param("seam").value = false
+node5.query_param("seam").value = true
 
 _editor.add_node(node5, -341.77687941931, -133.63403164261)
 
@@ -66,4 +66,4 @@ Blueprint.connect(node9, "var", node5, "plane")
 Blueprint.connect(node5, "geo", node7, "in0")
 Blueprint.connect(node2, "geo", node7, "in1")
 Blueprint.connect(node7, "list", node6, "list")
-Blueprint.connect(node6, "brush", node3, "var")
+Blueprint.connect(node7, "list", node3, "var")

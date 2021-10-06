@@ -1,0 +1,28 @@
+var node0 = ::blueprint::nodes::number::Number()
+
+node0.value = 0.1
+
+_editor.add_node(node0, -69.436809997533, 265.96389678456)
+
+var node1 = ::blueprint::nodes::output::Output()
+
+node1.var_name = "height"
+node1.var_type = "num"
+
+_editor.add_node(node1, 74, 275.5)
+
+var node2 = ::blueprint::nodes::number::Number()
+
+node2.value = 1.22
+
+_editor.add_node(node2, -65.436809997533, 192.96389678456)
+
+var node3 = ::blueprint::nodes::output::Output()
+
+node3.var_name = "length"
+node3.var_type = "num"
+
+_editor.add_node(node3, 78, 202.5)
+
+Blueprint.connect(node2, "v", node3, "var")
+Blueprint.connect(node0, "v", node1, "var")

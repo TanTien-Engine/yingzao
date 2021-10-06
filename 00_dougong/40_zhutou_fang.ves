@@ -5,7 +5,7 @@ node0.query_param("offset_x").value = false
 node0.query_param("offset_y").value = true
 node0.query_param("offset_z").value = false
 
-_editor.add_node(node0, 18.651719659667, 15.778513364767)
+_editor.add_node(node0, -190.43918943124, 123.21652989369)
 
 var node1 = ::blueprint::nodes::input::Input()
 
@@ -58,6 +58,7 @@ _editor.add_node(node9, 464.43160730788, 48.536024361609)
 
 var node10 = ::blueprint::nodes::subgraph::Subgraph()
 node10.load_from_file(_editor, "50_gong_add_dou.ves")
+node10.set_prop_value("no_cut", false)
 
 _editor.add_node(node10, 430.5635338145, -89.431902672631)
 
@@ -87,18 +88,18 @@ _editor.add_node(node14, 438.9898961491, 137.99825744754)
 
 var node15 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node15, -292.22087712244, -30.012342842346)
+_editor.add_node(node15, -106.2704638993, -146.54126846218)
 
 var node16 = ::blueprint::nodes::combine::Combine()
 
-_editor.add_node(node16, -433.63161038036, -103.39623096888)
+_editor.add_node(node16, -247.68119715722, -219.92515658871)
 
 var node17 = ::blueprint::nodes::input::Input()
 
 node17.var_name = "offset"
 node17.var_type = "num"
 
-_editor.add_node(node17, -571, -52.5)
+_editor.add_node(node17, -385.04958677686, -169.02892561983)
 
 var node18 = ::blueprint::nodes::subgraph::Subgraph()
 node18.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
@@ -203,7 +204,27 @@ var node34 = ::blueprint::nodes::load::Load()
 
 node34.var_name = "pos"
 
-_editor.add_node(node34, -433.02488962233, 5.3733724105504)
+_editor.add_node(node34, -247.07447639919, -111.15555320928)
+
+var node35 = ::blueprint::nodes::property::Property()
+
+node35.var_name = "offset_x"
+node35.var_type = "bool"
+
+_editor.add_node(node35, 2.2333730394983, 400.12127797893)
+
+var node36 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node36, 153.51238371718, 352.19745262577)
+
+var node37 = ::geograph::nodes::box::Box()
+node37.query_param("size").value.set(0, 0, 0)
+node37.query_param("pos").value.set(0, 0, 0)
+node37.query_param("offset_x").value = true
+node37.query_param("offset_y").value = true
+node37.query_param("offset_z").value = false
+
+_editor.add_node(node37, -50.619655246416, 209.13140592675)
 
 Blueprint.connect(node20, "var", node18, "val")
 Blueprint.connect(node19, "v", node18, "default")
@@ -212,13 +233,17 @@ Blueprint.connect(node21, "var", node22, "var")
 Blueprint.connect(node22, "var", node23, "x")
 Blueprint.connect(node24, "v", node23, "y")
 Blueprint.connect(node25, "v", node23, "z")
+Blueprint.connect(node23, "xyz", node37, "size")
 Blueprint.connect(node23, "xyz", node0, "size")
+Blueprint.connect(node35, "var", node36, "cond")
+Blueprint.connect(node37, "geo", node36, "true")
+Blueprint.connect(node0, "geo", node36, "false")
 Blueprint.connect(node17, "var", node16, "x")
 Blueprint.connect(node1, "var", node29, "var")
 Blueprint.connect(node29, "var", node34, "var")
 Blueprint.connect(node34, "var", node15, "a")
 Blueprint.connect(node16, "xyz", node15, "b")
-Blueprint.connect(node0, "geo", node2, "obj")
+Blueprint.connect(node36, "result", node2, "obj")
 Blueprint.connect(node15, "v", node2, "translate")
 Blueprint.connect(node2, "obj", node14, "var")
 Blueprint.connect(node29, "var", node33, "var")
