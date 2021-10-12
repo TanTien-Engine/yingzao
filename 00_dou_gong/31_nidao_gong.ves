@@ -1,0 +1,77 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "12_gong.ves")
+
+_editor.add_node(node0, -70.783149341443, -122.95773381963)
+
+var node1 = ::blueprint::nodes::number::Number()
+
+node1.value = 0.62
+
+_editor.add_node(node1, -384.30171146105, 41.538273945267)
+
+var node2 = ::blueprint::nodes::number::Number()
+
+node2.value = 0.14
+
+_editor.add_node(node2, -273.6508016762, -94.944064745215)
+
+var node3 = ::blueprint::nodes::number::Number()
+
+node3.value = 0.09
+
+_editor.add_node(node3, -273.26524815407, -158.17314578221)
+
+var node4 = ::blueprint::nodes::integer::Integer()
+
+node4.value = 4
+
+_editor.add_node(node4, -271.74676513672, -223.47718811035)
+
+var node5 = ::blueprint::nodes::output::Output()
+
+node5.var_name = "geo"
+node5.var_type = "geo"
+
+_editor.add_node(node5, 118.34440332013, -70.859601934317)
+
+var node6 = ::blueprint::nodes::subgraph::Subgraph()
+node6.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node6, -206.17404386784, 82.928463708752)
+
+var node7 = ::blueprint::nodes::input::Input()
+
+node7.var_name = "length"
+node7.var_type = "num"
+
+_editor.add_node(node7, -383.52391657491, 110.68758069597)
+
+var node8 = ::blueprint::nodes::store::Store()
+
+node8.var_name = "length"
+
+_editor.add_node(node8, -15.715620076034, 83.699565160877)
+
+var node9 = ::blueprint::nodes::load::Load()
+
+node9.var_name = "length"
+
+_editor.add_node(node9, -274.02961667646, -39.288736159954)
+
+var node10 = ::blueprint::nodes::output::Output()
+
+node10.var_name = "pos"
+node10.var_type = "num3"
+
+_editor.add_node(node10, 119.47631585355, -116.78012918611)
+
+Blueprint.connect(node7, "var", node6, "val")
+Blueprint.connect(node1, "v", node6, "default")
+Blueprint.connect(node6, "val", node8, "var")
+Blueprint.connect(node8, "var", node9, "var")
+Blueprint.connect(node9, "var", node0, "length")
+Blueprint.connect(node2, "v", node0, "entasis_w")
+Blueprint.connect(node3, "v", node0, "entasis_h")
+Blueprint.connect(node4, "v", node0, "entasis_num")
+Blueprint.connect(node0, "pos", node10, "var")
+Blueprint.connect(node0, "geo", node5, "var")

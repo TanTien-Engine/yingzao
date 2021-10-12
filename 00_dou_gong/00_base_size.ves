@@ -1,0 +1,42 @@
+var node0 = ::blueprint::nodes::number::Number()
+
+node0.value = 0.005
+
+_editor.add_node(node0, -69.436809997533, 265.96389678456)
+
+var node1 = ::blueprint::nodes::output::Output()
+
+node1.var_name = "min_size"
+node1.var_type = "num"
+
+_editor.add_node(node1, 67.048054886319, 276.36899313921)
+
+var node2 = ::blueprint::nodes::number::Number()
+
+node2.value = 0.02
+
+_editor.add_node(node2, -64.438508669915, 186.04772471898)
+
+var node3 = ::blueprint::nodes::output::Output()
+
+node3.var_name = "min_structure_size"
+node3.var_type = "num"
+
+_editor.add_node(node3, 73.441743343144, 195.60663308875)
+
+var node4 = ::blueprint::nodes::number::Number()
+
+node4.value = 0.005
+
+_editor.add_node(node4, -64.954479859192, 116.69879589051)
+
+var node5 = ::blueprint::nodes::output::Output()
+
+node5.var_name = "small_size"
+node5.var_type = "num"
+
+_editor.add_node(node5, 71.53038502466, 127.10389224516)
+
+Blueprint.connect(node4, "v", node5, "var")
+Blueprint.connect(node2, "v", node3, "var")
+Blueprint.connect(node0, "v", node1, "var")

@@ -1,0 +1,82 @@
+import "editor.editor" for Editor
+import "editor.node_cache" for NODE_CACHE
+import "blueprint.blueprint" for Blueprint
+import "blueprint.nodes.array" for Array
+import "blueprint.nodes.subgraph" for Subgraph
+
+var RENDER_NODE_PATH = "C:\\projects\\yingzao\\99_tools\\9_assemble_draw.ves"
+
+class Archeditor is Editor
+{
+	load()
+	{
+		super.load()
+
+		this.prepare_nodes()
+
+		this.all_geos = Array()
+
+		this.render_node = nil
+		this.add_node(NODE_CACHE.fetch(RENDER_NODE_PATH, nil), 0, 0)
+	}
+
+	prepare_nodes()
+	{
+		this.clear_popup_nodes()
+
+		import "archnodes" for ARCH_NODES
+		for (var node in ARCH_NODES) {
+			super.add_popup_node(node)
+		}
+	}
+
+	rebuild_all_geos()
+	{
+		this.all_geos.list.clear()
+
+		var scene = this.scene_stack.root()
+		if (scene.nodes.isEmpty) {
+			return
+		}
+
+		var nodes = []
+		for (var node in scene.nodes) {
+			nodes.add(node.components["bp"])
+		}
+
+		var sorted = Blueprint.topo_sort(nodes)
+		for (var node in sorted) {
+			if (node.has_method("resolve()")) {
+				var geo = node.resolve()
+				this.all_geos.list.add(geo)
+			}
+		}
+	}
+
+	draw_preview()
+	{
+		if (this.scene_stack.bp_dirty) 
+		{
+			this.rebuild_all_geos()
+
+			Blueprint.send_pin_dirty_root(this.all_geos.exports[0])
+		}
+
+		super.draw_preview()
+
+		if (this.render_node) {
+			this.render_node.render_run()
+		}	
+	}
+
+	add_node(bp_node, x, y)
+	{
+		super.add_node(bp_node, x, y)
+
+		if (bp_node is Subgraph and bp_node.filepath == RENDER_NODE_PATH) 
+		{
+			this.render_node = bp_node
+			Blueprint.connect(this.all_geos.exports[0], this.render_node.imports[0])
+		}
+	}
+}

@@ -1,0 +1,40 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "11_dou.ves")
+
+_editor.add_node(node0, -317.44357930674, 255.35049389948)
+
+var node1 = ::blueprint::nodes::number::Number()
+
+node1.value = 0.18
+
+_editor.add_node(node1, -507.09457620402, 212.36526197312)
+
+var node2 = ::blueprint::nodes::output::Output()
+
+node2.var_name = "geo"
+node2.var_type = "geo"
+
+_editor.add_node(node2, 34.521569060258, 212.40675328585)
+
+var node3 = ::geograph::nodes::boolean::Boolean()
+node3.query_param("operator").value = "subtract"
+
+_editor.add_node(node3, -114.61220169557, 193.84759388013)
+
+var node4 = ::blueprint::nodes::subgraph::Subgraph()
+node4.load_from_file(_editor, "20_er_cut_body.ves")
+
+_editor.add_node(node4, -323.91821843928, 112.7206587358)
+
+var node5 = ::blueprint::nodes::output::Output()
+
+node5.var_name = "pos"
+node5.var_type = "num3"
+
+_editor.add_node(node5, -124.50563150133, 314.08519719669)
+
+Blueprint.connect(node1, "v", node0, "dou_l")
+Blueprint.connect(node0, "pos", node5, "var")
+Blueprint.connect(node0, "geo", node3, "a")
+Blueprint.connect(node4, "geo", node3, "b")
+Blueprint.connect(node3, "geo", node2, "var")

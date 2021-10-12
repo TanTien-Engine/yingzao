@@ -1,0 +1,33 @@
+var node0 = ::archgraph::nodes::dou::Dou()
+
+_editor.add_node(node0, -363.60831447945, 258.78470610292)
+
+var node1 = ::blueprint::nodes::subgraph::Subgraph()
+node1.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
+node1.set_prop_value("ortho", false)
+node1.set_prop_value("offset", 0.052631579339504)
+
+node1.op_node.cam.position.set(-0.87119093682261, 0.84708704199055, 1.430835153817)
+node1.op_node.cam.yaw = -57.8
+node1.op_node.cam.pitch = -22.4
+node1.op_node.cam.zoom = 45
+node1.op_node.cam.update_vectors()
+node1.op_node.speed = 0.21526837348938
+
+_editor.add_node(node1, 0, 0)
+
+var node2 = ::archgraph::nodes::gong::Gong()
+
+_editor.add_node(node2, -222.81626984512, 259.17544184162)
+
+var node3 = ::archgraph::nodes::gong::Gong()
+
+_editor.add_node(node3, -80.496884354187, 261.42844742166)
+
+var node4 = ::archgraph::nodes::fang::Fang()
+
+_editor.add_node(node4, 64.803037668534, 261.8508825502)
+
+Blueprint.connect(node0, "next", node2, "prev")
+Blueprint.connect(node2, "next", node3, "prev")
+Blueprint.connect(node3, "next", node4, "prev")

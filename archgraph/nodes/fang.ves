@@ -1,0 +1,52 @@
+import "blueprint.node" for Node
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.nodes.number3" for Number3
+import "editor.node_cache" for NODE_CACHE
+import "archgraph.variant" for PIN_TYPE_GONG2FANG, PIN_TYPE_FANG2FANG
+import "geograph.nodes.translate_f" for TranslateF
+
+class Fang is Node
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", [ PIN_TYPE_GONG2FANG, PIN_TYPE_FANG2FANG ]),
+		]
+		this.exports = [
+			Pin(this, "next", PIN_TYPE_FANG2FANG),
+		]
+
+		this.layout()
+
+		this.fang = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/13_fang.ves", nil)
+
+		this.next_pos = nil
+	}
+
+	resolve()
+	{
+		var geo = Blueprint.calc_output_value(this.fang, "geo")
+
+		this.next_pos = Blueprint.calc_output_value(this.fang, "pos").value
+
+		var prev = Blueprint.get_input_node(this, 0)
+		if (prev) 
+		{
+			var trans = TranslateF()
+			Blueprint.connect(this.fang.exports[0], trans.imports[0])
+
+			var pos = Number3()
+			pos.value = prev.next_pos
+			Blueprint.connect(pos.exports[0], trans.imports[1])			
+
+			geo = Blueprint.calc_output_value(trans, "geo")
+
+			this.next_pos = this.next_pos.add(prev.next_pos)
+		}
+
+		return geo
+	}
+}

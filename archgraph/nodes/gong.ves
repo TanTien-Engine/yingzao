@@ -1,0 +1,111 @@
+import "blueprint.node" for Node
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.nodes.number3" for Number3
+import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
+import "blueprint.variant_proxy" for VariantProxy
+import "editor.node_cache" for NODE_CACHE
+import "archgraph.variant" for PIN_TYPE_GONG2GONG, PIN_TYPE_DOU2GONG, PIN_TYPE_GONG2FANG
+import "archgraph.nodes.dou" for SAN_DOU, QIXIN_DOU
+import "geograph.nodes.translate_f" for TranslateF
+import "geograph.nodes.brush_get_size" for BrushGetSize
+import "maths.vector" for Vector3
+
+var GUAZI_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/32_guazi_gong.ves", nil)
+var MAN_GONG   = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/33_man_gong.ves", nil)
+var LING_GONG  = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/34_ling_gong.ves", nil)
+
+var QIXIN_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/60_qixin_dou_joint.ves", nil)
+
+class Gong is Node
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", [ PIN_TYPE_GONG2GONG, PIN_TYPE_DOU2GONG ]),
+		]
+		this.exports = [
+			Pin(this, "next", [ PIN_TYPE_GONG2GONG, PIN_TYPE_GONG2FANG ]),
+		]
+
+		this.layout()
+
+		this.next_pos = nil
+	}
+
+	resolve()
+	{
+		var geo = nil
+
+		var prev = Blueprint.get_input_node(this, 0)
+		var gong = this.select_gong(prev)
+		this.next_pos = prev.next_pos.add(Blueprint.calc_output_value(gong, "pos").value)
+		geo = this.translate_geo(gong, prev.next_pos)
+
+		var geo_cut = this.qixin_cut(geo, prev.next_pos.sub(Vector3(0, 0.06, 0)))
+
+		geo = this.add_dou(geo_cut)
+
+		return geo
+	}
+
+	select_gong(prev)
+	{
+		if (prev and prev is Gong) {
+			return MAN_GONG
+		} else {
+			return GUAZI_GONG
+		}
+	}
+
+	translate_geo(geo, pos)
+	{
+		var trans = TranslateF()
+		Blueprint.connect(geo.exports[0], trans.imports[0])
+
+		var num3 = Number3()
+		num3.value = pos
+		Blueprint.connect(num3.exports[0], trans.imports[1])
+
+		return Blueprint.calc_output_value(trans, "geo")
+	}
+
+	add_dou(geo)
+	{
+		var next = Blueprint.get_output_node(this, 0)
+		if (!next) {
+			return geo
+		}
+
+		var c_dou = this.translate_geo(QIXIN_DOU, this.next_pos)
+
+		var aabb = []
+		BrushGetSize.calc_aabb(geo, aabb)
+		var x_min = aabb[0].x
+		var x_max = aabb[1].x
+
+		var dist = 0.05
+		var l_pos = Vector3(x_min + dist, this.next_pos.y, this.next_pos.z)
+		var r_pos = Vector3(x_max - dist, this.next_pos.y, this.next_pos.z)
+
+		var l_dou = this.translate_geo(SAN_DOU, l_pos)
+		var r_dou = this.translate_geo(SAN_DOU, r_pos)
+
+		this.next_pos = this.next_pos.add(Vector3(0, 0.06, 0))
+
+		return Variant(VAR_TYPE_ARRAY, [ geo, l_dou, c_dou, r_dou ])
+	}
+
+	qixin_cut(geo, pos)
+	{
+		var geo_node = VariantProxy(geo)
+		var pos_node = VariantProxy(Variant(pos))
+
+		Blueprint.connect(geo_node, 0, QIXIN_JOINT, "geo")
+		Blueprint.connect(pos_node, 0, QIXIN_JOINT, "pos")
+
+		return Blueprint.calc_output_value(QIXIN_JOINT, "geo")
+	}
+}

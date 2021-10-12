@@ -1,0 +1,36 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "11_dou.ves")
+
+_editor.add_node(node0, -317.44357930674, 255.35049389948)
+
+var node1 = ::blueprint::nodes::number::Number()
+
+node1.value = 0.16
+
+_editor.add_node(node1, -507.09457620402, 212.36526197312)
+
+var node2 = ::blueprint::nodes::output::Output()
+
+node2.var_name = "geo"
+node2.var_type = "geo"
+
+_editor.add_node(node2, 171.11086687111, 200.40845487881)
+
+var node3 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node3, -101.34486928127, 177.86160828202)
+
+var node4 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node4, 36.56630447514, 200.13892503423)
+
+var node5 = ::blueprint::nodes::subgraph::Subgraph()
+node5.load_from_file(_editor, "20_qixin_cut_body.ves")
+
+_editor.add_node(node5, -312.53838781617, 130.53193644072)
+
+Blueprint.connect(node1, "v", node0, "dou_l")
+Blueprint.connect(node0, "geo", node3, "in0")
+Blueprint.connect(node5, "geo", node3, "in1")
+Blueprint.connect(node3, "list", node4, "list")
+Blueprint.connect(node4, "brush", node2, "var")
