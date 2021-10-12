@@ -87,7 +87,7 @@ var node15 = ::blueprint::nodes::input::Input()
 node15.var_name = "offset"
 node15.var_type = "num"
 
-_editor.add_node(node15, -429.31940252131, 133.29043856534)
+_editor.add_node(node15, -641.67449500754, 142.2655740532)
 
 var node16 = ::geograph::nodes::brush_merge::BrushMerge()
 
@@ -148,6 +148,18 @@ var node26 = ::blueprint::nodes::negate::Negate()
 
 _editor.add_node(node26, 233.70059798182, -283.09685064892)
 
+var node27 = ::blueprint::nodes::property::Property()
+
+node27.var_name = "offset"
+node27.var_type = "num"
+
+_editor.add_node(node27, -640.36686773683, 78.936672762391)
+
+var node28 = ::blueprint::nodes::subgraph::Subgraph()
+node28.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node28, -455.13580140744, 113.4396468353)
+
 Blueprint.connect(node25, "v3", node26, "v")
 Blueprint.connect(node20, "var", node21, "var")
 Blueprint.connect(node21, "var", node23, "var")
@@ -155,7 +167,9 @@ Blueprint.connect(node23, "var", node24, "cond")
 Blueprint.connect(node25, "v3", node24, "true")
 Blueprint.connect(node24, "result", node0, "eye")
 Blueprint.connect(node21, "var", node22, "var")
-Blueprint.connect(node15, "var", node13, "a")
+Blueprint.connect(node15, "var", node28, "val")
+Blueprint.connect(node27, "var", node28, "default")
+Blueprint.connect(node28, "val", node13, "a")
 Blueprint.connect(node14, "v", node13, "b")
 Blueprint.connect(node7, "v3", node8, "a")
 Blueprint.connect(node9, "v3", node8, "b")
