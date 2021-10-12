@@ -1,0 +1,149 @@
+var node0 = ::blueprint::nodes::func_in::FuncIn()
+
+node0.var_name = "step"
+node0.var_type = "int"
+
+_editor.add_node(node0, -830.53438999995, 178.27365245154)
+
+var node1 = ::blueprint::nodes::func_out::FuncOut()
+
+node1.var_name = "len"
+node1.var_type = "num"
+
+_editor.add_node(node1, 354.11378884935, -89.81565005936)
+
+var node2 = ::blueprint::nodes::function::Function()
+
+node2.set_size(1391.8201109622, 1056.3924783682)
+node2.title = "calc_step_len"
+
+_editor.add_node(node2, -211.19363398605, 249.8185461818)
+
+var node3 = ::blueprint::nodes::output::Output()
+
+node3.var_name = "func"
+node3.var_type = "func"
+
+_editor.add_node(node3, 747.66198721262, 242.0881751991)
+
+var node4 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node4, -638.5591852051, -581.30075814825)
+
+var node5 = ::blueprint::nodes::number::Number()
+
+node5.value = 1
+
+_editor.add_node(node5, -776.88434794443, -576.2677411373)
+
+var node6 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node6, 219.2709622989, -113.0919167096)
+
+var node7 = ::blueprint::nodes::property::Property()
+
+node7.var_name = "rot"
+node7.var_type = "bool"
+
+_editor.add_node(node7, 23.3704021828, 68.352435016331)
+
+var node8 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node8, -398.27719802194, -404.25923397982)
+
+var node9 = ::blueprint::nodes::cos::Cos()
+
+_editor.add_node(node9, -255.78358655936, -436.69799719203)
+
+var node10 = ::blueprint::nodes::number::Number()
+
+node10.value = 1
+
+_editor.add_node(node10, -254.06906900035, -373.22148282842)
+
+var node11 = ::blueprint::nodes::divide::Divide()
+
+_editor.add_node(node11, -112.93257161806, -362.45867615999)
+
+var node12 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node12, 32.880156598799, -281.883851352)
+
+var node13 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node13, -366.56997604125, -92.70083193833)
+
+var node14 = ::blueprint::nodes::compare::Compare()
+
+node14.cmp = "greater"
+
+_editor.add_node(node14, -513.29032829125, 160.0060374779)
+
+var node15 = ::blueprint::nodes::integer::Integer()
+
+node15.value = 0
+
+_editor.add_node(node15, -648.15336197699, 123.53364695002)
+
+var node16 = ::blueprint::nodes::switch_f::SwitchF()
+
+_editor.add_node(node16, -644.04640092705, -66.671499058359)
+
+var node17 = ::blueprint::nodes::number::Number()
+
+node17.value = 1
+
+_editor.add_node(node17, -791.8710797509, -0.87708321790006)
+
+var node18 = ::blueprint::nodes::number::Number()
+
+node18.value = 0
+
+_editor.add_node(node18, -790.30621637526, -64.379643294292)
+
+var node19 = ::blueprint::nodes::number::Number()
+
+node19.value = 0.26
+
+_editor.add_node(node19, -789.47976605888, -129.66889142188)
+
+var node20 = ::blueprint::nodes::number::Number()
+
+node20.value = 0.2
+
+_editor.add_node(node20, -790.30621687968, -193.30526363343)
+
+var node21 = ::blueprint::nodes::negate::Negate()
+
+_editor.add_node(node21, -631.27653172666, -421.15268263815)
+
+var node22 = ::blueprint::nodes::number::Number()
+
+node22.value = 0.19
+
+_editor.add_node(node22, -792.14051643471, -257.3367556907)
+
+Blueprint.connect(node8, "pi/6", node9, "v")
+Blueprint.connect(node10, "v", node11, "a")
+Blueprint.connect(node9, "v", node11, "b")
+Blueprint.connect(node2, "func", node3, "var")
+Blueprint.connect(node0, "var", node21, "v")
+Blueprint.connect(node21, "v", node4, "type")
+Blueprint.connect(node5, "v", node4, "default")
+Blueprint.connect(node0, "var", node16, "type")
+Blueprint.connect(node17, "v", node16, "default")
+Blueprint.connect(node18, "v", node16, "case0")
+Blueprint.connect(node19, "v", node16, "case1")
+Blueprint.connect(node20, "v", node16, "case2")
+Blueprint.connect(node22, "v", node16, "case3")
+Blueprint.connect(node0, "var", node14, "a")
+Blueprint.connect(node15, "v", node14, "b")
+Blueprint.connect(node14, "out", node13, "cond")
+Blueprint.connect(node16, "result", node13, "true")
+Blueprint.connect(node4, "result", node13, "false")
+Blueprint.connect(node13, "result", node12, "a")
+Blueprint.connect(node11, "v", node12, "b")
+Blueprint.connect(node7, "var", node6, "cond")
+Blueprint.connect(node12, "v", node6, "true")
+Blueprint.connect(node13, "result", node6, "false")
+Blueprint.connect(node6, "result", node1, "var")
