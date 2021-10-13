@@ -1,0 +1,43 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
+node0.set_prop_value("ortho", false)
+node0.set_prop_value("offset", 1)
+
+node0.op_node.cam.position.set(-0.5279907504412, 0.80669231021419, 1.9066287704767)
+node0.op_node.cam.yaw = -78.8
+node0.op_node.cam.pitch = -14.1
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.29386684298515
+
+_editor.add_node(node0, -0.75131480090158, 0)
+
+var node1 = ::archgraph::nodes::lu_dou::LuDou()
+
+_editor.add_node(node1, -384.86363220215, 226.30294799805)
+
+var node2 = ::archgraph::nodes::bi_gong::BiGong()
+
+_editor.add_node(node2, -227.02790477528, 273.98804208117)
+
+var node3 = ::archgraph::nodes::bi_gong::BiGong()
+
+_editor.add_node(node3, -86.030874016125, 272.53517489122)
+
+var node4 = ::archgraph::nodes::bi_gong::BiGong()
+
+_editor.add_node(node4, 55.000054737789, 270.5147337881)
+
+var node5 = ::archgraph::nodes::bi_gong::BiGong()
+
+_editor.add_node(node5, 193.08509833389, 269.03626069896)
+
+var node6 = ::archgraph::nodes::bi_gong::BiGong()
+
+_editor.add_node(node6, 333.36228655171, 268.97506346169)
+
+Blueprint.connect(node1, "hori", node2, "prev")
+Blueprint.connect(node2, "next", node3, "prev")
+Blueprint.connect(node3, "next", node4, "prev")
+Blueprint.connect(node4, "next", node5, "prev")
+Blueprint.connect(node5, "next", node6, "prev")

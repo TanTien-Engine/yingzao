@@ -121,6 +121,13 @@ node21.var_name = "width"
 
 _editor.add_node(node21, -639.85809345297, 394.91025209283)
 
+var node22 = ::blueprint::nodes::output::Output()
+
+node22.var_name = "pos"
+node22.var_type = "num3"
+
+_editor.add_node(node22, -48.046936035156, 494.51815795898)
+
 Blueprint.connect(node10, "v", node9, "height")
 Blueprint.connect(node11, "v", node9, "er_h")
 Blueprint.connect(node12, "v", node9, "er_w")
@@ -144,6 +151,7 @@ Blueprint.connect(node5, "val", node0, "qi_h")
 Blueprint.connect(node21, "var", node0, "dou_w")
 Blueprint.connect(node20, "var", node0, "dou_l")
 Blueprint.connect(node7, "val", node0, "down_sha")
+Blueprint.connect(node0, "pos", node22, "var")
 Blueprint.connect(node0, "geo", node8, "a")
 Blueprint.connect(node9, "geo", node8, "b")
 Blueprint.connect(node8, "geo", node1, "var")

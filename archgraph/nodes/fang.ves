@@ -1,10 +1,13 @@
 import "blueprint.node" for Node
 import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
-import "blueprint.nodes.number3" for Number3
-import "editor.node_cache" for NODE_CACHE
 import "archgraph.variant" for PIN_TYPE_GONG2FANG, PIN_TYPE_FANG2FANG
-import "geograph.nodes.translate_f" for TranslateF
+import "archgraph.node_helper" for NodeHelper
+import "editor.node_cache" for NODE_CACHE
+
+var QIXIN_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/20_qixin_cut_body.ves", nil)
+
+var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/13_fang.ves", nil)
 
 class Fang is Node
 {
@@ -21,31 +24,18 @@ class Fang is Node
 
 		this.layout()
 
-		this.fang = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/13_fang.ves", nil)
-
 		this.next_pos = nil
 	}
 
 	resolve()
 	{
-		var geo = Blueprint.calc_output_value(this.fang, "geo")
-
-		this.next_pos = Blueprint.calc_output_value(this.fang, "pos").value
-
 		var prev = Blueprint.get_input_node(this, 0)
-		if (prev) 
-		{
-			var trans = TranslateF()
-			Blueprint.connect(this.fang.exports[0], trans.imports[0])
 
-			var pos = Number3()
-			pos.value = prev.next_pos
-			Blueprint.connect(pos.exports[0], trans.imports[1])			
+		this.next_pos = prev.next_pos.add(Blueprint.calc_output_value(FANG, "pos").value)
+		var geo = NodeHelper.translate_geo(FANG, prev.next_pos)
 
-			geo = Blueprint.calc_output_value(trans, "geo")
-
-			this.next_pos = this.next_pos.add(prev.next_pos)
-		}
+		// conn prev
+		geo = NodeHelper.joint_cut_geo(geo, QIXIN_CUT, prev.next_pos)
 
 		return geo
 	}

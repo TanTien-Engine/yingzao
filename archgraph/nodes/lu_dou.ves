@@ -1,0 +1,38 @@
+import "blueprint.node" for Node
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "editor.node_cache" for NODE_CACHE
+import "archgraph.variant" for PIN_TYPE_GONG2DOU, PIN_TYPE_DOU2GONG, PIN_TYPE_BI_GONG
+
+var LU_DOU = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/24_lu_dou.ves", nil)
+
+class LuDou is Node
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_GONG2DOU),
+		]
+		this.exports = [
+			Pin(this, "hori", PIN_TYPE_BI_GONG),
+			Pin(this, "vert", PIN_TYPE_DOU2GONG),			
+		]
+
+		this.layout()
+
+		this.next_pos = nil
+	}
+
+	resolve()
+	{
+		this.next_pos = Blueprint.calc_output_value(LU_DOU, "pos").value
+		return Blueprint.calc_output_value(LU_DOU, "geo")
+	}
+
+	get_title()
+	{
+		return "栌枓"
+	}
+}

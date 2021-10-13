@@ -3,37 +3,39 @@ import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
 import "editor.node_cache" for NODE_CACHE
-import "archgraph.variant" for PIN_TYPE_GONG2GONG, PIN_TYPE_DOU2GONG, PIN_TYPE_GONG2FANG
+import "archgraph.variant" for PIN_TYPE_BI_GONG
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.nodes.dou" for SAN_DOU, QIXIN_DOU
 import "geograph.nodes.brush_get_size" for BrushGetSize
 import "maths.vector" for Vector3
 
-var GUAZI_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/32_guazi_gong.ves", nil)
-var MAN_GONG   = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/33_man_gong.ves", nil)
-var LING_GONG  = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/34_ling_gong.ves", nil)
+var NI_DAO_GONG     = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/31_nidao_gong.ves", nil)
+var BI_NEI_MAN_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/33_man_gong.ves", nil)
+var ZHU_TOU_FANG    = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/13_fang.ves", nil)
 
 var SUN_GD = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/60_sun_gd.ves", nil)
 
 var JIAOHU_CUT = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/20_jiaohu_tu_cut_body.ves", nil)
 var QIXIN_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dou_gong/20_qixin_cut_body.ves", nil)
 
-class Gong is Node
+class BiGong is Node
 {
 	init()
 	{
 		super.init()
 
 		this.imports = [
-			Pin(this, "prev", [ PIN_TYPE_GONG2GONG, PIN_TYPE_DOU2GONG ]),
+			Pin(this, "prev", PIN_TYPE_BI_GONG),
 		]
 		this.exports = [
-			Pin(this, "next", [ PIN_TYPE_GONG2GONG, PIN_TYPE_GONG2FANG ]),
+			Pin(this, "next", PIN_TYPE_BI_GONG),
 		]
 
 		this.layout()
 
 		this.next_pos = nil
+
+		this.gong_layer = 0
 	}
 
 	resolve()
@@ -46,12 +48,12 @@ class Gong is Node
 		var curr_pos = Vector3(0, 0, 0)
 		if (prev) {
 			curr_pos = prev.next_pos
-		}		
+		}			
 		this.next_pos = curr_pos.add(Blueprint.calc_output_value(gong, "pos").value)
 		var geo = NodeHelper.translate_geo(gong, curr_pos)
 
 		// conn prev
-		geo = this.add_joint(geo, prev)
+//		geo = this.add_joint(geo, prev)
 
 		// conn next
 		geo = this.add_dou(geo)
@@ -61,17 +63,26 @@ class Gong is Node
 
 	select_gong(prev)
 	{
-		if (prev and prev is Gong) {
-			return MAN_GONG
+		if (prev and prev is BiGong) {
+			this.gong_layer = prev.gong_layer + 1
+		}
+
+		if (this.gong_layer == 0) {
+			this.title = "泥道栱"
+			return NI_DAO_GONG
+		} else if (this.gong_layer == 1) {
+			this.title = "壁内慢栱"
+			return BI_NEI_MAN_GONG
 		} else {
-			return GUAZI_GONG
+			this.title = "柱头枋"		
+			return ZHU_TOU_FANG
 		}
 	}
 
 	add_joint(geo, prev)
 	{
 		var cut_node = nil
-		if (prev and prev is Gong) {
+		if (prev and prev is BiGong) {
 			cut_node = QIXIN_CUT
 		} else {
 			cut_node = JIAOHU_CUT
@@ -87,19 +98,24 @@ class Gong is Node
 			return geo
 		}
 
-		var c_pos = this.next_pos.clone()
+		var l_pos = nil
+		var r_pos = nil
+		if (this.gong_layer < 2)
+		{
+			var aabb = []
+			BrushGetSize.calc_aabb(geo, aabb)
+			var x_min = aabb[0].x
+			var x_max = aabb[1].x
 
-		var c_sun = NodeHelper.translate_geo(SUN_GD, c_pos)
-		var c_dou = NodeHelper.translate_geo(QIXIN_DOU, c_pos)
-
-		var aabb = []
-		BrushGetSize.calc_aabb(geo, aabb)
-		var x_min = aabb[0].x
-		var x_max = aabb[1].x
-
-		var dist = 0.05
-		var l_pos = Vector3(x_min + dist, this.next_pos.y, this.next_pos.z)
-		var r_pos = Vector3(x_max - dist, this.next_pos.y, this.next_pos.z)
+			var dist = 0.05
+			l_pos = Vector3(x_min + dist, this.next_pos.y, this.next_pos.z)
+			r_pos = Vector3(x_max - dist, this.next_pos.y, this.next_pos.z)
+		}
+		else
+		{
+			l_pos = Vector3(-0.41, this.next_pos.y, this.next_pos.z)
+			r_pos = Vector3( 0.41, this.next_pos.y, this.next_pos.z)
+		}
 
 		var l_sun = NodeHelper.translate_geo(SUN_GD, l_pos)
 		var r_sun = NodeHelper.translate_geo(SUN_GD, r_pos)
@@ -111,10 +127,15 @@ class Gong is Node
 
 		// cut sun
 		l_dou = NodeHelper.joint_cut_geo(l_dou, SUN_GD, l_pos)
-		c_dou = NodeHelper.joint_cut_geo(c_dou, SUN_GD, c_pos)
-		r_dou = NodeHelper.joint_cut_geo(r_dou, SUN_GD, r_pos)		
-		geo = NodeHelper.joint_cut_geo(geo, SUN_GD, [ l_pos, c_pos, r_pos ])
+		r_dou = NodeHelper.joint_cut_geo(r_dou, SUN_GD, r_pos)
 
-		return Variant(VAR_TYPE_ARRAY, [ geo, [ l_sun, c_sun, r_sun ], [ l_dou, c_dou, r_dou ] ])
+		geo = NodeHelper.joint_cut_geo(geo, SUN_GD, [ l_pos, r_pos ])
+
+		return Variant(VAR_TYPE_ARRAY, [ geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
+	}
+
+	get_title()
+	{
+		return this.title
 	}
 }

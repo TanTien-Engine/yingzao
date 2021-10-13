@@ -1,0 +1,48 @@
+var node0 = ::blueprint::nodes::input::Input()
+
+node0.var_name = "geo"
+node0.var_type = "geo"
+
+_editor.add_node(node0, -852.28387260298, 188.61840110541)
+
+var node1 = ::geograph::nodes::boolean::Boolean()
+node1.query_param("operator").value = "subtract"
+
+_editor.add_node(node1, -706.92279636089, 152.36188070593)
+
+var node2 = ::blueprint::nodes::output::Output()
+
+node2.var_name = "geo"
+node2.var_type = [ "geo", "array" ]
+
+_editor.add_node(node2, -564.77627227593, 173.50452664707)
+
+var node3 = ::blueprint::nodes::input::Input()
+
+node3.var_name = "cut_body"
+node3.var_type = [ "geo", "array" ]
+
+_editor.add_node(node3, -1129.099361573, 71.83097869425)
+
+var node4 = ::blueprint::nodes::input::Input()
+
+node4.var_name = "pos"
+node4.var_type = "num3"
+
+_editor.add_node(node4, -996.29468457133, 141.66859031389)
+
+var node5 = ::blueprint::nodes::for_each_f::ForEachF()
+
+_editor.add_node(node5, -852.81707214732, 109.35504730485)
+
+var node6 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node6, -991.23835950412, 73.182234911921)
+
+Blueprint.connect(node3, "var", node6, "geo")
+Blueprint.connect(node5, "curr_item", node6, "xyz")
+Blueprint.connect(node4, "var", node5, "items")
+Blueprint.connect(node6, "geo", node5, "eval")
+Blueprint.connect(node0, "var", node1, "a")
+Blueprint.connect(node5, "result", node1, "b")
+Blueprint.connect(node1, "geo", node2, "var")

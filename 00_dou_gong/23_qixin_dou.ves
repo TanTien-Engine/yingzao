@@ -27,10 +27,32 @@ _editor.add_node(node4, 36.56630447514, 200.13892503423)
 var node5 = ::blueprint::nodes::subgraph::Subgraph()
 node5.load_from_file(_editor, "20_qixin_cut_body.ves")
 
-_editor.add_node(node5, -312.53838781617, 130.53193644072)
+_editor.add_node(node5, -430.51463438161, 114.33911828468)
 
+var node6 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node6, -243.25695364254, 98.181631857268)
+
+var node7 = ::blueprint::nodes::subgraph::Subgraph()
+node7.load_from_file(_editor, "01_dou_size.ves")
+
+_editor.add_node(node7, -693.41715171924, -12.308444408222)
+
+var node8 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node8, -510.45935435407, 27.998350745808)
+
+var node9 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node9, -375.50627792532, -3.0830196881919)
+
+Blueprint.connect(node7, "ping_h", node8, "a")
+Blueprint.connect(node7, "qi_h", node8, "b")
+Blueprint.connect(node8, "v", node9, "y")
+Blueprint.connect(node5, "geo", node6, "geo")
+Blueprint.connect(node9, "xyz", node6, "xyz")
 Blueprint.connect(node1, "v", node0, "dou_l")
 Blueprint.connect(node0, "geo", node3, "in0")
-Blueprint.connect(node5, "geo", node3, "in1")
+Blueprint.connect(node6, "geo", node3, "in1")
 Blueprint.connect(node3, "list", node4, "list")
 Blueprint.connect(node4, "brush", node2, "var")

@@ -1,0 +1,28 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
+node0.set_prop_value("ortho", false)
+node0.set_prop_value("offset", 0.49473685026169)
+
+node0.op_node.cam.position.set(-0.82678163243635, 0.93253367015293, 1.5704596789969)
+node0.op_node.cam.yaw = -69.7
+node0.op_node.cam.pitch = -27.9
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.29386684298515
+
+_editor.add_node(node0, 0, 0)
+
+var node1 = ::archgraph::nodes::dou::Dou()
+
+_editor.add_node(node1, -245.78819274902, 379.39147949219)
+
+var node2 = ::archgraph::nodes::gong::Gong()
+
+_editor.add_node(node2, -100.30633948043, 380.75752586488)
+
+var node3 = ::archgraph::nodes::fang::Fang()
+
+_editor.add_node(node3, 36.29635658965, 380.07451333082)
+
+Blueprint.connect(node1, "next", node2, "prev")
+Blueprint.connect(node2, "next", node3, "prev")
