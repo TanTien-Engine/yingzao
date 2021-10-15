@@ -1,34 +1,37 @@
 import "blueprint.node" for Node
 import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
-import "blueprint.variant" for Variant, VAR_TYPE_ANY, VAR_TYPE_ARRAY
-import "archgraph.variant" for PIN_TYPE_FANG
+import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
+import "editor.node_cache" for NODE_CACHE
+import "archgraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_FANG
 import "archgraph.geo_helper" for GeoHelper
 import "archgraph.node_helper" for NodeHelper
-import "archgraph.constant" for ZU_CAI_HEIGHT, CAI_HEIGHT
+import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
 import "archgraph.component" for Component
 import "archgraph.nodes.dou" for SAN_DOU, QIXIN_DOU
-import "archgraph.nodes.*"
-import "editor.node_cache" for NODE_CACHE
+import "geograph.nodes.brush_get_size" for BrushGetSize
 import "maths.vector" for Vector3
 
-var QIXIN_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
+var GUAZI_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/32_guazi_gong.ves", nil)
+var MAN_GONG   = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/33_man_gong.ves", nil)
+var LING_GONG  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/34_ling_gong.ves", nil)
 
 var SUN_GD = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/60_sun_gd.ves", nil)
 
-var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
+var JIAOHU_CUT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_jiaohu_tu_cut_body.ves", nil)
+var QIXIN_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
 
-class Fang is Node
+class HoriGong is Node
 {
 	init()
 	{
 		super.init()
 
 		this.imports = [
-			Pin(this, "prev", VAR_TYPE_ANY),
+			Pin(this, "prev", PIN_TYPE_HORI_GONG),
 		]
 		this.exports = [
-			Pin(this, "next", PIN_TYPE_FANG),
+			Pin(this, "next", PIN_TYPE_HORI_GONG),
 		]
 
 		this.layout()
@@ -44,12 +47,18 @@ class Fang is Node
 
 	resolve(dg)
 	{
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		// select gong
+		var gong = this.select_gong()
+		if (gong == MAN_GONG) {
+			this.exports[0].type = PIN_TYPE_FANG
+		}
 
-		var v_geo = GeoHelper.translate_geo(FANG, pos)
+		// translate
+		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var v_geo = GeoHelper.translate_geo(gong, pos)
 
 		// conn prev
-		v_geo = this.add_joint(dg, v_geo, pos)
+//		v_geo = this.add_joint(v_geo, pos)
 
 		// conn next
 		v_geo = this.add_dou(dg, v_geo, pos)
@@ -58,14 +67,28 @@ class Fang is Node
 		this.comp.v_geo = v_geo
 	}
 
-	add_joint(dg, v_geo, pos)
+	select_gong()
 	{
-		var has_c = !dg.has_vert_gong(this.comp.layer - 1)
-		if (has_c) {
-			return GeoHelper.joint_cut_geo(v_geo, QIXIN_CUT, pos)		
+		var prev = Blueprint.get_input_node(this, 0)
+		if (prev and prev is HoriGong) {
+			return MAN_GONG
 		} else {
-			return v_geo
+			return GUAZI_GONG
 		}
+	}
+
+	add_joint(v_geo, pos)
+	{
+		var cut_node = nil
+
+		var prev = Blueprint.get_input_node(this, 0)
+		if (prev and prev is HoriGong) {
+			cut_node = QIXIN_CUT
+		} else {
+			cut_node = JIAOHU_CUT
+		}
+
+		return GeoHelper.joint_cut_geo(v_geo, cut_node, pos)
 	}
 
 	add_dou(dg, v_geo, pos)
@@ -75,8 +98,14 @@ class Fang is Node
 			return v_geo
 		}
 
-		var l_pos = Vector3(-0.41, pos.y + CAI_HEIGHT, pos.z)
-		var r_pos = Vector3( 0.41, pos.y + CAI_HEIGHT, pos.z)
+		var aabb = []
+		BrushGetSize.calc_aabb(v_geo, aabb)
+		var x_min = aabb[0].x
+		var x_max = aabb[1].x
+
+		var dist = 0.05
+		var l_pos = Vector3(x_min + dist, pos.y + CAI_HEIGHT, pos.z)
+		var r_pos = Vector3(x_max - dist, pos.y + CAI_HEIGHT, pos.z)
 
 		var l_sun = GeoHelper.translate_geo(SUN_GD, l_pos)
 		var r_sun = GeoHelper.translate_geo(SUN_GD, r_pos)
@@ -112,17 +141,11 @@ class Fang is Node
 
 	get_title()
 	{
-		var prev = Blueprint.get_input_node(this, 0)
-		if (!prev) {
-			return "方"
-		}
-
-		if (prev is Fang) {
-			return prev.get_title()
-		} else if (prev is Dou or prev is HoriGong) {
-			return "罗汉方"
-		} else if (prev is HuaGong or prev is InnerGong or prev is LuDou) {
-			return "柱头方"
+		var gong = this.select_gong()
+		if (gong == MAN_GONG) {
+			return "慢栱"
+		} else {
+			return "瓜子栱"
 		}
 	}
 }

@@ -26,7 +26,7 @@ var node4 = ::blueprint::nodes::output::Output()
 node4.var_name = "geo"
 node4.var_type = "geo"
 
-_editor.add_node(node4, 122.58537950386, -54.743892436163)
+_editor.add_node(node4, 123.09853762209, -67.0596872737)
 
 var node5 = ::blueprint::nodes::number::Number()
 
@@ -63,21 +63,7 @@ var node10 = ::blueprint::nodes::output::Output()
 node10.var_name = "pos"
 node10.var_type = "num3"
 
-_editor.add_node(node10, 122.02090227089, -98.543946747346)
-
-var node11 = ::blueprint::nodes::output::Output()
-
-node11.var_name = "pos_l"
-node11.var_type = "num3"
-
-_editor.add_node(node11, 122.03272578924, -141.35377914327)
-
-var node12 = ::blueprint::nodes::output::Output()
-
-node12.var_name = "pos_r"
-node12.var_type = "num3"
-
-_editor.add_node(node12, 122.45681869356, -185.88402268777)
+_editor.add_node(node10, 122.53406038912, -110.85974158488)
 
 Blueprint.connect(node7, "var", node6, "val")
 Blueprint.connect(node5, "v", node6, "default")
@@ -87,7 +73,5 @@ Blueprint.connect(node9, "var", node0, "length")
 Blueprint.connect(node1, "v", node0, "entasis_w")
 Blueprint.connect(node2, "v", node0, "entasis_h")
 Blueprint.connect(node3, "v", node0, "entasis_num")
-Blueprint.connect(node0, "pos_r", node12, "var")
-Blueprint.connect(node0, "pos_l", node11, "var")
 Blueprint.connect(node0, "pos", node10, "var")
 Blueprint.connect(node0, "geo", node4, "var")

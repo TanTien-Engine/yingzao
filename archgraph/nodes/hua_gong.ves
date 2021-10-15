@@ -1,0 +1,151 @@
+import "blueprint.node" for Node
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
+import "blueprint.variant_proxy" for VariantProxy
+import "geograph.nodes.brush_get_size" for BrushGetSize
+import "archgraph.variant" for PIN_TYPE_VERT_GONG, PIN_TYPE_HORI_GONG
+import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
+import "archgraph.geo_helper" for GeoHelper
+import "archgraph.node_helper" for NodeHelper
+import "archgraph.component" for Component
+import "archgraph.nodes.dou" for SAN_DOU, JIAOHU_DOU
+import "editor.node_cache" for NODE_CACHE
+import "maths.vector" for Vector3
+import "math" for Math
+
+var HUA_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/35_hua_gong.ves", nil)
+
+var SUN_GD = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/60_sun_gd.ves", nil)
+
+var DOU_HALF_LEN = 0.06
+
+class HuaGong is Node
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_VERT_GONG),
+		]
+		this.exports = [
+			Pin(this, "next",  PIN_TYPE_VERT_GONG),
+			Pin(this, "outer", PIN_TYPE_HORI_GONG),
+			Pin(this, "inner", PIN_TYPE_HORI_GONG),			
+		]
+
+		this.layout()
+
+		this.gong_layer = 0
+
+		this.comp = Component()
+	}
+
+	calc_value(idx)
+	{
+		var z = 0
+		if (idx == 0) {
+			z = 0
+		} else if (idx == 1) {
+			z = this.calc_outer_step_len()
+		} else if (idx == 2) {
+			z = - this.calc_inner_step_len()
+		}
+		var pos = NodeHelper.calc_curr_pos(this, 0)
+		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, z)))
+	}
+
+	resolve(dg)
+	{
+		// select gong
+		var prev = Blueprint.get_input_node(this, 0)
+		if (prev and prev is HuaGong) {
+			this.gong_layer = prev.gong_layer + 1
+		}
+
+		var len_l = this.calc_outer_step_len() + DOU_HALF_LEN
+		var len_r = this.calc_inner_step_len() + DOU_HALF_LEN
+		var len_l_node = VariantProxy(Variant(len_l))
+		var len_r_node = VariantProxy(Variant(len_r))
+		Blueprint.connect(len_l_node, 0, HUA_GONG, "len_left")
+		Blueprint.connect(len_r_node, 0, HUA_GONG, "len_right")
+
+		// translate
+		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var v_geo = GeoHelper.translate_geo(HUA_GONG, pos)
+
+		// conn prev
+//		v_geo = this.add_joint(v_geo, prev)
+
+		// conn next
+		v_geo = this.add_dou(v_geo, pos)
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+	}
+
+	add_dou(v_geo, pos)
+	{
+		var next = Blueprint.get_output_node(this, 0)
+		if (!next) {
+			return v_geo
+		}
+
+		var len_l = this.calc_outer_step_len()
+		var len_r = this.calc_inner_step_len()
+		var l_pos = Vector3(pos.x, pos.y + CAI_HEIGHT,  len_l)
+		var r_pos = Vector3(pos.x, pos.y + CAI_HEIGHT, -len_r)
+
+		var l_sun = GeoHelper.translate_geo(SUN_GD, l_pos)
+		var r_sun = GeoHelper.translate_geo(SUN_GD, r_pos)
+
+		var l_dou_node = this.select_dou(1)
+		var r_dou_node = this.select_dou(2)
+
+		var l_dou = this.transform_dou(l_dou_node, l_pos)
+		var r_dou = this.transform_dou(r_dou_node, r_pos)
+
+		// cut sun
+//		l_dou = GeoHelper.joint_cut_geo(l_dou, l_dou_node, l_pos)
+//		r_dou = GeoHelper.joint_cut_geo(r_dou, r_dou_node, r_pos)
+
+		v_geo = GeoHelper.joint_cut_geo(v_geo, SUN_GD, [ l_pos, r_pos ])
+
+		return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
+	}
+
+	get_title()
+	{
+		return "%(this.gong_layer + 1)跳华栱"
+	}
+
+	calc_outer_step_len()
+	{
+		return 0.3 * (this.gong_layer + 1)
+	}
+
+	calc_inner_step_len()
+	{
+		return 0.3 * (this.gong_layer + 1)
+	}
+
+	select_dou(idx)
+	{
+		var next = Blueprint.get_output_node(this, idx)
+		if (next) {
+			return JIAOHU_DOU
+		} else {
+			return SAN_DOU
+		}
+	}
+
+	transform_dou(node, pos)
+	{
+		if (node == JIAOHU_DOU) {
+			return GeoHelper.translate_geo(node, pos)
+		} else {
+			return GeoHelper.transform_geo(node, pos, Math.pi() * 0.5)
+		}
+	}
+}

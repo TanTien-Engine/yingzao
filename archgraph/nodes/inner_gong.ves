@@ -1,0 +1,154 @@
+import "blueprint.node" for Node
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
+import "editor.node_cache" for NODE_CACHE
+import "archgraph.variant" for PIN_TYPE_INNER_GONG, PIN_TYPE_FANG
+import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
+import "archgraph.geo_helper" for GeoHelper
+import "archgraph.node_helper" for NodeHelper
+import "archgraph.component" for Component
+import "archgraph.nodes.dou" for SAN_DOU
+import "geograph.nodes.brush_get_size" for BrushGetSize
+import "maths.vector" for Vector3
+
+var NI_DAO_GONG     = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/31_nidao_gong.ves", nil)
+var BI_NEI_MAN_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/33_man_gong.ves", nil)
+var ZHU_TOU_FANG    = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
+
+var SUN_GD = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/60_sun_gd.ves", nil)
+
+var JIAOHU_CUT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_jiaohu_tu_cut_body.ves", nil)
+var QIXIN_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
+
+class InnerGong is Node
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_INNER_GONG),
+		]
+		this.exports = [
+			Pin(this, "next", PIN_TYPE_INNER_GONG),
+		]
+
+		this.layout()
+
+		this.gong_layer = 0
+
+		this.comp = Component()		
+	}	
+
+	calc_value(idx)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, 0)
+		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
+	}
+
+	resolve(dg)
+	{
+		var prev = Blueprint.get_input_node(this, 0)
+		if (prev and prev is InnerGong) {
+			this.gong_layer = prev.gong_layer + 1
+			this.exports[0].type = PIN_TYPE_FANG
+		}
+
+		// select gong
+		var gong = this.select_gong()
+		if (!gong) {
+			return
+		}		
+
+		// translate
+		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var v_geo = GeoHelper.translate_geo(gong, pos)
+
+		// conn prev
+//		v_geo = this.add_joint(v_geo, prev, pos)
+
+		// conn next
+		v_geo = this.add_dou(v_geo, pos)
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+	}
+
+	select_gong()
+	{
+		if (this.gong_layer == 0) {
+			return NI_DAO_GONG
+		} else if (this.gong_layer == 1) {
+			return BI_NEI_MAN_GONG
+		} else {
+//			return ZHU_TOU_FANG
+			return nil
+		}
+	}
+
+	add_joint(v_geo, prev, pos)
+	{
+		var cut_node = nil
+		if (prev and prev is InnerGong) {
+			cut_node = QIXIN_CUT
+		} else {
+			cut_node = JIAOHU_CUT
+		}
+
+		return GeoHelper.joint_cut_geo(v_geo, cut_node, pos)
+	}
+
+	add_dou(v_geo, pos)
+	{
+		var next = Blueprint.get_output_node(this, 0)
+		if (!next) {
+			return v_geo
+		}
+
+		var l_pos = nil
+		var r_pos = nil
+		if (this.gong_layer < 2)
+		{
+			var aabb = []
+			BrushGetSize.calc_aabb(v_geo, aabb)
+			var x_min = aabb[0].x
+			var x_max = aabb[1].x
+
+			var dist = 0.05
+			l_pos = Vector3(x_min + dist, pos.y + CAI_HEIGHT, pos.z)
+			r_pos = Vector3(x_max - dist, pos.y + CAI_HEIGHT, pos.z)
+		}
+		else
+		{
+			l_pos = Vector3(-0.41, pos.y + CAI_HEIGHT, pos.z)
+			r_pos = Vector3( 0.41, pos.y + CAI_HEIGHT, pos.z)
+		}
+
+		var l_sun = GeoHelper.translate_geo(SUN_GD, l_pos)
+		var r_sun = GeoHelper.translate_geo(SUN_GD, r_pos)
+
+		var l_dou = GeoHelper.translate_geo(SAN_DOU, l_pos)
+		var r_dou = GeoHelper.translate_geo(SAN_DOU, r_pos)
+
+		// cut sun
+		l_dou = GeoHelper.joint_cut_geo(l_dou, SUN_GD, l_pos)
+		r_dou = GeoHelper.joint_cut_geo(r_dou, SUN_GD, r_pos)
+
+		v_geo = GeoHelper.joint_cut_geo(v_geo, SUN_GD, [ l_pos, r_pos ])
+
+		return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
+	}
+
+	get_title()
+	{
+		var gong = this.select_gong()
+		if (gong == NI_DAO_GONG) {
+			return "泥道栱"
+		} else if (gong == BI_NEI_MAN_GONG) {
+			return "壁内慢栱"
+		} else {
+			return "柱头枋"
+		}
+	}	
+}

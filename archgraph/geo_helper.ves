@@ -1,0 +1,62 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "geograph.nodes.rotate_y" for RotateY
+import "geograph.nodes.translate_f" for TranslateF
+import "editor.node_cache" for NODE_CACHE
+
+var CUT_BODY_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/61_cut_body_joint.ves", nil)
+
+class GeoHelper
+{
+	static rotate_geo(geo_node, angle)
+	{
+		var rot_y = RotateY()
+		Blueprint.connect(geo_node.exports[0], rot_y.imports[0])
+
+		var angle_node = VariantProxy(Variant(angle))
+		Blueprint.connect(angle_node.exports[0], rot_y.imports[1])
+
+		return Blueprint.calc_output_value(rot_y, "geo")
+	}
+
+	static translate_geo(geo_node, pos)
+	{
+		var trans = TranslateF()
+		Blueprint.connect(geo_node.exports[0], trans.imports[0])
+
+		var pos_node = VariantProxy(Variant(pos))
+		Blueprint.connect(pos_node.exports[0], trans.imports[1])
+
+		return Blueprint.calc_output_value(trans, "geo")
+	}
+
+	static transform_geo(geo_node, pos, angle)
+	{
+		var rot_y = RotateY()
+		Blueprint.connect(geo_node.exports[0], rot_y.imports[0])
+
+		var angle_node = VariantProxy(Variant(angle))
+		Blueprint.connect(angle_node.exports[0], rot_y.imports[1])
+
+		var trans = TranslateF()
+		Blueprint.connect(rot_y.exports[0], trans.imports[0])
+
+		var pos_node = VariantProxy(Variant(pos))
+		Blueprint.connect(pos_node.exports[0], trans.imports[1])
+
+		return Blueprint.calc_output_value(trans, "geo")		
+	}
+
+	static joint_cut_geo(v_geo, cut_node, pos)
+	{
+		var geo_node = VariantProxy(v_geo)
+		var pos_node = VariantProxy(Variant(pos))
+
+		Blueprint.connect(geo_node, 0, CUT_BODY_JOINT, "geo")
+		Blueprint.connect(cut_node, 0, CUT_BODY_JOINT, "cut_body")		
+		Blueprint.connect(pos_node, 0, CUT_BODY_JOINT, "pos")
+
+		return Blueprint.calc_output_value(CUT_BODY_JOINT, "geo")
+	}
+}

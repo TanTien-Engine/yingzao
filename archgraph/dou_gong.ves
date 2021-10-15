@@ -1,0 +1,94 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "archgraph.node_helper" for NodeHelper
+import "editor.node_cache" for NODE_CACHE
+
+class DouGong
+{
+	init()
+	{
+		this.layers = []
+	}
+
+	rebuild(scene, out_list)
+	{
+		this.rebuild_layers(scene)
+
+		// resolve
+		for (var node in scene.nodes) {
+			var bp_node = node.components["bp"]
+			if (bp_node and bp_node.has_method("resolve(_)")) {
+				bp_node.resolve(this)
+			}
+		}
+
+		// joint
+		for (var layer in this.layers) {
+			this.build_layer_joints(layer)
+		}
+
+		// output
+		for (var layer in this.layers)
+		{
+			for (var i in 1 .. layer.count) {
+				out_list.add(layer[i].comp.v_geo)
+			}
+			if (layer[0]) {
+				out_list.add(layer[0].comp.v_geo)
+			}
+		}
+	}
+
+	rebuild_layers(scene)
+	{
+		this.layers.clear()
+		for (var i in 0..10) {
+			this.layers.add([ nil ])
+		}
+
+		import "archgraph.nodes.hua_gong" for HuaGong		
+		for (var node in scene.nodes) 
+		{
+			var bp_node = node.components["bp"]
+			if (bp_node and bp_node.has_method("resolve(_)"))
+			{
+				var layer = NodeHelper.calc_layer(bp_node)
+				if (bp_node is HuaGong) {
+					this.layers[layer][0] = bp_node
+				} else {
+					this.layers[layer].add(bp_node)
+				}
+
+				bp_node.comp.layer = layer
+			}
+		}
+	}	
+
+	build_layer_joints(layer)
+	{
+		if (!layer[0]) {
+			return
+		}
+
+		var CONN2_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/62_conn_2_joint.ves", nil)
+		for (var i in 1 .. layer.count)
+		{
+			var geo0 = VariantProxy(layer[i].comp.v_geo)
+			var geo1 = VariantProxy(layer[0].comp.v_geo)
+			var pos  = VariantProxy(Variant(layer[i].comp.pos))
+
+			Blueprint.connect(geo0, 0, CONN2_JOINT, "geo0")
+			Blueprint.connect(geo1, 0, CONN2_JOINT, "geo1")
+			Blueprint.connect(pos,  0, CONN2_JOINT, "pos")
+
+			layer[i].comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
+			layer[0].comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
+		}
+	}
+
+	has_vert_gong(layer)
+	{
+		return this.layers[layer][0] != nil
+	}
+}

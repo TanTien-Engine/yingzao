@@ -3,6 +3,8 @@ import "editor.node_cache" for NODE_CACHE
 import "blueprint.blueprint" for Blueprint
 import "blueprint.nodes.array" for Array
 import "blueprint.nodes.subgraph" for Subgraph
+import "blueprint.blackboard" for BLACKBOARD
+import "archgraph.dou_gong" for DouGong
 
 var RENDER_NODE_PATH = "C:\\projects\\yingzao\\99_tools\\9_assemble_draw.ves"
 
@@ -12,9 +14,13 @@ class Archeditor is Editor
 	{
 		super.load()
 
+		BLACKBOARD.subgraph_default_ports = false
+
 		this.prepare_nodes()
 
 		this.all_geos = Array()
+
+		this.dg = DouGong()
 
 		this.render_node = nil
 		this.add_node(NODE_CACHE.fetch(RENDER_NODE_PATH, nil), 0, 0)
@@ -35,21 +41,8 @@ class Archeditor is Editor
 		this.all_geos.list.clear()
 
 		var scene = this.scene_stack.root()
-		if (scene.nodes.isEmpty) {
-			return
-		}
-
-		var nodes = []
-		for (var node in scene.nodes) {
-			nodes.add(node.components["bp"])
-		}
-
-		var sorted = Blueprint.topo_sort(nodes)
-		for (var node in sorted) {
-			if (node.has_method("resolve()")) {
-				var geo = node.resolve()
-				this.all_geos.list.add(geo)
-			}
+		if (!scene.nodes.isEmpty) {
+			this.dg.rebuild(scene, this.all_geos.list)
 		}
 	}
 

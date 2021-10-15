@@ -1,35 +1,30 @@
 import "blueprint.blueprint" for Blueprint
-import "blueprint.variant" for Variant
-import "blueprint.variant_proxy" for VariantProxy
-import "blueprint.nodes.number3" for Number3
-import "geograph.nodes.translate_f" for TranslateF
-import "editor.node_cache" for NODE_CACHE
-
-var CUT_BODY_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/61_cut_body_joint.ves", nil)
+import "maths.vector" for Vector3
 
 class NodeHelper
 {
-	static translate_geo(geo_node, pos)
+	static calc_curr_pos(node, idx)
 	{
-		var trans = TranslateF()
-		Blueprint.connect(geo_node.exports[0], trans.imports[0])
-
-		var num3 = Number3()
-		num3.value = pos
-		Blueprint.connect(num3.exports[0], trans.imports[1])
-
-		return Blueprint.calc_output_value(trans, "geo")
+		var v_pos = Blueprint.calc_input_value(node, idx)
+		if (v_pos) {
+			return v_pos.value
+		} else {
+			return Vector3(0, 0, 0)
+		}
 	}
 
-	static joint_cut_geo(geo, cut_node, pos)
+	static calc_layer(node)
 	{
-		var geo_node = VariantProxy(geo)
-		var pos_node = VariantProxy(Variant(pos))
+		return this.calc_layer_impl(node, 0)
+	}
 
-		Blueprint.connect(geo_node, 0, CUT_BODY_JOINT, "geo")
-		Blueprint.connect(cut_node, 0, CUT_BODY_JOINT, "cut_body")		
-		Blueprint.connect(pos_node, 0, CUT_BODY_JOINT, "pos")
-
-		return Blueprint.calc_output_value(CUT_BODY_JOINT, "geo")
+	static calc_layer_impl(node, layer)
+	{
+		var prev = Blueprint.get_input_node(node, 0)
+		if (prev) {
+			return this.calc_layer_impl(prev, layer + 1)
+		} else {
+			return layer
+		}
 	}
 }
