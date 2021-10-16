@@ -1,14 +1,13 @@
 import "blueprint.node" for Node
 import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
-import "blueprint.variant" for Variant, VAR_TYPE_ANY, VAR_TYPE_ARRAY
-import "archgraph.variant" for PIN_TYPE_FANG
+import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
+import "archgraph.variant" for PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG
 import "archgraph.geo_helper" for GeoHelper
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for ZU_CAI_HEIGHT, CAI_HEIGHT
 import "archgraph.component" for Component
 import "archgraph.nodes.dou" for SAN_DOU, QIXIN_DOU
-import "archgraph.nodes.*"
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 
@@ -25,7 +24,7 @@ class Fang is Node
 		super.init()
 
 		this.imports = [
-			Pin(this, "prev", VAR_TYPE_ANY),
+			Pin(this, "prev", [ PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG ]),
 		]
 		this.exports = [
 			Pin(this, "next", PIN_TYPE_FANG),
@@ -60,7 +59,7 @@ class Fang is Node
 
 	add_joint(dg, v_geo, pos)
 	{
-		var has_c = !dg.has_vert_gong(this.comp.layer - 1)
+		var has_c = !dg.has_vert_gong(this.comp.y_idx - 1)
 		if (has_c) {
 			return GeoHelper.joint_cut_geo(v_geo, QIXIN_CUT, pos)		
 		} else {
@@ -88,7 +87,7 @@ class Fang is Node
 		l_dou = GeoHelper.joint_cut_geo(l_dou, SUN_GD, l_pos)
 		r_dou = GeoHelper.joint_cut_geo(r_dou, SUN_GD, r_pos)
 
-		var has_c = !dg.has_vert_gong(this.comp.layer)
+		var has_c = !dg.has_vert_gong(this.comp.y_idx)
 		if (has_c)
 		{
 			var c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))
@@ -112,17 +111,10 @@ class Fang is Node
 
 	get_title()
 	{
-		var prev = Blueprint.get_input_node(this, 0)
-		if (!prev) {
-			return "方"
-		}
-
-		if (prev is Fang) {
-			return prev.get_title()
-		} else if (prev is Dou or prev is HoriGong) {
-			return "罗汉方"
-		} else if (prev is HuaGong or prev is InnerGong or prev is LuDou) {
+		if (this.comp.x_idx == 0) {
 			return "柱头方"
+		} else {
+			return "罗汉方"		
 		}
 	}
 }

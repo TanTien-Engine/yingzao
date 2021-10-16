@@ -4,25 +4,18 @@ import "blueprint.variant_proxy" for VariantProxy
 import "archgraph.geo_helper" for GeoHelper
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.nodes.vert_gong" for VertGong, DOU_HALF_LEN
-import "archgraph.nodes.lu_dou" for LuDou
 import "editor.node_cache" for NODE_CACHE
 
-class HuaGong is VertGong
+class ShuaTou is VertGong
 {
 	resolve(dg)
 	{
-		// select gong
 		var prev = Blueprint.get_input_node(this, 0)
-		if (prev is LuDou) {
-			this.outer_hop = 1
-			this.inner_hop = 1
-		} else {
-			this.outer_hop = prev.outer_hop + 1
-			this.inner_hop = prev.inner_hop + 1			
-		}
+		this.outer_hop = prev.outer_hop
+		this.inner_hop = prev.inner_hop
 
 		var pos = NodeHelper.calc_curr_pos(this, 0)
-		var v_geo = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos)
+		var v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 
 		// conn next
 		v_geo = this.add_dou(v_geo, pos)
@@ -33,20 +26,20 @@ class HuaGong is VertGong
 
 	get_title()
 	{
-		return "%(this.outer_hop)跳华栱"
+		return "耍头"
 	}
 
 	static create_geo(outer_hop, inner_hop, pos)
 	{
-		var HUA_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/35_hua_gong.ves", nil)
+		var SHUA_TOU = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/36_shua_tou.ves", nil)
 
 		var len_l = VertGong.calc_step_len(outer_hop) + DOU_HALF_LEN
 		var len_r = VertGong.calc_step_len(-inner_hop) + DOU_HALF_LEN
 		var len_l_node = VariantProxy(Variant(len_l))
 		var len_r_node = VariantProxy(Variant(len_r))
-		Blueprint.connect(len_l_node, 0, HUA_GONG, "len_left")
-		Blueprint.connect(len_r_node, 0, HUA_GONG, "len_right")
+		Blueprint.connect(len_l_node, 0, SHUA_TOU, "len_left")
+		Blueprint.connect(len_r_node, 0, SHUA_TOU, "len_right")
 
-		return GeoHelper.translate_geo(HUA_GONG, pos)
+		return GeoHelper.translate_geo(SHUA_TOU, pos)
 	}
 }

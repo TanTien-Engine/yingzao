@@ -1,0 +1,40 @@
+var node0 = ::blueprint::nodes::number::Number()
+
+node0.value = 21
+
+_editor.add_node(node0, -262.28816508298, 431.01560835104)
+
+var node1 = ::blueprint::nodes::output::Output()
+
+node1.var_name = "ang_angle"
+node1.var_type = "num"
+
+_editor.add_node(node1, 340.10702642441, 398.57252529646)
+
+var node2 = ::blueprint::nodes::subgraph::Subgraph()
+node2.load_from_file(_editor, "../../tantien/assets/blueprints/tools/clamp.ves")
+
+_editor.add_node(node2, -72.37112365734, 378.48658981839)
+
+var node3 = ::blueprint::nodes::number::Number()
+
+node3.value = 25
+
+_editor.add_node(node3, -262.04342999403, 289.76155111118)
+
+var node4 = ::blueprint::nodes::number::Number()
+
+node4.value = 20
+
+_editor.add_node(node4, -264.57519861234, 358.52240084516)
+
+var node5 = ::blueprint::nodes::subgraph::Subgraph()
+node5.load_from_file(_editor, "../../tantien/assets/blueprints/tools/radian.ves")
+
+_editor.add_node(node5, 157.82600008013, 396.69120394069)
+
+Blueprint.connect(node0, "v", node2, "val")
+Blueprint.connect(node4, "v", node2, "min")
+Blueprint.connect(node3, "v", node2, "max")
+Blueprint.connect(node2, "val", node5, "degree")
+Blueprint.connect(node5, "radian", node1, "var")

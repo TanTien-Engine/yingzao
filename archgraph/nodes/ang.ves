@@ -1,0 +1,110 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "archgraph.geo_helper" for GeoHelper
+import "archgraph.node_helper" for NodeHelper
+import "archgraph.constant" for ZU_CAI_HEIGHT
+import "archgraph.nodes.vert_gong" for VertGong, DOU_HALF_LEN
+import "maths.vector" for Vector3
+import "editor.node_cache" for NODE_CACHE
+
+class Ang is VertGong
+{
+	init()
+	{
+		super.init()
+
+		this.ang_layer = 0
+	}
+
+	calc_value(idx)
+	{
+		if (idx == 0)
+		{
+			var pos = NodeHelper.calc_curr_pos(this, 0)
+			return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))		
+		}
+		else
+		{
+			var pos = this.calc_ang_pos()
+			return Variant(pos)
+		}
+	}
+
+	resolve(dg)
+	{
+		var prev = Blueprint.get_input_node(this, 0)
+		if (prev is Ang) {
+			this.ang_layer = prev.ang_layer + 1
+		}
+
+		this.outer_hop = prev.outer_hop + 1
+		if (this.ang_layer == 0) {
+			this.inner_hop = prev.inner_hop + 1
+		} else if (this.ang_layer == 1) {
+			this.inner_hop = prev.inner_hop		
+		} else {
+			this.inner_hop = 0
+		}
+
+		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
+
+		var pos = this.calc_ang_pos()
+		var v_geo = GeoHelper.translate_geo(ANG, pos)
+
+		if (this.ang_layer == 0)
+		{
+			import "archgraph.nodes.hua_gong" for HuaGong
+
+			var pos = NodeHelper.calc_curr_pos(this, 0)
+			var v_hua = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos)
+
+			// conn next
+			v_hua = this.add_dou(v_hua, pos)
+
+			v_geo = Variant([ v_hua, v_geo ])
+		}
+		else if (this.ang_layer == 1)
+		{
+			import "archgraph.nodes.shua_tou" for ShuaTou
+			
+			var pos = NodeHelper.calc_curr_pos(this, 0)
+			var v_shua = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
+
+			// conn next
+			v_shua = this.add_dou(v_shua, pos)
+
+			v_geo = Variant([ v_shua, v_geo ])
+		}
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+	}
+
+	get_title()
+	{
+		return "下昂%(this.ang_layer + 1)"
+	}
+	
+	calc_ang_pos()
+	{
+		import "archgraph.nodes.hua_gong" for HuaGong
+		import "archgraph.nodes.shua_tou" for ShuaTou
+
+		var prev = Blueprint.get_input_node(this, 0)
+		if (prev is HuaGong or prev is ShuaTou)
+		{
+			var pos = Blueprint.calc_output_value(prev, 1).value
+			return pos.add(Vector3(0, ZU_CAI_HEIGHT, 0.3))
+		}
+		else if (prev is Ang)
+		{
+			var pos = prev.calc_ang_pos()
+			return pos.add(Vector3(0, ZU_CAI_HEIGHT * 0.5, 0.3))
+		}
+		else
+		{
+			return Vector3(0, 0, 0)
+		}
+	}
+}

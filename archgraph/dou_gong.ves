@@ -27,6 +27,7 @@ class DouGong
 		for (var layer in this.layers) {
 			this.build_layer_joints(layer)
 		}
+		this.build_between_layers_joint()
 
 		// output
 		for (var layer in this.layers)
@@ -47,23 +48,47 @@ class DouGong
 			this.layers.add([ nil ])
 		}
 
-		import "archgraph.nodes.hua_gong" for HuaGong		
+		import "archgraph.nodes.hua_gong" for HuaGong
+		import "archgraph.nodes.shua_tou" for ShuaTou
+		import "archgraph.nodes.ang" for Ang
+
 		for (var node in scene.nodes) 
 		{
 			var bp_node = node.components["bp"]
 			if (bp_node and bp_node.has_method("resolve(_)"))
 			{
-				var layer = NodeHelper.calc_layer(bp_node)
-				if (bp_node is HuaGong) {
+				var layer = NodeHelper.calc_y_idx(bp_node)
+				if (bp_node is HuaGong or bp_node is ShuaTou or bp_node is Ang) {
 					this.layers[layer][0] = bp_node
 				} else {
 					this.layers[layer].add(bp_node)
 				}
 
-				bp_node.comp.layer = layer
+				bp_node.comp.y_idx = layer
 			}
 		}
-	}	
+
+		// set s_idx
+		for (var layer in this.layers)
+		{
+			if (layer[0])
+			{
+				var o_idx = layer[0].comp.y_idx
+				var o = Blueprint.get_output_node(layer[0], "outer")
+				while (o) {
+					o.comp.x_idx = o_idx
+					o = Blueprint.get_output_node(o, 0)
+				}
+
+				var i_idx = -(layer[0].comp.y_idx)
+				var i = Blueprint.get_output_node(layer[0], "inner")
+				while (i) {
+					i.comp.x_idx = i_idx
+					i = Blueprint.get_output_node(i, 0)
+				}
+			}
+		}
+	}
 
 	build_layer_joints(layer)
 	{
@@ -87,8 +112,63 @@ class DouGong
 		}
 	}
 
-	has_vert_gong(layer)
+	build_lu_hua_joint()
 	{
-		return this.layers[layer][0] != nil
+		import "archgraph.geo_helper" for GeoHelper
+
+		if (this.layers[0].count <= 1 or !this.layers[1][0]) {
+			return
+		}
+
+		var LU_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_lu_cut_body.ves", nil)
+
+		var hua = this.layers[1][0].comp
+		hua.v_geo = GeoHelper.joint_cut_geo(hua.v_geo, LU_CUT, hua.pos)
+	}
+
+	build_between_layers_joint()
+	{
+		import "archgraph.geo_helper" for GeoHelper
+
+		this.build_lu_hua_joint()
+
+		var JIAOHU_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_jiaohu_cut_body.ves", nil)
+
+		for (var i in 1 .. this.layers.count - 1)
+		{
+			var hua = this.layers[i][0]
+			if (hua)
+			{
+				var next_layer = this.layers[i + 1]
+				var next_hua = next_layer[0].comp
+				if (next_hua)
+				{
+					for (var j in 1 .. next_layer.count)
+					{
+						var h_gong = next_layer[j].comp
+						if (h_gong.x_idx == hua.comp.y_idx or h_gong.x_idx == -(hua.comp.y_idx)) {
+							next_hua.v_geo = GeoHelper.joint_cut_geo(next_hua.v_geo, JIAOHU_CUT, h_gong.pos)
+						}
+					}
+				}
+			}
+		}
+	}
+
+	has_vert_gong(y_idx)
+	{
+		return this.layers[y_idx][0] != nil
+	}
+
+	has_hori_gong(y_idx, x_idx)
+	{
+		var layer = this.layers[y_idx]
+		for (var i in 1 .. layer.count) {
+			if (layer[i].comp.x_idx == x_idx) {
+				return true
+			}
+		}
+
+		return false
 	}
 }
