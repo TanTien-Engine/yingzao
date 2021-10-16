@@ -17,8 +17,14 @@ class ShuaTou is VertGong
 		var pos = NodeHelper.calc_curr_pos(this, 0)
 		var v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 
+		// ang cut
+		import "archgraph.nodes.ang" for Ang
+		if (prev is Ang) {
+			v_geo = prev.ang_plane_cut(v_geo, false)			
+		}
+
 		// conn next
-		v_geo = this.add_dou(v_geo, pos)
+//		v_geo = this.add_dou(v_geo, pos)
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo

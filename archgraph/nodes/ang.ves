@@ -1,12 +1,17 @@
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
+import "geograph.nodes.knife" for Knife
+import "geograph.nodes.translate_f" for TranslateF
 import "archgraph.geo_helper" for GeoHelper
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for ZU_CAI_HEIGHT
 import "archgraph.nodes.vert_gong" for VertGong, DOU_HALF_LEN
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
+
+import "geograph.nodes.box" for Box
+import "scenegraph.nodes.transform3d" for Transform3d
 
 class Ang is VertGong
 {
@@ -21,13 +26,19 @@ class Ang is VertGong
 	{
 		if (idx == 0)
 		{
-			var pos = NodeHelper.calc_curr_pos(this, 0)
-			return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))		
+			var pos = this.calc_ang_pos()
+			return Variant(Vector3(0, pos.y, 0))
 		}
-		else
+		else if (idx == 1)
 		{
 			var pos = this.calc_ang_pos()
 			return Variant(pos)
+		}
+		else if (idx == 2)
+		{
+			var pos = NodeHelper.calc_curr_pos(this, 0)
+			var z = - this.calc_inner_step_len()
+			return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, z)))
 		}
 	}
 
@@ -49,8 +60,8 @@ class Ang is VertGong
 
 		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
 
-		var pos = this.calc_ang_pos()
-		var v_geo = GeoHelper.translate_geo(ANG, pos)
+		var ang_pos = this.calc_ang_pos()
+		var v_geo = GeoHelper.translate_geo(ANG, ang_pos)
 
 		if (this.ang_layer == 0)
 		{
@@ -62,22 +73,29 @@ class Ang is VertGong
 			// conn next
 			v_hua = this.add_dou(v_hua, pos)
 
+			// ang cut
+			v_hua = this.ang_plane_cut(v_hua, true)
+
 			v_geo = Variant([ v_hua, v_geo ])
 		}
 		else if (this.ang_layer == 1)
 		{
 			import "archgraph.nodes.shua_tou" for ShuaTou
-			
+
 			var pos = NodeHelper.calc_curr_pos(this, 0)
 			var v_shua = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 
 			// conn next
 			v_shua = this.add_dou(v_shua, pos)
 
+			// ang cut
+			var ang_0 = Blueprint.get_input_node(this, 0)
+			v_shua = ang_0.ang_plane_cut(v_shua, true)
+
 			v_geo = Variant([ v_shua, v_geo ])
 		}
 
-		this.comp.pos = pos
+		this.comp.pos = ang_pos
 		this.comp.v_geo = v_geo
 	}
 
@@ -106,5 +124,35 @@ class Ang is VertGong
 		{
 			return Vector3(0, 0, 0)
 		}
+	}
+
+	ang_plane_cut(geo, down)
+	{
+		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
+
+		var KNIFE = Knife()
+		if (down) {
+			KNIFE.query_param("keep").set_value("below")
+		} else {
+			KNIFE.query_param("keep").set_value("above")
+		}
+		KNIFE.query_param("seam").set_value(true)
+
+		var trans = Transform3d()
+		if (down) {
+			Blueprint.connect(ANG, "down_plane", trans, "obj")
+		} else {
+			Blueprint.connect(ANG, "up_plane", trans, "obj")
+		}
+
+		var ang_pos = this.calc_ang_pos()
+
+		var pos_node = VariantProxy(Variant(ang_pos))
+		Blueprint.connect(pos_node, 0, trans, "translate")
+
+		var geo_node = VariantProxy(geo)
+		Blueprint.connect(geo_node, 0, KNIFE, "geo")
+		Blueprint.connect(trans, "obj", KNIFE, "plane")
+		return Blueprint.calc_output_value(KNIFE, "geo")		
 	}
 }
