@@ -37,6 +37,8 @@ class HoriGong is Node
 		this.layout()
 
 		this.comp = Component()
+
+		this.gong = nil
 	}
 
 	calc_value(idx)
@@ -48,14 +50,14 @@ class HoriGong is Node
 	resolve(dg)
 	{
 		// select gong
-		var gong = this.select_gong()
-		if (gong == MAN_GONG) {
+		this.gong = this.select_gong(dg)
+		if (this.gong == MAN_GONG) {
 			this.exports[0].type = PIN_TYPE_FANG
 		}
 
 		// translate
 		var pos = NodeHelper.calc_curr_pos(this, 0)
-		var v_geo = GeoHelper.translate_geo(gong, pos)
+		var v_geo = GeoHelper.translate_geo(this.gong, pos)
 
 		// conn prev
 //		v_geo = this.add_joint(v_geo, pos)
@@ -67,13 +69,17 @@ class HoriGong is Node
 		this.comp.v_geo = v_geo
 	}
 
-	select_gong()
+	select_gong(dg)
 	{
 		var prev = Blueprint.get_input_node(this, 0)
 		if (prev and prev is HoriGong) {
 			return MAN_GONG
 		} else {
-			return GUAZI_GONG
+			if (this.comp.x_idx == dg.x_min or this.comp.x_idx == dg.x_max) {
+				return LING_GONG
+			} else {
+				return GUAZI_GONG
+			}
 		}
 	}
 
@@ -141,11 +147,14 @@ class HoriGong is Node
 
 	get_title()
 	{
-		var gong = this.select_gong()
-		if (gong == MAN_GONG) {
+		if (this.gong == MAN_GONG) {
 			return "慢栱"
-		} else {
+		} else if (this.gong == GUAZI_GONG) {
 			return "瓜子栱"
+		} else if (this.gong == LING_GONG) {
+			return "令栱"
+		} else {
+			return "横栱"		
 		}
 	}
 }
