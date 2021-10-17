@@ -5,6 +5,8 @@ import "blueprint.nodes.array" for Array
 import "blueprint.nodes.subgraph" for Subgraph
 import "blueprint.blackboard" for BLACKBOARD
 import "archgraph.dou_gong" for DouGong
+import "geograph.brush" for Brush
+import "maths.vector" for Vector3
 
 var RENDER_NODE_PATH = "C:\\projects\\yingzao\\99_tools\\9_assemble_draw.ves"
 
@@ -24,6 +26,8 @@ class Archeditor is Editor
 
 		this.render_node = nil
 		this.add_node(NODE_CACHE.fetch(RENDER_NODE_PATH, nil), 0, 0)
+
+		this.selected = nil
 	}
 
 	prepare_nodes()
@@ -46,6 +50,17 @@ class Archeditor is Editor
 		}
 	}
 
+	set_brush_color(val, col)
+	{
+		if (val is Brush) {
+			val.color.set(col.x, col.y, col.z)
+		} else if (val is List) {
+			for (var i in val) {
+				this.set_brush_color(i.value.shape, col)
+			}
+		}
+	}
+
 	draw_preview()
 	{
 		if (this.scene_stack.bp_dirty) 
@@ -53,6 +68,28 @@ class Archeditor is Editor
 			this.rebuild_all_geos()
 
 			Blueprint.send_pin_dirty_root(this.all_geos.exports[0])
+		}
+
+		var selected = this.preview_op.get_selected()
+		if (selected != this.selected)
+		{
+			var dirty = false
+
+			if (this.selected and this.selected["comp"]) {
+				this.set_brush_color(this.selected.comp.v_geo.value.shape, Vector3(255, 255, 255))
+				dirty = true
+			}
+
+			if (selected and selected["comp"]) {
+				this.set_brush_color(selected.comp.v_geo.value.shape, Vector3(255, 0, 0))
+				dirty = true
+			}
+
+			if (dirty) {
+				Blueprint.send_pin_dirty_root(this.all_geos.exports[0])
+			}
+
+			this.selected = selected
 		}
 
 		super.draw_preview()
