@@ -1,0 +1,52 @@
+import "blueprint.node" for Node
+import "blueprint.pin" for Pin
+import "blueprint.variant" for Variant
+import "archgraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_LY_FANG
+import "archgraph.constant" for ZU_CAI_HEIGHT
+import "archgraph.component" for Component
+import "archgraph.geo_helper" for GeoHelper
+import "archgraph.node_helper" for NodeHelper
+import "editor.node_cache" for NODE_CACHE
+import "maths.vector" for Vector3
+
+class LiaoYanFang is Node
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_HORI_GONG),
+		]
+		this.exports = [
+			Pin(this, "next", PIN_TYPE_LY_FANG),
+		]
+
+		this.layout()
+
+		this.comp = Component()
+	}
+
+	calc_value(idx)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, 0)
+		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
+	}
+
+	resolve(dg)
+	{
+		var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/41_liaoyan_fang.ves", nil)
+
+		var pos = NodeHelper.calc_curr_pos(this, 0)
+
+		var v_geo = GeoHelper.translate_geo(FANG, pos)
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+	}
+
+	get_title()
+	{
+		return "橑檐方"
+	}
+}

@@ -11,12 +11,6 @@ import "archgraph.nodes.dou" for SAN_DOU, QIXIN_DOU
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 
-var QIXIN_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
-
-var SUN_GD = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/60_sun_gd.ves", nil)
-
-var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
-
 class Fang is Node
 {
 	init()
@@ -27,7 +21,7 @@ class Fang is Node
 			Pin(this, "prev", [ PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG ]),
 		]
 		this.exports = [
-			Pin(this, "next", PIN_TYPE_FANG),
+			Pin(this, "next", [ PIN_TYPE_FANG ]),
 		]
 
 		this.layout()
@@ -43,6 +37,14 @@ class Fang is Node
 
 	resolve(dg)
 	{
+		if (this.comp.x_idx == 0) {
+			this.exports[0].type.add(PIN_TYPE_INNER_GONG)
+		} else {
+			this.exports[0].type.add(PIN_TYPE_HORI_GONG)
+		}
+
+		var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
+
 		var pos = NodeHelper.calc_curr_pos(this, 0)
 
 		var v_geo = GeoHelper.translate_geo(FANG, pos)
@@ -59,6 +61,8 @@ class Fang is Node
 
 	add_joint(dg, v_geo, pos)
 	{
+		var QIXIN_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
+
 		var has_c = !dg.has_vert_gong(this.comp.y_idx - 1)
 		if (has_c) {
 			return GeoHelper.joint_cut_geo(v_geo, QIXIN_CUT, pos)		
@@ -69,8 +73,15 @@ class Fang is Node
 
 	add_dou(dg, v_geo, pos)
 	{
+		var SUN_GD = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/60_sun_gd.ves", nil)
+
 		var next = Blueprint.get_output_node(this, 0)
 		if (!next) {
+			return v_geo
+		}
+
+		import "archgraph.nodes.ya_cao_fang" for YaCaoFang
+		if (next is YaCaoFang) {
 			return v_geo
 		}
 
