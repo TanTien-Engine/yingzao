@@ -11,8 +11,13 @@ class ShuaTou is VertGong
 	resolve(dg)
 	{
 		var prev = Blueprint.get_input_node(this, 0)
-		this.outer_hop = prev.outer_hop
-		this.inner_hop = prev.inner_hop
+		if (prev) {
+			this.outer_hop = prev.outer_hop
+			this.inner_hop = prev.inner_hop
+		} else {
+			this.outer_hop = 1
+			this.inner_hop = 1		
+		}
 
 		var pos = NodeHelper.calc_curr_pos(this, 0)
 		var v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)

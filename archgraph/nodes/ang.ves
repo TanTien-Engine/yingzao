@@ -44,16 +44,24 @@ class Ang is VertGong
 
 	resolve(dg)
 	{
+		var prev_outer_hop = 1
+		var prev_inner_hop = 1
+
 		var prev = Blueprint.get_input_node(this, 0)
-		if (prev is Ang) {
-			this.ang_layer = prev.ang_layer + 1
+		if (prev)
+		{
+			prev_outer_hop = prev.outer_hop
+			prev_inner_hop = prev.inner_hop
+			if (prev is Ang) {
+				this.ang_layer = prev.ang_layer + 1
+			}
 		}
 
-		this.outer_hop = prev.outer_hop + 1
+		this.outer_hop = prev_outer_hop + 1
 		if (this.ang_layer == 0) {
-			this.inner_hop = prev.inner_hop + 1
+			this.inner_hop = prev_inner_hop + 1
 		} else if (this.ang_layer == 1) {
-			this.inner_hop = prev.inner_hop		
+			this.inner_hop = prev_inner_hop		
 		} else {
 			this.inner_hop = 0
 		}

@@ -16,9 +16,12 @@ class HuaGong is VertGong
 		if (prev is LuDou) {
 			this.outer_hop = 1
 			this.inner_hop = 1
-		} else {
+		} else if (prev) {
 			this.outer_hop = prev.outer_hop + 1
 			this.inner_hop = prev.inner_hop + 1			
+		} else {
+			this.outer_hop = 1
+			this.inner_hop = 1
 		}
 
 		var pos = NodeHelper.calc_curr_pos(this, 0)
