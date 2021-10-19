@@ -109,16 +109,18 @@ class Ang is VertGong
 		import "archgraph.nodes.hua_gong" for HuaGong
 		import "archgraph.nodes.shua_tou" for ShuaTou
 
+		var dist = VertGong.get_step_len(this.outer_hop, true)
+
 		var prev = Blueprint.get_input_node(this, 0)
 		if (prev is HuaGong or prev is ShuaTou)
 		{
 			var pos = Blueprint.calc_output_value(prev, 1).value
-			return pos.add(Vector3(0, ZU_CAI_HEIGHT, 0.3))
+			return pos.add(Vector3(0, ZU_CAI_HEIGHT, dist))
 		}
 		else if (prev is Ang)
 		{
 			var pos = prev.calc_ang_pos()
-			return pos.add(Vector3(0, ZU_CAI_HEIGHT * 0.5, 0.3))
+			return pos.add(Vector3(0, ZU_CAI_HEIGHT * 0.5, dist))
 		}
 		else
 		{

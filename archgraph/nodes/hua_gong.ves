@@ -40,8 +40,8 @@ class HuaGong is VertGong
 	{
 		var HUA_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/35_hua_gong.ves", nil)
 
-		var len_l = VertGong.calc_step_len(outer_hop) + DOU_HALF_LEN
-		var len_r = VertGong.calc_step_len(-inner_hop) + DOU_HALF_LEN
+		var len_l = VertGong.calc_step_len(outer_hop, this.less_step) + DOU_HALF_LEN
+		var len_r = VertGong.calc_step_len(-inner_hop, this.less_step) + DOU_HALF_LEN
 		var len_l_node = VariantProxy(Variant(len_l))
 		var len_r_node = VariantProxy(Variant(len_r))
 		Blueprint.connect(len_l_node, 0, HUA_GONG, "len_left")
