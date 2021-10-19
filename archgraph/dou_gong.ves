@@ -1,8 +1,10 @@
 import "blueprint.blueprint" for Blueprint
-import "blueprint.variant" for Variant
+import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
 import "blueprint.variant_proxy" for VariantProxy
+import "geograph.variant" for VAR_TYPE_GEO
 import "archgraph.node_helper" for NodeHelper
 import "editor.node_cache" for NODE_CACHE
+import "maths.vector" for Vector3
 
 class DouGong
 {
@@ -114,16 +116,21 @@ class DouGong
 		var CONN2_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/62_conn_2_joint.ves", nil)
 		for (var i in 1 .. layer.count)
 		{
-			var geo0 = VariantProxy(layer[i].comp.v_geo)
-			var geo1 = VariantProxy(layer[0].comp.v_geo)
-			var pos  = VariantProxy(Variant(layer[i].comp.pos))
+			var pos = layer[i].comp.pos.clone()
+			pos.y = pos.y + 0.1
+			if (this.is_geo_contain(layer[0].comp.v_geo, pos))
+			{
+				var geo0 = VariantProxy(layer[i].comp.v_geo)
+				var geo1 = VariantProxy(layer[0].comp.v_geo)
+				var pos  = VariantProxy(Variant(layer[i].comp.pos))
 
-			Blueprint.connect(geo0, 0, CONN2_JOINT, "geo0")
-			Blueprint.connect(geo1, 0, CONN2_JOINT, "geo1")
-			Blueprint.connect(pos,  0, CONN2_JOINT, "pos")
+				Blueprint.connect(geo0, 0, CONN2_JOINT, "geo0")
+				Blueprint.connect(geo1, 0, CONN2_JOINT, "geo1")
+				Blueprint.connect(pos,  0, CONN2_JOINT, "pos")
 
-			layer[i].comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
-			layer[0].comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
+				layer[i].comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
+				layer[0].comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
+			}
 		}
 	}
 
@@ -142,6 +149,12 @@ class DouGong
 	}
 
 	build_between_layers_joint()
+	{
+		this.build_dou_er_joints()
+		this.build_hori_gong_and_ang_joints()
+	}
+
+	build_dou_er_joints()
 	{
 		import "archgraph.geo_helper" for GeoHelper
 
@@ -166,6 +179,94 @@ class DouGong
 						}
 					}
 				}
+			}
+		}
+	}
+
+	is_geo_contain(geo, pos)
+	{
+		if (geo.type == VAR_TYPE_ARRAY)
+		{
+			for (var i in geo.value) {
+				if (this.is_geo_contain(i, pos)) {
+					return true
+				}
+			}
+		}
+		else if (geo.type == VAR_TYPE_GEO)
+		{
+			return geo.value.shape.is_contain(pos.x, pos.y, pos.z)
+		}
+		return false
+	}
+
+	build_hori_gong_and_ang_joints()
+	{
+		import "archgraph.nodes.ang" for Ang
+
+		var CONN2_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/62_conn_2_joint.ves", nil)
+
+		for (var i in 0 .. this.layers.count)
+		{
+			var layer = this.layers[i]
+			if (layer[0] is Ang) 
+			{
+				var ang =  layer[0]
+
+				var ang_geo = nil
+				if (ang.ang_layer < 2) {
+					ang_geo = ang.comp.v_geo.value[1]
+				} else {
+					ang_geo = ang.comp.v_geo
+				}
+
+				for (var j in 0 .. this.layers.count)
+				{
+					var layer = this.layers[j]
+					for (var k in 1 .. layer.count)
+					{
+						var pos = layer[k].comp.pos
+						if (this.is_geo_contain(ang_geo, Vector3(pos.x, pos.y + 0.1, pos.z)))
+						{
+							var gong = layer[k]
+
+							var geo0 = VariantProxy(gong.comp.v_geo)
+							var geo1 = VariantProxy(ang_geo)
+							var pos  = VariantProxy(Variant(gong.comp.pos))
+
+							Blueprint.connect(geo0, 0, CONN2_JOINT, "geo0")
+							Blueprint.connect(geo1, 0, CONN2_JOINT, "geo1")
+							Blueprint.connect(pos,  0, CONN2_JOINT, "pos")
+
+							gong.comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
+							if (ang.ang_layer < 2) {
+								ang.comp.v_geo.value[1] = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
+							} else {
+								ang.comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
+							}
+						}
+						else if (this.is_geo_contain(ang_geo, Vector3(pos.x, pos.y + 0.01, pos.z)))
+						{
+							var gong = layer[k]
+
+							var geo0 = VariantProxy(ang_geo)
+							var geo1 = VariantProxy(gong.comp.v_geo)
+							var pos  = VariantProxy(Variant(gong.comp.pos))
+
+							Blueprint.connect(geo0, 0, CONN2_JOINT, "geo0")
+							Blueprint.connect(geo1, 0, CONN2_JOINT, "geo1")
+							Blueprint.connect(pos,  0, CONN2_JOINT, "pos")
+
+							if (ang.ang_layer < 2) {
+								ang.comp.v_geo.value[1] = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
+							} else {
+								ang.comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
+							}
+							gong.comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
+						}
+					}
+				}
+				
 			}
 		}
 	}
