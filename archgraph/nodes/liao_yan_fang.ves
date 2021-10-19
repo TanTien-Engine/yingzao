@@ -41,6 +41,9 @@ class LiaoYanFang is Node
 
 		var v_geo = GeoHelper.translate_geo(FANG, pos)
 
+		// conn prev
+		v_geo = this.add_joint(dg, v_geo, pos)
+
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
 	}
@@ -48,5 +51,17 @@ class LiaoYanFang is Node
 	get_title()
 	{
 		return "橑檐方"
+	}
+
+	add_joint(dg, v_geo, pos)
+	{
+		var QIXIN_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
+
+		var has_c = !dg.has_vert_gong(this.comp.y_idx - 1)
+		if (has_c) {
+			return GeoHelper.joint_cut_geo(v_geo, QIXIN_CUT, pos)		
+		} else {
+			return v_geo
+		}
 	}
 }
