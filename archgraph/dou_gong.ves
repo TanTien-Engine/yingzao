@@ -211,7 +211,7 @@ class DouGong
 			var layer = this.layers[i]
 			if (layer[0] is Ang) 
 			{
-				var ang =  layer[0]
+				var ang = layer[0]
 
 				var ang_geo = nil
 				if (ang.ang_layer < 2) {
@@ -226,7 +226,7 @@ class DouGong
 					for (var k in 1 .. layer.count)
 					{
 						var pos = layer[k].comp.pos
-						if (this.is_geo_contain(ang_geo, Vector3(pos.x, pos.y + 0.1, pos.z)))
+						if (this.is_geo_contain(ang_geo, Vector3(pos.x, pos.y + 0.15, pos.z)))
 						{
 							var gong = layer[k]
 
@@ -239,13 +239,9 @@ class DouGong
 							Blueprint.connect(pos,  0, CONN2_JOINT, "pos")
 
 							gong.comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
-							if (ang.ang_layer < 2) {
-								ang.comp.v_geo.value[1] = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
-							} else {
-								ang.comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
-							}
+							ang_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
 						}
-						else if (this.is_geo_contain(ang_geo, Vector3(pos.x, pos.y + 0.01, pos.z)))
+						else if (this.is_geo_contain(ang_geo, Vector3(pos.x, pos.y, pos.z)))
 						{
 							var gong = layer[k]
 
@@ -257,16 +253,17 @@ class DouGong
 							Blueprint.connect(geo1, 0, CONN2_JOINT, "geo1")
 							Blueprint.connect(pos,  0, CONN2_JOINT, "pos")
 
-							if (ang.ang_layer < 2) {
-								ang.comp.v_geo.value[1] = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
-							} else {
-								ang.comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
-							}
+							ang_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
 							gong.comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
 						}
 					}
 				}
 				
+				if (ang.ang_layer < 2) {
+					ang.comp.v_geo.value[1] = ang_geo
+				} else {
+					ang.comp.v_geo = ang_geo
+				}
 			}
 		}
 	}
