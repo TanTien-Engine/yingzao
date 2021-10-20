@@ -14,7 +14,6 @@ import "maths.vector" for Vector3
 
 var NI_DAO_GONG     = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/31_nidao_gong.ves", nil)
 var BI_NEI_MAN_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/33_man_gong.ves", nil)
-var ZHU_TOU_FANG    = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
 
 var SUN_GD = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/60_sun_gd.ves", nil)
 
@@ -36,9 +35,9 @@ class InnerGong is Node
 
 		this.layout()
 
-		this.gong_layer = 0
+		this.comp = Component()
 
-		this.comp = Component()		
+		this.gong = nil
 	}	
 
 	calc_value(idx)
@@ -49,21 +48,15 @@ class InnerGong is Node
 
 	resolve(dg)
 	{
-		var prev = Blueprint.get_input_node(this, 0)
-		if (prev and prev is InnerGong) {
-			this.gong_layer = prev.gong_layer + 1
+		// select gong
+		this.gong = this.select_gong()
+		if (this.gong == BI_NEI_MAN_GONG) {
 			this.exports[0].type = PIN_TYPE_FANG
 		}
 
-		// select gong
-		var gong = this.select_gong()
-		if (!gong) {
-			return
-		}		
-
 		// translate
 		var pos = NodeHelper.calc_curr_pos(this, 0)
-		var v_geo = GeoHelper.translate_geo(gong, pos)
+		var v_geo = GeoHelper.translate_geo(this.gong, pos)
 
 		// conn prev
 //		v_geo = this.add_joint(v_geo, prev, pos)
@@ -84,13 +77,11 @@ class InnerGong is Node
 
 	select_gong()
 	{
-		if (this.gong_layer == 0) {
-			return NI_DAO_GONG
-		} else if (this.gong_layer == 1) {
+		var prev = Blueprint.get_input_node(this, 0)
+		if (prev and prev is InnerGong) {
 			return BI_NEI_MAN_GONG
 		} else {
-//			return ZHU_TOU_FANG
-			return nil
+			return NI_DAO_GONG
 		}
 	}
 
@@ -113,24 +104,14 @@ class InnerGong is Node
 			return v_geo
 		}
 
-		var l_pos = nil
-		var r_pos = nil
-		if (this.gong_layer < 2)
-		{
-			var aabb = []
-			BrushGetSize.calc_aabb(v_geo, aabb)
-			var x_min = aabb[0].x
-			var x_max = aabb[1].x
+		var aabb = []
+		BrushGetSize.calc_aabb(v_geo, aabb)
+		var x_min = aabb[0].x
+		var x_max = aabb[1].x
 
-			var dist = 0.05
-			l_pos = Vector3(x_min + dist, pos.y + CAI_HEIGHT, pos.z)
-			r_pos = Vector3(x_max - dist, pos.y + CAI_HEIGHT, pos.z)
-		}
-		else
-		{
-			l_pos = Vector3(-0.41, pos.y + CAI_HEIGHT, pos.z)
-			r_pos = Vector3( 0.41, pos.y + CAI_HEIGHT, pos.z)
-		}
+		var dist = 0.05
+		var l_pos = Vector3(x_min + dist, pos.y + CAI_HEIGHT, pos.z)
+		var r_pos = Vector3(x_max - dist, pos.y + CAI_HEIGHT, pos.z)
 
 		var l_sun = GeoHelper.translate_geo(SUN_GD, l_pos)
 		var r_sun = GeoHelper.translate_geo(SUN_GD, r_pos)
@@ -149,13 +130,10 @@ class InnerGong is Node
 
 	get_title()
 	{
-		var gong = this.select_gong()
-		if (gong == NI_DAO_GONG) {
+		if (this.gong == NI_DAO_GONG) {
 			return "泥道栱"
-		} else if (gong == BI_NEI_MAN_GONG) {
-			return "壁内慢栱"
 		} else {
-			return "柱头枋"
+			return "壁内慢栱"
 		}
 	}	
 }
