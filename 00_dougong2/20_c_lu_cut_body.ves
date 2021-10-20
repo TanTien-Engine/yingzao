@@ -1,0 +1,28 @@
+var node0 = ::blueprint::nodes::output::Output()
+
+node0.var_name = "geo"
+node0.var_type = "geo"
+
+_editor.add_node(node0, 471.02036648292, -154.4617463415)
+
+var node1 = ::geograph::nodes::box::Box()
+node1.query_param("size").value.set(0.399, 0.08, 10)
+node1.query_param("pos").value.set(0, 0, 0)
+node1.query_param("offset_x").value = false
+node1.query_param("offset_y").value = true
+node1.query_param("offset_z").value = false
+
+_editor.add_node(node1, 49.577151611875, -224.19538336376)
+
+var node2 = ::geograph::nodes::rotate_y::RotateY()
+node2.query_param("angle").value = "0"
+
+_editor.add_node(node2, 342.95013267663, -174.10946742414)
+
+var node3 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node3, 203.37960407195, -243.9583160461)
+
+Blueprint.connect(node1, "geo", node2, "geo")
+Blueprint.connect(node3, "pi/2", node2, "angle")
+Blueprint.connect(node2, "geo", node0, "var")

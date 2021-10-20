@@ -192,14 +192,39 @@ class DouGong
 	{
 		import "archgraph.geo_helper" for GeoHelper
 
-		if (this.layers[0].count <= 1 or !this.layers[1][0]) {
+		if (this.layers[0].isEmpty) {
 			return
 		}
 
-		var LU_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_lu_cut_body.ves", nil)
+		if (CONTEXT.gen_corner)
+		{
+			if (this.layers[1][0])
+			{
+				var C_LU_CUT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_c_lu_cut_body.ves", nil)
 
-		var hua = this.layers[1][0].comp
-		hua.v_geo = GeoHelper.joint_cut_geo(hua.v_geo, LU_CUT, hua.pos)
+				var hua = this.layers[1][0].comp
+				hua.v_geo_c = GeoHelper.joint_cut_geo(hua.v_geo_c, C_LU_CUT, hua.pos)
+			}
+			if (this.layers[1].count > 1)
+			{
+				var LU_CUT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_lu_cut_body.ves", nil)
+				var v_cut_geo = GeoHelper.rotate_geo(LU_CUT, Math.pi() / 4)
+				var cut_node = VariantProxy(v_cut_geo)
+
+				var nidao = this.layers[1][1].comp
+				nidao.v_geo_c.value[1] = GeoHelper.joint_cut_geo(nidao.v_geo_c.value[1], cut_node, nidao.pos)
+			}
+		}
+		else
+		{
+			if (this.layers[1][0])
+			{
+				var LU_CUT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_lu_cut_body.ves", nil)
+
+				var hua = this.layers[1][0].comp
+				hua.v_geo = GeoHelper.joint_cut_geo(hua.v_geo, LU_CUT, hua.pos)
+			}
+		}
 	}
 
 	build_between_layers_joint()
