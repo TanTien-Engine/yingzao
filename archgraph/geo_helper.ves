@@ -7,6 +7,8 @@ import "editor.node_cache" for NODE_CACHE
 
 var CUT_BODY_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/61_cut_body_joint.ves", nil)
 
+var CORNER_GEN_2 = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/51_corner_gen_2.ves", nil)
+
 class GeoHelper
 {
 	static rotate_geo(geo_node, angle)
@@ -58,5 +60,19 @@ class GeoHelper
 		Blueprint.connect(pos_node, 0, CUT_BODY_JOINT, "pos")
 
 		return Blueprint.calc_output_value(CUT_BODY_JOINT, "geo")
+	}
+
+	static corner_gen_2(v_geo, pos)
+	{
+		var geo_node = VariantProxy(v_geo)
+		Blueprint.connect(geo_node, 0, CORNER_GEN_2, "geo")
+
+		var pos_node = VariantProxy(Variant(pos))
+		Blueprint.connect(pos_node, 0, CORNER_GEN_2, "pos")
+
+		var geo0 = Blueprint.calc_output_value(CORNER_GEN_2, "geo0")
+		var geo1 = Blueprint.calc_output_value(CORNER_GEN_2, "geo1")
+
+		return Variant([ geo0, geo1 ])
 	}
 }

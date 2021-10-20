@@ -73,6 +73,13 @@ class InnerGong is Node
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
+
+		// corner
+		{
+			var v_geo = Blueprint.calc_output_value(this.gong, 0)
+			v_geo = this.add_dou(v_geo, Vector3(0, 0, 0))
+			this.comp.v_geo_c = GeoHelper.corner_gen_2(v_geo, pos)		
+		}
 	}
 
 	select_gong()

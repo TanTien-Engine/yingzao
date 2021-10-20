@@ -7,6 +7,7 @@ import "archgraph.geo_helper" for GeoHelper
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for ZU_CAI_HEIGHT
 import "archgraph.nodes.vert_gong" for VertGong, DOU_HALF_LEN
+import "archgraph.context" for CONTEXT
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 
@@ -117,7 +118,7 @@ class Ang is VertGong
 		import "archgraph.nodes.hua_gong" for HuaGong
 		import "archgraph.nodes.shua_tou" for ShuaTou
 
-		var dist = VertGong.get_step_len(this.outer_hop, true)
+		var dist = CONTEXT.step_len_func(this.outer_hop, true)
 
 		var prev = Blueprint.get_input_node(this, 0)
 		if (prev is HuaGong or prev is ShuaTou)

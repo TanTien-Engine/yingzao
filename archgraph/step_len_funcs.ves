@@ -1,0 +1,26 @@
+fun STEP_LEN(hop, less_step)
+{
+	var len = 0
+
+	if (less_step)
+	{
+		if (hop == 1) {
+			len = 0.3
+		} else if (hop == -1) {
+			len = 0.28
+		} else {
+			len = 0.26
+		}
+	}
+	else
+	{
+		len = 0.3
+	}
+
+	return len
+}
+
+fun STEP_LEN_C(hop, less_step)
+{
+	return STEP_LEN(hop, less_step) * 1.414
+}

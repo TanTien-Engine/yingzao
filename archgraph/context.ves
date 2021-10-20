@@ -1,0 +1,18 @@
+import "archgraph.step_len_funcs" for STEP_LEN, STEP_LEN_C
+
+class Context
+{
+	init()
+	{
+		this.gen_corner = false
+
+		this.step_len_func = nil
+		if (this.gen_corner) {
+			this.step_len_func = STEP_LEN_C
+		} else {
+			this.step_len_func = STEP_LEN
+		}
+	}
+}
+
+var CONTEXT = Context()

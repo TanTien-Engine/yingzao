@@ -8,6 +8,7 @@ import "archgraph.component" for Component
 import "archgraph.geo_helper" for GeoHelper
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.nodes.dou" for SAN_DOU, JIAOHU_DOU
+import "archgraph.context" for CONTEXT
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
@@ -55,42 +56,25 @@ class VertGong is Node
 
 	calc_outer_step_len()
 	{
-		return VertGong.calc_step_len(this.outer_hop, this.less_step)
+		return VertGong.calc_tot_step_len(this.outer_hop, this.less_step)
 	}
 
 	calc_inner_step_len()
 	{
-		return VertGong.calc_step_len(-this.inner_hop, this.less_step)
+		return VertGong.calc_tot_step_len(-this.inner_hop, this.less_step)
 	}
 
-	static get_step_len(hop, less_step)
-	{
-		if (less_step)
-		{
-			if (hop == 1) {
-				return 0.3
-			} else if (hop == -1) {
-				return 0.28
-			} else {
-				return 0.26
-			}
-		}
-		else
-		{
-			return 0.3
-		}
-	}
-
-	static calc_step_len(hop, less_step)
+	static calc_tot_step_len(hop, less_step)
 	{
 		var len = 0
+
 		if (hop > 0) {
 			for (var i in 1 .. hop + 1) {
-				len = len + VertGong.get_step_len(i, less_step)
+				len = len + CONTEXT.step_len_func(i, less_step)
 			}
 		} else {
 			for (var i in 1 .. -hop + 1) {
-				len = len + VertGong.get_step_len(-i, less_step)
+				len = len + CONTEXT.step_len_func(-i, less_step)
 			}
 		}
 

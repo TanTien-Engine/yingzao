@@ -1,0 +1,33 @@
+var node0 = ::geograph::nodes::brush_get_size::BrushGetSize()
+
+_editor.add_node(node0, -114.8643148382, 21.67751220991)
+
+var node1 = ::blueprint::nodes::split::Split()
+
+_editor.add_node(node1, 14.663575931601, -0.3430570493704)
+
+var node2 = ::blueprint::nodes::compare::Compare()
+
+node2.cmp = "less"
+
+_editor.add_node(node2, 156.4526209626, 6.9854908175397)
+
+var node3 = ::blueprint::nodes::input::Input()
+
+node3.var_name = "gong"
+node3.var_type = "geo"
+
+_editor.add_node(node3, -252.44103977106, 13.70656910177)
+
+var node4 = ::blueprint::nodes::output::Output()
+
+node4.var_name = "vert"
+node4.var_type = "bool"
+
+_editor.add_node(node4, 294.07234285001, 29.614473416392)
+
+Blueprint.connect(node3, "var", node0, "brush")
+Blueprint.connect(node0, "size", node1, "xyz")
+Blueprint.connect(node1, "x", node2, "a")
+Blueprint.connect(node1, "z", node2, "b")
+Blueprint.connect(node2, "out", node4, "var")
