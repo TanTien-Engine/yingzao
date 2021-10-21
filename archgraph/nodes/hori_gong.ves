@@ -2,13 +2,15 @@ import "blueprint.node" for Node
 import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
+import "blueprint.variant_proxy" for VariantProxy
 import "editor.node_cache" for NODE_CACHE
 import "archgraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_FANG
 import "archgraph.geo_helper" for GeoHelper
 import "archgraph.node_helper" for NodeHelper
-import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
+import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT, DOU_H_WIDTH, MIN_GONG_SPACE
 import "archgraph.component" for Component
 import "archgraph.nodes.dou" for SAN_DOU, QIXIN_DOU
+import "archgraph.context" for CONTEXT
 import "geograph.nodes.brush_get_size" for BrushGetSize
 import "maths.vector" for Vector3
 
@@ -67,6 +69,59 @@ class HoriGong is Node
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
+
+		// corner
+		{
+			var offset = 0
+
+			var prev = Blueprint.get_input_node(this, 0)
+			if (!prev or !(prev is HoriGong))
+			{
+				if (this.comp.x_idx < 0)
+				{
+					var outer = CONTEXT.step_len_func(this.comp.x_idx) - MIN_GONG_SPACE
+					var inner = CONTEXT.step_len_func(this.comp.x_idx - 1) + DOU_H_WIDTH
+					var len_node = VariantProxy(Variant(outer + inner))
+					Blueprint.connect(len_node, 0, this.gong, "length")
+
+					offset = - (outer - inner) / 2
+				}
+				else if (this.comp.x_idx > 0)
+				{
+					var outer = CONTEXT.step_len_func(this.comp.x_idx + 1) - MIN_GONG_SPACE
+					var inner = CONTEXT.step_len_func(this.comp.x_idx) + CONTEXT.step_len_func(-1)  + DOU_H_WIDTH
+					var len_node = VariantProxy(Variant(outer + inner))
+					Blueprint.connect(len_node, 0, this.gong, "length")
+
+					offset = - (outer - inner) / 2
+				}
+			}
+			else
+			{
+				if (this.comp.x_idx < 0)
+				{
+					var outer = CONTEXT.step_len_func(this.comp.x_idx) - MIN_GONG_SPACE
+					var inner = CONTEXT.step_len_func(this.comp.x_idx - 1) + CONTEXT.step_len_func(this.comp.x_idx - 2) + DOU_H_WIDTH
+					var len_node = VariantProxy(Variant(outer + inner))
+					Blueprint.connect(len_node, 0, this.gong, "length")
+
+					offset = - (outer - inner) / 2
+				}
+				else if (this.comp.x_idx > 0)
+				{
+					var outer = CONTEXT.step_len_func(this.comp.x_idx + 1) - MIN_GONG_SPACE
+					var inner = CONTEXT.step_len_func(this.comp.x_idx) + CONTEXT.step_len_func(-1)  + CONTEXT.step_len_func(-2) - MIN_GONG_SPACE
+					var len_node = VariantProxy(Variant(outer + inner))
+					Blueprint.connect(len_node, 0, this.gong, "length")
+
+					offset = - (outer - inner) / 2
+				}
+			}
+
+			var v_geo = Blueprint.calc_output_value(this.gong, 0)
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
+			this.comp.v_geo_c = GeoHelper.corner_gen_2(v_geo, pos, offset)
+		}
 	}
 
 	select_gong(dg)
@@ -109,9 +164,8 @@ class HoriGong is Node
 		var x_min = aabb[0].x
 		var x_max = aabb[1].x
 
-		var dist = 0.05
-		var l_pos = Vector3(x_min + dist, pos.y + CAI_HEIGHT, pos.z)
-		var r_pos = Vector3(x_max - dist, pos.y + CAI_HEIGHT, pos.z)
+		var l_pos = Vector3(x_min + DOU_H_WIDTH, pos.y + CAI_HEIGHT, pos.z)
+		var r_pos = Vector3(x_max - DOU_H_WIDTH, pos.y + CAI_HEIGHT, pos.z)
 
 		var l_sun = GeoHelper.translate_geo(GD_SUN, l_pos)
 		var r_sun = GeoHelper.translate_geo(GD_SUN, r_pos)

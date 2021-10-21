@@ -4,8 +4,10 @@ import "blueprint.variant_proxy" for VariantProxy
 import "geograph.variant" for VAR_TYPE_GEO
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.context" for CONTEXT
+import "archgraph.joints_nodes" for JointsNodes
 import "editor.node_cache" for NODE_CACHE
-import "maths.vector" for Vector3
+import "maths.vector" for Vector2, Vector3
+import "maths" for Maths
 import "math" for Math
 
 class DouGong
@@ -33,6 +35,7 @@ class DouGong
 		// joint
 		for (var layer in this.layers) {
 			this.build_layer_joints(layer)
+			this.build_layer_side_joints(layer)
 		}
 		this.build_between_layers_joint()	
 
@@ -124,6 +127,23 @@ class DouGong
 				}
 			}
 		}
+
+		// sort each layer
+		for (var layer in this.layers)
+		{
+			if (layer.count > 2)
+			{
+				for (var i in 1 .. layer.count - 1) {
+					for (var j in i + 1 .. layer.count) {
+						if (layer[i].comp.x_idx > layer[j].comp.x_idx) {
+							var tmp = layer[i]
+							layer[i] = layer[j]
+							layer[j] = tmp
+						}
+					}
+				}
+			}
+		}
 	}
 
 	build_layer_joints(layer)
@@ -137,26 +157,20 @@ class DouGong
 			return
 		}
 
-		var CONN2_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/62_conn_2_joint.ves", nil)
+		// gong conn hua
 		for (var i in 1 .. layer.count)
 		{
 			var pos = layer[i].comp.pos.clone()
 			pos.y = pos.y + 0.1
 			if (this.is_geo_contain(layer[0].comp.v_geo, pos))
 			{
-				var geo0 = VariantProxy(layer[i].comp.v_geo)
-				var geo1 = VariantProxy(layer[0].comp.v_geo)
-				var pos  = VariantProxy(Variant(layer[i].comp.pos))
-
-				Blueprint.connect(geo0, 0, CONN2_JOINT, "geo0")
-				Blueprint.connect(geo1, 0, CONN2_JOINT, "geo1")
-				Blueprint.connect(pos,  0, CONN2_JOINT, "pos")
-
-				layer[i].comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
-				layer[0].comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
+				var g2 = JointsNodes.conn2(layer[i].comp.v_geo, layer[0].comp.v_geo, layer[i].comp.pos, 0)
+				layer[i].comp.v_geo = g2[0]
+				layer[0].comp.v_geo = g2[1]
 			}
 		}
 
+		// gong conn corner hua
 		if (layer[0].comp.v_geo_c)
 		{
 			var CONN3_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/62_conn_3_joint.ves", nil)
@@ -183,6 +197,52 @@ class DouGong
 					layer[i].comp.v_geo_c.value[0] = Blueprint.calc_output_value(CONN3_JOINT, "geo0")
 					layer[i].comp.v_geo_c.value[1] = Blueprint.calc_output_value(CONN3_JOINT, "geo1")					
 					layer[0].comp.v_geo_c = Blueprint.calc_output_value(CONN3_JOINT, "geo2")
+				}
+			}
+		}
+	}
+
+	build_layer_side_joints(layer)
+	{
+		if (CONTEXT.gen_corner and layer.count > 2)
+		{
+			var dir0 = Vector2(0, -1)
+			dir0.rotate(-Math.pi() / 4)
+
+			var dir1 = Vector2(0, -1)
+			dir1.rotate(Math.pi() / 4)
+
+			for (var i in 1 .. layer.count - 1)
+			{
+				var x0 = layer[i].comp.pos.x
+				var y0 = layer[i].comp.pos.z
+				var a0 = [ x0, y0, x0 + dir0.x, y0 + dir0.y ]
+				var a1 = [ x0, y0, x0 + dir1.x, y0 + dir1.y ]
+
+				for (var j in 2 .. layer.count)
+				{
+					var x1 = layer[j].comp.pos.x
+					var y1 = layer[j].comp.pos.z
+					var b0 = [ x1, y1, x1 + dir0.x, y1 + dir0.y ]
+					var b1 = [ x1, y1, x1 + dir1.x, y1 + dir1.y ]
+
+					var c0 = Maths.get_line_intersect_line(b0, a1, false)
+					var p0 = Vector3(c0[0], layer[i].comp.pos.y + 0.1, c0[1])
+					if (c0 and this.is_geo_contain(layer[i].comp.v_geo_c.value[0], p0) and this.is_geo_contain(layer[j].comp.v_geo_c.value[1], p0))
+					{
+						var g2 = JointsNodes.conn2(layer[i].comp.v_geo_c.value[0], layer[j].comp.v_geo_c.value[1], Vector3(c0[0], layer[i].comp.pos.y, c0[1]), Math.pi() / 4)
+						layer[i].comp.v_geo_c.value[0] = g2[0]
+						layer[j].comp.v_geo_c.value[1] = g2[1]
+					}
+
+					var c1 = Maths.get_line_intersect_line(b1, a0, false)
+					var p1 = Vector3(c1[0], layer[i].comp.pos.y + 0.1, c1[1])
+					if (c1 and this.is_geo_contain(layer[i].comp.v_geo_c.value[1], p1) and this.is_geo_contain(layer[j].comp.v_geo_c.value[0], p1))
+					{
+						var g2 = JointsNodes.conn2(layer[i].comp.v_geo_c.value[1], layer[j].comp.v_geo_c.value[0], Vector3(c1[0], layer[i].comp.pos.y, c1[1]), Math.pi() / 4)
+						layer[i].comp.v_geo_c.value[1] = g2[0]
+						layer[j].comp.v_geo_c.value[0] = g2[1]
+					}
 				}
 			}
 		}
@@ -283,8 +343,6 @@ class DouGong
 	{
 		import "archgraph.nodes.ang" for Ang
 
-		var CONN2_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/62_conn_2_joint.ves", nil)
-
 		for (var i in 0 .. this.layers.count)
 		{
 			var layer = this.layers[i]
@@ -294,7 +352,7 @@ class DouGong
 
 				var ang_geo = nil
 				if (ang.ang_layer < 2) {
-					ang_geo = ang.comp.v_geo.value[1]
+					ang_geo = ang.comp.v_geo.value.value[1]
 				} else {
 					ang_geo = ang.comp.v_geo
 				}
@@ -309,31 +367,17 @@ class DouGong
 						{
 							var gong = layer[k]
 
-							var geo0 = VariantProxy(gong.comp.v_geo)
-							var geo1 = VariantProxy(ang_geo)
-							var pos  = VariantProxy(Variant(gong.comp.pos))
-
-							Blueprint.connect(geo0, 0, CONN2_JOINT, "geo0")
-							Blueprint.connect(geo1, 0, CONN2_JOINT, "geo1")
-							Blueprint.connect(pos,  0, CONN2_JOINT, "pos")
-
-							gong.comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
-							ang_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
+							var g2 = JointsNodes.conn2(gong.comp.v_geo, ang_geo, gong.comp.pos, 0)
+							gong.comp.v_geo = g2[0]
+							ang_geo = g2[1]
 						}
 						else if (this.is_geo_contain(ang_geo, Vector3(pos.x, pos.y, pos.z)))
 						{
 							var gong = layer[k]
 
-							var geo0 = VariantProxy(ang_geo)
-							var geo1 = VariantProxy(gong.comp.v_geo)
-							var pos  = VariantProxy(Variant(gong.comp.pos))
-
-							Blueprint.connect(geo0, 0, CONN2_JOINT, "geo0")
-							Blueprint.connect(geo1, 0, CONN2_JOINT, "geo1")
-							Blueprint.connect(pos,  0, CONN2_JOINT, "pos")
-
-							ang_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo0")
-							gong.comp.v_geo = Blueprint.calc_output_value(CONN2_JOINT, "geo1")
+							var g2 = JointsNodes.conn2(ang_geo, gong.comp.v_geo, gong.comp.pos, 0)
+							ang_geo = g2[0]
+							gong.comp.v_geo = g2[1]
 						}
 					}
 				}

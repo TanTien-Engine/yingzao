@@ -13,8 +13,6 @@ import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
 
-var DOU_HALF_LEN = 0.06
-
 class VertGong is Node
 {
 	init()
@@ -68,17 +66,29 @@ class VertGong is Node
 	{
 		var len = 0
 
+		var len_func = nil
+		if (CONTEXT.gen_corner) {
+			len_func = CONTEXT.step_len_c_func
+		} else {
+			len_func = CONTEXT.step_len_func
+		}
+
 		if (hop > 0) {
 			for (var i in 1 .. hop + 1) {
-				len = len + CONTEXT.step_len_func(i, less_step)
+				len = len + len_func(i, less_step)
 			}
 		} else {
 			for (var i in 1 .. -hop + 1) {
-				len = len + CONTEXT.step_len_func(-i, less_step)
+				len = len + len_func(-i, less_step)
 			}
 		}
 
 		return len
+	}
+
+	static get_dou_half_len()
+	{
+		return 0.06
 	}
 
 	add_dou(v_geo, pos)

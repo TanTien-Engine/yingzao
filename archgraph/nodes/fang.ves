@@ -57,6 +57,13 @@ class Fang is Node
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
+
+		// corner
+		{
+			var v_geo = Blueprint.calc_output_value(FANG, 0)
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
+			this.comp.v_geo_c = GeoHelper.corner_gen_2(v_geo, pos, 0)
+		}
 	}
 
 	add_joint(dg, v_geo, pos)

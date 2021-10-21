@@ -1,0 +1,24 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant_proxy" for VariantProxy
+import "blueprint.variant" for Variant
+import "editor.node_cache" for NODE_CACHE
+
+class JointsNodes
+{
+	static conn2(v_geo0, v_geo1, pos, angle)
+	{
+		var CONN2_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/62_conn_2_joint.ves", nil)
+
+		var n_geo0  = VariantProxy(v_geo0)
+		var n_geo1  = VariantProxy(v_geo1)
+		var n_pos   = VariantProxy(Variant(pos))
+		var n_angle = VariantProxy(Variant(angle))
+
+		Blueprint.connect(n_geo0,  0, CONN2_JOINT, "geo0")
+		Blueprint.connect(n_geo1,  0, CONN2_JOINT, "geo1")
+		Blueprint.connect(n_pos,   0, CONN2_JOINT, "pos")
+		Blueprint.connect(n_angle, 0, CONN2_JOINT, "angle")
+
+		return [ Blueprint.calc_output_value(CONN2_JOINT, "geo0"), Blueprint.calc_output_value(CONN2_JOINT, "geo1") ]
+	}
+}

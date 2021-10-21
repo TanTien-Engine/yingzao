@@ -3,7 +3,7 @@ import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "archgraph.geo_helper" for GeoHelper
 import "archgraph.node_helper" for NodeHelper
-import "archgraph.nodes.vert_gong" for VertGong, DOU_HALF_LEN
+import "archgraph.nodes.vert_gong" for VertGong
 import "editor.node_cache" for NODE_CACHE
 
 class ShuaTou is VertGong
@@ -33,6 +33,7 @@ class ShuaTou is VertGong
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
+		this.comp.v_geo_c = v_geo
 	}
 
 	get_title()
@@ -44,8 +45,8 @@ class ShuaTou is VertGong
 	{
 		var SHUA_TOU = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/36_shua_tou.ves", nil)
 
-		var len_l = VertGong.calc_tot_step_len(outer_hop, this.less_step) + DOU_HALF_LEN
-		var len_r = VertGong.calc_tot_step_len(-inner_hop, this.less_step) + DOU_HALF_LEN
+		var len_l = VertGong.calc_tot_step_len(outer_hop, this.less_step) + VertGong.get_dou_half_len()
+		var len_r = VertGong.calc_tot_step_len(-inner_hop, this.less_step) + VertGong.get_dou_half_len()
 		var len_l_node = VariantProxy(Variant(len_l))
 		var len_r_node = VariantProxy(Variant(len_r))
 		Blueprint.connect(len_l_node, 0, SHUA_TOU, "len_left")

@@ -6,7 +6,7 @@ import "geograph.nodes.translate_f" for TranslateF
 import "archgraph.geo_helper" for GeoHelper
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for ZU_CAI_HEIGHT
-import "archgraph.nodes.vert_gong" for VertGong, DOU_HALF_LEN
+import "archgraph.nodes.vert_gong" for VertGong
 import "archgraph.context" for CONTEXT
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
@@ -106,6 +106,7 @@ class Ang is VertGong
 
 		this.comp.pos = ang_pos
 		this.comp.v_geo = v_geo
+		this.comp.v_geo_c = v_geo
 	}
 
 	get_title()
@@ -118,7 +119,12 @@ class Ang is VertGong
 		import "archgraph.nodes.hua_gong" for HuaGong
 		import "archgraph.nodes.shua_tou" for ShuaTou
 
-		var dist = CONTEXT.step_len_func(this.outer_hop, true)
+		var dist = 0
+		if (CONTEXT.gen_corner) {
+			dist = CONTEXT.step_len_c_func(this.outer_hop, true)
+		} else {
+			dist = CONTEXT.step_len_func(this.outer_hop, true)
+		}
 
 		var prev = Blueprint.get_input_node(this, 0)
 		if (prev is HuaGong or prev is ShuaTou)

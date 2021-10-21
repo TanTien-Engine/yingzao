@@ -4,14 +4,10 @@ class Context
 {
 	init()
 	{
-		this.gen_corner = false
+		this.gen_corner = true
 
-		this.step_len_func = nil
-		if (this.gen_corner) {
-			this.step_len_func = STEP_LEN_C
-		} else {
-			this.step_len_func = STEP_LEN
-		}
+		this.step_len_func   = STEP_LEN
+		this.step_len_c_func = STEP_LEN_C
 	}
 }
 
