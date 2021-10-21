@@ -14,53 +14,65 @@ var node2 = ::blueprint::nodes::output::Output()
 node2.var_name = "geo"
 node2.var_type = "geo"
 
-_editor.add_node(node2, 171.11086687111, 200.40845487881)
+_editor.add_node(node2, 304.50884501373, 182.67346356505)
 
 var node3 = ::blueprint::nodes::merge::Merge()
 
 _editor.add_node(node3, -101.34486928127, 177.86160828202)
 
-var node4 = ::geograph::nodes::brush_merge::BrushMerge()
+var node4 = ::blueprint::nodes::output::Output()
 
-_editor.add_node(node4, 36.56630447514, 200.13892503423)
+node4.var_name = "pos"
+node4.var_type = "num3"
 
-var node5 = ::blueprint::nodes::output::Output()
+_editor.add_node(node4, -120.40275308227, 313.26340044921)
 
-node5.var_name = "pos"
-node5.var_type = "num3"
+var node5 = ::blueprint::nodes::subgraph::Subgraph()
+node5.load_from_file(_editor, "20_jiaohu_tu_cut_body.ves")
 
-_editor.add_node(node5, -120.40275308227, 313.26340044921)
+_editor.add_node(node5, -427.68395528074, 113.65480295717)
 
-var node6 = ::blueprint::nodes::subgraph::Subgraph()
-node6.load_from_file(_editor, "20_jiaohu_tu_cut_body.ves")
+var node6 = ::geograph::nodes::translate_f::TranslateF()
 
-_editor.add_node(node6, -427.68395528074, 113.65480295717)
+_editor.add_node(node6, -243.25695364254, 98.181631857268)
 
-var node7 = ::geograph::nodes::translate_f::TranslateF()
+var node7 = ::blueprint::nodes::subgraph::Subgraph()
+node7.load_from_file(_editor, "01_dou_size.ves")
 
-_editor.add_node(node7, -243.25695364254, 98.181631857268)
+_editor.add_node(node7, -693.41715171924, -12.308444408222)
 
-var node8 = ::blueprint::nodes::subgraph::Subgraph()
-node8.load_from_file(_editor, "01_dou_size.ves")
+var node8 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node8, -693.41715171924, -12.308444408222)
+_editor.add_node(node8, -510.45935435407, 27.998350745808)
 
-var node9 = ::blueprint::nodes::add::Add()
+var node9 = ::blueprint::nodes::combine::Combine()
 
-_editor.add_node(node9, -510.45935435407, 27.998350745808)
+_editor.add_node(node9, -375.50627792532, -3.0830196881919)
 
-var node10 = ::blueprint::nodes::combine::Combine()
+var node10 = ::geograph::nodes::brush_set_lock::BrushSetLock()
 
-_editor.add_node(node10, -375.50627792532, -3.0830196881919)
+_editor.add_node(node10, 163.99397099752, 181.03426467044)
 
-Blueprint.connect(node8, "ping_h", node9, "a")
-Blueprint.connect(node8, "qi_h", node9, "b")
-Blueprint.connect(node9, "v", node10, "y")
-Blueprint.connect(node6, "geo", node7, "geo")
-Blueprint.connect(node10, "xyz", node7, "xyz")
+var node11 = ::blueprint::nodes::boolean::Boolean()
+
+node11.value = true
+
+_editor.add_node(node11, 28.263634801184, 138.13425739382)
+
+var node12 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node12, 25.845714698014, 200.17364975639)
+
+Blueprint.connect(node7, "ping_h", node8, "a")
+Blueprint.connect(node7, "qi_h", node8, "b")
+Blueprint.connect(node8, "v", node9, "y")
+Blueprint.connect(node5, "geo", node6, "geo")
+Blueprint.connect(node9, "xyz", node6, "xyz")
 Blueprint.connect(node1, "v", node0, "dou_l")
-Blueprint.connect(node0, "pos", node5, "var")
+Blueprint.connect(node0, "pos", node4, "var")
 Blueprint.connect(node0, "geo", node3, "in0")
-Blueprint.connect(node7, "geo", node3, "in1")
-Blueprint.connect(node3, "list", node4, "list")
-Blueprint.connect(node4, "brush", node2, "var")
+Blueprint.connect(node6, "geo", node3, "in1")
+Blueprint.connect(node3, "list", node12, "list")
+Blueprint.connect(node12, "brush", node10, "geo")
+Blueprint.connect(node11, "v", node10, "lock")
+Blueprint.connect(node10, "geo", node2, "var")

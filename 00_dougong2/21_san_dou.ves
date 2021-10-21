@@ -14,7 +14,24 @@ var node2 = ::blueprint::nodes::output::Output()
 node2.var_name = "geo"
 node2.var_type = "geo"
 
-_editor.add_node(node2, -133.1574535032, 323.71518791451)
+_editor.add_node(node2, 138.81634915908, 301.08491490054)
+
+var node3 = ::geograph::nodes::brush_set_lock::BrushSetLock()
+
+_editor.add_node(node3, 5.0381122943764, 288.45365355967)
+
+var node4 = ::blueprint::nodes::boolean::Boolean()
+
+node4.value = true
+
+_editor.add_node(node4, -130.69222390196, 245.55364628305)
+
+var node5 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node5, -133.11014400513, 307.59303864562)
 
 Blueprint.connect(node1, "v", node0, "dou_l")
-Blueprint.connect(node0, "geo", node2, "var")
+Blueprint.connect(node0, "geo", node5, "list")
+Blueprint.connect(node5, "brush", node3, "geo")
+Blueprint.connect(node4, "v", node3, "lock")
+Blueprint.connect(node3, "geo", node2, "var")

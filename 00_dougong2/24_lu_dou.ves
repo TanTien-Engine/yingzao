@@ -8,7 +8,7 @@ var node1 = ::blueprint::nodes::output::Output()
 node1.var_name = "geo"
 node1.var_type = "geo"
 
-_editor.add_node(node1, 156.2116442739, 384.86282155152)
+_editor.add_node(node1, 414.74070423853, 373.57334295044)
 
 var node2 = ::blueprint::nodes::subgraph::Subgraph()
 node2.load_from_file(_editor, "01_dou_size.ves")
@@ -43,7 +43,7 @@ _editor.add_node(node7, -681.27222025352, 283.96246514068)
 var node8 = ::geograph::nodes::boolean::Boolean()
 node8.query_param("operator").value = "subtract"
 
-_editor.add_node(node8, 10.18911834588, 362.0658062976)
+_editor.add_node(node8, 32.2549174298, 353.85527640591)
 
 var node9 = ::blueprint::nodes::subgraph::Subgraph()
 node9.load_from_file(_editor, "20_er_cut_body.ves")
@@ -128,6 +128,20 @@ node22.var_type = "num3"
 
 _editor.add_node(node22, -48.046936035156, 494.51815795898)
 
+var node23 = ::geograph::nodes::brush_set_lock::BrushSetLock()
+
+_editor.add_node(node23, 288.26034090826, 247.84232008289)
+
+var node24 = ::blueprint::nodes::boolean::Boolean()
+
+node24.value = true
+
+_editor.add_node(node24, 152.53000471193, 204.94231280627)
+
+var node25 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node25, 150.11208460876, 266.98170516884)
+
 Blueprint.connect(node10, "v", node9, "height")
 Blueprint.connect(node11, "v", node9, "er_h")
 Blueprint.connect(node12, "v", node9, "er_w")
@@ -154,4 +168,7 @@ Blueprint.connect(node7, "val", node0, "down_sha")
 Blueprint.connect(node0, "pos", node22, "var")
 Blueprint.connect(node0, "geo", node8, "a")
 Blueprint.connect(node9, "geo", node8, "b")
+Blueprint.connect(node8, "geo", node25, "list")
+Blueprint.connect(node25, "brush", node23, "geo")
+Blueprint.connect(node24, "v", node23, "lock")
 Blueprint.connect(node8, "geo", node1, "var")
