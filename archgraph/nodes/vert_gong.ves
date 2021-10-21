@@ -7,7 +7,7 @@ import "archgraph.variant" for PIN_TYPE_VERT_GONG, PIN_TYPE_HORI_GONG
 import "archgraph.component" for Component
 import "archgraph.geo_helper" for GeoHelper
 import "archgraph.node_helper" for NodeHelper
-import "archgraph.nodes.dou" for SAN_DOU, JIAOHU_DOU
+import "archgraph.nodes.dou" for SAN_DOU, JIAOHU_DOU, PINGPAN_DOU
 import "archgraph.context" for CONTEXT
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
@@ -108,13 +108,24 @@ class VertGong is Node
 
 	gen_dou(vert, hori, pos)
 	{
-		if (vert and hori) {
-			return GeoHelper.translate_geo(JIAOHU_DOU, pos)
-		} else if (vert) {
+		if (vert and hori) 
+		{
+			if (CONTEXT.gen_corner) {
+				return GeoHelper.translate_geo(PINGPAN_DOU, pos)
+			} else {
+				return GeoHelper.translate_geo(JIAOHU_DOU, pos)			
+			}
+		} 
+		else if (vert) 
+		{
 			return GeoHelper.transform_geo(SAN_DOU, pos, Math.pi() * 0.5)
-		} else if (hori) {
+		} 
+		else if (hori) 
+		{
 			return GeoHelper.translate_geo(SAN_DOU, pos)
-		} else {
+		} 
+		else 
+		{
 //			return nil
 			return GeoHelper.translate_geo(SAN_DOU, pos)
 		}

@@ -1,0 +1,37 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "11_dou.ves")
+
+_editor.add_node(node0, -322, 255)
+
+var node1 = ::blueprint::nodes::output::Output()
+
+node1.var_name = "geo"
+node1.var_type = "geo"
+
+_editor.add_node(node1, 138.0376568626, 297.9682916019)
+
+var node2 = ::blueprint::nodes::number::Number()
+
+node2.value = 0
+
+_editor.add_node(node2, -522.13352130571, 295.31612654974)
+
+var node3 = ::geograph::nodes::brush_set_lock::BrushSetLock()
+
+_editor.add_node(node3, -5.9261212867506, 287.46512266854)
+
+var node4 = ::blueprint::nodes::boolean::Boolean()
+
+node4.value = true
+
+_editor.add_node(node4, -141.65645748308, 244.56511539192)
+
+var node5 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node5, -144.07437758625, 306.60450775449)
+
+Blueprint.connect(node2, "v", node0, "er_h")
+Blueprint.connect(node0, "geo", node5, "list")
+Blueprint.connect(node5, "brush", node3, "geo")
+Blueprint.connect(node4, "v", node3, "lock")
+Blueprint.connect(node3, "geo", node1, "var")
