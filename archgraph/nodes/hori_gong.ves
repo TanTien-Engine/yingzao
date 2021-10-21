@@ -16,7 +16,7 @@ var GUAZI_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/32_guazi_gong
 var MAN_GONG   = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/33_man_gong.ves", nil)
 var LING_GONG  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/34_ling_gong.ves", nil)
 
-var SUN_GD = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/60_sun_gd.ves", nil)
+var GD_SUN = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/10_gd_sun.ves", nil)
 
 var JIAOHU_CUT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_jiaohu_tu_cut_body.ves", nil)
 var QIXIN_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
@@ -113,8 +113,8 @@ class HoriGong is Node
 		var l_pos = Vector3(x_min + dist, pos.y + CAI_HEIGHT, pos.z)
 		var r_pos = Vector3(x_max - dist, pos.y + CAI_HEIGHT, pos.z)
 
-		var l_sun = GeoHelper.translate_geo(SUN_GD, l_pos)
-		var r_sun = GeoHelper.translate_geo(SUN_GD, r_pos)
+		var l_sun = GeoHelper.translate_geo(GD_SUN, l_pos)
+		var r_sun = GeoHelper.translate_geo(GD_SUN, r_pos)
 
 		var l_dou = GeoHelper.translate_geo(SAN_DOU, l_pos)
 		var r_dou = GeoHelper.translate_geo(SAN_DOU, r_pos)
@@ -128,18 +128,18 @@ class HoriGong is Node
 		{
 			var c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))
 
-			var c_sun = GeoHelper.translate_geo(SUN_GD, c_pos)
+			var c_sun = GeoHelper.translate_geo(GD_SUN, c_pos)
 			var c_dou = GeoHelper.translate_geo(QIXIN_DOU, c_pos)
 
 			c_dou = GeoHelper.joint_cut_geo(c_dou, SUN_GD, c_pos)
 
-			v_geo = GeoHelper.joint_cut_geo(v_geo, SUN_GD, [ l_pos, c_pos, r_pos ])
+			v_geo = GeoHelper.joint_cut_geo(v_geo, GD_SUN, [ l_pos, c_pos, r_pos ])
 
 			return Variant([ v_geo, [ l_sun, c_sun, r_sun ], [ l_dou, c_dou, r_dou ] ])
 		}
 		else
 		{
-			v_geo = GeoHelper.joint_cut_geo(v_geo, SUN_GD, [ l_pos, r_pos ])
+			v_geo = GeoHelper.joint_cut_geo(v_geo, GD_SUN, [ l_pos, r_pos ])
 
 			return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
 		}

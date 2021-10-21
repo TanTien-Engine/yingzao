@@ -83,15 +83,15 @@ class VertGong is Node
 
 	add_dou(v_geo, pos)
 	{
-		var SUN_GD = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/60_sun_gd.ves", nil)
+		var GD_SUN = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/10_gd_sun.ves", nil)
 
 		var len_l = this.calc_outer_step_len()
 		var len_r = this.calc_inner_step_len()
 		var l_pos = Vector3(pos.x, pos.y + CAI_HEIGHT,  len_l)
 		var r_pos = Vector3(pos.x, pos.y + CAI_HEIGHT, -len_r)
 
-		var l_sun = GeoHelper.translate_geo(SUN_GD, l_pos)
-		var r_sun = GeoHelper.translate_geo(SUN_GD, r_pos)
+		var l_sun = GeoHelper.translate_geo(GD_SUN, l_pos)
+		var r_sun = GeoHelper.translate_geo(GD_SUN, r_pos)
 
 		var next_v = Blueprint.get_output_node(this, 0)
 		var next_o = Blueprint.get_output_node(this, 1)
@@ -104,7 +104,7 @@ class VertGong is Node
 //		l_dou = GeoHelper.joint_cut_geo(l_dou, l_dou_node, l_pos)		
 //		r_dou = GeoHelper.joint_cut_geo(r_dou, r_dou_node, r_pos)		
 
-		v_geo = GeoHelper.joint_cut_geo(v_geo, SUN_GD, [ l_pos, r_pos ])
+		v_geo = GeoHelper.joint_cut_geo(v_geo, GD_SUN, [ l_pos, r_pos ])
 
 		return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
 	}
