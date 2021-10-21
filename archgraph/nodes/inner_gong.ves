@@ -120,9 +120,6 @@ class InnerGong is Node
 		var r_dou = GeoHelper.translate_geo(SAN_DOU, r_pos)
 
 		// cut sun
-		l_dou = GeoHelper.joint_cut_geo(l_dou, SUN_GD, l_pos)
-		r_dou = GeoHelper.joint_cut_geo(r_dou, SUN_GD, r_pos)
-
 		v_geo = GeoHelper.joint_cut_geo(v_geo, GD_SUN, [ l_pos, r_pos ])
 
 		return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])

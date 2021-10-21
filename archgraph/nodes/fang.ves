@@ -94,10 +94,6 @@ class Fang is Node
 		var l_dou = GeoHelper.translate_geo(SAN_DOU, l_pos)
 		var r_dou = GeoHelper.translate_geo(SAN_DOU, r_pos)
 
-		// cut sun
-		l_dou = GeoHelper.joint_cut_geo(l_dou, SUN_GD, l_pos)
-		r_dou = GeoHelper.joint_cut_geo(r_dou, SUN_GD, r_pos)
-
 		var has_c = !dg.has_vert_gong(this.comp.y_idx)
 		if (has_c)
 		{
@@ -105,8 +101,6 @@ class Fang is Node
 
 			var c_sun = GeoHelper.translate_geo(GD_SUN, c_pos)
 			var c_dou = GeoHelper.translate_geo(QIXIN_DOU, c_pos)
-
-			c_dou = GeoHelper.joint_cut_geo(c_dou, SUN_GD, c_pos)
 
 			v_geo = GeoHelper.joint_cut_geo(v_geo, GD_SUN, [ l_pos, c_pos, r_pos ])
 

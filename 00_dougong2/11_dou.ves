@@ -698,6 +698,16 @@ node121.var_type = "num3"
 
 _editor.add_node(node121, 1731.1769336251, 451.91270691506)
 
+var node122 = ::blueprint::nodes::subgraph::Subgraph()
+node122.load_from_file(_editor, "10_gd_sun.ves")
+
+_editor.add_node(node122, 814.20884717201, -298.91334325617)
+
+var node123 = ::geograph::nodes::boolean::Boolean()
+node123.query_param("operator").value = "subtract"
+
+_editor.add_node(node123, 1013.0667468729, -273.24160163587)
+
 Blueprint.connect(node40, "var", node51, "a")
 Blueprint.connect(node49, "var", node51, "b")
 Blueprint.connect(node33, "v", node34, "var")
@@ -750,7 +760,9 @@ Blueprint.connect(node72, "geo", node67, "in0")
 Blueprint.connect(node74, "geo", node67, "in1")
 Blueprint.connect(node76, "geo", node67, "in2")
 Blueprint.connect(node78, "geo", node67, "in3")
-Blueprint.connect(node67, "list", node38, "list")
+Blueprint.connect(node67, "list", node123, "a")
+Blueprint.connect(node122, "geo", node123, "b")
+Blueprint.connect(node123, "geo", node38, "list")
 Blueprint.connect(node38, "brush", node21, "var")
 Blueprint.connect(node21, "var", node25, "var")
 Blueprint.connect(node5, "var", node53, "var")

@@ -101,9 +101,6 @@ class VertGong is Node
 		var r_dou = this.gen_dou(next_v, next_i, r_pos)
 
 		// cut sun
-//		l_dou = GeoHelper.joint_cut_geo(l_dou, l_dou_node, l_pos)		
-//		r_dou = GeoHelper.joint_cut_geo(r_dou, r_dou_node, r_pos)		
-
 		v_geo = GeoHelper.joint_cut_geo(v_geo, GD_SUN, [ l_pos, r_pos ])
 
 		return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
