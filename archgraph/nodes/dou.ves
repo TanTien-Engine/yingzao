@@ -4,7 +4,7 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "editor.node_cache" for NODE_CACHE
 import "archgraph.variant" for PIN_TYPE_ROOT, PIN_TYPE_HORI_GONG
-import "archgraph.geo_helper" for GeoHelper
+import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.component" for Component
 
@@ -42,6 +42,6 @@ class Dou is Node
 	resolve(dg)
 	{
 		this.comp.pos   = NodeHelper.calc_curr_pos(this, 0)
-		this.comp.v_geo = GeoHelper.translate_geo(JIAOHU_TU_DOU, this.comp.pos)
+		this.comp.v_geo = TransNodes.translate(JIAOHU_TU_DOU, this.comp.pos)
 	}
 }

@@ -1,0 +1,26 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "editor.node_cache" for NODE_CACHE
+
+class GenNodes
+{
+	static corner_gen_2(v_geo, pos, offset)
+	{
+		var CORNER_GEN_2 = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/51_corner_gen_2.ves", nil)
+
+		var geo_node = VariantProxy(v_geo)
+		Blueprint.connect(geo_node, 0, CORNER_GEN_2, "geo")
+
+		var pos_node = VariantProxy(Variant(pos))
+		Blueprint.connect(pos_node, 0, CORNER_GEN_2, "pos")
+
+		var offset_node = VariantProxy(Variant(offset))
+		Blueprint.connect(offset_node, 0, CORNER_GEN_2, "offset")
+
+		var geo0 = Blueprint.calc_output_value(CORNER_GEN_2, "geo0")
+		var geo1 = Blueprint.calc_output_value(CORNER_GEN_2, "geo1")
+
+		return Variant([ geo0, geo1 ])
+	}
+}

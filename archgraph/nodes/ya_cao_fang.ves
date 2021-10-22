@@ -4,7 +4,7 @@ import "blueprint.variant" for Variant
 import "archgraph.variant" for PIN_TYPE_INNER_GONG, PIN_TYPE_YC_FANG, PIN_TYPE_FANG
 import "archgraph.constant" for ZU_CAI_HEIGHT
 import "archgraph.component" for Component
-import "archgraph.geo_helper" for GeoHelper
+import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
@@ -39,7 +39,7 @@ class YaCaoFang is Node
 
 		var pos = NodeHelper.calc_curr_pos(this, 0)
 
-		var v_geo = GeoHelper.translate_geo(FANG, pos)
+		var v_geo = TransNodes.translate(FANG, pos)
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo

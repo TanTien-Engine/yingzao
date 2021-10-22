@@ -1,7 +1,7 @@
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.variant" for Variant
-import "archgraph.geo_helper" for GeoHelper
+import "archgraph.trans_nodes" for TransNodes
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
 
@@ -24,13 +24,46 @@ class JointsNodes
 		return [ Blueprint.calc_output_value(CONN2_JOINT, "geo0"), Blueprint.calc_output_value(CONN2_JOINT, "geo1") ]
 	}
 
+	static conn3(v_geo0, v_geo1, v_geo2, pos, angle)
+	{
+		var CONN3_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/62_conn_3_joint.ves", nil)
+
+		var n_geo0 = VariantProxy(v_geo0)
+		var n_geo1 = VariantProxy(v_geo1)
+		var n_geo2 = VariantProxy(v_geo2)
+		var n_pos  = VariantProxy(Variant(pos))
+		var n_angle = VariantProxy(Variant(angle))
+
+		Blueprint.connect(n_geo0,  0, CONN3_JOINT, "geo0")
+		Blueprint.connect(n_geo1,  0, CONN3_JOINT, "geo1")
+		Blueprint.connect(n_geo2,  0, CONN3_JOINT, "geo2")
+		Blueprint.connect(n_pos,   0, CONN3_JOINT, "pos")
+		Blueprint.connect(n_angle, 0, CONN3_JOINT, "angle")
+
+		return [ Blueprint.calc_output_value(CONN3_JOINT, "geo0"), Blueprint.calc_output_value(CONN3_JOINT, "geo1"), Blueprint.calc_output_value(CONN3_JOINT, "geo2") ]
+	}
+
+	static cut_geo_node(v_geo, cut_node, pos)
+	{
+		var CUT_BODY_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/61_cut_body_joint.ves", nil)	
+
+		var geo_node = VariantProxy(v_geo)
+		var pos_node = VariantProxy(Variant(pos))
+
+		Blueprint.connect(geo_node, 0, CUT_BODY_JOINT, "geo")
+		Blueprint.connect(cut_node, 0, CUT_BODY_JOINT, "cut_body")		
+		Blueprint.connect(pos_node, 0, CUT_BODY_JOINT, "pos")
+
+		return Blueprint.calc_output_value(CUT_BODY_JOINT, "geo")
+	}
+
 	static cut_jao_hu_er(v_geo, pos, angle)
 	{
 		var JIAOHU_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_jiaohu_cut_body.ves", nil)
 
-		var cut_body = GeoHelper.rotate_geo(JIAOHU_CUT, angle)
+		var cut_body = TransNodes.rotate(JIAOHU_CUT, angle)
 		var n_cut_body  = VariantProxy(cut_body)
 
-		return GeoHelper.joint_cut_geo(v_geo, n_cut_body, pos)
+		return JointsNodes.cut_geo_node(v_geo, n_cut_body, pos)
 	}
 }

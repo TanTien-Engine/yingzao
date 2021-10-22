@@ -1,7 +1,7 @@
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
-import "archgraph.geo_helper" for GeoHelper
+import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.nodes.vert_gong" for VertGong
 import "editor.node_cache" for NODE_CACHE
@@ -52,6 +52,6 @@ class ShuaTou is VertGong
 		Blueprint.connect(len_l_node, 0, SHUA_TOU, "len_left")
 		Blueprint.connect(len_r_node, 0, SHUA_TOU, "len_right")
 
-		return GeoHelper.translate_geo(SHUA_TOU, pos)
+		return TransNodes.translate(SHUA_TOU, pos)
 	}
 }

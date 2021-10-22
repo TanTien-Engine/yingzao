@@ -5,9 +5,9 @@ import "geograph.nodes.rotate_y" for RotateY
 import "geograph.nodes.translate_f" for TranslateF
 import "editor.node_cache" for NODE_CACHE
 
-class GeoHelper
+class TransNodes
 {
-	static rotate_geo(geo_node, angle)
+	static rotate(geo_node, angle)
 	{
 		var rot_y = RotateY()
 		Blueprint.connect(geo_node.exports[0], rot_y.imports[0])
@@ -18,7 +18,7 @@ class GeoHelper
 		return Blueprint.calc_output_value(rot_y, "geo")
 	}
 
-	static translate_geo(geo_node, pos)
+	static translate(geo_node, pos)
 	{
 		var trans = TranslateF()
 		Blueprint.connect(geo_node.exports[0], trans.imports[0])
@@ -29,7 +29,7 @@ class GeoHelper
 		return Blueprint.calc_output_value(trans, "geo")
 	}
 
-	static transform_geo(geo_node, pos, angle)
+	static transform(geo_node, pos, angle)
 	{
 		var rot_y = RotateY()
 		Blueprint.connect(geo_node.exports[0], rot_y.imports[0])
@@ -44,38 +44,5 @@ class GeoHelper
 		Blueprint.connect(pos_node.exports[0], trans.imports[1])
 
 		return Blueprint.calc_output_value(trans, "geo")		
-	}
-
-	static joint_cut_geo(v_geo, cut_node, pos)
-	{
-		var CUT_BODY_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/61_cut_body_joint.ves", nil)	
-
-		var geo_node = VariantProxy(v_geo)
-		var pos_node = VariantProxy(Variant(pos))
-
-		Blueprint.connect(geo_node, 0, CUT_BODY_JOINT, "geo")
-		Blueprint.connect(cut_node, 0, CUT_BODY_JOINT, "cut_body")		
-		Blueprint.connect(pos_node, 0, CUT_BODY_JOINT, "pos")
-
-		return Blueprint.calc_output_value(CUT_BODY_JOINT, "geo")
-	}
-
-	static corner_gen_2(v_geo, pos, offset)
-	{
-		var CORNER_GEN_2 = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/51_corner_gen_2.ves", nil)
-
-		var geo_node = VariantProxy(v_geo)
-		Blueprint.connect(geo_node, 0, CORNER_GEN_2, "geo")
-
-		var pos_node = VariantProxy(Variant(pos))
-		Blueprint.connect(pos_node, 0, CORNER_GEN_2, "pos")
-
-		var offset_node = VariantProxy(Variant(offset))
-		Blueprint.connect(offset_node, 0, CORNER_GEN_2, "offset")
-
-		var geo0 = Blueprint.calc_output_value(CORNER_GEN_2, "geo0")
-		var geo1 = Blueprint.calc_output_value(CORNER_GEN_2, "geo1")
-
-		return Variant([ geo0, geo1 ])
 	}
 }

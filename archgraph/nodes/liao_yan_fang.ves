@@ -4,8 +4,9 @@ import "blueprint.variant" for Variant
 import "archgraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_LY_FANG
 import "archgraph.constant" for ZU_CAI_HEIGHT
 import "archgraph.component" for Component
-import "archgraph.geo_helper" for GeoHelper
+import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
+import "archgraph.joints_nodes" for JointsNodes
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 
@@ -39,7 +40,7 @@ class LiaoYanFang is Node
 
 		var pos = NodeHelper.calc_curr_pos(this, 0)
 
-		var v_geo = GeoHelper.translate_geo(FANG, pos)
+		var v_geo = TransNodes.translate(FANG, pos)
 
 		// conn prev
 		v_geo = this.add_joint(dg, v_geo, pos)
@@ -59,7 +60,7 @@ class LiaoYanFang is Node
 
 		var has_c = !dg.has_vert_gong(this.comp.y_idx - 1)
 		if (has_c) {
-			return GeoHelper.joint_cut_geo(v_geo, QIXIN_CUT, pos)		
+			return JointsNodes.cut_geo_node(v_geo, QIXIN_CUT, pos)		
 		} else {
 			return v_geo
 		}

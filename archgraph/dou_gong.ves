@@ -182,9 +182,7 @@ class DouGong
 		// gong conn corner hua
 		if (layer[0].comp.v_geo_c)
 		{
-			var CONN3_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/62_conn_3_joint.ves", nil)
-
-			var angle = VariantProxy(Variant(Math.pi() / 4))
+			var angle = Math.pi() / 4
 
 			for (var i in 1 .. layer.count)
 			{
@@ -192,20 +190,10 @@ class DouGong
 				pos.y = pos.y + 0.1
 				if (layer[i].comp.v_geo_c and this.is_geo_contain(layer[0].comp.v_geo, pos))
 				{
-					var geo0 = VariantProxy(layer[i].comp.v_geo_c.value[0])
-					var geo1 = VariantProxy(layer[i].comp.v_geo_c.value[1])					
-					var geo2 = VariantProxy(layer[0].comp.v_geo_c)
-					var pos  = VariantProxy(Variant(layer[i].comp.pos))
-
-					Blueprint.connect(geo0,  0, CONN3_JOINT, "geo0")
-					Blueprint.connect(geo1,  0, CONN3_JOINT, "geo1")
-					Blueprint.connect(geo2,  0, CONN3_JOINT, "geo2")
-					Blueprint.connect(pos,   0, CONN3_JOINT, "pos")
-					Blueprint.connect(angle, 0, CONN3_JOINT, "angle")
-
-					layer[i].comp.v_geo_c.value[0] = Blueprint.calc_output_value(CONN3_JOINT, "geo0")
-					layer[i].comp.v_geo_c.value[1] = Blueprint.calc_output_value(CONN3_JOINT, "geo1")					
-					layer[0].comp.v_geo_c = Blueprint.calc_output_value(CONN3_JOINT, "geo2")
+					var g3 = JointsNodes.conn3(layer[i].comp.v_geo_c.value[0], layer[i].comp.v_geo_c.value[1], layer[0].comp.v_geo_c, layer[i].comp.pos, angle)
+					layer[i].comp.v_geo_c.value[0] = g3[0]
+					layer[i].comp.v_geo_c.value[1] = g3[1]
+					layer[0].comp.v_geo_c          = g3[2]
 				}
 			}
 		}
@@ -271,7 +259,7 @@ class DouGong
 
 	build_lu_hua_joint()
 	{
-		import "archgraph.geo_helper" for GeoHelper
+		import "archgraph.trans_nodes" for TransNodes
 
 		if (this.layers[0].isEmpty) {
 			return
@@ -284,16 +272,16 @@ class DouGong
 				var C_LU_CUT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_c_lu_cut_body.ves", nil)
 
 				var hua = this.layers[1][0].comp
-				hua.v_geo_c = GeoHelper.joint_cut_geo(hua.v_geo_c, C_LU_CUT, hua.pos)
+				hua.v_geo_c = JointsNodes.cut_geo_node(hua.v_geo_c, C_LU_CUT, hua.pos)
 			}
 			if (this.layers[1].count > 1)
 			{
 				var LU_CUT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_lu_cut_body.ves", nil)
-				var v_cut_geo = GeoHelper.rotate_geo(LU_CUT, Math.pi() / 4)
+				var v_cut_geo = TransNodes.rotate(LU_CUT, Math.pi() / 4)
 				var cut_node = VariantProxy(v_cut_geo)
 
 				var nidao = this.layers[1][1].comp
-				nidao.v_geo_c.value[1] = GeoHelper.joint_cut_geo(nidao.v_geo_c.value[1], cut_node, nidao.pos)
+				nidao.v_geo_c.value[1] = JointsNodes.cut_geo_node(nidao.v_geo_c.value[1], cut_node, nidao.pos)
 			}
 		}
 		else
@@ -303,7 +291,7 @@ class DouGong
 				var LU_CUT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_lu_cut_body.ves", nil)
 
 				var hua = this.layers[1][0].comp
-				hua.v_geo = GeoHelper.joint_cut_geo(hua.v_geo, LU_CUT, hua.pos)
+				hua.v_geo = JointsNodes.cut_geo_node(hua.v_geo, LU_CUT, hua.pos)
 			}
 		}
 	}
@@ -316,7 +304,7 @@ class DouGong
 
 	build_dou_er_joints()
 	{
-		import "archgraph.geo_helper" for GeoHelper
+		import "archgraph.trans_nodes" for TransNodes
 
 		this.build_lu_hua_joint()
 

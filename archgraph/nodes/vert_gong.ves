@@ -5,10 +5,11 @@ import "blueprint.variant" for Variant
 import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
 import "archgraph.variant" for PIN_TYPE_VERT_GONG, PIN_TYPE_HORI_GONG
 import "archgraph.component" for Component
-import "archgraph.geo_helper" for GeoHelper
+import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.nodes.dou" for SAN_DOU, JIAOHU_DOU, PINGPAN_DOU
 import "archgraph.context" for CONTEXT
+import "archgraph.joints_nodes" for JointsNodes
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
@@ -100,8 +101,8 @@ class VertGong is Node
 		var l_pos = Vector3(pos.x, pos.y + CAI_HEIGHT,  len_l)
 		var r_pos = Vector3(pos.x, pos.y + CAI_HEIGHT, -len_r)
 
-		var l_sun = GeoHelper.translate_geo(GD_SUN, l_pos)
-		var r_sun = GeoHelper.translate_geo(GD_SUN, r_pos)
+		var l_sun = TransNodes.translate(GD_SUN, l_pos)
+		var r_sun = TransNodes.translate(GD_SUN, r_pos)
 
 		var next_v = Blueprint.get_output_node(this, 0)
 		var next_o = Blueprint.get_output_node(this, 1)
@@ -111,7 +112,7 @@ class VertGong is Node
 		var r_dou = this.gen_dou(next_v, next_i, r_pos)
 
 		// cut sun
-		v_geo = GeoHelper.joint_cut_geo(v_geo, GD_SUN, [ l_pos, r_pos ])
+		v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])
 
 		return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
 	}
@@ -121,23 +122,23 @@ class VertGong is Node
 		if (vert and hori) 
 		{
 			if (CONTEXT.gen_corner) {
-				return GeoHelper.translate_geo(PINGPAN_DOU, pos)
+				return TransNodes.translate(PINGPAN_DOU, pos)
 			} else {
-				return GeoHelper.translate_geo(JIAOHU_DOU, pos)			
+				return TransNodes.translate(JIAOHU_DOU, pos)			
 			}
 		} 
 		else if (vert) 
 		{
-			return GeoHelper.transform_geo(SAN_DOU, pos, Math.pi() * 0.5)
+			return TransNodes.transform(SAN_DOU, pos, Math.pi() * 0.5)
 		} 
 		else if (hori) 
 		{
-			return GeoHelper.translate_geo(SAN_DOU, pos)
+			return TransNodes.translate(SAN_DOU, pos)
 		} 
 		else 
 		{
 //			return nil
-			return GeoHelper.translate_geo(SAN_DOU, pos)
+			return TransNodes.translate(SAN_DOU, pos)
 		}
 	}
 }

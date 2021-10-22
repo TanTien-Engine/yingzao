@@ -6,7 +6,7 @@ import "blueprint.variant_proxy" for VariantProxy
 import "editor.node_cache" for NODE_CACHE
 import "archgraph.variant" for PIN_TYPE_INNER_GONG, PIN_TYPE_FANG
 import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT, DOU_H_WIDTH, MIN_GONG_SPACE
-import "archgraph.geo_helper" for GeoHelper
+import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.component" for Component
 import "archgraph.nodes.dou" for SAN_DOU, JIAOHU_DOU
@@ -15,6 +15,8 @@ import "archgraph.tools_nodes" for ToolsNodes
 import "archgraph.coord_trans" for CoordTrans
 import "archgraph.dou_helper" for DouHelper
 import "archgraph.spatial_query" for SpatialQuery
+import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.gen_nodes" for GenNodes
 import "geograph.nodes.brush_get_size" for BrushGetSize
 import "maths.vector" for Vector3
 import "math" for Math
@@ -64,7 +66,7 @@ class InnerGong is Node
 
 		// translate
 		var pos = NodeHelper.calc_curr_pos(this, 0)
-		var v_geo = GeoHelper.translate_geo(this.gong, pos)
+		var v_geo = TransNodes.translate(this.gong, pos)
 
 		// conn prev
 //		v_geo = this.add_joint(v_geo, prev, pos)
@@ -127,7 +129,7 @@ class InnerGong is Node
 		this.comp.offset = offset
 
 		v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0), l_dou_jh, r_dou_jh)
-		this.comp.v_geo_c = GeoHelper.corner_gen_2(v_geo, this.comp.pos, offset)			
+		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)			
 	}
 
 	select_gong()
@@ -149,7 +151,7 @@ class InnerGong is Node
 			cut_node = JIAOHU_CUT
 		}
 
-		return GeoHelper.joint_cut_geo(v_geo, cut_node, pos)
+		return JointsNodes.cut_geo_node(v_geo, cut_node, pos)
 	}
 
 	add_dou(dg, v_geo, pos, l_dou_jh, r_dou_jh)
@@ -163,8 +165,8 @@ class InnerGong is Node
 		var l_pos = Vector3(dou_pos_x[0], pos.y + CAI_HEIGHT, pos.z)
 		var r_pos = Vector3(dou_pos_x[1], pos.y + CAI_HEIGHT, pos.z)
 
-		var l_sun = GeoHelper.translate_geo(GD_SUN, l_pos)
-		var r_sun = GeoHelper.translate_geo(GD_SUN, r_pos)
+		var l_sun = TransNodes.translate(GD_SUN, l_pos)
+		var r_sun = TransNodes.translate(GD_SUN, r_pos)
 
 		var l_angle = 0
 		var r_angle = 0
@@ -180,11 +182,11 @@ class InnerGong is Node
 			r_angle = Math.pi() * 0.5
 		}
 
-		var l_dou = GeoHelper.transform_geo(l_dou_node, l_pos, l_angle)
-		var r_dou = GeoHelper.transform_geo(r_dou_node, r_pos, r_angle)
+		var l_dou = TransNodes.transform(l_dou_node, l_pos, l_angle)
+		var r_dou = TransNodes.transform(r_dou_node, r_pos, r_angle)
 
 		// cut sun
-		v_geo = GeoHelper.joint_cut_geo(v_geo, GD_SUN, [ l_pos, r_pos ])
+		v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])
 
 		return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
 	}

@@ -3,11 +3,13 @@ import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
 import "archgraph.variant" for PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG
-import "archgraph.geo_helper" for GeoHelper
+import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for ZU_CAI_HEIGHT, CAI_HEIGHT
 import "archgraph.component" for Component
 import "archgraph.nodes.dou" for SAN_DOU, QIXIN_DOU
+import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.gen_nodes" for GenNodes
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 
@@ -47,7 +49,7 @@ class Fang is Node
 
 		var pos = NodeHelper.calc_curr_pos(this, 0)
 
-		var v_geo = GeoHelper.translate_geo(FANG, pos)
+		var v_geo = TransNodes.translate(FANG, pos)
 
 		// conn prev
 		v_geo = this.add_joint(dg, v_geo, pos)
@@ -62,7 +64,7 @@ class Fang is Node
 		{
 			var v_geo = Blueprint.calc_output_value(FANG, 0)
 			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
-			this.comp.v_geo_c = GeoHelper.corner_gen_2(v_geo, pos, 0)
+			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, pos, 0)
 		}
 	}
 
@@ -72,7 +74,7 @@ class Fang is Node
 
 		var has_c = !dg.has_vert_gong(this.comp.y_idx - 1)
 		if (has_c) {
-			return GeoHelper.joint_cut_geo(v_geo, QIXIN_CUT, pos)		
+			return JointsNodes.cut_geo_node(v_geo, QIXIN_CUT, pos)		
 		} else {
 			return v_geo
 		}
@@ -95,27 +97,27 @@ class Fang is Node
 		var l_pos = Vector3(-0.41, pos.y + CAI_HEIGHT, pos.z)
 		var r_pos = Vector3( 0.41, pos.y + CAI_HEIGHT, pos.z)
 
-		var l_sun = GeoHelper.translate_geo(GD_SUN, l_pos)
-		var r_sun = GeoHelper.translate_geo(GD_SUN, r_pos)
+		var l_sun = TransNodes.translate(GD_SUN, l_pos)
+		var r_sun = TransNodes.translate(GD_SUN, r_pos)
 
-		var l_dou = GeoHelper.translate_geo(SAN_DOU, l_pos)
-		var r_dou = GeoHelper.translate_geo(SAN_DOU, r_pos)
+		var l_dou = TransNodes.translate(SAN_DOU, l_pos)
+		var r_dou = TransNodes.translate(SAN_DOU, r_pos)
 
 		var has_c = !dg.has_vert_gong(this.comp.y_idx)
 		if (has_c)
 		{
 			var c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))
 
-			var c_sun = GeoHelper.translate_geo(GD_SUN, c_pos)
-			var c_dou = GeoHelper.translate_geo(QIXIN_DOU, c_pos)
+			var c_sun = TransNodes.translate(GD_SUN, c_pos)
+			var c_dou = TransNodes.translate(QIXIN_DOU, c_pos)
 
-			v_geo = GeoHelper.joint_cut_geo(v_geo, GD_SUN, [ l_pos, c_pos, r_pos ])
+			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, c_pos, r_pos ])
 
 			return Variant([ v_geo, [ l_sun, c_sun, r_sun ], [ l_dou, c_dou, r_dou ] ])
 		}
 		else
 		{
-			v_geo = GeoHelper.joint_cut_geo(v_geo, GD_SUN, [ l_pos, r_pos ])
+			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])
 
 			return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
 		}

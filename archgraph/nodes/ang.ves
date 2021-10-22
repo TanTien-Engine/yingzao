@@ -3,7 +3,7 @@ import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "geograph.nodes.knife" for Knife
 import "geograph.nodes.translate_f" for TranslateF
-import "archgraph.geo_helper" for GeoHelper
+import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for ZU_CAI_HEIGHT
 import "archgraph.nodes.vert_gong" for VertGong
@@ -69,7 +69,7 @@ class Ang is VertGong
 		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
 
 		var ang_pos = this.calc_ang_pos()
-		var v_geo = GeoHelper.translate_geo(ANG, ang_pos)
+		var v_geo = TransNodes.translate(ANG, ang_pos)
 
 		if (this.ang_layer == 0)
 		{
