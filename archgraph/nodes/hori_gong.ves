@@ -132,11 +132,6 @@ class HoriGong is Node
 
 		v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
 		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
-
-		// debug
-		var l_pos = CoordTrans.calc_hori_gong_rotated_pos(Vector3(dou_pos_x[0], this.comp.pos.y + CAI_HEIGHT, this.comp.pos.z), offset, Math.pi() / 4)
-		var r_pos = CoordTrans.calc_hori_gong_rotated_pos(Vector3(dou_pos_x[1], this.comp.pos.y + CAI_HEIGHT, this.comp.pos.z), offset, Math.pi() / 4)			
-//		this.comp.v_geo_c.value.add(ToolsNodes.pos_debug_geo(l_pos))
 	}
 
 	select_gong(dg)
