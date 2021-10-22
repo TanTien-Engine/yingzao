@@ -11,8 +11,12 @@ import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT, DOU_H_WIDTH, MIN_GONG
 import "archgraph.component" for Component
 import "archgraph.nodes.dou" for SAN_DOU, QIXIN_DOU
 import "archgraph.context" for CONTEXT
+import "archgraph.tools_nodes" for ToolsNodes
+import "archgraph.coord_trans" for CoordTrans
+import "archgraph.dou_helper" for DouHelper
 import "geograph.nodes.brush_get_size" for BrushGetSize
 import "maths.vector" for Vector3
+import "math" for Math
 
 var GUAZI_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/32_guazi_gong.ves", nil)
 var MAN_GONG   = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/33_man_gong.ves", nil)
@@ -70,58 +74,67 @@ class HoriGong is Node
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
 
-		// corner
+		this.gen_corner(dg)
+	}
+
+	gen_corner(dg)
+	{
+		var offset = 0
+
+		var prev = Blueprint.get_input_node(this, 0)
+		if (!prev or !(prev is HoriGong))
 		{
-			var offset = 0
-
-			var prev = Blueprint.get_input_node(this, 0)
-			if (!prev or !(prev is HoriGong))
+			if (this.comp.x_idx < 0)
 			{
-				if (this.comp.x_idx < 0)
-				{
-					var outer = CONTEXT.step_len_func(this.comp.x_idx) - MIN_GONG_SPACE
-					var inner = CONTEXT.step_len_func(this.comp.x_idx - 1) + DOU_H_WIDTH
-					var len_node = VariantProxy(Variant(outer + inner))
-					Blueprint.connect(len_node, 0, this.gong, "length")
+				var outer = CONTEXT.step_len_func(this.comp.x_idx) - MIN_GONG_SPACE
+				var inner = CONTEXT.step_len_func(this.comp.x_idx - 1) + DOU_H_WIDTH
+				var len_node = VariantProxy(Variant(outer + inner))
+				Blueprint.connect(len_node, 0, this.gong, "length")
 
-					offset = - (outer - inner) / 2
-				}
-				else if (this.comp.x_idx > 0)
-				{
-					var outer = CONTEXT.step_len_func(this.comp.x_idx + 1) - MIN_GONG_SPACE
-					var inner = CONTEXT.step_len_func(this.comp.x_idx) + CONTEXT.step_len_func(-1)  + DOU_H_WIDTH
-					var len_node = VariantProxy(Variant(outer + inner))
-					Blueprint.connect(len_node, 0, this.gong, "length")
-
-					offset = - (outer - inner) / 2
-				}
+				offset = - (outer - inner) / 2
 			}
-			else
+			else if (this.comp.x_idx > 0)
 			{
-				if (this.comp.x_idx < 0)
-				{
-					var outer = CONTEXT.step_len_func(this.comp.x_idx) - MIN_GONG_SPACE
-					var inner = CONTEXT.step_len_func(this.comp.x_idx - 1) + CONTEXT.step_len_func(this.comp.x_idx - 2) + DOU_H_WIDTH
-					var len_node = VariantProxy(Variant(outer + inner))
-					Blueprint.connect(len_node, 0, this.gong, "length")
+				var outer = CONTEXT.step_len_func(this.comp.x_idx + 1) - MIN_GONG_SPACE
+				var inner = CONTEXT.step_len_func(this.comp.x_idx) + CONTEXT.step_len_func(-1)  + DOU_H_WIDTH
+				var len_node = VariantProxy(Variant(outer + inner))
+				Blueprint.connect(len_node, 0, this.gong, "length")
 
-					offset = - (outer - inner) / 2
-				}
-				else if (this.comp.x_idx > 0)
-				{
-					var outer = CONTEXT.step_len_func(this.comp.x_idx + 1) - MIN_GONG_SPACE
-					var inner = CONTEXT.step_len_func(this.comp.x_idx) + CONTEXT.step_len_func(-1)  + CONTEXT.step_len_func(-2) - MIN_GONG_SPACE
-					var len_node = VariantProxy(Variant(outer + inner))
-					Blueprint.connect(len_node, 0, this.gong, "length")
-
-					offset = - (outer - inner) / 2
-				}
+				offset = - (outer - inner) / 2
 			}
-
-			var v_geo = Blueprint.calc_output_value(this.gong, 0)
-			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
-			this.comp.v_geo_c = GeoHelper.corner_gen_2(v_geo, pos, offset)
 		}
+		else
+		{
+			if (this.comp.x_idx < 0)
+			{
+				var outer = CONTEXT.step_len_func(this.comp.x_idx) - MIN_GONG_SPACE
+				var inner = CONTEXT.step_len_func(this.comp.x_idx - 1) + CONTEXT.step_len_func(this.comp.x_idx - 2) + DOU_H_WIDTH
+				var len_node = VariantProxy(Variant(outer + inner))
+				Blueprint.connect(len_node, 0, this.gong, "length")
+
+				offset = - (outer - inner) / 2
+			}
+			else if (this.comp.x_idx > 0)
+			{
+				var outer = CONTEXT.step_len_func(this.comp.x_idx + 1) - MIN_GONG_SPACE
+				var inner = CONTEXT.step_len_func(this.comp.x_idx) + CONTEXT.step_len_func(-1)  + CONTEXT.step_len_func(-2) - MIN_GONG_SPACE
+				var len_node = VariantProxy(Variant(outer + inner))
+				Blueprint.connect(len_node, 0, this.gong, "length")
+
+				offset = - (outer - inner) / 2
+			}
+		}
+
+		var v_geo = Blueprint.calc_output_value(this.gong, 0)
+		var dou_pos_x = DouHelper.calc_dou_pos_x(v_geo)
+
+		v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
+		this.comp.v_geo_c = GeoHelper.corner_gen_2(v_geo, this.comp.pos, offset)
+
+		// debug
+		var l_pos = CoordTrans.calc_hori_gong_rotated_pos(Vector3(dou_pos_x[0], this.comp.pos.y + CAI_HEIGHT, this.comp.pos.z), offset, Math.pi() / 4)
+		var r_pos = CoordTrans.calc_hori_gong_rotated_pos(Vector3(dou_pos_x[1], this.comp.pos.y + CAI_HEIGHT, this.comp.pos.z), offset, Math.pi() / 4)			
+//		this.comp.v_geo_c.value.add(ToolsNodes.pos_debug_geo(l_pos))
 	}
 
 	select_gong(dg)
@@ -159,13 +172,9 @@ class HoriGong is Node
 			return v_geo
 		}
 
-		var aabb = []
-		BrushGetSize.calc_aabb(v_geo, aabb)
-		var x_min = aabb[0].x
-		var x_max = aabb[1].x
-
-		var l_pos = Vector3(x_min + DOU_H_WIDTH, pos.y + CAI_HEIGHT, pos.z)
-		var r_pos = Vector3(x_max - DOU_H_WIDTH, pos.y + CAI_HEIGHT, pos.z)
+		var dou_pos_x = DouHelper.calc_dou_pos_x(v_geo)
+		var l_pos = Vector3(dou_pos_x[0], pos.y + CAI_HEIGHT, pos.z)
+		var r_pos = Vector3(dou_pos_x[1], pos.y + CAI_HEIGHT, pos.z)
 
 		var l_sun = GeoHelper.translate_geo(GD_SUN, l_pos)
 		var r_sun = GeoHelper.translate_geo(GD_SUN, r_pos)

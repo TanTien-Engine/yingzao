@@ -1,0 +1,19 @@
+import "geograph.nodes.brush_get_size" for BrushGetSize
+import "archgraph.constant" for DOU_H_WIDTH
+
+class DouHelper
+{
+	// hori gong
+	static calc_dou_pos_x(gong_geo)
+	{
+		var aabb = []
+		BrushGetSize.calc_aabb(gong_geo, aabb)
+
+		var x_min = aabb[0].x
+		var x_max = aabb[1].x
+
+		return [ x_min + DOU_H_WIDTH, x_max - DOU_H_WIDTH ]
+	}
+
+	
+}

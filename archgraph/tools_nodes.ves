@@ -1,0 +1,17 @@
+import "blueprint.blueprint" for Blueprint
+import "geograph.nodes.box" for Box
+
+class ToolsNodes
+{
+	static pos_debug_geo(pos)
+	{
+		var b = Box()
+
+		b.query_param("size").value.set(0.02, 2, 0.02)
+		b.query_param("pos").value.set(pos.x, pos.y, pos.z)
+
+		b.query_param("offset_y").value = true
+
+		return Blueprint.calc_output_value(b, "geo")
+	}
+}

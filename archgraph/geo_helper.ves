@@ -5,10 +5,6 @@ import "geograph.nodes.rotate_y" for RotateY
 import "geograph.nodes.translate_f" for TranslateF
 import "editor.node_cache" for NODE_CACHE
 
-var CUT_BODY_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/61_cut_body_joint.ves", nil)
-
-var CORNER_GEN_2 = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/51_corner_gen_2.ves", nil)
-
 class GeoHelper
 {
 	static rotate_geo(geo_node, angle)
@@ -52,6 +48,8 @@ class GeoHelper
 
 	static joint_cut_geo(v_geo, cut_node, pos)
 	{
+		var CUT_BODY_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/61_cut_body_joint.ves", nil)	
+
 		var geo_node = VariantProxy(v_geo)
 		var pos_node = VariantProxy(Variant(pos))
 
@@ -64,6 +62,8 @@ class GeoHelper
 
 	static corner_gen_2(v_geo, pos, offset)
 	{
+		var CORNER_GEN_2 = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/51_corner_gen_2.ves", nil)
+
 		var geo_node = VariantProxy(v_geo)
 		Blueprint.connect(geo_node, 0, CORNER_GEN_2, "geo")
 

@@ -1,0 +1,10 @@
+import "maths.vector" for Vector2, Vector3
+
+class CoordTrans
+{
+	static calc_hori_gong_rotated_pos(pos, offset, angle)
+	{
+		var pos2 = Vector2(0, -(pos.x + offset)).rotated(-angle).add(Vector2(0, pos.z))
+		return Vector3(pos2.x, pos.y, pos2.y)
+	}
+}

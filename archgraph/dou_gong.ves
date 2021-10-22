@@ -24,11 +24,20 @@ class DouGong
 	{
 		this.rebuild_layers(scene)
 
-		// resolve
+		// pass1: gen gong and dou
+		for (var layer in this.layers) {
+			for (var i in layer) {
+				if (i) {
+					i.resolve(this)
+				}
+			}
+		}
+
+		// pass2: fix corner dou
 		for (var node in scene.nodes) {
 			var bp_node = node.components["bp"]
-			if (bp_node and bp_node.has_method("resolve(_)")) {
-				bp_node.resolve(this)
+			if (bp_node and bp_node.has_method("resolve2(_)")) {
+				bp_node.resolve2(this)
 			}
 		}
 
@@ -135,7 +144,7 @@ class DouGong
 			{
 				for (var i in 1 .. layer.count - 1) {
 					for (var j in i + 1 .. layer.count) {
-						if (layer[i].comp.x_idx > layer[j].comp.x_idx) {
+						if (layer[i].comp.x_idx < layer[j].comp.x_idx) {
 							var tmp = layer[i]
 							layer[i] = layer[j]
 							layer[j] = tmp
@@ -219,7 +228,7 @@ class DouGong
 				var a0 = [ x0, y0, x0 + dir0.x, y0 + dir0.y ]
 				var a1 = [ x0, y0, x0 + dir1.x, y0 + dir1.y ]
 
-				for (var j in 2 .. layer.count)
+				for (var j in i + 1 .. layer.count)
 				{
 					var x1 = layer[j].comp.pos.x
 					var y1 = layer[j].comp.pos.z
@@ -230,18 +239,30 @@ class DouGong
 					var p0 = Vector3(c0[0], layer[i].comp.pos.y + 0.1, c0[1])
 					if (c0 and this.is_geo_contain(layer[i].comp.v_geo_c.value[0], p0) and this.is_geo_contain(layer[j].comp.v_geo_c.value[1], p0))
 					{
-						var g2 = JointsNodes.conn2(layer[i].comp.v_geo_c.value[0], layer[j].comp.v_geo_c.value[1], Vector3(c0[0], layer[i].comp.pos.y, c0[1]), Math.pi() / 4)
+						var pos = Vector3(c0[0], layer[i].comp.pos.y, c0[1])
+						var g2 = JointsNodes.conn2(layer[i].comp.v_geo_c.value[0], layer[j].comp.v_geo_c.value[1], pos, Math.pi() / 4)
 						layer[i].comp.v_geo_c.value[0] = g2[0]
 						layer[j].comp.v_geo_c.value[1] = g2[1]
+
+						if (layer[j].comp.x_idx == 0 and layer[i].comp.x_idx + 1 == layer[j].comp.y_idx) 
+						{
+							 layer[j].comp.v_geo_c.value[1] = JointsNodes.cut_jao_hu_er(layer[j].comp.v_geo_c.value[1], pos, Math.pi() / 4)
+						}
 					}
 
 					var c1 = Maths.get_line_intersect_line(b1, a0, false)
 					var p1 = Vector3(c1[0], layer[i].comp.pos.y + 0.1, c1[1])
 					if (c1 and this.is_geo_contain(layer[i].comp.v_geo_c.value[1], p1) and this.is_geo_contain(layer[j].comp.v_geo_c.value[0], p1))
 					{
-						var g2 = JointsNodes.conn2(layer[i].comp.v_geo_c.value[1], layer[j].comp.v_geo_c.value[0], Vector3(c1[0], layer[i].comp.pos.y, c1[1]), Math.pi() / 4)
+						var pos = Vector3(c1[0], layer[i].comp.pos.y, c1[1])
+						var g2 = JointsNodes.conn2(layer[i].comp.v_geo_c.value[1], layer[j].comp.v_geo_c.value[0], pos, Math.pi() / 4)
 						layer[i].comp.v_geo_c.value[1] = g2[0]
 						layer[j].comp.v_geo_c.value[0] = g2[1]
+
+						if (layer[j].comp.x_idx == 0 and layer[i].comp.x_idx + 1 == layer[j].comp.y_idx) 
+						{
+							 layer[j].comp.v_geo_c.value[0] = JointsNodes.cut_jao_hu_er(layer[j].comp.v_geo_c.value[0], pos, -Math.pi() / 4)
+						}
 					}
 				}
 			}
@@ -299,8 +320,6 @@ class DouGong
 
 		this.build_lu_hua_joint()
 
-		var JIAOHU_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_jiaohu_cut_body.ves", nil)
-
 		for (var i in 1 .. this.layers.count - 1)
 		{
 			var hua = this.layers[i][0]
@@ -314,7 +333,7 @@ class DouGong
 					{
 						var h_gong = next_layer[j].comp
 						if (h_gong.x_idx == hua.comp.y_idx or h_gong.x_idx == -(hua.comp.y_idx)) {
-							next_hua.v_geo = GeoHelper.joint_cut_geo(next_hua.v_geo, JIAOHU_CUT, h_gong.pos)
+							next_hua.v_geo = JointsNodes.cut_jao_hu_er(next_hua.v_geo, h_gong.pos, 0)
 						}
 					}
 				}

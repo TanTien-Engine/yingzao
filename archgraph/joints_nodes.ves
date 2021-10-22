@@ -1,7 +1,9 @@
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.variant" for Variant
+import "archgraph.geo_helper" for GeoHelper
 import "editor.node_cache" for NODE_CACHE
+import "math" for Math
 
 class JointsNodes
 {
@@ -20,5 +22,15 @@ class JointsNodes
 		Blueprint.connect(n_angle, 0, CONN2_JOINT, "angle")
 
 		return [ Blueprint.calc_output_value(CONN2_JOINT, "geo0"), Blueprint.calc_output_value(CONN2_JOINT, "geo1") ]
+	}
+
+	static cut_jao_hu_er(v_geo, pos, angle)
+	{
+		var JIAOHU_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_jiaohu_cut_body.ves", nil)
+
+		var cut_body = GeoHelper.rotate_geo(JIAOHU_CUT, angle)
+		var n_cut_body  = VariantProxy(cut_body)
+
+		return GeoHelper.joint_cut_geo(v_geo, n_cut_body, pos)
 	}
 }

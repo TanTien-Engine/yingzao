@@ -1,0 +1,46 @@
+import "blueprint.variant" for VAR_TYPE_ARRAY
+import "geograph.variant" for VAR_TYPE_GEO
+
+class SpatialQuery
+{
+	static is_crossed(layer, pos)
+	{
+		var count = 0
+
+		if (layer[0] and SpatialQuery.contain_pos(layer[0].comp.v_geo_c, pos)) {
+			count = count + 1
+			if (count > 1) {
+				return true
+			}
+		}
+
+		for (var j in 1 .. layer.count)
+		{
+			if (SpatialQuery.contain_pos(layer[j].comp.v_geo_c.value[0], pos) or SpatialQuery.contain_pos(layer[j].comp.v_geo_c.value[1], pos)) {
+				count = count + 1
+				if (count > 1) {
+					return true
+				}
+			}
+		}
+
+		return count > 1
+	}
+
+	static contain_pos(geo, pos)
+	{
+		if (geo.type == VAR_TYPE_ARRAY)
+		{
+			for (var i in geo.value) {
+				if (SpatialQuery.contain_pos(i, pos)) {
+					return true
+				}
+			}
+		}
+		else if (geo.type == VAR_TYPE_GEO)
+		{
+			return geo.value.shape.is_contain(pos.x, pos.y, pos.z)
+		}
+		return false
+	}
+}

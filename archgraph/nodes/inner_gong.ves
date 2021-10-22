@@ -9,10 +9,15 @@ import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT, DOU_H_WIDTH, MIN_GONG
 import "archgraph.geo_helper" for GeoHelper
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.component" for Component
-import "archgraph.nodes.dou" for SAN_DOU
+import "archgraph.nodes.dou" for SAN_DOU, JIAOHU_DOU
 import "archgraph.context" for CONTEXT
+import "archgraph.tools_nodes" for ToolsNodes
+import "archgraph.coord_trans" for CoordTrans
+import "archgraph.dou_helper" for DouHelper
+import "archgraph.spatial_query" for SpatialQuery
 import "geograph.nodes.brush_get_size" for BrushGetSize
 import "maths.vector" for Vector3
+import "math" for Math
 
 var NI_DAO_GONG     = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/31_nidao_gong.ves", nil)
 var BI_NEI_MAN_GONG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/33_man_gong.ves", nil)
@@ -40,6 +45,7 @@ class InnerGong is Node
 		this.comp = Component()
 
 		this.gong = nil
+		this.dou_pos_x = nil
 	}	
 
 	calc_value(idx)
@@ -64,37 +70,64 @@ class InnerGong is Node
 //		v_geo = this.add_joint(v_geo, prev, pos)
 
 		// conn next
-		v_geo = this.add_dou(v_geo, pos)
+		v_geo = this.add_dou(dg, v_geo, pos, false, false)
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
 
-		// corner
-		{
-			var offset = 0
-			if (this.gong == NI_DAO_GONG)
-			{
-				var outer = CONTEXT.step_len_func(1) + DOU_H_WIDTH
-				var inner = CONTEXT.step_len_func(-1) + DOU_H_WIDTH
-				var len_node = VariantProxy(Variant(outer + inner))
-				Blueprint.connect(len_node, 0, this.gong, "length")
+		this.gen_corner(dg, false, false)
+	}
 
-				offset = - (outer - inner) / 2		
-			}
-			else
-			{
-				var outer = CONTEXT.step_len_func(1) + CONTEXT.step_len_func(2) + DOU_H_WIDTH
-				var inner = CONTEXT.step_len_func(-1) + CONTEXT.step_len_func(-2) - MIN_GONG_SPACE
-				var len_node = VariantProxy(Variant(outer + inner))
-				Blueprint.connect(len_node, 0, this.gong, "length")
-
-				offset = - (outer - inner) / 2				
-			}
-
-			var v_geo = Blueprint.calc_output_value(this.gong, 0)
-			v_geo = this.add_dou(v_geo, Vector3(0, 0, 0))
-			this.comp.v_geo_c = GeoHelper.corner_gen_2(v_geo, pos, offset)
+	resolve2(dg)
+	{
+		var next_layer = nil
+		if (dg.layers.count > this.comp.y_idx + 1) {
+			next_layer = dg.layers[this.comp.y_idx + 1]
 		}
+
+		if (!next_layer) {
+			return
+		}
+
+		var l_pos = CoordTrans.calc_hori_gong_rotated_pos(Vector3(this.dou_pos_x[0], this.comp.pos.y + ZU_CAI_HEIGHT + 0.14, this.comp.pos.z), this.comp.offset, Math.pi() / 4)
+		var r_pos = CoordTrans.calc_hori_gong_rotated_pos(Vector3(this.dou_pos_x[1], this.comp.pos.y + ZU_CAI_HEIGHT + 0.14, this.comp.pos.z), this.comp.offset, Math.pi() / 4)
+
+		var l_crossed = SpatialQuery.is_crossed(next_layer, l_pos)
+		var r_crossed = SpatialQuery.is_crossed(next_layer, r_pos)
+		if (l_crossed or r_crossed) {
+			this.gen_corner(dg, l_crossed, r_crossed)
+		}
+	}
+
+	gen_corner(dg, l_dou_jh, r_dou_jh)
+	{
+		var offset = 0
+		if (this.gong == NI_DAO_GONG)
+		{
+			var outer = CONTEXT.step_len_func(1) + DOU_H_WIDTH
+			var inner = CONTEXT.step_len_func(-1) + DOU_H_WIDTH
+			var len_node = VariantProxy(Variant(outer + inner))
+			Blueprint.connect(len_node, 0, this.gong, "length")
+
+			offset = - (outer - inner) / 2		
+		}
+		else
+		{
+			var outer = CONTEXT.step_len_func(1) + CONTEXT.step_len_func(2) + DOU_H_WIDTH
+			var inner = CONTEXT.step_len_func(-1) + CONTEXT.step_len_func(-2) - MIN_GONG_SPACE
+			var len_node = VariantProxy(Variant(outer + inner))
+			Blueprint.connect(len_node, 0, this.gong, "length")
+
+			offset = - (outer - inner) / 2				
+		}
+
+		var v_geo = Blueprint.calc_output_value(this.gong, 0)
+		this.dou_pos_x = DouHelper.calc_dou_pos_x(v_geo)
+
+		this.comp.offset = offset
+
+		v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0), l_dou_jh, r_dou_jh)
+		this.comp.v_geo_c = GeoHelper.corner_gen_2(v_geo, this.comp.pos, offset)			
 	}
 
 	select_gong()
@@ -119,26 +152,36 @@ class InnerGong is Node
 		return GeoHelper.joint_cut_geo(v_geo, cut_node, pos)
 	}
 
-	add_dou(v_geo, pos)
+	add_dou(dg, v_geo, pos, l_dou_jh, r_dou_jh)
 	{
 		var next = Blueprint.get_output_node(this, 0)
 		if (!next) {
 			return v_geo
 		}
 
-		var aabb = []
-		BrushGetSize.calc_aabb(v_geo, aabb)
-		var x_min = aabb[0].x
-		var x_max = aabb[1].x
-
-		var l_pos = Vector3(x_min + DOU_H_WIDTH, pos.y + CAI_HEIGHT, pos.z)
-		var r_pos = Vector3(x_max - DOU_H_WIDTH, pos.y + CAI_HEIGHT, pos.z)
+		var dou_pos_x = DouHelper.calc_dou_pos_x(v_geo)
+		var l_pos = Vector3(dou_pos_x[0], pos.y + CAI_HEIGHT, pos.z)
+		var r_pos = Vector3(dou_pos_x[1], pos.y + CAI_HEIGHT, pos.z)
 
 		var l_sun = GeoHelper.translate_geo(GD_SUN, l_pos)
 		var r_sun = GeoHelper.translate_geo(GD_SUN, r_pos)
 
-		var l_dou = GeoHelper.translate_geo(SAN_DOU, l_pos)
-		var r_dou = GeoHelper.translate_geo(SAN_DOU, r_pos)
+		var l_angle = 0
+		var r_angle = 0
+
+		var l_dou_node = SAN_DOU
+		if (l_dou_jh) {
+			l_dou_node = JIAOHU_DOU
+			l_angle = Math.pi() * 0.5
+		}
+		var r_dou_node = SAN_DOU
+		if (r_dou_jh) {
+			r_dou_node = JIAOHU_DOU
+			r_angle = Math.pi() * 0.5
+		}
+
+		var l_dou = GeoHelper.transform_geo(l_dou_node, l_pos, l_angle)
+		var r_dou = GeoHelper.transform_geo(r_dou_node, r_pos, r_angle)
 
 		// cut sun
 		v_geo = GeoHelper.joint_cut_geo(v_geo, GD_SUN, [ l_pos, r_pos ])
