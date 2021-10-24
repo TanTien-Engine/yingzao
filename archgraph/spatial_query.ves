@@ -43,4 +43,14 @@ class SpatialQuery
 		}
 		return false
 	}
+
+	static layer_contain_pos(layer, pos)
+	{
+		for (var geo in layer) {
+			if (this.contain_pos(geo.comp.v_geo_c, pos)) {
+				return true
+			}
+		}
+		return false
+	}
 }

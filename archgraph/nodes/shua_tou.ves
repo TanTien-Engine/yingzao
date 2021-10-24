@@ -4,6 +4,7 @@ import "blueprint.variant_proxy" for VariantProxy
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.nodes.vert_gong" for VertGong
+import "archgraph.context" for CONTEXT
 import "editor.node_cache" for NODE_CACHE
 
 class ShuaTou is VertGong
@@ -25,7 +26,7 @@ class ShuaTou is VertGong
 		// ang cut
 		import "archgraph.nodes.ang" for Ang
 		if (prev is Ang) {
-			v_geo = prev.ang_plane_cut(v_geo, false)			
+			v_geo = prev.ang_plane_cut(v_geo, false, CONTEXT.gen_corner)			
 		}
 
 		// conn next

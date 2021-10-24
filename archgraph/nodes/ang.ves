@@ -24,14 +24,15 @@ class Ang is VertGong
 
 	calc_value(idx)
 	{
+		var corner = CONTEXT.gen_corner
 		if (idx == 0)
 		{
-			var pos = this.calc_ang_pos()
+			var pos = this.calc_ang_pos(corner)
 			return Variant(Vector3(0, pos.y, 0))
 		}
 		else if (idx == 1)
 		{
-			var pos = this.calc_ang_pos()
+			var pos = this.calc_ang_pos(corner)
 			return Variant(pos)
 		}
 		else if (idx == 2)
@@ -68,7 +69,8 @@ class Ang is VertGong
 
 		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
 
-		var ang_pos = this.calc_ang_pos()
+		var corner = CONTEXT.gen_corner
+		var ang_pos = this.calc_ang_pos(corner)
 		var v_geo = TransNodes.translate(ANG, ang_pos)
 
 		if (this.ang_layer == 0)
@@ -82,7 +84,7 @@ class Ang is VertGong
 			v_hua = this.add_dou(v_hua, pos)
 
 			// ang cut
-			v_hua = this.ang_plane_cut(v_hua, true)
+			v_hua = this.ang_plane_cut(v_hua, true, corner)
 
 			v_geo = Variant([ v_hua, v_geo ])
 		}
@@ -98,7 +100,7 @@ class Ang is VertGong
 
 			// ang cut
 			var ang_0 = Blueprint.get_input_node(this, 0)
-			v_shua = ang_0.ang_plane_cut(v_shua, true)
+			v_shua = ang_0.ang_plane_cut(v_shua, true, corner)
 
 			v_geo = Variant([ v_shua, v_geo ])
 		}
@@ -113,13 +115,13 @@ class Ang is VertGong
 		return "下昂%(this.ang_layer + 1)"
 	}
 	
-	calc_ang_pos()
+	calc_ang_pos(corner)
 	{
 		import "archgraph.nodes.hua_gong" for HuaGong
 		import "archgraph.nodes.shua_tou" for ShuaTou
 
 		var dist = 0
-		if (CONTEXT.gen_corner) {
+		if (corner) {
 			dist = CONTEXT.step_len_c_func(this.outer_hop, true)
 		} else {
 			dist = CONTEXT.step_len_func(this.outer_hop, true)
@@ -133,7 +135,7 @@ class Ang is VertGong
 		}
 		else if (prev is Ang)
 		{
-			var pos = prev.calc_ang_pos()
+			var pos = prev.calc_ang_pos(corner)
 			return pos.add(Vector3(0, ZU_CAI_HEIGHT * 0.5, dist))
 		}
 		else
@@ -142,7 +144,7 @@ class Ang is VertGong
 		}
 	}
 
-	ang_plane_cut(geo, down)
+	ang_plane_cut(geo, down, corner)
 	{
 		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
 
@@ -161,7 +163,7 @@ class Ang is VertGong
 			Blueprint.connect(ANG, "up_plane", trans, "obj")
 		}
 
-		var ang_pos = this.calc_ang_pos()
+		var ang_pos = this.calc_ang_pos(corner)
 
 		var pos_node = VariantProxy(Variant(ang_pos))
 		Blueprint.connect(pos_node, 0, trans, "translate")

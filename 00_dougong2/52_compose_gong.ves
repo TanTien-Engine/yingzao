@@ -1,0 +1,69 @@
+var node0 = ::blueprint::nodes::input::Input()
+
+node0.var_name = "geo0"
+node0.var_type = "geo"
+
+_editor.add_node(node0, -483.96097936727, -109.02762730332)
+
+var node1 = ::blueprint::nodes::input::Input()
+
+node1.var_name = "geo1"
+node1.var_type = "geo"
+
+_editor.add_node(node1, -485.34580777565, -237.00636074801)
+
+var node2 = ::geograph::nodes::knife::Knife()
+node2.query_param("keep").value = "above"
+node2.query_param("seam").value = true
+
+_editor.add_node(node2, -340.75056318285, -246.52881765337)
+
+var node3 = ::blueprint::nodes::output::Output()
+
+node3.var_name = "geo"
+node3.var_type = "geo"
+
+_editor.add_node(node3, 76.154273270845, -186.77575250605)
+
+var node4 = ::geograph::nodes::plane::Plane()
+node4.query_param("ori").value.set(0, 0, 0)
+node4.query_param("dir").value.set(1, 0, 0)
+
+_editor.add_node(node4, -442.43628838317, 84.548334317889)
+
+var node5 = ::geograph::nodes::knife::Knife()
+node5.query_param("keep").value = "below"
+node5.query_param("seam").value = true
+
+_editor.add_node(node5, -341.77687941931, -133.63403164261)
+
+var node6 = ::geograph::nodes::brush_merge::BrushMerge()
+
+_editor.add_node(node6, -68.836424934576, -185.27907821571)
+
+var node7 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node7, -202.47309278323, -143.42077215999)
+
+var node8 = ::blueprint::nodes::store::Store()
+
+node8.var_name = "plane"
+
+_editor.add_node(node8, -303.07728001968, 138.22181234996)
+
+var node9 = ::blueprint::nodes::load::Load()
+
+node9.var_name = "plane"
+
+_editor.add_node(node9, -483.11837211043, -171.9208121857)
+
+Blueprint.connect(node4, "plane", node8, "var")
+Blueprint.connect(node8, "var", node9, "var")
+Blueprint.connect(node1, "var", node2, "geo")
+Blueprint.connect(node9, "var", node2, "plane")
+Blueprint.connect(node0, "var", node5, "geo")
+Blueprint.connect(node9, "var", node5, "plane")
+Blueprint.connect(node5, "geo", node7, "in0")
+Blueprint.connect(node2, "geo", node7, "in1")
+Blueprint.connect(node7, "list", node6, "list")
+Blueprint.connect(node6, "brush", node3, "var")

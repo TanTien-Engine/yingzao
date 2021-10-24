@@ -77,11 +77,13 @@ class Archeditor is Editor
 
 			if (this.selected and this.selected["comp"]) {
 				this.set_brush_color(this.selected.comp.v_geo.value.shape, Vector3(255, 255, 255))
+				this.set_brush_color(this.selected.comp.v_geo_c.value.shape, Vector3(255, 255, 255))				
 				dirty = true
 			}
 
 			if (selected and selected["comp"]) {
 				this.set_brush_color(selected.comp.v_geo.value.shape, Vector3(255, 0, 0))
+				this.set_brush_color(selected.comp.v_geo_c.value.shape, Vector3(255, 0, 0))				
 				dirty = true
 			}
 
