@@ -72,13 +72,20 @@ class DouGong
 
 	get_result_geo_corner(out_list)
 	{
+		import "archgraph.nodes.ang" for Ang
 		for (var layer in this.layers)
 		{
 			for (var i in 1 .. layer.count) {
 				out_list.add(layer[i].comp.v_geo_c)
 			}
-			if (layer[0]) {
+			if (layer[0]) 
+			{
 				out_list.add(layer[0].comp.v_geo_c)
+				if (layer[0] is Ang) {
+					for (var i in layer[0].corner_others) {
+						out_list.add(i)
+					}
+				}
 			}
 		}
 	}

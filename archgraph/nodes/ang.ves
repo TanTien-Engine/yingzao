@@ -3,15 +3,18 @@ import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "geograph.nodes.knife" for Knife
 import "geograph.nodes.translate_f" for TranslateF
+import "scenegraph.nodes.transform3d" for Transform3d
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for ZU_CAI_HEIGHT
 import "archgraph.nodes.vert_gong" for VertGong
+import "archgraph.nodes.hori_gong" for HoriGong
 import "archgraph.context" for CONTEXT
-import "maths.vector" for Vector3
+import "archgraph.gen_nodes" for GenNodes
+import "archgraph.dou_helper" for DouHelper
+import "maths.vector" for Vector2, Vector3
 import "editor.node_cache" for NODE_CACHE
-
-import "scenegraph.nodes.transform3d" for Transform3d
+import "math" for Math
 
 class Ang is VertGong
 {
@@ -20,19 +23,20 @@ class Ang is VertGong
 		super.init()
 
 		this.ang_layer = 0
+
+		this.corner_others = []
 	}
 
 	calc_value(idx)
 	{
-		var corner = CONTEXT.gen_corner
 		if (idx == 0)
 		{
-			var pos = this.calc_ang_pos(corner)
+			var pos = this.calc_ang_pos()
 			return Variant(Vector3(0, pos.y, 0))
 		}
 		else if (idx == 1)
 		{
-			var pos = this.calc_ang_pos(corner)
+			var pos = this.calc_ang_pos()
 			return Variant(pos)
 		}
 		else if (idx == 2)
@@ -69,8 +73,7 @@ class Ang is VertGong
 
 		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
 
-		var corner = CONTEXT.gen_corner
-		var ang_pos = this.calc_ang_pos(corner)
+		var ang_pos = this.calc_ang_pos()
 		var v_geo = TransNodes.translate(ANG, ang_pos)
 
 		if (this.ang_layer == 0)
@@ -84,7 +87,7 @@ class Ang is VertGong
 			v_hua = this.add_dou(v_hua, pos)
 
 			// ang cut
-			v_hua = this.ang_plane_cut(v_hua, true, corner)
+			v_hua = this.ang_plane_cut(v_hua, true)
 
 			v_geo = Variant([ v_hua, v_geo ])
 		}
@@ -100,28 +103,119 @@ class Ang is VertGong
 
 			// ang cut
 			var ang_0 = Blueprint.get_input_node(this, 0)
-			v_shua = ang_0.ang_plane_cut(v_shua, true, corner)
+			v_shua = ang_0.ang_plane_cut(v_shua, true)
 
 			v_geo = Variant([ v_shua, v_geo ])
 		}
 
 		this.comp.pos = ang_pos
 		this.comp.v_geo = v_geo
-		this.comp.v_geo_c = v_geo
+
+		this.gen_corner(dg)
+	}
+
+	resolve2(dg)
+	{
+		if (this.ang_layer != 0) {
+			return
+		}
+
+		import "archgraph.nodes.fang" for Fang
+		var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
+
+		var a_pos = this.calc_ang_pos()
+		a_pos.z = a_pos.z / 1.414
+
+		for (var i in this.comp.y_idx .. dg.layers.count)
+		{
+			var layer = dg.layers[i]
+			for (var j in 1 .. layer.count)
+			{
+				var node = layer[j]
+				if (node.comp.x_idx == 0 and node is Fang)
+				{
+					var f_pos = NodeHelper.calc_curr_pos(node, 0)
+
+					var v_fang = Blueprint.calc_output_value(FANG, 0)
+					v_fang = node.add_dou(dg, v_fang, Vector3(0, 0, 0))
+
+					v_fang = TransNodes.transform(VariantProxy(v_fang), f_pos, Math.pi() / 2)
+
+					v_fang = Ang.ang_plane_cut(v_fang, true, a_pos)
+
+					node.comp.v_geo_c = GenNodes.corner_gen_2(v_fang, Vector3(0, 0, 0), 0)
+				}
+			}
+		}
+	}
+
+	gen_corner(dg)
+	{
+		this.comp.v_geo_c = this.comp.v_geo
+
+		var pos = this.calc_ang_pos()
+		var dist = pos.z / 1.414
+
+		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
+		var v_ang = TransNodes.translate(ANG, Vector3(0, 0, 0))
+
+		this.corner_others.add(GenNodes.corner_gen_2(v_ang, Vector3(pos.x, pos.y, 0), dist))
+
+		var o_n = Blueprint.get_output_node(this, 1)
+		if (o_n)
+		{
+			var o_nn = Blueprint.get_output_node(o_n, 0)
+
+			var pos0 = Vector2(pos.x, pos.z / 1.414).rotated(- Math.pi() / 4)
+			var pos1 = Vector2(pos.x, pos.z / 1.414).rotated(Math.pi() / 4)
+
+			var gong = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/32_guazi_gong.ves", nil)
+			if (o_nn) {
+				gong = VariantProxy(DouHelper.add_dou(Blueprint.calc_output_value(gong, 0)))
+			}
+			this.corner_others.add(TransNodes.transform(gong, Vector3(pos0.x, pos.y, pos0.y), Math.pi() * 0.25))
+			this.corner_others.add(TransNodes.transform(gong, Vector3(pos1.x, pos.y, pos1.y), Math.pi() * 0.75))
+
+			var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
+
+			if (o_nn)
+			{
+				var o_nnn = Blueprint.get_output_node(o_nn, 0)
+
+				var gong = nil
+				if (o_nn is HoriGong) {
+					gong = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/33_man_gong.ves", nil)
+				} else {
+					gong = FANG
+				}
+				if (o_nn) {
+					gong = VariantProxy(DouHelper.add_dou(Blueprint.calc_output_value(gong, 0)))
+				}
+			
+				this.corner_others.add(TransNodes.transform(gong, Vector3(pos0.x, pos.y + ZU_CAI_HEIGHT, pos0.y), Math.pi() * 0.25))
+				this.corner_others.add(TransNodes.transform(gong, Vector3(pos1.x, pos.y + ZU_CAI_HEIGHT, pos1.y), Math.pi() * 0.75))
+
+				if (o_nnn)
+				{
+					this.corner_others.add(TransNodes.transform(FANG, Vector3(pos0.x, pos.y + ZU_CAI_HEIGHT * 2, pos0.y), Math.pi() * 0.25))
+					this.corner_others.add(TransNodes.transform(FANG, Vector3(pos1.x, pos.y + ZU_CAI_HEIGHT * 2, pos1.y), Math.pi() * 0.75))
+				}
+			}
+		}
 	}
 
 	get_title()
 	{
 		return "下昂%(this.ang_layer + 1)"
-	}
+	}	
 	
-	calc_ang_pos(corner)
+	calc_ang_pos()
 	{
 		import "archgraph.nodes.hua_gong" for HuaGong
 		import "archgraph.nodes.shua_tou" for ShuaTou
 
 		var dist = 0
-		if (corner) {
+		if (CONTEXT.gen_corner) {
 			dist = CONTEXT.step_len_c_func(this.outer_hop, true)
 		} else {
 			dist = CONTEXT.step_len_func(this.outer_hop, true)
@@ -135,7 +229,7 @@ class Ang is VertGong
 		}
 		else if (prev is Ang)
 		{
-			var pos = prev.calc_ang_pos(corner)
+			var pos = prev.calc_ang_pos()
 			return pos.add(Vector3(0, ZU_CAI_HEIGHT * 0.5, dist))
 		}
 		else
@@ -144,7 +238,13 @@ class Ang is VertGong
 		}
 	}
 
-	ang_plane_cut(geo, down, corner)
+	ang_plane_cut(geo, down)
+	{
+		var ang_pos = this.calc_ang_pos()
+		return Ang.ang_plane_cut(geo, down, ang_pos)	
+	}
+
+	static ang_plane_cut(geo, down, pos)
 	{
 		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
 
@@ -163,9 +263,7 @@ class Ang is VertGong
 			Blueprint.connect(ANG, "up_plane", trans, "obj")
 		}
 
-		var ang_pos = this.calc_ang_pos(corner)
-
-		var pos_node = VariantProxy(Variant(ang_pos))
+		var pos_node = VariantProxy(Variant(pos))
 		Blueprint.connect(pos_node, 0, trans, "translate")
 
 		var geo_node = VariantProxy(geo)
