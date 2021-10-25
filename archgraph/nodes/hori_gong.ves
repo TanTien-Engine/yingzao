@@ -98,6 +98,7 @@ class HoriGong is Node
 		Blueprint.connect(len_node, 0, this.gong, "length")
 
 		var v_geo = Blueprint.calc_output_value(this.gong, 0)
+		len_node.disconnect()
 		var dou_pos_x = DouHelper.calc_dou_pos_x(v_geo)
 
 		v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
@@ -109,13 +110,12 @@ class HoriGong is Node
 		var prev = Blueprint.get_input_node(this, 0)
 		if (prev and prev is HoriGong) {
 			return MAN_GONG
-		} else {
+		} else if (dg) {
 			if (this.comp.x_idx == dg.x_min or this.comp.x_idx == dg.x_max) {
 				return LING_GONG
-			} else {
-				return GUAZI_GONG
 			}
 		}
+		return GUAZI_GONG
 	}
 
 	add_joint(v_geo, pos)

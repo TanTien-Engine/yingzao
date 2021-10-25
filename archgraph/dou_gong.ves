@@ -59,33 +59,41 @@ class DouGong
 
 	get_result_geo(out_list)
 	{
+		out_list.clear()
 		for (var layer in this.layers)
 		{
+			var list = []
 			for (var i in 1 .. layer.count) {
-				out_list.add(layer[i].comp.v_geo)
+				list.add(layer[i].comp.v_geo)
 			}
 			if (layer[0]) {
-				out_list.add(layer[0].comp.v_geo)
+				list.add(layer[0].comp.v_geo)
 			}
+			out_list.add(Variant(list))
 		}
 	}
 
 	get_result_geo_corner(out_list)
 	{
 		import "archgraph.nodes.ang" for Ang
+		out_list.clear()
+
 		for (var layer in this.layers)
 		{
+			var list = []
 			for (var i in 1 .. layer.count) {
-				out_list.add(layer[i].comp.v_geo_c)
+				list.add(layer[i].comp.v_geo_c)
 			}
-			if (layer[0]) 
-			{
-				out_list.add(layer[0].comp.v_geo_c)
-				if (layer[0] is Ang) {
-					for (var i in layer[0].corner_others) {
-						out_list.add(i)
-					}
-				}
+			if (layer[0]) {
+				list.add(layer[0].comp.v_geo_c)
+			}
+			out_list.add(Variant(list))
+		}
+
+		// ang outer
+		for (var layer in this.layers) {
+			if (layer[0] is Ang) {
+				layer[0].virt_tree.get_result_geo(out_list)
 			}
 		}
 	}

@@ -8,11 +8,11 @@ import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for ZU_CAI_HEIGHT
 import "archgraph.nodes.vert_gong" for VertGong
-import "archgraph.nodes.hori_gong" for HoriGong
 import "archgraph.context" for CONTEXT
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.dou_helper" for DouHelper
-import "maths.vector" for Vector2, Vector3
+import "archgraph.ang_tree" for AngTree
+import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
 
@@ -25,6 +25,7 @@ class Ang is VertGong
 		this.ang_layer = 0
 
 		this.corner_others = []
+		this.virt_tree = nil
 	}
 
 	calc_value(idx)
@@ -110,8 +111,10 @@ class Ang is VertGong
 
 		this.comp.pos = ang_pos
 		this.comp.v_geo = v_geo
+		this.comp.v_geo_c = this.comp.v_geo
 
-		this.gen_corner(dg)
+		this.virt_tree = AngTree(this, ang_pos)
+		this.virt_tree.rebuild_layers()
 	}
 
 	resolve2(dg)
@@ -144,61 +147,6 @@ class Ang is VertGong
 					v_fang = Ang.ang_plane_cut(v_fang, true, a_pos)
 
 					node.comp.v_geo_c = GenNodes.corner_gen_2(v_fang, Vector3(0, 0, 0), 0)
-				}
-			}
-		}
-	}
-
-	gen_corner(dg)
-	{
-		this.comp.v_geo_c = this.comp.v_geo
-
-		var pos = this.calc_ang_pos()
-		var dist = pos.z / 1.414
-
-		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
-		var v_ang = TransNodes.translate(ANG, Vector3(0, 0, 0))
-
-		this.corner_others.add(GenNodes.corner_gen_2(v_ang, Vector3(pos.x, pos.y, 0), dist))
-
-		var o_n = Blueprint.get_output_node(this, 1)
-		if (o_n)
-		{
-			var o_nn = Blueprint.get_output_node(o_n, 0)
-
-			var pos0 = Vector2(pos.x, pos.z / 1.414).rotated(- Math.pi() / 4)
-			var pos1 = Vector2(pos.x, pos.z / 1.414).rotated(Math.pi() / 4)
-
-			var gong = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/32_guazi_gong.ves", nil)
-			if (o_nn) {
-				gong = VariantProxy(DouHelper.add_dou(Blueprint.calc_output_value(gong, 0)))
-			}
-			this.corner_others.add(TransNodes.transform(gong, Vector3(pos0.x, pos.y, pos0.y), Math.pi() * 0.25))
-			this.corner_others.add(TransNodes.transform(gong, Vector3(pos1.x, pos.y, pos1.y), Math.pi() * 0.75))
-
-			var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
-
-			if (o_nn)
-			{
-				var o_nnn = Blueprint.get_output_node(o_nn, 0)
-
-				var gong = nil
-				if (o_nn is HoriGong) {
-					gong = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/33_man_gong.ves", nil)
-				} else {
-					gong = FANG
-				}
-				if (o_nn) {
-					gong = VariantProxy(DouHelper.add_dou(Blueprint.calc_output_value(gong, 0)))
-				}
-			
-				this.corner_others.add(TransNodes.transform(gong, Vector3(pos0.x, pos.y + ZU_CAI_HEIGHT, pos0.y), Math.pi() * 0.25))
-				this.corner_others.add(TransNodes.transform(gong, Vector3(pos1.x, pos.y + ZU_CAI_HEIGHT, pos1.y), Math.pi() * 0.75))
-
-				if (o_nnn)
-				{
-					this.corner_others.add(TransNodes.transform(FANG, Vector3(pos0.x, pos.y + ZU_CAI_HEIGHT * 2, pos0.y), Math.pi() * 0.25))
-					this.corner_others.add(TransNodes.transform(FANG, Vector3(pos1.x, pos.y + ZU_CAI_HEIGHT * 2, pos1.y), Math.pi() * 0.75))
 				}
 			}
 		}
