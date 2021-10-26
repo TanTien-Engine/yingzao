@@ -1,0 +1,80 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "archgraph.nodes.vert_gong" for VertGong
+import "archgraph.nodes.ang" for Ang
+import "archgraph.trans_nodes" for TransNodes
+import "archgraph.node_helper" for NodeHelper
+import "archgraph.gen_nodes" for GenNodes
+import "editor.node_cache" for NODE_CACHE
+import "math" for Math
+import "maths.vector" for Vector3
+
+var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
+
+class ChenFangTou is VertGong
+{
+	resolve(dg)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, 0)
+		pos.y = pos.y + 0.105
+
+		var len = 2
+		var p_node = Blueprint.get_input_node(this, 0)
+		if (p_node) {
+			len = p_node.calc_outer_step_len() * 2 - 0.1
+		}
+
+		var len_node = VariantProxy(Variant(len))
+		Blueprint.connect(len_node, 0, FANG, "length")
+
+		var v_geo = TransNodes.transform(FANG, pos, Math.pi() * 0.5)
+		len_node.disconnect()
+		
+		// ang cut
+		var pp_node = nil
+		if (p_node) {
+			pp_node = Blueprint.get_input_node(p_node, 0)
+		}
+		if (pp_node and pp_node is Ang) {
+			v_geo = pp_node.ang_plane_cut(v_geo, false)
+		}
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+
+		this.gen_corner(dg)
+	}
+
+	get_title()
+	{
+		return "衬方头"
+	}
+
+	gen_corner(dg)
+	{
+		var len = 2
+		var p_node = Blueprint.get_input_node(this, 0)
+		if (p_node) {
+			len = p_node.calc_outer_step_len() / 1.414 * 2 - 0.1
+		}
+
+		var len_node = VariantProxy(Variant(len))
+		Blueprint.connect(len_node, 0, FANG, "length")
+
+		var v_geo = TransNodes.rotate(FANG, Math.pi() * 0.5)
+		len_node.disconnect()
+
+		// ang cut
+		var pp_node = nil
+		if (p_node) {
+			pp_node = Blueprint.get_input_node(p_node, 0)
+		}
+		if (pp_node and pp_node is Ang) {
+			var a_pos = pp_node.calc_ang_pos()
+			v_geo = Ang.ang_plane_cut(v_geo, false, Vector3(0, pp_node.comp.pos.y - this.comp.pos.y, a_pos.z / 1.414))		
+		}
+
+		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, 0)
+	}
+}

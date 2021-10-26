@@ -1,16 +1,16 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
 node0.set_prop_value("ortho", false)
-node0.set_prop_value("offset", 8.6396999359131)
+node0.set_prop_value("offset", 3.7014675140381)
 
-node0.op_node.cam.position.set(4.8705252338519, 1.9289091721511, 0.066691861278343)
-node0.op_node.cam.yaw = -178
-node0.op_node.cam.pitch = -10.2
+node0.op_node.cam.position.set(2.2351436767651, 1.5303887393347, -1.8864403849213)
+node0.op_node.cam.yaw = -233
+node0.op_node.cam.pitch = -0.10000000000004
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
 
-_editor.add_node(node0, -502.15433313545, -272.73037686668)
+_editor.add_node(node0, -511.32788685446, -281.73037686668)
 
 var node1 = ::archgraph::nodes::lu_dou::LuDou()
 
@@ -152,6 +152,14 @@ var node35 = ::archgraph::nodes::ya_cao_fang::YaCaoFang()
 
 _editor.add_node(node35, 621.5148023543, 448.13819261697)
 
+var node36 = ::archgraph::nodes::shua_tou::ShuaTou()
+
+_editor.add_node(node36, 486, 346.5)
+
+var node37 = ::archgraph::nodes::chen_fang_tou::ChenFangTou()
+
+_editor.add_node(node37, 624.00383411754, 350.10957752575)
+
 Blueprint.connect(node1, "vert", node4, "prev")
 Blueprint.connect(node4, "outer", node9, "prev")
 Blueprint.connect(node9, "next", node11, "prev")
@@ -174,6 +182,8 @@ Blueprint.connect(node15, "next", node16, "prev")
 Blueprint.connect(node16, "next", node18, "prev")
 Blueprint.connect(node10, "next", node14, "prev")
 Blueprint.connect(node14, "next", node22, "prev")
+Blueprint.connect(node22, "next", node36, "prev")
+Blueprint.connect(node36, "next", node37, "prev")
 Blueprint.connect(node22, "outer", node30, "prev")
 Blueprint.connect(node30, "next", node34, "prev")
 Blueprint.connect(node14, "outer", node17, "prev")
