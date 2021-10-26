@@ -32,9 +32,10 @@ var node5 = ::rendergraph::nodes::shader::Shader()
 node5.vs = "
 #version 330 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in float aMatID;
-layout (location = 2) in float aOffset;
-layout (location = 3) in mat4 aInstanceMatrix;
+layout (location = 1) in vec3  aCol;
+layout (location = 2) in float aMatID;
+layout (location = 3) in float aOffset;
+layout (location = 4) in mat4 aInstanceMatrix;
 
 out VS_OUT {
     vec3 frag_pos;
