@@ -4,8 +4,13 @@ import "blueprint.variant_proxy" for VariantProxy
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.nodes.vert_gong" for VertGong
+import "archgraph.nodes.ang" for Ang
 import "archgraph.context" for CONTEXT
+import "archgraph.gen_nodes" for GenNodes
 import "editor.node_cache" for NODE_CACHE
+import "maths.vector" for Vector3
+
+var SHUA_TOU = NODE_CACHE.fetch("../yingzao/00_dougong2/36_shua_tou.ves", nil)
 
 class ShuaTou is VertGong
 {
@@ -23,8 +28,6 @@ class ShuaTou is VertGong
 		var pos = NodeHelper.calc_curr_pos(this, 0)
 		var v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 
-		// ang cut
-		import "archgraph.nodes.ang" for Ang
 		if (prev is Ang) {
 			v_geo = prev.ang_plane_cut(v_geo, false)
 		}
@@ -34,7 +37,9 @@ class ShuaTou is VertGong
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
-		this.comp.v_geo_c = v_geo
+
+		// todo: you ang
+		this.gen_corner(dg)
 	}
 
 	get_title()
@@ -44,8 +49,6 @@ class ShuaTou is VertGong
 
 	static create_geo(outer_hop, inner_hop, pos)
 	{
-		var SHUA_TOU = NODE_CACHE.fetch("../yingzao/00_dougong2/36_shua_tou.ves", nil)
-
 		var len_l = VertGong.calc_tot_step_len(outer_hop, this.less_step) + VertGong.get_dou_half_len()
 		var len_r = VertGong.calc_tot_step_len(-inner_hop, this.less_step) + VertGong.get_dou_half_len()
 		var len_l_node = VariantProxy(Variant(len_l))
@@ -54,5 +57,26 @@ class ShuaTou is VertGong
 		Blueprint.connect(len_r_node, 0, SHUA_TOU, "len_right")
 
 		return TransNodes.translate(SHUA_TOU, pos)
+	}
+
+	gen_corner(dg)
+	{
+		var len_l = VertGong.calc_tot_step_len(this.outer_hop, this.less_step) + VertGong.get_dou_half_len()
+		var len_r = VertGong.calc_tot_step_len(-this.inner_hop, this.less_step) + VertGong.get_dou_half_len()
+		var len_l_node = VariantProxy(Variant(len_l / 1.414))
+		var len_r_node = VariantProxy(Variant(len_r / 1.414))
+
+		Blueprint.connect(len_l_node, 0, SHUA_TOU, "len_left")
+		Blueprint.connect(len_r_node, 0, SHUA_TOU, "len_right")
+
+		var v_geo = Blueprint.calc_output_value(SHUA_TOU, 0)
+
+		var prev = Blueprint.get_input_node(this, 0)
+		if (prev is Ang) {
+			var a_pos = prev.calc_ang_pos()
+			v_geo = Ang.ang_plane_cut(v_geo, false, Vector3(0, 0, a_pos.z / 1.414))
+		}
+
+		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, 0)
 	}
 }
