@@ -1,5 +1,8 @@
 import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
 import "geograph.nodes.box" for Box
+import "geograph.nodes.brush_merge" for BrushMerge
 
 class ToolsNodes
 {
@@ -13,5 +16,15 @@ class ToolsNodes
 		b.query_param("offset_y").value = true
 
 		return Blueprint.calc_output_value(b, "geo")
+	}
+
+	static brush_merge(v_geo)
+	{
+		var merge = BrushMerge()
+
+		var geo_node = VariantProxy(Variant(v_geo))
+		Blueprint.connect(geo_node.exports[0], merge.imports[0])
+
+		return Blueprint.calc_output_value(merge, 0)
 	}
 }
