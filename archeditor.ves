@@ -8,7 +8,7 @@ import "archgraph.dou_gong" for DouGong
 import "geograph.brush" for Brush
 import "maths.vector" for Vector3
 
-var RENDER_NODE_PATH = "C:\\projects\\yingzao\\99_tools\\9_assemble_draw.ves"
+var RENDER_NODE_FILENAME = "9_assemble_draw.ves"
 
 class Archeditor is Editor
 {
@@ -25,7 +25,7 @@ class Archeditor is Editor
 		this.dg = DouGong()
 
 		this.render_node = nil
-		this.add_node(NODE_CACHE.fetch(RENDER_NODE_PATH, nil), 0, 0)
+		this.add_node(NODE_CACHE.fetch("../yingzao/99_tools/%(RENDER_NODE_FILENAME)", nil), 0, 0)
 
 		this.selected = nil
 	}
@@ -105,7 +105,7 @@ class Archeditor is Editor
 	{
 		super.add_node(bp_node, x, y)
 
-		if (bp_node is Subgraph and bp_node.filepath == RENDER_NODE_PATH) 
+		if (bp_node is Subgraph and bp_node.filepath.contains(RENDER_NODE_FILENAME)) 
 		{
 			this.render_node = bp_node
 			Blueprint.connect(this.all_geos.exports[0], this.render_node.imports[0])

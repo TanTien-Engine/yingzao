@@ -69,7 +69,7 @@ class AngTree
 
 			if (src is AngProxy)
 			{
-				var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
+				var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
 				var v_ang = TransNodes.translate(ANG, Vector3(0, 0, 0))
 
 				var dist = src.ang_pos.z / 1.414
@@ -79,11 +79,11 @@ class AngTree
 			{
 				var gong = nil
 				if (src is Fang) {
-					gong = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
+					gong = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
 				} else if (src is HoriGong) {
 					gong = src.select_gong(nil)
 				} else if (src is LiaoYanFang) {
-					gong = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/41_liaoyan_fang.ves", nil)
+					gong = NODE_CACHE.fetch("../yingzao/00_dougong2/41_liaoyan_fang.ves", nil)
 				} else {
 					import "logger.logger" for Logger
 					Logger.error("Unknown node %(src)")

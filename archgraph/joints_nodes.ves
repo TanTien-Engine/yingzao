@@ -9,7 +9,7 @@ class JointsNodes
 {
 	static conn2(v_geo0, v_geo1, pos, angle)
 	{
-		var CONN2_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/62_conn_2_joint.ves", nil)
+		var CONN2_JOINT = NODE_CACHE.fetch("../yingzao/00_dougong2/62_conn_2_joint.ves", nil)
 
 		var n_geo0  = VariantProxy(v_geo0)
 		var n_geo1  = VariantProxy(v_geo1)
@@ -26,7 +26,7 @@ class JointsNodes
 
 	static conn3(v_geo0, v_geo1, v_geo2, pos, angle)
 	{
-		var CONN3_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/62_conn_3_joint.ves", nil)
+		var CONN3_JOINT = NODE_CACHE.fetch("../yingzao/00_dougong2/62_conn_3_joint.ves", nil)
 
 		var n_geo0 = VariantProxy(v_geo0)
 		var n_geo1 = VariantProxy(v_geo1)
@@ -45,7 +45,7 @@ class JointsNodes
 
 	static cut_geo_node(v_geo, cut_node, pos)
 	{
-		var CUT_BODY_JOINT = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/61_cut_body_joint.ves", nil)	
+		var CUT_BODY_JOINT = NODE_CACHE.fetch("../yingzao/00_dougong2/61_cut_body_joint.ves", nil)	
 
 		var geo_node = VariantProxy(v_geo)
 		var pos_node = VariantProxy(Variant(pos))
@@ -59,7 +59,7 @@ class JointsNodes
 
 	static cut_jao_hu_er(v_geo, pos, angle)
 	{
-		var JIAOHU_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_jiaohu_cut_body.ves", nil)
+		var JIAOHU_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_cut_body.ves", nil)
 
 		var cut_body = TransNodes.rotate(JIAOHU_CUT, angle)
 		var n_cut_body  = VariantProxy(cut_body)

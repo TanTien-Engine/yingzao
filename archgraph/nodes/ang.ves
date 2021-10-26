@@ -72,7 +72,7 @@ class Ang is VertGong
 			this.inner_hop = 0
 		}
 
-		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
+		var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
 
 		var ang_pos = this.calc_ang_pos()
 		var v_geo = TransNodes.translate(ANG, ang_pos)
@@ -124,7 +124,7 @@ class Ang is VertGong
 		}
 
 		import "archgraph.nodes.fang" for Fang
-		var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
+		var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
 
 		var a_pos = this.calc_ang_pos()
 		a_pos.z = a_pos.z / 1.414
@@ -194,7 +194,7 @@ class Ang is VertGong
 
 	static ang_plane_cut(geo, down, pos)
 	{
-		var ANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/37_ang.ves", nil)
+		var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
 
 		var KNIFE = Knife()
 		if (down) {

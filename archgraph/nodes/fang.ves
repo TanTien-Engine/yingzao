@@ -16,6 +16,8 @@ import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 import "math" for Math
 
+var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
+
 class Fang is Node
 {
 	init()
@@ -48,8 +50,6 @@ class Fang is Node
 			this.exports[0].type.add(PIN_TYPE_HORI_GONG)
 		}
 
-		var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
-
 		var pos = NodeHelper.calc_curr_pos(this, 0)
 
 		var v_geo = TransNodes.translate(FANG, pos)
@@ -68,8 +68,6 @@ class Fang is Node
 
 	gen_corner(dg)
 	{
-		var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/13_fang.ves", nil)
-
 		var offset = 0
 		if (this.comp.x_idx != 0)
 		{
@@ -85,7 +83,7 @@ class Fang is Node
 
 	add_joint(dg, v_geo, pos)
 	{
-		var QIXIN_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
+		var QIXIN_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
 
 		var has_c = true
 		if (dg) {
@@ -100,7 +98,7 @@ class Fang is Node
 
 	add_dou(dg, v_geo, pos)
 	{
-		var GD_SUN = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/10_gd_sun.ves", nil)
+		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
 		var next = Blueprint.get_output_node(this, 0)
 		if (!next) {
