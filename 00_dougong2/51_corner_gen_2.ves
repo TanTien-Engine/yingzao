@@ -13,11 +13,11 @@ _editor.add_node(node1, 61.27754446992, 297.78141562493)
 var node2 = ::geograph::nodes::rotate_y::RotateY()
 node2.query_param("angle").value = "0"
 
-_editor.add_node(node2, 66.737325213278, 120.21423090444)
+_editor.add_node(node2, 55.629125213278, 132.17053090444)
 
 var node3 = ::geograph::nodes::translate_f::TranslateF()
 
-_editor.add_node(node3, 205.11085323265, 265.11232775395)
+_editor.add_node(node3, 210.89597719959, 266.76522031593)
 
 var node4 = ::blueprint::nodes::input::Input()
 
@@ -35,14 +35,14 @@ var node6 = ::blueprint::nodes::output::Output()
 node6.var_name = "geo0"
 node6.var_type = [ "geo", "array" ]
 
-_editor.add_node(node6, 340.97564127848, 276.89272658978)
+_editor.add_node(node6, 350.06655036939, 276.89272658978)
 
 var node7 = ::blueprint::nodes::output::Output()
 
 node7.var_name = "geo1"
 node7.var_type = [ "geo", "array" ]
 
-_editor.add_node(node7, 351.05319470712, 201.25208344836)
+_editor.add_node(node7, 514.26842363274, 116.67245369629)
 
 var node8 = ::geograph::nodes::translate_f::TranslateF()
 
@@ -61,7 +61,7 @@ _editor.add_node(node10, -134.17929914978, 949.57992690288)
 
 var node11 = ::blueprint::nodes::pi::Pi()
 
-_editor.add_node(node11, -424.69470618687, 238.22516971053)
+_editor.add_node(node11, -531.69470618687, 245.22516971053)
 
 var node12 = ::blueprint::nodes::branch_f::BranchF()
 
@@ -93,13 +93,13 @@ _editor.add_node(node17, -282.69077195501, 271.34830278133)
 
 var node18 = ::blueprint::nodes::add::Add()
 
-_editor.add_node(node18, -158.09904157949, 154.23794831456)
+_editor.add_node(node18, -87.20724157949, 125.19424831456)
 
 var node19 = ::blueprint::nodes::load::Load()
 
 node19.var_name = "angle"
 
-_editor.add_node(node19, -298.08859445064, 138.4326527878)
+_editor.add_node(node19, -227.19679445064, 109.3889527878)
 
 var node20 = ::blueprint::nodes::store::Store()
 
@@ -168,6 +168,16 @@ node31.var_name = "offset"
 
 _editor.add_node(node31, -288.98073357238, 380.1633412463)
 
+var node32 = ::geograph::nodes::brush_mirror::BrushMirror()
+
+_editor.add_node(node32, 380.13424990154, 108.81564753922)
+
+var node33 = ::geograph::nodes::plane::Plane()
+node33.query_param("ori").value.set(0, 0, 0)
+node33.query_param("dir").value.set(1, 0, 0)
+
+_editor.add_node(node33, 246.30780552789, 35.733002911123)
+
 Blueprint.connect(node11, "pi/4", node15, "v")
 Blueprint.connect(node10, "var", node29, "z")
 Blueprint.connect(node10, "var", node9, "x")
@@ -199,9 +209,11 @@ Blueprint.connect(node8, "geo", node2, "geo")
 Blueprint.connect(node18, "v", node2, "angle")
 Blueprint.connect(node2, "geo", node5, "geo")
 Blueprint.connect(node4, "var", node5, "xyz")
-Blueprint.connect(node5, "geo", node7, "var")
 Blueprint.connect(node8, "geo", node1, "geo")
 Blueprint.connect(node16, "v", node1, "angle")
 Blueprint.connect(node1, "geo", node3, "geo")
 Blueprint.connect(node4, "var", node3, "xyz")
+Blueprint.connect(node3, "geo", node32, "geo")
+Blueprint.connect(node33, "plane", node32, "plane")
+Blueprint.connect(node32, "geo", node7, "var")
 Blueprint.connect(node3, "geo", node6, "var")

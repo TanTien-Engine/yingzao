@@ -100,7 +100,7 @@ class AngTree
 				var pos1 = Vector2(pos.x, pos.z / 1.414).rotated(Math.pi() / 4)
 
 				dst.value.add(TransNodes.transform(gong, Vector3(pos0.x, y, pos0.y), Math.pi() * 0.25))
-				dst.value.add(TransNodes.transform(gong, Vector3(pos1.x, y, pos1.y), Math.pi() * 0.75))
+				dst.value.add(TransNodes.transform(gong, Vector3(pos1.x, y, pos1.y), -Math.pi() * 0.25))
 			}
 		}
 	}
