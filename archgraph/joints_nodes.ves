@@ -66,4 +66,17 @@ class JointsNodes
 
 		return JointsNodes.cut_geo_node(v_geo, n_cut_body, pos)
 	}
+
+	static cut_top_planne(v_geo, y)
+	{
+		var TOP_PLANE_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/63_top_plane_cut.ves", nil)
+
+		var geo_node = VariantProxy(v_geo)
+		var y_node = VariantProxy(Variant(y))
+
+		Blueprint.connect(geo_node, 0, TOP_PLANE_CUT, "geo")
+		Blueprint.connect(y_node, 0, TOP_PLANE_CUT, "y")
+
+		return Blueprint.calc_output_value(TOP_PLANE_CUT, "geo")
+	}
 }

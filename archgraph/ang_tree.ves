@@ -3,11 +3,13 @@ import "blueprint.variant_proxy" for VariantProxy
 import "archgraph.nodes.ang_proxy" for AngProxy
 import "archgraph.nodes.hori_gong" for HoriGong
 import "archgraph.nodes.fang" for Fang
+import "archgraph.nodes.ya_cao_fang" for YaCaoFang
 import "archgraph.nodes.liao_yan_fang" for LiaoYanFang
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.constant" for ZU_CAI_HEIGHT
 import "archgraph.dou_helper" for DouHelper
+import "archgraph.joints_nodes" for JointsNodes
 import "maths.vector" for Vector2, Vector3
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
@@ -58,9 +60,9 @@ class AngTree
 			this.layers.add(curr)
 			curr = Blueprint.get_output_node(curr, 0)
 		}
-	}
+	}	
 
-	get_result_geo(out_list)
+	get_result_geo(dg, out_list)
 	{
 		for (var i in 0 .. this.layers.count)
 		{
@@ -73,7 +75,19 @@ class AngTree
 				var v_ang = TransNodes.translate(ANG, Vector3(0, 0, 0))
 
 				var dist = src.ang_pos.z / 1.414
-				dst.value.add(GenNodes.corner_gen_2(v_ang, Vector3(src.ang_pos.x, src.ang_pos.y, 0), dist))
+				v_ang = GenNodes.corner_gen_2(v_ang, Vector3(src.ang_pos.x, src.ang_pos.y, 0), dist)
+
+				var top_y = nil
+				for (var item in dg.layers[this.begin_layer + i + 2]) {
+					if (item.comp.x_idx == 0 and (item is Fang or item is YaCaoFang)) {
+						top_y = item.comp.pos.y
+					}
+				}
+				if (top_y) {
+					v_ang = JointsNodes.cut_top_planne(v_ang, top_y)
+				}
+
+				dst.value.add(v_ang)
 			}
 			else
 			{

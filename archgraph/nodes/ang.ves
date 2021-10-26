@@ -119,35 +119,38 @@ class Ang is VertGong
 
 	resolve2(dg)
 	{
-		if (this.ang_layer != 0) {
-			return
-		}
-
-		import "archgraph.nodes.fang" for Fang
-		var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
-
 		var a_pos = this.calc_ang_pos()
 		a_pos.z = a_pos.z / 1.414
 
-		for (var i in this.comp.y_idx .. dg.layers.count)
+		this.cut_fang(dg, this.comp.y_idx + 1, a_pos)
+
+		if (this.ang_layer == 0) {
+			this.cut_fang(dg, this.comp.y_idx, a_pos)
+		}
+	}
+
+	cut_fang(dg, layer_idx, a_pos)
+	{
+		import "archgraph.nodes.fang" for Fang
+		var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
+
+		var layer = dg.layers[layer_idx]
+
+		for (var i in 1 .. layer.count)
 		{
-			var layer = dg.layers[i]
-			for (var j in 1 .. layer.count)
+			var node = layer[i]
+			if (node.comp.x_idx == 0 and node is Fang)
 			{
-				var node = layer[j]
-				if (node.comp.x_idx == 0 and node is Fang)
-				{
-					var f_pos = NodeHelper.calc_curr_pos(node, 0)
+				var f_pos = NodeHelper.calc_curr_pos(node, 0)
 
-					var v_fang = Blueprint.calc_output_value(FANG, 0)
-					v_fang = node.add_dou(dg, v_fang, Vector3(0, 0, 0))
+				var v_fang = Blueprint.calc_output_value(FANG, 0)
+				v_fang = node.add_dou(dg, v_fang, Vector3(0, 0, 0))
 
-					v_fang = TransNodes.transform(VariantProxy(v_fang), f_pos, Math.pi() / 2)
+				v_fang = TransNodes.transform(VariantProxy(v_fang), f_pos, Math.pi() / 2)
 
-					v_fang = Ang.ang_plane_cut(v_fang, true, a_pos)
+				v_fang = Ang.ang_plane_cut(v_fang, true, a_pos)
 
-					node.comp.v_geo_c = GenNodes.corner_gen_2(v_fang, Vector3(0, 0, 0), 0)
-				}
+				node.comp.v_geo_c = GenNodes.corner_gen_2(v_fang, Vector3(0, 0, 0), 0)
 			}
 		}
 	}

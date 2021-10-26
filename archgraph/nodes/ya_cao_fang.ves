@@ -1,11 +1,15 @@
 import "blueprint.node" for Node
 import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "archgraph.variant" for PIN_TYPE_INNER_GONG, PIN_TYPE_YC_FANG, PIN_TYPE_FANG
-import "archgraph.constant" for ZU_CAI_HEIGHT
+import "archgraph.constant" for ZU_CAI_HEIGHT, FANG_LEN
 import "archgraph.component" for Component
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
+import "archgraph.gen_nodes" for GenNodes
+import "archgraph.corner_helper" for CornerHelper
+import "archgraph.joints_nodes" for JointsNodes
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 
@@ -37,18 +41,37 @@ class YaCaoFang is Node
 
 	resolve(dg)
 	{
-		var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/42_yacao_fang.ves", nil)
-
 		var pos = NodeHelper.calc_curr_pos(this, 0)
 
 		var v_geo = TransNodes.translate(FANG, pos)
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
+
+		this.gen_corner(dg)
+
+		this.cut_corner_ang(dg)
+	}
+
+	gen_corner(dg)
+	{
+		var offset = FANG_LEN / 2 - 0.1
+		var v_geo = Blueprint.calc_output_value(FANG, 0)
+		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
 	}
 
 	get_title()
 	{
 		return "压槽方"
+	}
+
+	cut_corner_ang(dg)
+	{
+		import "archgraph.nodes.ang" for Ang
+		for (var layer in dg.layers) {
+			if (layer[0] is Ang) {
+				layer[0].comp.v_geo_c = JointsNodes.cut_top_planne(layer[0].comp.v_geo_c, this.comp.pos.y)
+			}
+		}
 	}
 }

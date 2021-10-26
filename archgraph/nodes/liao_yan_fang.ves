@@ -1,12 +1,15 @@
 import "blueprint.node" for Node
 import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "archgraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_LY_FANG
-import "archgraph.constant" for ZU_CAI_HEIGHT
+import "archgraph.constant" for ZU_CAI_HEIGHT, FANG_LEN
 import "archgraph.component" for Component
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.gen_nodes" for GenNodes
+import "archgraph.corner_helper" for CornerHelper
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 
@@ -38,8 +41,6 @@ class LiaoYanFang is Node
 
 	resolve(dg)
 	{
-		var FANG = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/41_liaoyan_fang.ves", nil)
-
 		var pos = NodeHelper.calc_curr_pos(this, 0)
 
 		var v_geo = TransNodes.translate(FANG, pos)
@@ -49,16 +50,27 @@ class LiaoYanFang is Node
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
+
+		this.gen_corner(dg)
 	}
 
-	get_title()
+	gen_corner(dg)
 	{
-		return "橑檐方"
+		var offset = 0
+		if (this.comp.x_idx != 0)
+		{
+			var len_o = CornerHelper.calc_outer_len(this.comp.x_idx)
+			var len_i = FANG_LEN - len_o
+			offset = - (len_o - len_i) / 2
+		}
+
+		var v_geo = Blueprint.calc_output_value(FANG, 0)
+		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
 	}
 
 	add_joint(dg, v_geo, pos)
 	{
-		var QIXIN_CUT  = NODE_CACHE.fetch("C:/projects/yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
+		var QIXIN_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
 
 		var has_c = !dg.has_vert_gong(this.comp.y_idx - 1)
 		if (has_c) {
@@ -66,5 +78,10 @@ class LiaoYanFang is Node
 		} else {
 			return v_geo
 		}
+	}
+
+	get_title()
+	{
+		return "橑檐方"
 	}
 }

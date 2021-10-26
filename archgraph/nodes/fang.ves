@@ -6,7 +6,7 @@ import "blueprint.variant_proxy" for VariantProxy
 import "archgraph.variant" for PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
-import "archgraph.constant" for ZU_CAI_HEIGHT, CAI_HEIGHT
+import "archgraph.constant" for ZU_CAI_HEIGHT, CAI_HEIGHT, FANG_LEN
 import "archgraph.component" for Component
 import "archgraph.nodes.dou" for SAN_DOU, QIXIN_DOU
 import "archgraph.joints_nodes" for JointsNodes
@@ -72,7 +72,7 @@ class Fang is Node
 		if (this.comp.x_idx != 0)
 		{
 			var len_o = CornerHelper.calc_outer_len(this.comp.x_idx)
-			var len_i = 2 - len_o
+			var len_i = FANG_LEN - len_o
 			offset = - (len_o - len_i) / 2
 		}
 
