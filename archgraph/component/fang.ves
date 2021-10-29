@@ -76,7 +76,7 @@ class Fang is Node
 			offset = - (len_o - len_i) / 2
 		}
 
-		var v_geo = Blueprint.calc_output_value(FANG, 0)
+		var v_geo = Blueprint.calc_output_value(FANG, "geo")
 		v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
 		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
 	}

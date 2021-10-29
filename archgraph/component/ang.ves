@@ -143,7 +143,7 @@ class Ang is VertGong
 			{
 				var f_pos = NodeHelper.calc_curr_pos(node, 0)
 
-				var v_fang = Blueprint.calc_output_value(FANG, 0)
+				var v_fang = Blueprint.calc_output_value(FANG, "geo")
 				v_fang = node.add_dou(dg, v_fang, Vector3(0, 0, 0))
 
 				v_fang = TransNodes.transform(VariantProxy(v_fang), f_pos, Math.pi() / 2)

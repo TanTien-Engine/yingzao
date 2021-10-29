@@ -56,7 +56,7 @@ class YaCaoFang is Node
 	gen_corner(dg)
 	{
 		var offset = FANG_LEN / 2 - 0.1
-		var v_geo = Blueprint.calc_output_value(FANG, 0)
+		var v_geo = Blueprint.calc_output_value(FANG, "geo")
 		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
 	}
 

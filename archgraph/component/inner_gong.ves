@@ -122,7 +122,7 @@ class InnerGong is Node
 			offset = - (outer - inner) / 2				
 		}
 
-		var v_geo = Blueprint.calc_output_value(this.gong, 0)
+		var v_geo = Blueprint.calc_output_value(this.gong, "geo")
 		this.dou_pos_x = DouHelper.calc_dou_pos_x(v_geo)
 
 		this.comp.offset = offset
