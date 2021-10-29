@@ -1,0 +1,137 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "geograph.nodes.knife" for Knife
+import "scenegraph.nodes.transform3d" for Transform3d
+import "archgraph.nodes.vert_gong" for VertGong
+import "archgraph.trans_nodes" for TransNodes
+import "archgraph.context" for CONTEXT
+import "archgraph.node_helper" for NodeHelper
+import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
+import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.nodes.hua_gong" for HuaGong
+import "archgraph.nodes.shua_tou" for ShuaTou
+import "maths.vector" for Vector3
+import "editor.node_cache" for NODE_CACHE
+
+var ANG    = NODE_CACHE.fetch("../yingzao/00_dougong2/38_up_ang.ves", nil)
+var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
+
+class UpAng is VertGong
+{
+	resolve(dg)
+	{
+		var prev = Blueprint.get_input_node(this, 0)
+		if (prev) {
+			this.outer_hop = prev.outer_hop + 1
+			this.inner_hop = prev.inner_hop + 1
+		} else {
+			this.outer_hop = 1
+			this.inner_hop = 1		
+		}
+
+		if (CONTEXT.style_node) {
+			Blueprint.connect(CONTEXT.style_node, "up_ang_slope", ANG, "slope")
+		}
+
+		var ang_pos = this.calc_ang_pos()
+		var v_geo = TransNodes.translate(ANG, ang_pos)
+
+		if (prev is UpAng)
+		{
+			
+		}
+		else
+		{
+			var pos_n = NodeHelper.calc_curr_pos(this, 0)
+			var v_hua = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos_n)
+
+			var pos_nn = pos_n.add(Vector3(0, ZU_CAI_HEIGHT, 0))
+			var v_shua = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos_nn)
+
+			// ang cut
+			v_hua = UpAng.ang_plane_cut(v_hua, this.calc_ang_pos())
+			v_shua = UpAng.ang_plane_cut(v_shua, this.calc_ang_pos())
+
+			// conn next
+			v_hua = this.add_dou(v_hua, pos_n)
+			v_shua = this.add_dou(v_shua, pos_nn)
+
+			var geo_list = [ v_geo ]
+			for (var i in v_hua.value) {
+				geo_list.add(i)
+			}
+			for (var i in v_shua.value) {
+				geo_list.add(i)
+			}
+			v_geo = Variant(geo_list)
+		}
+
+		this.comp.pos = ang_pos
+		this.comp.v_geo = v_geo
+		this.comp.v_geo_c = this.comp.v_geo
+	}
+
+	get_title()
+	{
+		return "上昂"
+	}
+
+	calc_ang_pos()
+	{
+		var dist = 0
+		if (CONTEXT.gen_corner) {
+			dist = CONTEXT.step_len_c_func(this.inner_hop, true)
+		} else {
+			dist = CONTEXT.step_len_func(this.inner_hop, true)
+		}
+
+		var prev = Blueprint.get_input_node(this, 0)
+		if (prev is UpAng)
+		{
+			var pos = prev.calc_ang_pos()
+			return pos.add(Vector3(0, ZU_CAI_HEIGHT, -dist))
+		}
+		else
+		{
+			var pos = Blueprint.calc_output_value(prev, 2).value
+			return pos.add(Vector3(0, ZU_CAI_HEIGHT * 2, -dist))
+		}
+	}
+
+	add_dou(v_geo, pos)
+	{
+		var len_l = this.calc_outer_step_len()
+		var l_pos = Vector3(pos.x, pos.y + CAI_HEIGHT,  len_l)
+
+		var l_sun = TransNodes.translate(GD_SUN, l_pos)
+
+		var next_v = Blueprint.get_output_node(this, 0)
+		var next_o = Blueprint.get_output_node(this, 1)
+
+		var l_dou = this.gen_dou(next_v, next_o, l_pos)
+
+		// cut sun
+		v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, l_pos)
+
+		return Variant([ v_geo, l_sun, l_dou ])
+	}
+
+	static ang_plane_cut(geo, pos)
+	{
+		var KNIFE = Knife()
+		KNIFE.query_param("keep").set_value("above")
+		KNIFE.query_param("seam").set_value(true)
+
+		var trans = Transform3d()
+		Blueprint.connect(ANG, "plane", trans, "obj")
+
+		var pos_node = VariantProxy(Variant(pos))
+		Blueprint.connect(pos_node, 0, trans, "translate")
+
+		var geo_node = VariantProxy(geo)
+		Blueprint.connect(geo_node, 0, KNIFE, "geo")
+		Blueprint.connect(trans, "obj", KNIFE, "plane")
+		return Blueprint.calc_output_value(KNIFE, "geo")		
+	}
+}

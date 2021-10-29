@@ -5,6 +5,8 @@ import "blueprint.nodes.array" for Array
 import "blueprint.nodes.subgraph" for Subgraph
 import "blueprint.blackboard" for BLACKBOARD
 import "archgraph.dou_gong" for DouGong
+import "archgraph.nodes.style" for Style
+import "archgraph.context" for CONTEXT
 import "geograph.brush" for Brush
 import "maths.vector" for Vector3
 
@@ -38,6 +40,9 @@ class Archeditor is Editor
 		for (var node in ARCH_NODES) {
 			super.add_popup_node(node)
 		}
+
+		import "blueprint.nodes.number" for Number
+		super.add_popup_node(Number)
 	}
 
 	rebuild_all_geos()
@@ -63,8 +68,10 @@ class Archeditor is Editor
 
 	draw_preview()
 	{
-		if (this.scene_stack.bp_dirty) 
+		if (this.scene_stack.bp_dirty or CONTEXT.style_dirty)
 		{
+			CONTEXT.style_dirty = false
+			
 			this.rebuild_all_geos()
 
 			Blueprint.send_pin_dirty_root(this.all_geos.exports[0])
@@ -109,6 +116,10 @@ class Archeditor is Editor
 		{
 			this.render_node = bp_node
 			Blueprint.connect(this.all_geos.exports[0], this.render_node.imports[0])
+		}
+		else if (bp_node is Style)
+		{
+			CONTEXT.style_node = bp_node
 		}
 	}
 }
