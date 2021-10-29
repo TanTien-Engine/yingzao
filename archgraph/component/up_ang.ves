@@ -10,7 +10,6 @@ import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
 import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.component.hua_gong" for HuaGong
-import "archgraph.component.shua_tou" for ShuaTou
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 
@@ -19,6 +18,15 @@ var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
 class UpAng is VertGong
 {
+	calc_value(idx)
+	{
+		if (idx == 2) {
+			return Variant(this.calc_ang_pos())
+		} else {
+			return super.calc_value(idx)
+		}
+	}
+
 	resolve(dg)
 	{
 		var prev = Blueprint.get_input_node(this, 0)
@@ -30,8 +38,8 @@ class UpAng is VertGong
 			this.inner_hop = 1		
 		}
 
-		if (CONTEXT.up_ang_angle) {
-			Blueprint.connect(CONTEXT.up_ang_angle, "up_ang_slope", ANG, "slope")
+		if (CONTEXT.s_up_ang_angle) {
+			Blueprint.connect(CONTEXT.s_up_ang_angle, "up_ang_slope", ANG, "slope")
 		}
 
 		var ang_pos = this.calc_ang_pos()
@@ -46,22 +54,14 @@ class UpAng is VertGong
 			var pos_n = NodeHelper.calc_curr_pos(this, 0)
 			var v_hua = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos_n)
 
-			var pos_nn = pos_n.add(Vector3(0, ZU_CAI_HEIGHT, 0))
-			var v_shua = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos_nn)
-
 			// ang cut
-			v_hua = UpAng.ang_plane_cut(v_hua, this.calc_ang_pos())
-			v_shua = UpAng.ang_plane_cut(v_shua, this.calc_ang_pos())
+			v_hua = this.ang_plane_cut(v_hua)
 
 			// conn next
 			v_hua = this.add_dou(v_hua, pos_n)
-			v_shua = this.add_dou(v_shua, pos_nn)
 
 			var geo_list = [ v_geo ]
 			for (var i in v_hua.value) {
-				geo_list.add(i)
-			}
-			for (var i in v_shua.value) {
 				geo_list.add(i)
 			}
 			v_geo = Variant(geo_list)
@@ -99,22 +99,9 @@ class UpAng is VertGong
 		}
 	}
 
-	add_dou(v_geo, pos)
+	ang_plane_cut(geo)
 	{
-		var len_l = this.calc_outer_step_len()
-		var l_pos = Vector3(pos.x, pos.y + CAI_HEIGHT,  len_l)
-
-		var l_sun = TransNodes.translate(GD_SUN, l_pos)
-
-		var next_v = Blueprint.get_output_node(this, 0)
-		var next_o = Blueprint.get_output_node(this, 1)
-
-		var l_dou = this.gen_dou(next_v, next_o, l_pos)
-
-		// cut sun
-		v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, l_pos)
-
-		return Variant([ v_geo, l_sun, l_dou ])
+		return UpAng.ang_plane_cut(geo, this.calc_ang_pos())
 	}
 
 	static ang_plane_cut(geo, pos)

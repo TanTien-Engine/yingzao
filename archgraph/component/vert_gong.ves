@@ -2,7 +2,7 @@ import "blueprint.node" for Node
 import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
-import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
+import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT, QI_HEIGHT
 import "archgraph.variant" for PIN_TYPE_VERT_GONG, PIN_TYPE_HORI_GONG
 import "archgraph.component" for Component
 import "archgraph.trans_nodes" for TransNodes
@@ -96,10 +96,10 @@ class VertGong is Node
 	{
 		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
-		var len_l = this.calc_outer_step_len()
-		var len_r = this.calc_inner_step_len()
-		var l_pos = Vector3(pos.x, pos.y + CAI_HEIGHT,  len_l)
-		var r_pos = Vector3(pos.x, pos.y + CAI_HEIGHT, -len_r)
+		var l_pos = Blueprint.calc_output_value(this, 1).value
+		var r_pos = Blueprint.calc_output_value(this, 2).value
+		l_pos.y = l_pos.y - QI_HEIGHT
+		r_pos.y = r_pos.y - QI_HEIGHT
 
 		var l_sun = TransNodes.translate(GD_SUN, l_pos)
 		var r_sun = TransNodes.translate(GD_SUN, r_pos)

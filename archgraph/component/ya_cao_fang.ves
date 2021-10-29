@@ -3,13 +3,14 @@ import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "archgraph.variant" for PIN_TYPE_INNER_GONG, PIN_TYPE_YC_FANG, PIN_TYPE_FANG
-import "archgraph.constant" for ZU_CAI_HEIGHT, FANG_LEN
+import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT, FANG_LEN
 import "archgraph.component" for Component
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.corner_helper" for CornerHelper
 import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.component.chen_fang_tou" for ChenFangTou
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 
@@ -41,7 +42,16 @@ class YaCaoFang is Node
 
 	resolve(dg)
 	{
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var pos = nil
+		for (var i in dg.layers[this.comp.y_idx]) {
+			if (i is ChenFangTou) {
+				pos = NodeHelper.calc_curr_pos(i, 0)
+				pos.y = pos.y + CAI_HEIGHT
+			}
+		}
+		if (!pos) {
+			pos = NodeHelper.calc_curr_pos(this, 0)
+		}
 
 		var v_geo = TransNodes.translate(FANG, pos)
 
