@@ -7,7 +7,7 @@ import "scenegraph.nodes.transform3d" for Transform3d
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for ZU_CAI_HEIGHT
-import "archgraph.nodes.vert_gong" for VertGong
+import "archgraph.component.vert_gong" for VertGong
 import "archgraph.context" for CONTEXT
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.dou_helper" for DouHelper
@@ -79,7 +79,7 @@ class Ang is VertGong
 
 		if (this.ang_layer == 0)
 		{
-			import "archgraph.nodes.hua_gong" for HuaGong
+			import "archgraph.component.hua_gong" for HuaGong
 
 			var pos = NodeHelper.calc_curr_pos(this, 0)
 			var v_hua = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos)
@@ -94,7 +94,7 @@ class Ang is VertGong
 		}
 		else if (this.ang_layer == 1)
 		{
-			import "archgraph.nodes.shua_tou" for ShuaTou
+			import "archgraph.component.shua_tou" for ShuaTou
 
 			var pos = NodeHelper.calc_curr_pos(this, 0)
 			var v_shua = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
@@ -131,7 +131,7 @@ class Ang is VertGong
 
 	cut_fang(dg, layer_idx, a_pos)
 	{
-		import "archgraph.nodes.fang" for Fang
+		import "archgraph.component.fang" for Fang
 		var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
 
 		var layer = dg.layers[layer_idx]
@@ -162,8 +162,8 @@ class Ang is VertGong
 	
 	calc_ang_pos()
 	{
-		import "archgraph.nodes.hua_gong" for HuaGong
-		import "archgraph.nodes.shua_tou" for ShuaTou
+		import "archgraph.component.hua_gong" for HuaGong
+		import "archgraph.component.shua_tou" for ShuaTou
 
 		var dist = 0
 		if (CONTEXT.gen_corner) {

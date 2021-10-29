@@ -1,0 +1,103 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
+node0.set_prop_value("ortho", false)
+node0.set_prop_value("offset", 10)
+
+node0.op_node.cam.position.set(3.2894430775101, 2.2163090742496, -1.3816409128467)
+node0.op_node.cam.yaw = -206.7
+node0.op_node.cam.pitch = -25.2
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.29386684298515
+
+_editor.add_node(node0, -373, -107)
+
+var node1 = ::archgraph::component::lu_dou::LuDou()
+
+_editor.add_node(node1, -228, 186)
+
+var node2 = ::archgraph::component::inner_gong::InnerGong()
+
+_editor.add_node(node2, -88, 301)
+
+var node3 = ::archgraph::component::hua_gong::HuaGong()
+
+_editor.add_node(node3, -87, 2.9999999999999)
+
+var node4 = ::archgraph::component::hua_gong::HuaGong()
+
+_editor.add_node(node4, 65, 68)
+
+var node5 = ::archgraph::component::inner_gong::InnerGong()
+
+_editor.add_node(node5, 48, 301)
+
+var node6 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node6, 75, -67)
+
+var node7 = ::archgraph::component::hua_gong::HuaGong()
+
+_editor.add_node(node7, 202, 169)
+
+var node8 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node8, 210, -67)
+
+var node9 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node9, 347, -69)
+
+var node10 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node10, 206, 36)
+
+var node11 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node11, 335, 35)
+
+var node12 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node12, 467, 37)
+
+var node13 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node13, 333, 167)
+
+var node14 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node14, 471, 167)
+
+var node15 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node15, 196.64036421342, 299.07189941406)
+
+var node16 = ::archgraph::component::inner_gong::InnerGong()
+
+_editor.add_node(node16, 332.09491244229, 301.79918046431)
+
+var node17 = ::archgraph::component::inner_gong::InnerGong()
+
+_editor.add_node(node17, 467.54944957386, 301.79918878729)
+
+var node18 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node18, 610.27671120384, 303.12148619092)
+
+Blueprint.connect(node1, "vert", node3, "prev")
+Blueprint.connect(node3, "outer", node6, "prev")
+Blueprint.connect(node6, "next", node8, "prev")
+Blueprint.connect(node8, "next", node9, "prev")
+Blueprint.connect(node3, "next", node4, "prev")
+Blueprint.connect(node4, "outer", node10, "prev")
+Blueprint.connect(node10, "next", node11, "prev")
+Blueprint.connect(node11, "next", node12, "prev")
+Blueprint.connect(node4, "next", node7, "prev")
+Blueprint.connect(node7, "outer", node13, "prev")
+Blueprint.connect(node13, "next", node14, "prev")
+Blueprint.connect(node1, "hori", node2, "prev")
+Blueprint.connect(node2, "next", node5, "prev")
+Blueprint.connect(node5, "next", node15, "prev")
+Blueprint.connect(node15, "next", node16, "prev")
+Blueprint.connect(node16, "next", node17, "prev")
+Blueprint.connect(node17, "next", node18, "prev")

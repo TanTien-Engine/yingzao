@@ -8,7 +8,7 @@ import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for ZU_CAI_HEIGHT, CAI_HEIGHT, FANG_LEN
 import "archgraph.component" for Component
-import "archgraph.nodes.dou" for SAN_DOU, QIXIN_DOU
+import "archgraph.component.dou" for SAN_DOU, QIXIN_DOU
 import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.corner_helper" for CornerHelper
@@ -105,7 +105,7 @@ class Fang is Node
 			return v_geo
 		}
 
-		import "archgraph.nodes.ya_cao_fang" for YaCaoFang
+		import "archgraph.component.ya_cao_fang" for YaCaoFang
 		if (next is YaCaoFang) {
 			return v_geo
 		}

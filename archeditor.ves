@@ -5,7 +5,7 @@ import "blueprint.nodes.array" for Array
 import "blueprint.nodes.subgraph" for Subgraph
 import "blueprint.blackboard" for BLACKBOARD
 import "archgraph.dou_gong" for DouGong
-import "archgraph.nodes.style" for Style
+import "archgraph.style.up_ang_angle" for UpAngAngle
 import "archgraph.context" for CONTEXT
 import "geograph.brush" for Brush
 import "maths.vector" for Vector3
@@ -68,9 +68,9 @@ class Archeditor is Editor
 
 	draw_preview()
 	{
-		if (this.scene_stack.bp_dirty or CONTEXT.style_dirty)
+		if (this.scene_stack.bp_dirty or CONTEXT.style_changed)
 		{
-			CONTEXT.style_dirty = false
+			CONTEXT.style_changed = false
 			
 			this.rebuild_all_geos()
 
@@ -117,9 +117,9 @@ class Archeditor is Editor
 			this.render_node = bp_node
 			Blueprint.connect(this.all_geos.exports[0], this.render_node.imports[0])
 		}
-		else if (bp_node is Style)
+		else if (bp_node is UpAngAngle)
 		{
-			CONTEXT.style_node = bp_node
+			CONTEXT.up_ang_angle = bp_node
 		}
 	}
 }

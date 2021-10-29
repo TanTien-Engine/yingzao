@@ -75,7 +75,7 @@ class DouGong
 
 	get_result_geo_corner(out_list)
 	{
-		import "archgraph.nodes.ang" for Ang
+		import "archgraph.component.ang" for Ang
 		out_list.clear()
 
 		for (var layer in this.layers)
@@ -105,7 +105,7 @@ class DouGong
 			this.layers.add([ nil ])
 		}
 
-		import "archgraph.nodes.vert_gong" for VertGong
+		import "archgraph.component.vert_gong" for VertGong
 		for (var node in scene.nodes) 
 		{
 			var bp_node = node.components["bp"]
@@ -177,7 +177,7 @@ class DouGong
 			return
 		}
 
-		import "archgraph.nodes.ang" for Ang
+		import "archgraph.component.ang" for Ang
 		if (layer[0] is Ang and layer[0].ang_layer == 2) {
 			return
 		}
@@ -347,7 +347,7 @@ class DouGong
 
 	build_hori_gong_and_ang_joints()
 	{
-		import "archgraph.nodes.ang" for Ang
+		import "archgraph.component.ang" for Ang
 
 		for (var i in 0 .. this.layers.count)
 		{
