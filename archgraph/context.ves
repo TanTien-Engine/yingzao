@@ -1,4 +1,4 @@
-import "archgraph.step_len_funcs" for STEP_LEN, STEP_LEN_C
+import "archgraph.step_len_funcs" for STEP_LEN
 
 class Context
 {
@@ -6,13 +6,28 @@ class Context
 	{
 		this.gen_corner = false
 
-		this.step_len_func   = STEP_LEN
-		this.step_len_c_func = STEP_LEN_C
+		this.step_len_func   = this.step_len
+		this.step_len_c_func = this.step_len_c
 
 		// style
 		this.style_changed = false
-		this.up_ang_angle = nil
+		this.s_up_ang_angle = nil
+		this.s_step_len = nil
 	}
+
+	step_len(hop, less_step)
+	{
+		if (this.s_step_len) {
+			return this.s_step_len.calc_step_len(hop)
+		} else {
+			return STEP_LEN(hop, less_step)
+		}
+	}
+
+	step_len_c(hop, less_step)
+	{
+		return this.step_len(hop, less_step) * 1.414
+	}	
 }
 
 var CONTEXT = Context()
