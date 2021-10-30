@@ -1,0 +1,42 @@
+var node0 = ::blueprint::nodes::input::Input()
+
+node0.var_name = "geo"
+node0.var_type = "geo"
+
+_editor.add_node(node0, 224.90275545455, 183.76465363636)
+
+var node1 = ::blueprint::nodes::input::Input()
+
+node1.var_name = "z"
+node1.var_type = "num"
+
+_editor.add_node(node1, -138.78257081421, 36.126281374941)
+
+var node2 = ::geograph::nodes::plane::Plane()
+node2.query_param("ori").value.set(0, 0, 0)
+node2.query_param("dir").value.set(0, 0, 1)
+
+_editor.add_node(node2, 223.90909090909, 18.909090909091)
+
+var node3 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node3, 4.851862127131, 26.750310724432)
+
+var node4 = ::geograph::nodes::knife::Knife()
+node4.query_param("keep").value = "below"
+node4.query_param("seam").value = true
+
+_editor.add_node(node4, 390.45177875866, 121.48218883168)
+
+var node5 = ::blueprint::nodes::output::Output()
+
+node5.var_name = "geo"
+node5.var_type = [ "geo", "array" ]
+
+_editor.add_node(node5, 529.60140991211, 152.48303222656)
+
+Blueprint.connect(node1, "var", node3, "z")
+Blueprint.connect(node3, "xyz", node2, "origin")
+Blueprint.connect(node0, "var", node4, "geo")
+Blueprint.connect(node2, "plane", node4, "plane")
+Blueprint.connect(node4, "geo", node5, "var")

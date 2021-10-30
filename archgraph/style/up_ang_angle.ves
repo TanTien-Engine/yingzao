@@ -23,4 +23,9 @@ class UpAngAngle is Node
 	{
 		return Variant(this.query_param("up_ang_slope").value)
 	}
+
+	on_node_dirty()
+	{
+		CONTEXT.style_changed = true
+	}
 }

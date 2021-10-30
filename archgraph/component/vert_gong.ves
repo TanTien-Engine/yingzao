@@ -2,19 +2,18 @@ import "blueprint.node" for Node
 import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
+import "archgraph.component.comp_node" for CompNode
 import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT, QI_HEIGHT
 import "archgraph.variant" for PIN_TYPE_VERT_GONG, PIN_TYPE_HORI_GONG
-import "archgraph.component" for Component
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
-import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU, PINGPAN_DOU
 import "archgraph.context" for CONTEXT
 import "archgraph.joints_nodes" for JointsNodes
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
 
-class VertGong is Node
+class VertGong is CompNode
 {
 	init()
 	{
@@ -26,12 +25,10 @@ class VertGong is Node
 		this.exports = [
 			Pin(this, "next",  PIN_TYPE_VERT_GONG),
 			Pin(this, "outer", PIN_TYPE_HORI_GONG),
-			Pin(this, "inner", PIN_TYPE_HORI_GONG),			
+			Pin(this, "inner", PIN_TYPE_HORI_GONG)
 		]
 
 		this.layout()
-
-		this.comp = Component()
 
 		this.outer_hop = 0
 		this.inner_hop = 0
@@ -49,7 +46,7 @@ class VertGong is Node
 		} else if (idx == 2) {
 			z = - this.calc_inner_step_len()
 		}
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, z)))
 	}
 
@@ -96,17 +93,17 @@ class VertGong is Node
 	{
 		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
-		var l_pos = Blueprint.calc_output_value(this, 1).value
-		var r_pos = Blueprint.calc_output_value(this, 2).value
+		var l_pos = Blueprint.calc_output_value(this, "outer").value
+		var r_pos = Blueprint.calc_output_value(this, "inner").value
 		l_pos.y = l_pos.y - QI_HEIGHT
 		r_pos.y = r_pos.y - QI_HEIGHT
 
 		var l_sun = TransNodes.translate(GD_SUN, l_pos)
 		var r_sun = TransNodes.translate(GD_SUN, r_pos)
 
-		var next_v = Blueprint.get_output_node(this, 0)
-		var next_o = Blueprint.get_output_node(this, 1)
-		var next_i = Blueprint.get_output_node(this, 2)
+		var next_v = Blueprint.get_output_node(this, "next")
+		var next_o = Blueprint.get_output_node(this, "outer")
+		var next_i = Blueprint.get_output_node(this, "inner")
 
 		var l_dou = this.gen_dou(next_v, next_o, l_pos)
 		var r_dou = this.gen_dou(next_v, next_i, r_pos)
@@ -119,6 +116,8 @@ class VertGong is Node
 
 	gen_dou(vert, hori, pos)
 	{
+		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU, PINGPAN_DOU
+
 		if (vert and hori) 
 		{
 			if (CONTEXT.gen_corner) {

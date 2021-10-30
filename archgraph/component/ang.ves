@@ -42,7 +42,7 @@ class Ang is VertGong
 		}
 		else if (idx == 2)
 		{
-			var pos = NodeHelper.calc_curr_pos(this, 0)
+			var pos = NodeHelper.calc_curr_pos(this, "prev")
 			var z = - this.calc_inner_step_len()
 			return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, z)))
 		}
@@ -53,7 +53,7 @@ class Ang is VertGong
 		var prev_outer_hop = 1
 		var prev_inner_hop = 1
 
-		var prev = Blueprint.get_input_node(this, 0)
+		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev)
 		{
 			prev_outer_hop = prev.outer_hop
@@ -81,7 +81,7 @@ class Ang is VertGong
 		{
 			import "archgraph.component.hua_gong" for HuaGong
 
-			var pos = NodeHelper.calc_curr_pos(this, 0)
+			var pos = NodeHelper.calc_curr_pos(this, "prev")
 			var v_hua = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos)
 
 			// conn next
@@ -96,14 +96,14 @@ class Ang is VertGong
 		{
 			import "archgraph.component.shua_tou" for ShuaTou
 
-			var pos = NodeHelper.calc_curr_pos(this, 0)
+			var pos = NodeHelper.calc_curr_pos(this, "prev")
 			var v_shua = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 
 			// conn next
 			v_shua = this.add_dou(v_shua, pos)
 
 			// ang cut
-			var ang_0 = Blueprint.get_input_node(this, 0)
+			var ang_0 = Blueprint.get_input_node(this, "prev")
 			v_shua = ang_0.ang_plane_cut(v_shua, true)
 
 			v_geo = Variant([ v_shua, v_geo ])
@@ -141,7 +141,7 @@ class Ang is VertGong
 			var node = layer[i]
 			if (node.comp.x_idx == 0 and node is Fang)
 			{
-				var f_pos = NodeHelper.calc_curr_pos(node, 0)
+				var f_pos = NodeHelper.calc_curr_pos(node, "prev")
 
 				var v_fang = Blueprint.calc_output_value(FANG, "geo")
 				v_fang = node.add_dou(dg, v_fang, Vector3(0, 0, 0))
@@ -172,10 +172,10 @@ class Ang is VertGong
 			dist = CONTEXT.step_len_func(this.outer_hop, true)
 		}
 
-		var prev = Blueprint.get_input_node(this, 0)
+		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev is HuaGong or prev is ShuaTou)
 		{
-			var pos = Blueprint.calc_output_value(prev, 1).value
+			var pos = Blueprint.calc_output_value(prev, "outer").value
 			return pos.add(Vector3(0, ZU_CAI_HEIGHT, dist))
 		}
 		else if (prev is Ang)
@@ -215,10 +215,10 @@ class Ang is VertGong
 		}
 
 		var pos_node = VariantProxy(Variant(pos))
-		Blueprint.connect(pos_node, 0, trans, "translate")
+		Blueprint.connect(pos_node, "out", trans, "translate")
 
 		var geo_node = VariantProxy(geo)
-		Blueprint.connect(geo_node, 0, KNIFE, "geo")
+		Blueprint.connect(geo_node, "out", KNIFE, "geo")
 		Blueprint.connect(trans, "obj", KNIFE, "plane")
 		return Blueprint.calc_output_value(KNIFE, "geo")		
 	}

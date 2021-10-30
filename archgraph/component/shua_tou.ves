@@ -4,8 +4,8 @@ import "blueprint.variant_proxy" for VariantProxy
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.component.vert_gong" for VertGong
-import "archgraph.component.ang" for Ang
 import "archgraph.context" for CONTEXT
+import "archgraph.constant" for CAI_WIDTH
 import "archgraph.gen_nodes" for GenNodes
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
@@ -16,7 +16,7 @@ class ShuaTou is VertGong
 {
 	resolve(dg)
 	{
-		var prev = Blueprint.get_input_node(this, 0)
+		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev) {
 			this.outer_hop = prev.outer_hop
 			this.inner_hop = prev.inner_hop
@@ -25,11 +25,15 @@ class ShuaTou is VertGong
 			this.inner_hop = 1		
 		}
 
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		var v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 
+		import "archgraph.component.ang" for Ang
+		import "archgraph.component.up_ang" for UpAng
 		if (prev is Ang) {
 			v_geo = prev.ang_plane_cut(v_geo, false)
+		} else if (prev is UpAng) {
+			v_geo = prev.ang_plane_cut(v_geo)
 		}
 
 		// conn next
@@ -53,8 +57,8 @@ class ShuaTou is VertGong
 		var len_r = VertGong.calc_tot_step_len(-inner_hop, this.less_step) + VertGong.get_dou_half_len()
 		var len_l_node = VariantProxy(Variant(len_l))
 		var len_r_node = VariantProxy(Variant(len_r))
-		Blueprint.connect(len_l_node, 0, SHUA_TOU, "len_left")
-		Blueprint.connect(len_r_node, 0, SHUA_TOU, "len_right")
+		Blueprint.connect(len_l_node, "out", SHUA_TOU, "len_left")
+		Blueprint.connect(len_r_node, "out", SHUA_TOU, "len_right")
 
 		return TransNodes.translate(SHUA_TOU, pos)
 	}
@@ -66,12 +70,13 @@ class ShuaTou is VertGong
 		var len_l_node = VariantProxy(Variant(len_l / 1.414))
 		var len_r_node = VariantProxy(Variant(len_r / 1.414))
 
-		Blueprint.connect(len_l_node, 0, SHUA_TOU, "len_left")
-		Blueprint.connect(len_r_node, 0, SHUA_TOU, "len_right")
+		Blueprint.connect(len_l_node, "out", SHUA_TOU, "len_left")
+		Blueprint.connect(len_r_node, "out", SHUA_TOU, "len_right")
 
-		var v_geo = Blueprint.calc_output_value(SHUA_TOU, 0)
+		var v_geo = Blueprint.calc_output_value(SHUA_TOU, "geo")
 
-		var prev = Blueprint.get_input_node(this, 0)
+		var prev = Blueprint.get_input_node(this, "prev")
+		import "archgraph.component.ang" for Ang
 		if (prev is Ang) {
 			var a_pos = prev.calc_ang_pos()
 			v_geo = Ang.ang_plane_cut(v_geo, false, Vector3(0, 0, a_pos.z / 1.414))

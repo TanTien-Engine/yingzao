@@ -20,11 +20,11 @@ class NodeHelper
 
 	static calc_layer_impl(node, layer)
 	{
-		var prev = Blueprint.get_input_node(node, 0)
+		var prev = Blueprint.get_input_node(node, "prev")
 		if (prev) 
 		{
 			import "archgraph.component.up_ang" for UpAng
-			if (prev is UpAng and Blueprint.get_input_pin(node, 0).slot_idx == 2) {
+			if (prev is UpAng and Blueprint.get_input_pin(node, "prev").slot_idx == 2) {
 				return this.calc_layer_impl(prev, layer + 2)
 			} else {
 				return this.calc_layer_impl(prev, layer + 1)

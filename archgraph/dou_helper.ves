@@ -2,7 +2,6 @@ import "blueprint.variant" for Variant
 import "geograph.nodes.brush_get_size" for BrushGetSize
 import "archgraph.constant" for DOU_H_WIDTH
 import "archgraph.trans_nodes" for TransNodes
-import "archgraph.component.dou" for SAN_DOU, QIXIN_DOU
 import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.constant" for CAI_HEIGHT
 import "editor.node_cache" for NODE_CACHE
@@ -24,6 +23,8 @@ class DouHelper
 
 	static add_dou(gong_geo)
 	{
+		import "archgraph.component.dou" for SAN_DOU, QIXIN_DOU
+
 		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
 		var dou_pos_x = DouHelper.calc_dou_pos_x(gong_geo)

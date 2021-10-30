@@ -9,7 +9,6 @@ import "archgraph.context" for CONTEXT
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
 import "archgraph.joints_nodes" for JointsNodes
-import "archgraph.component.hua_gong" for HuaGong
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 
@@ -29,7 +28,7 @@ class UpAng is VertGong
 
 	resolve(dg)
 	{
-		var prev = Blueprint.get_input_node(this, 0)
+		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev) {
 			this.outer_hop = prev.outer_hop + 1
 			this.inner_hop = prev.inner_hop + 1
@@ -51,7 +50,8 @@ class UpAng is VertGong
 		}
 		else
 		{
-			var pos_n = NodeHelper.calc_curr_pos(this, 0)
+			var pos_n = NodeHelper.calc_curr_pos(this, "prev")
+			import "archgraph.component.hua_gong" for HuaGong
 			var v_hua = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos_n)
 
 			// ang cut
@@ -86,7 +86,7 @@ class UpAng is VertGong
 			dist = CONTEXT.step_len_func(this.inner_hop, true)
 		}
 
-		var prev = Blueprint.get_input_node(this, 0)
+		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev is UpAng)
 		{
 			var pos = prev.calc_ang_pos()
@@ -94,7 +94,7 @@ class UpAng is VertGong
 		}
 		else
 		{
-			var pos = Blueprint.calc_output_value(prev, 2).value
+			var pos = Blueprint.calc_output_value(prev, "inner").value
 			return pos.add(Vector3(0, ZU_CAI_HEIGHT * 2, -dist))
 		}
 	}
@@ -114,10 +114,10 @@ class UpAng is VertGong
 		Blueprint.connect(ANG, "plane", trans, "obj")
 
 		var pos_node = VariantProxy(Variant(pos))
-		Blueprint.connect(pos_node, 0, trans, "translate")
+		Blueprint.connect(pos_node, "out", trans, "translate")
 
 		var geo_node = VariantProxy(geo)
-		Blueprint.connect(geo_node, 0, KNIFE, "geo")
+		Blueprint.connect(geo_node, "out", KNIFE, "geo")
 		Blueprint.connect(trans, "obj", KNIFE, "plane")
 		return Blueprint.calc_output_value(KNIFE, "geo")		
 	}

@@ -4,7 +4,6 @@ import "blueprint.variant_proxy" for VariantProxy
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.component.vert_gong" for VertGong
-import "archgraph.component.lu_dou" for LuDou
 import "editor.node_cache" for NODE_CACHE
 
 class HuaGong is VertGong
@@ -12,7 +11,8 @@ class HuaGong is VertGong
 	resolve(dg)
 	{
 		// select gong
-		var prev = Blueprint.get_input_node(this, 0)
+		var prev = Blueprint.get_input_node(this, "prev")
+		import "archgraph.component.lu_dou" for LuDou
 		if (prev is LuDou) {
 			this.outer_hop = 1
 			this.inner_hop = 1
@@ -24,7 +24,7 @@ class HuaGong is VertGong
 			this.inner_hop = 1
 		}
 
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		var v_geo = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos)
 
 		// conn next
@@ -48,8 +48,8 @@ class HuaGong is VertGong
 		var len_r = VertGong.calc_tot_step_len(-inner_hop, this.less_step) + VertGong.get_dou_half_len()
 		var len_l_node = VariantProxy(Variant(len_l))
 		var len_r_node = VariantProxy(Variant(len_r))
-		Blueprint.connect(len_l_node, 0, HUA_GONG, "len_left")
-		Blueprint.connect(len_r_node, 0, HUA_GONG, "len_right")
+		Blueprint.connect(len_l_node, "out", HUA_GONG, "len_left")
+		Blueprint.connect(len_r_node, "out", HUA_GONG, "len_right")
 
 		return TransNodes.translate(HUA_GONG, pos)
 	}

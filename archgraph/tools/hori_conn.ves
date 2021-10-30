@@ -1,0 +1,33 @@
+import "blueprint.node" for Node
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "archgraph.variant" for VarComp, VAR_TYPE_COMPONENT
+import "archgraph.constant" for CAI_WIDTH
+import "archgraph.joints_nodes" for JointsNodes
+
+class HoriConn is Node
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "left",  VAR_TYPE_COMPONENT),
+			Pin(this, "right", VAR_TYPE_COMPONENT),
+		]
+
+		this.layout()
+	}
+
+	resolve()
+	{
+		var v_left  = Blueprint.calc_input_value(this, 0)
+		var v_right = Blueprint.calc_input_value(this, 1)
+		if (!v_left or !v_right) {
+			return
+		}
+
+		var z = v_left.value.comp.pos.z - CAI_WIDTH * 0.5
+		v_right.value.comp.v_geo = JointsNodes.cut_left_plane(v_right.value.comp.v_geo, z)
+	}
+}

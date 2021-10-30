@@ -3,12 +3,12 @@ import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
 import "blueprint.variant_proxy" for VariantProxy
-import "archgraph.variant" for PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG
+import "archgraph.component.comp_node" for CompNode
+import "archgraph.variant" for PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG, VAR_TYPE_COMPONENT
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for ZU_CAI_HEIGHT, CAI_HEIGHT, FANG_LEN
 import "archgraph.component" for Component
-import "archgraph.component.dou" for SAN_DOU, QIXIN_DOU
 import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.corner_helper" for CornerHelper
@@ -18,7 +18,7 @@ import "math" for Math
 
 var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
 
-class Fang is Node
+class Fang is CompNode
 {
 	init()
 	{
@@ -32,25 +32,23 @@ class Fang is Node
 		]
 
 		this.layout()
-
-		this.comp = Component()
 	}
 
 	calc_value(idx)
 	{
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
 	}
 
 	resolve(dg)
 	{
 		if (this.comp.x_idx == 0) {
-			this.exports[0].type.add(PIN_TYPE_INNER_GONG)
+			this.exports[0].type = [ PIN_TYPE_FANG, PIN_TYPE_INNER_GONG ]
 		} else {
-			this.exports[0].type.add(PIN_TYPE_HORI_GONG)
+			this.exports[0].type = [ PIN_TYPE_FANG, PIN_TYPE_HORI_GONG ]
 		}
 
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
 
 		var v_geo = TransNodes.translate(FANG, pos)
 
@@ -98,9 +96,11 @@ class Fang is Node
 
 	add_dou(dg, v_geo, pos)
 	{
+		import "archgraph.component.dou" for SAN_DOU, QIXIN_DOU
+
 		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
-		var next = Blueprint.get_output_node(this, 0)
+		var next = Blueprint.get_output_node(this, "next")
 		if (!next) {
 			return v_geo
 		}

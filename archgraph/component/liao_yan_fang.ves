@@ -1,10 +1,9 @@
-import "blueprint.node" for Node
 import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
+import "archgraph.component.comp_node" for CompNode
 import "archgraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_LY_FANG
 import "archgraph.constant" for ZU_CAI_HEIGHT, FANG_LEN
-import "archgraph.component" for Component
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.joints_nodes" for JointsNodes
@@ -15,7 +14,7 @@ import "maths.vector" for Vector3
 
 var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/41_liaoyan_fang.ves", nil)
 
-class LiaoYanFang is Node
+class LiaoYanFang is CompNode
 {
 	init()
 	{
@@ -29,19 +28,17 @@ class LiaoYanFang is Node
 		]
 
 		this.layout()
-
-		this.comp = Component()
 	}
 
 	calc_value(idx)
 	{
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
 	}
 
 	resolve(dg)
 	{
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
 
 		var v_geo = TransNodes.translate(FANG, pos)
 

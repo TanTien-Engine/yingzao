@@ -2,7 +2,6 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "archgraph.component.vert_gong" for VertGong
-import "archgraph.component.ang" for Ang
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.gen_nodes" for GenNodes
@@ -16,17 +15,17 @@ class ChenFangTou is VertGong
 {
 	resolve(dg)
 	{
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
 //		pos.y = pos.y + 0.105	// for 2_8s_2c3a_tween.ves
 
 		var len = 2
-		var p_node = Blueprint.get_input_node(this, 0)
+		var p_node = Blueprint.get_input_node(this, "prev")
 		if (p_node) {
 			len = p_node.calc_outer_step_len() * 2 - 0.1
 		}
 
 		var len_node = VariantProxy(Variant(len))
-		Blueprint.connect(len_node, 0, FANG, "length")
+		Blueprint.connect(len_node, "out", FANG, "length")
 
 		var v_geo = TransNodes.transform(FANG, pos, Math.pi() * 0.5)
 		len_node.disconnect()
@@ -34,8 +33,9 @@ class ChenFangTou is VertGong
 		// ang cut
 		var pp_node = nil
 		if (p_node) {
-			pp_node = Blueprint.get_input_node(p_node, 0)
+			pp_node = Blueprint.get_input_node(p_node, "prev")
 		}
+		import "archgraph.component.ang" for Ang
 		if (pp_node and pp_node is Ang) {
 			v_geo = pp_node.ang_plane_cut(v_geo, false)
 		}
@@ -54,13 +54,13 @@ class ChenFangTou is VertGong
 	gen_corner(dg)
 	{
 		var len = 2
-		var p_node = Blueprint.get_input_node(this, 0)
+		var p_node = Blueprint.get_input_node(this, "prev")
 		if (p_node) {
 			len = p_node.calc_outer_step_len() / 1.414 * 2 - 0.1
 		}
 
 		var len_node = VariantProxy(Variant(len))
-		Blueprint.connect(len_node, 0, FANG, "length")
+		Blueprint.connect(len_node, "out", FANG, "length")
 
 		var v_geo = TransNodes.rotate(FANG, Math.pi() * 0.5)
 		len_node.disconnect()
@@ -68,8 +68,9 @@ class ChenFangTou is VertGong
 		// ang cut
 		var pp_node = nil
 		if (p_node) {
-			pp_node = Blueprint.get_input_node(p_node, 0)
+			pp_node = Blueprint.get_input_node(p_node, "prev")
 		}
+		import "archgraph.component.ang" for Ang
 		if (pp_node and pp_node is Ang) {
 			var a_pos = pp_node.calc_ang_pos()
 			v_geo = Ang.ang_plane_cut(v_geo, false, Vector3(0, pp_node.comp.pos.y - this.comp.pos.y, a_pos.z / 1.414))		

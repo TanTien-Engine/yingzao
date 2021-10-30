@@ -4,8 +4,6 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.nodes.array" for Array
 import "blueprint.nodes.subgraph" for Subgraph
 import "blueprint.blackboard" for BLACKBOARD
-import "archgraph.dou_gong" for DouGong
-import "archgraph.style.up_ang_angle" for UpAngAngle
 import "archgraph.context" for CONTEXT
 import "geograph.brush" for Brush
 import "maths.vector" for Vector3
@@ -22,7 +20,10 @@ class Archeditor is Editor
 
 		this.all_geos = Array()
 
+		import "archgraph.dou_gong" for DouGong
+
 		this.dg = DouGong()
+		CONTEXT.dg = this.dg
 
 		this.render_node = nil
 		this.add_node(NODE_CACHE.fetch("../yingzao/99_tools/%(RENDER_NODE_FILENAME)", nil), 0, 0)
@@ -39,8 +40,8 @@ class Archeditor is Editor
 			super.add_popup_node(node)
 		}
 
-		import "blueprint.nodes.number" for Number
-		super.add_popup_node(Number)
+		import "blueprint.nodes.commentary" for Commentary
+		super.add_popup_node(Commentary)
 	}
 
 	rebuild_all_geos()
@@ -64,6 +65,31 @@ class Archeditor is Editor
 		}
 	}
 
+	set_node_color(node, col)
+	{
+		import "archgraph.component.comp_node" for CompNode
+		import "archgraph.tools.comp_ref" for CompRef
+
+		if (!node) {
+			return
+		}
+
+		var comp = nil
+		if (node is CompNode) {
+			comp = node.comp
+		} else if (node is CompRef) {
+			var v_comp = node.calc_value(0)
+			if (v_comp) {
+				comp = v_comp.value.comp
+			}
+		}
+
+		if (comp) {
+			this.set_brush_color(comp.v_geo.value.shape, col)
+			this.set_brush_color(comp.v_geo_c.value.shape, col)
+		}
+	}
+
 	draw_preview()
 	{
 		if (this.scene_stack.bp_dirty or CONTEXT.style_changed)
@@ -78,25 +104,12 @@ class Archeditor is Editor
 		var selected = this.preview_op.get_selected()
 		if (selected != this.selected)
 		{
-			var dirty = false
-
-			if (this.selected and this.selected["comp"]) {
-				this.set_brush_color(this.selected.comp.v_geo.value.shape, Vector3(255, 255, 255))
-				this.set_brush_color(this.selected.comp.v_geo_c.value.shape, Vector3(255, 255, 255))				
-				dirty = true
-			}
-
-			if (selected and selected["comp"]) {
-				this.set_brush_color(selected.comp.v_geo.value.shape, Vector3(255, 0, 0))
-				this.set_brush_color(selected.comp.v_geo_c.value.shape, Vector3(255, 0, 0))				
-				dirty = true
-			}
-
-			if (dirty) {
-				Blueprint.send_pin_dirty_root(this.all_geos.exports[0])
-			}
+			this.set_node_color(this.selected, Vector3(255, 255, 255))
+			this.set_node_color(selected, Vector3(255, 0, 0))
 
 			this.selected = selected
+
+			Blueprint.send_pin_dirty_root(this.all_geos.exports[0])
 		}
 
 		super.draw_preview()
@@ -108,6 +121,10 @@ class Archeditor is Editor
 
 	add_node(bp_node, x, y)
 	{
+		import "archgraph.style.up_ang_angle" for UpAngAngle
+		import "archgraph.style.step_length" for StepLength
+		import "archgraph.tools.hori_conn" for HoriConn
+
 		super.add_node(bp_node, x, y)
 
 		if (bp_node is Subgraph and bp_node.filepath.contains(RENDER_NODE_FILENAME)) 
@@ -117,7 +134,15 @@ class Archeditor is Editor
 		}
 		else if (bp_node is UpAngAngle)
 		{
-			CONTEXT.up_ang_angle = bp_node
+			CONTEXT.s_up_ang_angle = bp_node
+		}
+		else if (bp_node is StepLength)
+		{
+			CONTEXT.s_step_len = bp_node
+		}
+		else if (bp_node is HoriConn)
+		{
+			this.dg.joints.add(bp_node)
 		}
 	}
 }

@@ -24,7 +24,7 @@ class StepLength is Node
 
 	calc_value(idx)
 	{
-		var v_idx = Blueprint.calc_input_value(this, 0)
+		var v_idx = Blueprint.calc_input_value(this, "prev")
 		if (!v_idx) {
 			return Variant(DEFAULT_STEP_LEN)
 		} else {

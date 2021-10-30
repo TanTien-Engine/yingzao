@@ -5,6 +5,15 @@ import "archgraph.trans_nodes" for TransNodes
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
 
+fun get_geo_idx(geo_node)
+{
+	if (geo_node is VariantProxy) {
+		return 0
+	} else {
+		return "geo"
+	}
+}
+
 class JointsNodes
 {
 	static conn2(v_geo0, v_geo1, pos, angle)
@@ -16,10 +25,10 @@ class JointsNodes
 		var n_pos   = VariantProxy(Variant(pos))
 		var n_angle = VariantProxy(Variant(angle))
 
-		Blueprint.connect(n_geo0,  0, CONN2_JOINT, "geo0")
-		Blueprint.connect(n_geo1,  0, CONN2_JOINT, "geo1")
-		Blueprint.connect(n_pos,   0, CONN2_JOINT, "pos")
-		Blueprint.connect(n_angle, 0, CONN2_JOINT, "angle")
+		Blueprint.connect(n_geo0,  "out", CONN2_JOINT, "geo0")
+		Blueprint.connect(n_geo1,  "out", CONN2_JOINT, "geo1")
+		Blueprint.connect(n_pos,   "out", CONN2_JOINT, "pos")
+		Blueprint.connect(n_angle, "out", CONN2_JOINT, "angle")
 
 		return [ Blueprint.calc_output_value(CONN2_JOINT, "geo0"), Blueprint.calc_output_value(CONN2_JOINT, "geo1") ]
 	}
@@ -34,11 +43,11 @@ class JointsNodes
 		var n_pos  = VariantProxy(Variant(pos))
 		var n_angle = VariantProxy(Variant(angle))
 
-		Blueprint.connect(n_geo0,  0, CONN3_JOINT, "geo0")
-		Blueprint.connect(n_geo1,  0, CONN3_JOINT, "geo1")
-		Blueprint.connect(n_geo2,  0, CONN3_JOINT, "geo2")
-		Blueprint.connect(n_pos,   0, CONN3_JOINT, "pos")
-		Blueprint.connect(n_angle, 0, CONN3_JOINT, "angle")
+		Blueprint.connect(n_geo0,  "out", CONN3_JOINT, "geo0")
+		Blueprint.connect(n_geo1,  "out", CONN3_JOINT, "geo1")
+		Blueprint.connect(n_geo2,  "out", CONN3_JOINT, "geo2")
+		Blueprint.connect(n_pos,   "out", CONN3_JOINT, "pos")
+		Blueprint.connect(n_angle, "out", CONN3_JOINT, "angle")
 
 		return [ Blueprint.calc_output_value(CONN3_JOINT, "geo0"), Blueprint.calc_output_value(CONN3_JOINT, "geo1"), Blueprint.calc_output_value(CONN3_JOINT, "geo2") ]
 	}
@@ -50,9 +59,9 @@ class JointsNodes
 		var geo_node = VariantProxy(v_geo)
 		var pos_node = VariantProxy(Variant(pos))
 
-		Blueprint.connect(geo_node, 0, CUT_BODY_JOINT, "geo")
-		Blueprint.connect(cut_node, 0, CUT_BODY_JOINT, "cut_body")		
-		Blueprint.connect(pos_node, 0, CUT_BODY_JOINT, "pos")
+		Blueprint.connect(geo_node, "out", CUT_BODY_JOINT, "geo")
+		Blueprint.connect(cut_node, get_geo_idx(cut_node), CUT_BODY_JOINT, "cut_body")		
+		Blueprint.connect(pos_node, "out", CUT_BODY_JOINT, "pos")
 
 		return Blueprint.calc_output_value(CUT_BODY_JOINT, "geo")
 	}
@@ -74,9 +83,22 @@ class JointsNodes
 		var geo_node = VariantProxy(v_geo)
 		var y_node = VariantProxy(Variant(y))
 
-		Blueprint.connect(geo_node, 0, TOP_PLANE_CUT, "geo")
-		Blueprint.connect(y_node, 0, TOP_PLANE_CUT, "y")
+		Blueprint.connect(geo_node, "out", TOP_PLANE_CUT, "geo")
+		Blueprint.connect(y_node, "out", TOP_PLANE_CUT, "y")
 
 		return Blueprint.calc_output_value(TOP_PLANE_CUT, "geo")
 	}
+
+	static cut_left_plane(v_geo, z)
+	{
+		var TOP_PLANE_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/63_left_plane_cut.ves", nil)
+
+		var geo_node = VariantProxy(v_geo)
+		var z_node = VariantProxy(Variant(z))
+
+		Blueprint.connect(geo_node, "out", TOP_PLANE_CUT, "geo")
+		Blueprint.connect(z_node, "out", TOP_PLANE_CUT, "z")
+
+		return Blueprint.calc_output_value(TOP_PLANE_CUT, "geo")
+	}	
 }

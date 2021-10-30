@@ -23,8 +23,8 @@ class ToolsNodes
 		var merge = BrushMerge()
 
 		var geo_node = VariantProxy(Variant(v_geo))
-		Blueprint.connect(geo_node.exports[0], merge.imports[0])
+		Blueprint.connect(geo_node, "out", merge, "list")
 
-		return Blueprint.calc_output_value(merge, 0)
+		return Blueprint.calc_output_value(merge, "brush")
 	}
 }

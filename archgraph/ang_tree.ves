@@ -38,10 +38,10 @@ class AngTree
 				Logger.error("Unknown node %(next)")
 			}
 
-			Blueprint.connect(prev, 0, n, 0)
+			Blueprint.connect(prev, "next", n, "prev")
 
 			prev = n
-			next = Blueprint.get_output_node(next, 0)
+			next = Blueprint.get_output_node(next, "next")
 		}
 
 		this.layers = []
@@ -58,7 +58,7 @@ class AngTree
 		var curr = this.root
 		while (curr) {
 			this.layers.add(curr)
-			curr = Blueprint.get_output_node(curr, 0)
+			curr = Blueprint.get_output_node(curr, "next")
 		}
 	}	
 

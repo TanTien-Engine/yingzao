@@ -1,15 +1,14 @@
-import "blueprint.node" for Node
 import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
 import "blueprint.variant_proxy" for VariantProxy
 import "editor.node_cache" for NODE_CACHE
+import "archgraph.component.comp_node" for CompNode
 import "archgraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_FANG
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT, DOU_H_WIDTH, MIN_GONG_SPACE
 import "archgraph.component" for Component
-import "archgraph.component.dou" for SAN_DOU, QIXIN_DOU
 import "archgraph.context" for CONTEXT
 import "archgraph.coord_trans" for CoordTrans
 import "archgraph.dou_helper" for DouHelper
@@ -30,7 +29,7 @@ var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 var JIAOHU_CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_tu_cut_body.ves", nil)
 var QIXIN_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
 
-class HoriGong is Node
+class HoriGong is CompNode
 {
 	init()
 	{
@@ -45,14 +44,12 @@ class HoriGong is Node
 
 		this.layout()
 
-		this.comp = Component()
-
 		this.gong = nil
 	}
 
 	calc_value(idx)
 	{
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
 	}
 
@@ -65,7 +62,7 @@ class HoriGong is Node
 		}
 
 		// translate
-		var pos = NodeHelper.calc_curr_pos(this, 0)
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		var v_geo = TransNodes.translate(this.gong, pos)
 
 		// conn prev
@@ -94,7 +91,7 @@ class HoriGong is Node
 		var offset = - (len_o - len_i) / 2
 
 		var len_node = VariantProxy(Variant(len_o + len_i))
-		Blueprint.connect(len_node, 0, this.gong, "length")
+		Blueprint.connect(len_node, "out", this.gong, "length")
 
 		var v_geo = Blueprint.calc_output_value(this.gong, "geo")
 		len_node.disconnect()
@@ -106,7 +103,7 @@ class HoriGong is Node
 
 	select_gong(dg)
 	{
-		var prev = Blueprint.get_input_node(this, 0)
+		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev and prev is HoriGong) {
 			return MAN_GONG
 		} else if (dg) {
@@ -121,7 +118,7 @@ class HoriGong is Node
 	{
 		var cut_node = nil
 
-		var prev = Blueprint.get_input_node(this, 0)
+		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev and prev is HoriGong) {
 			cut_node = QIXIN_CUT
 		} else {
@@ -133,7 +130,9 @@ class HoriGong is Node
 
 	add_dou(dg, v_geo, pos)
 	{
-		var next = Blueprint.get_output_node(this, 0)
+		import "archgraph.component.dou" for SAN_DOU, QIXIN_DOU
+
+		var next = Blueprint.get_output_node(this, "next")
 		if (!next) {
 			return v_geo
 		}
@@ -183,7 +182,7 @@ class HoriGong is Node
 
 	calc_inner_step_len_num(dg)
 	{
-		var prev = Blueprint.get_input_node(this, 0)
+		var prev = Blueprint.get_input_node(this, "prev")
 		if (!prev or !(prev is HoriGong))
 		{
 			if (this.comp.x_idx < 0)

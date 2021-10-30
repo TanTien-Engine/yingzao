@@ -5,7 +5,11 @@ import "geograph.variant" for VAR_TYPE_GEO
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.context" for CONTEXT
 import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.trans_nodes" for TransNodes
 import "archgraph.spatial_query" for SpatialQuery
+import "archgraph.component.comp_node" for CompNode
+import "archgraph.component.ang" for Ang
+import "archgraph.component.vert_gong" for VertGong
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector2, Vector3
 import "maths" for Maths
@@ -19,6 +23,8 @@ class DouGong
 
 		this.x_max = 0
 		this.x_min = 0
+
+		this.joints = []
 	}
 
 	rebuild(scene, out_list)
@@ -37,17 +43,20 @@ class DouGong
 		// pass2: fix corner dou
 		for (var node in scene.nodes) {
 			var bp_node = node.components["bp"]
-			if (bp_node and bp_node.has_method("resolve2(_)")) {
+			if (bp_node and bp_node is CompNode and bp_node.has_method("resolve2(_)")) {
 				bp_node.resolve2(this)
 			}
 		}
 
 		// joint
+		for (var j in this.joints) {
+			j.resolve()
+		}		
 		for (var layer in this.layers) {
 			this.build_layer_joints(layer)
 			this.build_layer_side_joints(layer)
 		}
-		this.build_between_layers_joint()	
+		this.build_between_layers_joint()
 
 		// output
 		if (CONTEXT.gen_corner) {
@@ -75,7 +84,6 @@ class DouGong
 
 	get_result_geo_corner(out_list)
 	{
-		import "archgraph.component.ang" for Ang
 		out_list.clear()
 
 		for (var layer in this.layers)
@@ -105,11 +113,10 @@ class DouGong
 			this.layers.add([ nil ])
 		}
 
-		import "archgraph.component.vert_gong" for VertGong
 		for (var node in scene.nodes) 
 		{
 			var bp_node = node.components["bp"]
-			if (bp_node and bp_node.has_method("resolve(_)"))
+			if (bp_node and bp_node is CompNode and bp_node.has_method("resolve(_)"))
 			{
 				var layer = NodeHelper.calc_y_idx(bp_node)
 				if (bp_node is VertGong) {
@@ -137,7 +144,7 @@ class DouGong
 					if (o_idx > this.x_max) {
 						this.x_max = o_idx
 					}
-					o = Blueprint.get_output_node(o, 0)
+					o = Blueprint.get_output_node(o, "next")
 				}
 
 				var i_idx = -(layer[0].comp.y_idx)
@@ -148,7 +155,7 @@ class DouGong
 					if (i_idx < this.x_min) {
 						this.x_min = i_idx
 					}
-					i = Blueprint.get_output_node(i, 0)
+					i = Blueprint.get_output_node(i, "next")
 				}
 			}
 		}
@@ -177,7 +184,6 @@ class DouGong
 			return
 		}
 
-		import "archgraph.component.ang" for Ang
 		if (layer[0] is Ang and layer[0].ang_layer == 2) {
 			return
 		}
@@ -275,8 +281,6 @@ class DouGong
 
 	build_lu_hua_joint()
 	{
-		import "archgraph.trans_nodes" for TransNodes
-
 		if (this.layers[0].isEmpty) {
 			return
 		}
@@ -320,8 +324,6 @@ class DouGong
 
 	build_dou_er_joints()
 	{
-		import "archgraph.trans_nodes" for TransNodes
-
 		this.build_lu_hua_joint()
 
 		for (var i in 1 .. this.layers.count - 1)
@@ -347,8 +349,6 @@ class DouGong
 
 	build_hori_gong_and_ang_joints()
 	{
-		import "archgraph.component.ang" for Ang
-
 		for (var i in 0 .. this.layers.count)
 		{
 			var layer = this.layers[i]
