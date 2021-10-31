@@ -87,9 +87,9 @@ class UpAng is VertGong
 	{
 		var dist = 0
 		if (CONTEXT.gen_corner) {
-			dist = CONTEXT.step_len_c_func(this.inner_hop, true)
+			dist = CONTEXT.step_len_c_func(-this.inner_hop, true)
 		} else {
-			dist = CONTEXT.step_len_func(this.inner_hop, true)
+			dist = CONTEXT.step_len_func(-this.inner_hop, true)
 		}
 
 		var prev = Blueprint.get_input_node(this, "prev")

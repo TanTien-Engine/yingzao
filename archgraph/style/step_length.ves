@@ -50,16 +50,16 @@ class StepLength is Node
 			if (!outer or i >= outer.count) {
 				return DEFAULT_STEP_LEN
 			} else {
-				return outer[i]
+				return outer[i - 1]
 			}
 		}
 		else
 		{
 			var inner = this.query_param("inner").value
-			if (!inner or i >= inner.count) {
+			if (!inner or -i >= inner.count) {
 				return DEFAULT_STEP_LEN
 			} else {
-				return inner[i]
+				return inner[-i - 1]
 			}
 		}
 	}
