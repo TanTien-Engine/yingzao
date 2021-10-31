@@ -9,10 +9,12 @@ import "archgraph.context" for CONTEXT
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
 import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.tools_nodes" for ToolsNodes
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 
 var ANG    = NODE_CACHE.fetch("../yingzao/00_dougong2/38_up_ang.ves", nil)
+var XUE    = NODE_CACHE.fetch("../yingzao/00_dougong2/38_xue_qi.ves", nil)
 var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
 class UpAng is VertGong
@@ -50,6 +52,9 @@ class UpAng is VertGong
 		}
 		else
 		{
+			Blueprint.connect(CONTEXT.s_up_ang_angle, "up_ang_slope", XUE, "slope")
+			var v_xue = TransNodes.translate(XUE, ang_pos)
+
 			var pos_n = NodeHelper.calc_curr_pos(this, "prev")
 			import "archgraph.component.hua_gong" for HuaGong
 			var v_hua = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos_n)
@@ -60,6 +65,7 @@ class UpAng is VertGong
 			// conn next
 			v_hua = this.add_dou(v_hua, pos_n)
 
+			v_geo = ToolsNodes.brush_merge([v_xue, v_geo])
 			var geo_list = [ v_geo ]
 			for (var i in v_hua.value) {
 				geo_list.add(i)

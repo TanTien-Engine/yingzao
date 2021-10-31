@@ -1,0 +1,115 @@
+var node0 = ::geograph::nodes::polygon::Polygon()
+node0.query_param("vertices").value = [  ]
+node0.query_param("color").value.set(1, 0, 0)
+
+_editor.add_node(node0, -122.94350091428, 100.90600474769)
+
+var node1 = ::geograph::nodes::poly_extrude::PolyExtrude()
+node1.query_param("distance").value = 0.1
+
+_editor.add_node(node1, 37.843745397491, 97.941968693071)
+
+var node2 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node2, 225.80286101958, 25.245118026571)
+
+var node3 = ::blueprint::nodes::array::Array()
+node3.query_param("serialize").value = true
+
+node3.list = [ ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0, 0.18)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.1, 0.2)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.26, 0.18)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.32, 0.23)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.4, 0.24)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0.45, 0.3)), ::blueprint::variant::Variant("num2", ::maths::vector::Vector2(0, 0.36)) ]
+
+_editor.add_node(node3, -259.15171672127, 136.69385591017)
+
+var node4 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node4, -32.732289907069, -169.38443862241)
+
+var node5 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node5, -405.2897709354, -151.93121455243)
+
+var node6 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node6, -277.32649021453, -111.45576193481)
+
+var node7 = ::blueprint::nodes::atan::Atan()
+
+_editor.add_node(node7, -266.2589340399, 348.46581710779)
+
+var node8 = ::blueprint::nodes::store::Store()
+
+node8.var_name = "angle"
+
+_editor.add_node(node8, -133.58383747503, 348.6175979449)
+
+var node9 = ::blueprint::nodes::number::Number()
+
+node9.value = 1
+
+_editor.add_node(node9, -399.59402895667, 304.21453529935)
+
+var node10 = ::blueprint::nodes::load::Load()
+
+node10.var_name = "angle"
+
+_editor.add_node(node10, 116.80437939277, -123.76971596324)
+
+var node11 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node11, 443.30506101958, 16.581518026571)
+
+var node12 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node12, 260.72479627019, -172.0145922698)
+
+var node13 = ::blueprint::nodes::number3::Number3()
+
+node13.value.set(-0.05, -0.42, 0.55)
+
+_editor.add_node(node13, 15.954752324881, -20.42188963309)
+
+var node14 = ::geograph::nodes::knife::Knife()
+node14.query_param("keep").value = "above"
+node14.query_param("seam").value = true
+
+_editor.add_node(node14, 589.90907239323, -21.164897445599)
+
+var node15 = ::geograph::nodes::plane::Plane()
+node15.query_param("ori").value.set(0, -0.42, 0)
+node15.query_param("dir").value.set(0, 1, 0)
+
+_editor.add_node(node15, 460.21905408269, -147.22490965263)
+
+var node16 = ::blueprint::nodes::input::Input()
+
+node16.var_name = "slope"
+node16.var_type = "num"
+
+_editor.add_node(node16, -401.36433103805, 373.50517812703)
+
+var node17 = ::blueprint::nodes::output::Output()
+
+node17.var_name = "geo"
+node17.var_type = "geo"
+
+_editor.add_node(node17, 729.57192517644, 7.7985864411246)
+
+Blueprint.connect(node16, "var", node7, "y")
+Blueprint.connect(node9, "v", node7, "x")
+Blueprint.connect(node7, "v", node8, "var")
+Blueprint.connect(node8, "var", node10, "var")
+Blueprint.connect(node10, "var", node12, "x")
+Blueprint.connect(node5, "pi/2", node6, "a")
+Blueprint.connect(node5, "pi", node6, "b")
+Blueprint.connect(node6, "v", node4, "x")
+Blueprint.connect(node5, "pi/2", node4, "y")
+Blueprint.connect(node3, "all", node0, "vertices")
+Blueprint.connect(node0, "polytope", node1, "geo")
+Blueprint.connect(node1, "geo", node2, "obj")
+Blueprint.connect(node13, "v3", node2, "translate")
+Blueprint.connect(node4, "xyz", node2, "rotate")
+Blueprint.connect(node2, "obj", node11, "obj")
+Blueprint.connect(node12, "xyz", node11, "rotate")
+Blueprint.connect(node11, "obj", node14, "geo")
+Blueprint.connect(node15, "plane", node14, "plane")
+Blueprint.connect(node14, "geo", node17, "var")
