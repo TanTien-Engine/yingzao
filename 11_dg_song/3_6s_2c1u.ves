@@ -1,11 +1,11 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
 node0.set_prop_value("ortho", false)
-node0.set_prop_value("offset", 6.2214002609253)
+node0.set_prop_value("offset", 3.6950843334198)
 
-node0.op_node.cam.position.set(2.9137135396766, 0.80821063142526, -0.44984100801747)
-node0.op_node.cam.yaw = -187.1
-node0.op_node.cam.pitch = -5.8
+node0.op_node.cam.position.set(1.1064756908521, 0.92491897510792, -2.0078895409121)
+node0.op_node.cam.yaw = -248.1
+node0.op_node.cam.pitch = -13
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
@@ -97,19 +97,19 @@ _editor.add_node(node20, 495.47618085372, 372.36662421109)
 
 var node21 = ::archgraph::tools::hori_conn::HoriConn()
 
-_editor.add_node(node21, -31.144964759, -443.04457880698)
+_editor.add_node(node21, -25.288564759, -650.94677880698)
 
 var node22 = ::archgraph::tools::comp_ref::CompRef()
-node22.query_param("y").value = 5
+node22.query_param("y").value = 6
 node22.query_param("x").value = 0
 
-_editor.add_node(node22, -172.20322522812, -501.37371272266)
+_editor.add_node(node22, -169.27502522812, -611.18121272266)
 
 var node23 = ::archgraph::tools::comp_ref::CompRef()
-node23.query_param("y").value = 5
-node23.query_param("x").value = 1
+node23.query_param("y").value = 6
+node23.query_param("x").value = 3
 
-_editor.add_node(node23, -171.20322522812, -409.37371272266)
+_editor.add_node(node23, -171.20322522812, -702.19371272266)
 
 var node24 = ::blueprint::nodes::commentary::Commentary()
 
@@ -158,8 +158,26 @@ var node34 = ::archgraph::component::fang::Fang()
 
 _editor.add_node(node34, 504.01392882796, -8.7088396434941)
 
-Blueprint.connect(node23, "comp", node21, "left")
-Blueprint.connect(node22, "comp", node21, "right")
+var node35 = ::archgraph::tools::hori_conn::HoriConn()
+
+_editor.add_node(node35, -31.144964759, -443.04457880698)
+
+var node36 = ::archgraph::tools::comp_ref::CompRef()
+node36.query_param("y").value = 5
+node36.query_param("x").value = 0
+
+_editor.add_node(node36, -172.20322522812, -501.37371272266)
+
+var node37 = ::archgraph::tools::comp_ref::CompRef()
+node37.query_param("y").value = 5
+node37.query_param("x").value = 1
+
+_editor.add_node(node37, -171.20322522812, -409.37371272266)
+
+Blueprint.connect(node37, "comp", node35, "left")
+Blueprint.connect(node36, "comp", node35, "right")
+Blueprint.connect(node22, "comp", node21, "left")
+Blueprint.connect(node23, "comp", node21, "right")
 Blueprint.connect(node1, "hori", node4, "prev")
 Blueprint.connect(node4, "next", node5, "prev")
 Blueprint.connect(node5, "next", node9, "prev")

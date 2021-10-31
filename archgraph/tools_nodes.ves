@@ -3,6 +3,7 @@ import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "geograph.nodes.box" for Box
 import "geograph.nodes.brush_merge" for BrushMerge
+import "editor.node_cache" for NODE_CACHE
 
 class ToolsNodes
 {
@@ -26,5 +27,15 @@ class ToolsNodes
 		Blueprint.connect(geo_node, "out", merge, "list")
 
 		return Blueprint.calc_output_value(merge, "brush")
+	}
+
+	static is_gong_vert(v_geo)
+	{
+		var TEST = NODE_CACHE.fetch("../yingzao/00_dougong2/00_is_gong_vert.ves", nil)
+
+		var geo_node = VariantProxy(v_geo)
+		Blueprint.connect(geo_node, "out", TEST, "gong")
+
+		return Blueprint.calc_output_value(TEST, "vert").value
 	}
 }

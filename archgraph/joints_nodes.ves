@@ -78,27 +78,40 @@ class JointsNodes
 
 	static cut_top_planne(v_geo, y)
 	{
-		var TOP_PLANE_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/63_top_plane_cut.ves", nil)
+		var CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/63_top_plane_cut.ves", nil)
 
 		var geo_node = VariantProxy(v_geo)
 		var y_node = VariantProxy(Variant(y))
 
-		Blueprint.connect(geo_node, "out", TOP_PLANE_CUT, "geo")
-		Blueprint.connect(y_node, "out", TOP_PLANE_CUT, "y")
+		Blueprint.connect(geo_node, "out", CUT, "geo")
+		Blueprint.connect(y_node, "out", CUT, "y")
 
-		return Blueprint.calc_output_value(TOP_PLANE_CUT, "geo")
+		return Blueprint.calc_output_value(CUT, "geo")
 	}
 
 	static cut_left_plane(v_geo, z)
 	{
-		var TOP_PLANE_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/63_left_plane_cut.ves", nil)
+		var CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/63_left_plane_cut.ves", nil)
 
 		var geo_node = VariantProxy(v_geo)
 		var z_node = VariantProxy(Variant(z))
 
-		Blueprint.connect(geo_node, "out", TOP_PLANE_CUT, "geo")
-		Blueprint.connect(z_node, "out", TOP_PLANE_CUT, "z")
+		Blueprint.connect(geo_node, "out", CUT, "geo")
+		Blueprint.connect(z_node, "out", CUT, "z")
 
-		return Blueprint.calc_output_value(TOP_PLANE_CUT, "geo")
+		return Blueprint.calc_output_value(CUT, "geo")
+	}
+
+	static cut_right_plane(v_geo, z)
+	{
+		var CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/63_right_plane_cut.ves", nil)
+
+		var geo_node = VariantProxy(v_geo)
+		var z_node = VariantProxy(Variant(z))
+
+		Blueprint.connect(geo_node, "out", CUT, "geo")
+		Blueprint.connect(z_node, "out", CUT, "z")
+
+		return Blueprint.calc_output_value(CUT, "geo")
 	}	
 }
