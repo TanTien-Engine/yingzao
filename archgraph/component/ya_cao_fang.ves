@@ -44,7 +44,7 @@ class YaCaoFang is CompNode
 		for (var i in dg.layers[this.comp.y_idx]) {
 			if (i is ChenFangTou) {
 				pos = NodeHelper.calc_curr_pos(i, "prev")
-				pos.y = pos.y + CAI_HEIGHT
+				pos.y = pos.y + CAI_HEIGHT - 0.02
 			}
 		}
 		if (!pos) {
