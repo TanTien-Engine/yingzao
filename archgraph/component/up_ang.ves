@@ -96,13 +96,19 @@ class UpAng is VertGong
 		if (prev is UpAng)
 		{
 			var pos = prev.calc_ang_pos()
-			return pos.add(Vector3(0, ZU_CAI_HEIGHT, -dist))
+			if (pos) {
+				return pos.add(Vector3(0, ZU_CAI_HEIGHT, -dist))
+			}
 		}
 		else
 		{
 			var pos = Blueprint.calc_output_value(prev, "inner").value
-			return pos.add(Vector3(0, ZU_CAI_HEIGHT * 2, -dist))
+			if (pos) {
+				return pos.add(Vector3(0, ZU_CAI_HEIGHT * 2, -dist))
+			}
 		}
+
+		return Vector3(0, 0, 0)
 	}
 
 	ang_plane_cut(geo)
