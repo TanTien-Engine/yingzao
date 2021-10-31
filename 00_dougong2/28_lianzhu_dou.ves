@@ -1,0 +1,43 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "28_solid_dou.ves")
+
+_editor.add_node(node0, 65.96908793, -17.91274956)
+
+var node1 = ::blueprint::nodes::merge::Merge()
+
+_editor.add_node(node1, 294.14837793, -77.91274956)
+
+var node2 = ::blueprint::nodes::subgraph::Subgraph()
+node2.load_from_file(_editor, "21_san_dou.ves")
+
+_editor.add_node(node2, -326.79400503769, -76.896809139264)
+
+var node3 = ::blueprint::nodes::subgraph::Subgraph()
+node3.load_from_file(_editor, "../../tantien/assets/blueprints/geograph/translate_y.ves")
+
+_editor.add_node(node3, 60.67697793, -126.79837956)
+
+var node4 = ::blueprint::nodes::number::Number()
+
+node4.value = 0.1
+
+_editor.add_node(node4, -137.39721207, -174.40888956)
+
+var node5 = ::blueprint::nodes::output::Output()
+
+node5.var_name = "geo"
+node5.var_type = "array"
+
+_editor.add_node(node5, 429.91440736581, -57.635572269515)
+
+var node6 = ::geograph::nodes::rotate_y::RotateY()
+node6.query_param("angle").value = "90"
+
+_editor.add_node(node6, -141.44168574608, -95.282234495695)
+
+Blueprint.connect(node2, "geo", node6, "geo")
+Blueprint.connect(node6, "geo", node3, "geo")
+Blueprint.connect(node4, "v", node3, "offset")
+Blueprint.connect(node0, "geo", node1, "in0")
+Blueprint.connect(node3, "geo", node1, "in1")
+Blueprint.connect(node1, "list", node5, "var")

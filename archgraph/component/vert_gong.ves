@@ -116,7 +116,16 @@ class VertGong is CompNode
 
 	gen_dou(vert, hori, pos)
 	{
-		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU, PINGPAN_DOU
+		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU, PINGPAN_DOU, LIANZHU_DOU
+
+		if (pos.z < 0)
+		{
+			import "archgraph.component.up_ang" for UpAng
+			var next = Blueprint.get_output_node(this, "next")
+			if (next and next is UpAng) {
+				return TransNodes.translate(LIANZHU_DOU, pos)
+			}
+		}
 
 		if (vert and hori) 
 		{
