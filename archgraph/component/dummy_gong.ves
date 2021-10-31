@@ -1,0 +1,35 @@
+import "blueprint.pin" for Pin
+import "blueprint.variant" for Variant
+import "archgraph.component.comp_node" for CompNode
+import "archgraph.variant" for PIN_TYPE_HORI_GONG
+import "archgraph.node_helper" for NodeHelper
+import "archgraph.constant" for ZU_CAI_HEIGHT
+import "maths.vector" for Vector3
+
+class DummyGong is CompNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_HORI_GONG),
+		]
+		this.exports = [
+			Pin(this, "next", PIN_TYPE_HORI_GONG),
+		]
+
+		this.layout()
+	}
+
+	calc_value(idx)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
+	}
+
+	get_title()
+	{
+		return "dummy"
+	}
+}
