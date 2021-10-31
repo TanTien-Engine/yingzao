@@ -51,8 +51,9 @@ class DouGong
 		// joint
 		for (var j in this.joints) {
 			j.resolve()
-		}		
-		for (var layer in this.layers) {
+		}
+		for (var i in 1..this.layers.count) {
+			var layer = this.layers[i]
 			this.build_layer_joints(layer)
 			this.build_layer_side_joints(layer)
 		}
