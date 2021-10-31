@@ -110,8 +110,15 @@ class Fang is CompNode
 			return v_geo
 		}
 
-		var l_pos = Vector3(-0.41, pos.y + CAI_HEIGHT, pos.z)
-		var r_pos = Vector3( 0.41, pos.y + CAI_HEIGHT, pos.z)
+		var dist = 0.41
+
+		import "archgraph.component.inner_gong" for InnerGong
+		if (next is InnerGong) {
+			dist = 0.14
+		}
+
+		var l_pos = Vector3(-dist, pos.y + CAI_HEIGHT, pos.z)
+		var r_pos = Vector3( dist, pos.y + CAI_HEIGHT, pos.z)
 
 		var l_sun = TransNodes.translate(GD_SUN, l_pos)
 		var r_sun = TransNodes.translate(GD_SUN, r_pos)
