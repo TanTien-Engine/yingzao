@@ -155,7 +155,7 @@ class VertGong is CompNode
 		{
 			import "archgraph.component.up_ang" for UpAng
 			var next = Blueprint.get_output_node(this, "next")
-			if (next and next is UpAng) {
+			if (next and next is UpAng and !(this is UpAng)) {
 				return TransNodes.translate(LIANZHU_DOU, pos)
 			}
 		}
