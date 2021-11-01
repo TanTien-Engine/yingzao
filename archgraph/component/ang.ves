@@ -85,7 +85,7 @@ class Ang is VertGong
 			var v_hua = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos)
 
 			// conn next
-			v_hua = this.add_dou(v_hua, pos)
+			v_hua = this.add_dou(v_hua, true, true)
 
 			// ang cut
 			v_hua = this.ang_plane_cut(v_hua, true)
@@ -100,7 +100,7 @@ class Ang is VertGong
 			var v_shua = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 
 			// conn next
-			v_shua = this.add_dou(v_shua, pos)
+			v_shua = this.add_dou(v_shua, true, true)
 
 			// ang cut
 			var ang_0 = Blueprint.get_input_node(this, "prev")

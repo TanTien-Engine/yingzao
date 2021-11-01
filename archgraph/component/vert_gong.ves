@@ -89,29 +89,62 @@ class VertGong is CompNode
 		return 0.06
 	}
 
-	add_dou(v_geo, pos)
+	add_dou(v_geo, left, right)
 	{
+		if (!left and !right) {
+			return v_geo
+		}
+
 		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
-		var l_pos = Blueprint.calc_output_value(this, "outer").value
-		var r_pos = Blueprint.calc_output_value(this, "inner").value
-		l_pos.y = l_pos.y - QI_HEIGHT
-		r_pos.y = r_pos.y - QI_HEIGHT
+		if (left and right)
+		{
+			var l_pos = Blueprint.calc_output_value(this, "outer").value
+			var r_pos = Blueprint.calc_output_value(this, "inner").value
+			l_pos.y = l_pos.y - QI_HEIGHT
+			r_pos.y = r_pos.y - QI_HEIGHT
 
-		var l_sun = TransNodes.translate(GD_SUN, l_pos)
-		var r_sun = TransNodes.translate(GD_SUN, r_pos)
+			var l_sun = TransNodes.translate(GD_SUN, l_pos)
+			var r_sun = TransNodes.translate(GD_SUN, r_pos)
 
-		var next_v = Blueprint.get_output_node(this, "next")
-		var next_o = Blueprint.get_output_node(this, "outer")
-		var next_i = Blueprint.get_output_node(this, "inner")
+			var next_v = Blueprint.get_output_node(this, "next")
+			var next_o = Blueprint.get_output_node(this, "outer")
+			var next_i = Blueprint.get_output_node(this, "inner")
 
-		var l_dou = this.gen_dou(next_v, next_o, l_pos)
-		var r_dou = this.gen_dou(next_v, next_i, r_pos)
+			var l_dou = this.gen_dou(next_v, next_o, l_pos)
+			var r_dou = this.gen_dou(next_v, next_i, r_pos)
 
-		// cut sun
-		v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])
+			// cut sun
+			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])
 
-		return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
+			return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
+		}
+		else
+		{
+			var pos = nil
+			if (left) {
+				pos = Blueprint.calc_output_value(this, "outer").value
+			} else {
+				pos = Blueprint.calc_output_value(this, "inner").value
+			}
+			pos.y = pos.y - QI_HEIGHT
+
+			var sun = TransNodes.translate(GD_SUN, pos)
+
+			var next_v = Blueprint.get_output_node(this, "next")
+			var next_h = nil
+			if (left) {
+				next_h = Blueprint.get_output_node(this, "outer")
+			} else {
+				next_h = Blueprint.get_output_node(this, "inner")
+			}
+			var v_dou = this.gen_dou(next_v, next_h, pos)
+
+			// cut sun
+			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, pos)
+
+			return Variant([ v_geo, sun, v_dou ])
+		}
 	}
 
 	gen_dou(vert, hori, pos)
