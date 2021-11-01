@@ -5,6 +5,7 @@ import "archgraph.component.vert_gong" for VertGong
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.gen_nodes" for GenNodes
+import "archgraph.constant" for DOU_H_WIDTH
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
 import "maths.vector" for Vector3
@@ -25,39 +26,18 @@ class ChenFangTou is VertGong
 		}
 		
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
-//		pos.y = pos.y + 0.105	// for 2_8s_2c3a_tween.ves
-
-		var len = 2
-		var p_node = prev
-		if (p_node) {
-			len = p_node.calc_outer_step_len() * 2 - 0.1
-		}
-
-		var len_node = VariantProxy(Variant(len))
-		Blueprint.connect(len_node, "out", TOU, "length")
-
-		var full_node = nil
-		var next = NodeHelper.get_output_valid_node(this, "next")
-		if (next) {
-			full_node = VariantProxy(Variant(true))
-			Blueprint.connect(full_node, "out", TOU, "full")
-		}
-
-		var v_geo = TransNodes.translate(TOU, pos)
-		len_node.disconnect()
-		if (full_node) {
-			full_node.disconnect()
-		}
+		var full = NodeHelper.get_output_valid_node(this, "next") != nil
+		var v_geo = ChenFangTou.create_geo(this.outer_hop, this.inner_hop, pos, full)
 		
 		// ang cut
 		var pp_node = nil
-		if (p_node) {
-			pp_node = Blueprint.get_input_node(p_node, "prev")
+		if (prev) {
+			pp_node = Blueprint.get_input_node(prev, "prev")
 		}
 		import "archgraph.component.ang" for Ang
 		import "archgraph.component.up_ang" for UpAng
-		if (p_node is UpAng) {
-			v_geo = p_node.ang_plane_cut(v_geo)
+		if (prev is UpAng) {
+			v_geo = prev.ang_plane_cut(v_geo)
 		}
 		if (pp_node and pp_node is Ang) {
 			v_geo = pp_node.ang_plane_cut(v_geo, false)
@@ -76,22 +56,21 @@ class ChenFangTou is VertGong
 
 	gen_corner(dg)
 	{
-		var len = 2
-		var p_node = Blueprint.get_input_node(this, "prev")
-		if (p_node) {
-			len = p_node.calc_outer_step_len() / 1.414 * 2 - 0.1
-		}
+		var len_l = VertGong.calc_tot_step_len(this.outer_hop, this.less_step) + DOU_H_WIDTH
+		var len_r = VertGong.calc_tot_step_len(-this.inner_hop, this.less_step) + DOU_H_WIDTH
+		var len_l_node = VariantProxy(Variant(len_l / 1.414))
+		var len_r_node = VariantProxy(Variant(len_r / 1.414))
 
-		var len_node = VariantProxy(Variant(len))
-		Blueprint.connect(len_node, "out", TOU, "length")
+		Blueprint.connect(len_l_node, "out", TOU, "len_left")
+		Blueprint.connect(len_r_node, "out", TOU, "len_right")
 
 		var v_geo = TransNodes.translate(TOU, Vector3(0, 0, 0))
-		len_node.disconnect()
 
 		// ang cut
+		var prev = Blueprint.get_input_node(this, "prev")
 		var pp_node = nil
-		if (p_node) {
-			pp_node = Blueprint.get_input_node(p_node, "prev")
+		if (prev) {
+			pp_node = Blueprint.get_input_node(prev, "prev")
 		}
 		import "archgraph.component.ang" for Ang
 		if (pp_node and pp_node is Ang) {
@@ -100,5 +79,21 @@ class ChenFangTou is VertGong
 		}
 
 		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, 0)
+	}
+
+	static create_geo(outer_hop, inner_hop, pos, full)
+	{
+		var len_l = VertGong.calc_tot_step_len(outer_hop, this.less_step) + DOU_H_WIDTH
+		var len_r = VertGong.calc_tot_step_len(-inner_hop, this.less_step) + DOU_H_WIDTH
+
+		var len_l_node = VariantProxy(Variant(len_l))
+		var len_r_node = VariantProxy(Variant(len_r))
+		Blueprint.connect(len_l_node, "out", TOU, "len_left")
+		Blueprint.connect(len_r_node, "out", TOU, "len_right")
+
+		var full_node = VariantProxy(Variant(full))
+		Blueprint.connect(full_node, "out", TOU, "full")
+
+		return TransNodes.translate(TOU, pos)
 	}
 }
