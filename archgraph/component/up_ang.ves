@@ -7,11 +7,12 @@ import "archgraph.component.vert_gong" for VertGong
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.context" for CONTEXT
 import "archgraph.node_helper" for NodeHelper
-import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
+import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT, QI_HEIGHT
 import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.tools_nodes" for ToolsNodes
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
+import "math" for Math
 
 var ANG    = NODE_CACHE.fetch("../yingzao/00_dougong2/38_up_ang.ves", nil)
 var XUE    = NODE_CACHE.fetch("../yingzao/00_dougong2/38_xue_qi.ves", nil)
@@ -21,9 +22,14 @@ class UpAng is VertGong
 {
 	calc_value(idx)
 	{
-		if (idx == 2) {
-			return Variant(this.calc_ang_pos())
-		} else {
+		if (idx == 2) 
+		{
+			var ang_pos = this.calc_ang_pos()
+			ang_pos.y = ang_pos.y + this.calc_first_dy()
+			return Variant(ang_pos)
+		} 
+		else 
+		{
 			return super.calc_value(idx)
 		}
 	}
@@ -31,10 +37,17 @@ class UpAng is VertGong
 	resolve(dg)
 	{
 		var prev = Blueprint.get_input_node(this, "prev")
-		if (prev) {
-			this.outer_hop = prev.outer_hop + 1
+		if (prev) 
+		{
 			this.inner_hop = prev.inner_hop + 1
-		} else {
+			if (prev is UpAng) {
+				this.outer_hop = prev.outer_hop
+			} else {
+				this.outer_hop = prev.outer_hop + 1
+			}
+		} 
+		else 
+		{
 			this.outer_hop = 1
 			this.inner_hop = 1		
 		}
@@ -44,11 +57,27 @@ class UpAng is VertGong
 		}
 
 		var ang_pos = this.calc_ang_pos()
-		var v_geo = TransNodes.translate(ANG, ang_pos)
+		ang_pos.y = ang_pos.y + this.calc_first_dy()
 
+		var v_geo = TransNodes.translate(ANG, ang_pos)
 		if (prev is UpAng)
 		{
-			
+			var pos_n = NodeHelper.calc_curr_pos(this, "prev")
+			import "archgraph.component.shua_tou" for ShuaTou
+			var v_shua = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos_n)
+
+			// ang cut
+			v_shua = this.ang_plane_cut(v_shua)
+
+			// conn next
+			v_shua = this.add_dou(v_shua, true, true)
+
+//			v_geo = ToolsNodes.brush_merge([v_xue, v_geo])
+			var geo_list = [ v_geo ]
+			for (var i in v_shua.value) {
+				geo_list.add(i)
+			}
+			v_geo = Variant(geo_list)
 		}
 		else
 		{
@@ -63,9 +92,9 @@ class UpAng is VertGong
 			v_hua = this.ang_plane_cut(v_hua)
 
 			// conn next
-			v_hua = this.add_dou(v_hua, pos_n)
+			v_hua = this.add_dou(v_hua, true, true)
 
-			v_geo = ToolsNodes.brush_merge([v_xue, v_geo])
+//			v_geo = ToolsNodes.brush_merge([v_xue, v_geo])
 			var geo_list = [ v_geo ]
 			for (var i in v_hua.value) {
 				geo_list.add(i)
@@ -111,9 +140,23 @@ class UpAng is VertGong
 		return Vector3(0, 0, 0)
 	}
 
+	calc_first_dy()
+	{
+		var next = Blueprint.get_output_node(this, "next")
+		if (next is UpAng and CONTEXT.s_up_ang_angle)
+		{
+			var slope = Blueprint.calc_output_value(CONTEXT.s_up_ang_angle, "up_ang_slope").value
+			var angle = Math.atan2(slope, 1)
+			return ZU_CAI_HEIGHT - (CONTEXT.step_len_func(-this.inner_hop - 1, true) * slope + CAI_HEIGHT / Math.cos(angle))
+		}
+		return 0
+	}
+
 	ang_plane_cut(geo)
 	{
-		return UpAng.ang_plane_cut(geo, this.calc_ang_pos())
+		var ang_pos = this.calc_ang_pos()
+		ang_pos.y = ang_pos.y + this.calc_first_dy()
+		return UpAng.ang_plane_cut(geo, ang_pos)
 	}
 
 	static ang_plane_cut(geo, pos)
