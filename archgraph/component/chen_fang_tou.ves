@@ -15,11 +15,20 @@ class ChenFangTou is VertGong
 {
 	resolve(dg)
 	{
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev) {
+			this.outer_hop = prev.outer_hop
+			this.inner_hop = prev.inner_hop
+		} else {
+			this.outer_hop = 1
+			this.inner_hop = 1		
+		}
+		
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 //		pos.y = pos.y + 0.105	// for 2_8s_2c3a_tween.ves
 
 		var len = 2
-		var p_node = Blueprint.get_input_node(this, "prev")
+		var p_node = prev
 		if (p_node) {
 			len = p_node.calc_outer_step_len() * 2 - 0.1
 		}
