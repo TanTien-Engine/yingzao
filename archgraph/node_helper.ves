@@ -35,4 +35,16 @@ class NodeHelper
 			return layer
 		}
 	}
+
+	static get_output_valid_node(node, slot)
+	{
+		import "archgraph.component.dummy_gong" for DummyGong
+
+		var next = Blueprint.get_output_node(node, slot)
+		if (!next or next is DummyGong) {
+			return nil
+		} else {
+			return next
+		}
+	}	
 }

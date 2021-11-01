@@ -132,7 +132,7 @@ class HoriGong is CompNode
 	{
 		import "archgraph.component.dou" for SAN_DOU, QIXIN_DOU
 
-		var next = Blueprint.get_output_node(this, "next")
+		var next = NodeHelper.get_output_valid_node(this, "next")
 		if (!next) {
 			return v_geo
 		}

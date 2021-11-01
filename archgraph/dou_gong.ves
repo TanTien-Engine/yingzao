@@ -52,6 +52,7 @@ class DouGong
 		for (var j in this.joints) {
 			j.resolve()
 		}
+
 		for (var i in 1..this.layers.count) {
 			var layer = this.layers[i]
 			this.build_layer_joints(layer)
@@ -190,15 +191,19 @@ class DouGong
 		}
 
 		// gong conn hua
+		import "archgraph.component.dummy_gong" for DummyGong
 		for (var i in 1 .. layer.count)
 		{
-			var pos = layer[i].comp.pos.clone()
-			pos.y = pos.y + 0.1
-			if (SpatialQuery.contain_pos(layer[0].comp.v_geo, pos))
+			if (!(layer[i] is DummyGong))
 			{
-				var g2 = JointsNodes.conn2(layer[i].comp.v_geo, layer[0].comp.v_geo, layer[i].comp.pos, 0)
-				layer[i].comp.v_geo = g2[0]
-				layer[0].comp.v_geo = g2[1]
+				var pos = layer[i].comp.pos.clone()
+				pos.y = pos.y + 0.1
+				if (SpatialQuery.contain_pos(layer[0].comp.v_geo, pos))
+				{
+					var g2 = JointsNodes.conn2(layer[i].comp.v_geo, layer[0].comp.v_geo, layer[i].comp.pos, 0)
+					layer[i].comp.v_geo = g2[0]
+					layer[0].comp.v_geo = g2[1]
+				}
 			}
 		}
 

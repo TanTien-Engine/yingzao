@@ -142,7 +142,7 @@ class UpAng is VertGong
 
 	calc_first_dy()
 	{
-		var next = Blueprint.get_output_node(this, "next")
+		var next = NodeHelper.get_output_valid_node(this, "next")
 		if (next is UpAng and CONTEXT.s_up_ang_angle)
 		{
 			var slope = Blueprint.calc_output_value(CONTEXT.s_up_ang_angle, "up_ang_slope").value

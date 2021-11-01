@@ -107,9 +107,9 @@ class VertGong is CompNode
 			var l_sun = TransNodes.translate(GD_SUN, l_pos)
 			var r_sun = TransNodes.translate(GD_SUN, r_pos)
 
-			var next_v = Blueprint.get_output_node(this, "next")
-			var next_o = Blueprint.get_output_node(this, "outer")
-			var next_i = Blueprint.get_output_node(this, "inner")
+			var next_v = NodeHelper.get_output_valid_node(this, "next")
+			var next_o = NodeHelper.get_output_valid_node(this, "outer")
+			var next_i = NodeHelper.get_output_valid_node(this, "inner")
 
 			var l_dou = this.gen_dou(next_v, next_o, l_pos)
 			var r_dou = this.gen_dou(next_v, next_i, r_pos)
@@ -131,12 +131,12 @@ class VertGong is CompNode
 
 			var sun = TransNodes.translate(GD_SUN, pos)
 
-			var next_v = Blueprint.get_output_node(this, "next")
+			var next_v = NodeHelper.get_output_valid_node(this, "next")
 			var next_h = nil
 			if (left) {
-				next_h = Blueprint.get_output_node(this, "outer")
+				next_h = NodeHelper.get_output_valid_node(this, "outer")
 			} else {
-				next_h = Blueprint.get_output_node(this, "inner")
+				next_h = NodeHelper.get_output_valid_node(this, "inner")
 			}
 			var v_dou = this.gen_dou(next_v, next_h, pos)
 
@@ -154,7 +154,7 @@ class VertGong is CompNode
 		if (pos.z < 0)
 		{
 			import "archgraph.component.up_ang" for UpAng
-			var next = Blueprint.get_output_node(this, "next")
+			var next = NodeHelper.get_output_valid_node(this, "next")
 			if (next and next is UpAng and !(this is UpAng)) {
 				return TransNodes.translate(LIANZHU_DOU, pos)
 			}

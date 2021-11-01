@@ -100,7 +100,7 @@ class Fang is CompNode
 
 		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
-		var next = Blueprint.get_output_node(this, "next")
+		var next = NodeHelper.get_output_valid_node(this, "next")
 		if (!next) {
 			return v_geo
 		}
