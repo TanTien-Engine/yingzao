@@ -25,6 +25,13 @@ class ShuaTou is VertGong
 			this.inner_hop = 1		
 		}
 
+		var single_node = nil
+		var next = NodeHelper.get_output_valid_node(this, "next")
+		if (!next) {
+			single_node = VariantProxy(Variant(true))
+			Blueprint.connect(single_node, "out", SHUA_TOU, "single")
+		}
+
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		var v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 
@@ -44,6 +51,10 @@ class ShuaTou is VertGong
 
 		// todo: you ang
 		this.gen_corner(dg)
+
+		if (single_node) {
+			single_node.disconnect()
+		}
 	}
 
 	get_title()
