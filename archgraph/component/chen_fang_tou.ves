@@ -45,6 +45,10 @@ class ChenFangTou is VertGong
 			pp_node = Blueprint.get_input_node(p_node, "prev")
 		}
 		import "archgraph.component.ang" for Ang
+		import "archgraph.component.up_ang" for UpAng
+		if (p_node is UpAng) {
+			v_geo = p_node.ang_plane_cut(v_geo)
+		}
 		if (pp_node and pp_node is Ang) {
 			v_geo = pp_node.ang_plane_cut(v_geo, false)
 		}
