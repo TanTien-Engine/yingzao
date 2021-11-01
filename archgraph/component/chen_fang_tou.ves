@@ -9,7 +9,7 @@ import "editor.node_cache" for NODE_CACHE
 import "math" for Math
 import "maths.vector" for Vector3
 
-var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
+var TOU = NODE_CACHE.fetch("../yingzao/00_dougong2/14_tou.ves", nil)
 
 class ChenFangTou is VertGong
 {
@@ -34,10 +34,20 @@ class ChenFangTou is VertGong
 		}
 
 		var len_node = VariantProxy(Variant(len))
-		Blueprint.connect(len_node, "out", FANG, "length")
+		Blueprint.connect(len_node, "out", TOU, "length")
 
-		var v_geo = TransNodes.transform(FANG, pos, Math.pi() * 0.5)
+		var full_node = nil
+		var next = NodeHelper.get_output_valid_node(this, "next")
+		if (next) {
+			full_node = VariantProxy(Variant(true))
+			Blueprint.connect(full_node, "out", TOU, "full")
+		}
+
+		var v_geo = TransNodes.translate(TOU, pos)
 		len_node.disconnect()
+		if (full_node) {
+			full_node.disconnect()
+		}
 		
 		// ang cut
 		var pp_node = nil
@@ -73,9 +83,9 @@ class ChenFangTou is VertGong
 		}
 
 		var len_node = VariantProxy(Variant(len))
-		Blueprint.connect(len_node, "out", FANG, "length")
+		Blueprint.connect(len_node, "out", TOU, "length")
 
-		var v_geo = TransNodes.rotate(FANG, Math.pi() * 0.5)
+		var v_geo = TransNodes.translate(TOU, Vector3(0, 0, 0))
 		len_node.disconnect()
 
 		// ang cut
