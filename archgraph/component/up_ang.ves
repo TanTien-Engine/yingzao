@@ -36,19 +36,19 @@ class UpAng is VertGong
 
 	resolve(dg)
 	{
+		this.outer_hop = 1
+		this.inner_hop = 1
+
 		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev) 
 		{
-			this.outer_hop = prev.outer_hop	+ 1
-			this.inner_hop = prev.inner_hop + 1
+			if (prev is VertGong) {
+				this.outer_hop = prev.outer_hop	+ 1
+				this.inner_hop = prev.inner_hop + 1
+			}
 			if (prev is UpAng or this.comp.y_idx > 3) {
 				this.outer_hop = prev.outer_hop
 			}
-		}
-		else 
-		{
-			this.outer_hop = 1
-			this.inner_hop = 1		
 		}
 
 		if (CONTEXT.s_up_ang_angle) {

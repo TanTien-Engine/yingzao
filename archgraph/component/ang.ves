@@ -56,8 +56,10 @@ class Ang is VertGong
 		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev)
 		{
-			prev_outer_hop = prev.outer_hop
-			prev_inner_hop = prev.inner_hop
+			if (prev is VertGong) {
+				prev_outer_hop = prev.outer_hop
+				prev_inner_hop = prev.inner_hop
+			}
 			if (prev is Ang) {
 				this.ang_layer = prev.ang_layer + 1
 			}
