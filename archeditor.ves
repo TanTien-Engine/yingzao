@@ -121,7 +121,7 @@ class Archeditor is Editor
 
 	add_node(bp_node, x, y)
 	{
-		import "archgraph.style.up_ang_angle" for UpAngAngle
+		import "archgraph.style.ang_slope" for AngSlope
 		import "archgraph.style.step_length" for StepLength
 		import "archgraph.tools.hori_conn" for HoriConn
 
@@ -132,9 +132,9 @@ class Archeditor is Editor
 			this.render_node = bp_node
 			Blueprint.connect(this.all_geos, 0, this.render_node, 1)
 		}
-		else if (bp_node is UpAngAngle)
+		else if (bp_node is AngSlope)
 		{
-			CONTEXT.s_up_ang_angle = bp_node
+			CONTEXT.s_ang_slope = bp_node
 		}
 		else if (bp_node is StepLength)
 		{

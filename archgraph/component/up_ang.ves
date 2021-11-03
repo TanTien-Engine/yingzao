@@ -51,8 +51,8 @@ class UpAng is VertGong
 			}
 		}
 
-		if (CONTEXT.s_up_ang_angle) {
-			Blueprint.connect(CONTEXT.s_up_ang_angle, "up_ang_slope", ANG, "slope")
+		if (CONTEXT.s_ang_slope) {
+			Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", ANG, "slope")
 		}
 
 		var ang_pos = this.calc_ang_pos()
@@ -85,7 +85,7 @@ class UpAng is VertGong
 
 		var v_xue = nil
 		if (!(prev is UpAng)) {
-			Blueprint.connect(CONTEXT.s_up_ang_angle, "up_ang_slope", XUE, "slope")
+			Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", XUE, "slope")
 //			v_xue = TransNodes.translate(XUE, ang_pos)			
 		}
 
@@ -136,9 +136,9 @@ class UpAng is VertGong
 	calc_first_dy()
 	{
 		var next = NodeHelper.get_output_valid_node(this, "next")
-		if (next is UpAng and CONTEXT.s_up_ang_angle)
+		if (next is UpAng and CONTEXT.s_ang_slope)
 		{
-			var slope = Blueprint.calc_output_value(CONTEXT.s_up_ang_angle, "up_ang_slope").value
+			var slope = Blueprint.calc_output_value(CONTEXT.s_ang_slope, "ang_slope").value
 			var angle = Math.atan2(slope, 1)
 			return ZU_CAI_HEIGHT - (CONTEXT.step_len_func(-this.inner_hop - 1, true) * slope + CAI_HEIGHT / Math.cos(angle))
 		}

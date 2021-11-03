@@ -4,24 +4,24 @@ import "blueprint.variant" for Variant, VAR_TYPE_NUMBER
 import "blueprint.node_param" for NodeParam
 import "archgraph.context" for CONTEXT
 
-class UpAngAngle is Node
+class AngSlope is Node
 {
 	init()
 	{
 		super.init()
 
 		this.exports = [
-			Pin(this, "up_ang_slope", VAR_TYPE_NUMBER),
+			Pin(this, "ang_slope", VAR_TYPE_NUMBER),
 		]
 
-		this.params.add(NodeParam("up_ang_slope", 1.0))
+		this.params.add(NodeParam("ang_slope", 1.0))
 
 		this.layout()
 	}
 
 	calc_value(idx)
 	{
-		return Variant(this.query_param("up_ang_slope").value)
+		return Variant(this.query_param("ang_slope").value)
 	}
 
 	on_node_dirty()
