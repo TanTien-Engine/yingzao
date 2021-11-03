@@ -95,6 +95,9 @@ class VertGong is CompNode
 			return v_geo
 		}
 
+		var v_sun = nil
+		var v_dou = nil
+
 		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
 		if (left and right)
@@ -117,7 +120,8 @@ class VertGong is CompNode
 			// cut sun
 			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])
 
-			return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
+			v_sun = [ l_sun, r_sun ]
+			v_dou = [ l_dou, r_dou ]
 		}
 		else
 		{
@@ -129,7 +133,7 @@ class VertGong is CompNode
 			}
 			pos.y = pos.y - QI_HEIGHT
 
-			var sun = TransNodes.translate(GD_SUN, pos)
+			v_sun = TransNodes.translate(GD_SUN, pos)
 
 			var next_v = NodeHelper.get_output_valid_node(this, "next")
 			var next_h = nil
@@ -138,13 +142,24 @@ class VertGong is CompNode
 			} else {
 				next_h = NodeHelper.get_output_valid_node(this, "inner")
 			}
-			var v_dou = this.gen_dou(next_v, next_h, pos)
+			v_dou = this.gen_dou(next_v, next_h, pos)
 
 			// cut sun
 			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, pos)
-
-			return Variant([ v_geo, sun, v_dou ])
 		}
+
+		var list = []
+		if (v_geo.value is List) {
+			for (var i in v_geo.value) {
+				list.add(i)
+			}
+		} else {
+			list.add(v_geo)
+		}
+		list.add(v_sun)
+		list.add(v_dou)
+
+		return Variant(list)
 	}
 
 	gen_dou(vert, hori, pos)

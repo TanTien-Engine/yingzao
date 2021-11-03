@@ -93,16 +93,7 @@ class UpAng is VertGong
 		v_left = this.ang_plane_cut(v_left)
 
 		// conn next
-		v_left = this.add_dou(v_left, true, true)
-
-		if (v_xue) {
-			v_geo = ToolsNodes.brush_merge([v_xue, v_geo])		
-		}
-		var geo_list = [ v_geo ]
-		for (var i in v_left.value) {
-			geo_list.add(i)
-		}
-		v_geo = Variant(geo_list)
+		v_geo = this.add_dou(Variant([v_xue, v_geo, v_left]), true, true)
 
 		this.comp.pos = ang_pos
 		this.comp.v_geo = v_geo
