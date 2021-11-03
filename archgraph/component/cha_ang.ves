@@ -4,6 +4,7 @@ import "archgraph.component.vert_gong" for VertGong
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.node_helper" for NodeHelper
+import "archgraph.context" for CONTEXT
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 
@@ -23,6 +24,11 @@ class ChaAng is VertGong
 		var a_pos = Blueprint.calc_output_value(this, "outer").value
 
 		var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
+
+		if (CONTEXT.s_ang_slope) {
+			Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", ANG, "slope")
+		}
+
 		var v_geo = TransNodes.translate(ANG, a_pos)
 
 		v_geo = JointsNodes.cut_top_planne(v_geo, a_pos.y)

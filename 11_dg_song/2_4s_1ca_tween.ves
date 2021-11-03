@@ -1,16 +1,16 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
 node0.set_prop_value("ortho", false)
-node0.set_prop_value("offset", 2.1161370277405)
+node0.set_prop_value("offset", 2.3266632556915)
 
-node0.op_node.cam.position.set(1.843788277352, 1.0784813656508, 0.29082253510957)
-node0.op_node.cam.yaw = -167.6
-node0.op_node.cam.pitch = -4
+node0.op_node.cam.position.set(2.2653453140768, 1.502011699269, 0.54467584419881)
+node0.op_node.cam.yaw = -166.7
+node0.op_node.cam.pitch = -23.2
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
 
-_editor.add_node(node0, -677.20661157025, -280.24042073629)
+_editor.add_node(node0, -677.20661157025, -279.55740728092)
 
 var node1 = ::archgraph::component::lu_dou::LuDou()
 
@@ -92,6 +92,11 @@ _editor.add_node(node17, -143.51139681884, -506.23823921616)
 var node18 = ::archgraph::component::cha_ang::ChaAng()
 
 _editor.add_node(node18, -214.95772835923, -155.79974596441)
+
+var node19 = ::archgraph::style::ang_slope::AngSlope()
+node19.query_param("ang_slope").value = 0.5625
+
+_editor.add_node(node19, 7.1446228027344, -354.93890380859)
 
 Blueprint.connect(node13, "comp", node17, "left")
 Blueprint.connect(node16, "comp", node17, "right")

@@ -76,6 +76,10 @@ class Ang is VertGong
 
 		var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
 
+		if (CONTEXT.s_ang_slope) {
+			Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", ANG, "slope")
+		}
+
 		var ang_pos = this.calc_ang_pos()
 		var v_geo = TransNodes.translate(ANG, ang_pos)
 
