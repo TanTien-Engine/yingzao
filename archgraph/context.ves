@@ -1,5 +1,3 @@
-import "archgraph.step_len_funcs" for STEP_LEN
-
 class Context
 {
 	init()
@@ -17,19 +15,20 @@ class Context
 		this.s_step_len = nil
 	}
 
-	step_len(hop, less_step)
+	step_len(hop)
 	{
 		if (this.s_step_len) {
 			return this.s_step_len.calc_step_len(hop)
 		} else {
-			return STEP_LEN(hop, less_step)
+//			return STEP_LEN(hop)
+			return 0.3
 		}
 	}
 
-	step_len_c(hop, less_step)
+	step_len_c(hop)
 	{
-		return this.step_len(hop, less_step) * 1.414
-	}	
+		return this.step_len(hop) * 1.414
+	}
 }
 
 var CONTEXT = Context()

@@ -32,8 +32,6 @@ class VertGong is CompNode
 
 		this.outer_hop = 0
 		this.inner_hop = 0
-
-		this.less_step = true
 	}
 
 	calc_value(idx)
@@ -52,15 +50,15 @@ class VertGong is CompNode
 
 	calc_outer_step_len()
 	{
-		return VertGong.calc_tot_step_len(this.outer_hop, this.less_step)
+		return VertGong.calc_tot_step_len(this.outer_hop)
 	}
 
 	calc_inner_step_len()
 	{
-		return VertGong.calc_tot_step_len(-this.inner_hop, this.less_step)
+		return VertGong.calc_tot_step_len(-this.inner_hop)
 	}
 
-	static calc_tot_step_len(hop, less_step)
+	static calc_tot_step_len(hop)
 	{
 		var len = 0
 
@@ -73,11 +71,11 @@ class VertGong is CompNode
 
 		if (hop > 0) {
 			for (var i in 1 .. hop + 1) {
-				len = len + len_func(i, less_step)
+				len = len + len_func(i)
 			}
 		} else {
 			for (var i in 1 .. -hop + 1) {
-				len = len + len_func(-i, less_step)
+				len = len + len_func(-i)
 			}
 		}
 

@@ -64,8 +64,8 @@ class ShuaTou is VertGong
 
 	static create_geo(outer_hop, inner_hop, pos)
 	{
-		var len_l = VertGong.calc_tot_step_len(outer_hop, this.less_step) + VertGong.get_dou_half_len()
-		var len_r = VertGong.calc_tot_step_len(-inner_hop, this.less_step) + VertGong.get_dou_half_len()
+		var len_l = VertGong.calc_tot_step_len(outer_hop) + VertGong.get_dou_half_len()
+		var len_r = VertGong.calc_tot_step_len(-inner_hop) + VertGong.get_dou_half_len()
 		var len_l_node = VariantProxy(Variant(len_l))
 		var len_r_node = VariantProxy(Variant(len_r))
 		Blueprint.connect(len_l_node, "out", SHUA_TOU, "len_left")
@@ -76,8 +76,8 @@ class ShuaTou is VertGong
 
 	gen_corner(dg)
 	{
-		var len_l = VertGong.calc_tot_step_len(this.outer_hop, this.less_step) + VertGong.get_dou_half_len()
-		var len_r = VertGong.calc_tot_step_len(-this.inner_hop, this.less_step) + VertGong.get_dou_half_len()
+		var len_l = VertGong.calc_tot_step_len(this.outer_hop) + VertGong.get_dou_half_len()
+		var len_r = VertGong.calc_tot_step_len(-this.inner_hop) + VertGong.get_dou_half_len()
 		var len_l_node = VariantProxy(Variant(len_l / 1.414))
 		var len_r_node = VariantProxy(Variant(len_r / 1.414))
 

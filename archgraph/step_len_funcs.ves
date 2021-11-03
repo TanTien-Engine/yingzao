@@ -1,7 +1,8 @@
-fun STEP_LEN(hop, less_step)
+fun STEP_LEN(prev)
 {
 	var len = 0
 
+	var less_step = false
 	if (less_step)
 	{
 		if (hop == 1) {
@@ -18,9 +19,4 @@ fun STEP_LEN(hop, less_step)
 	}
 
 	return len
-}
-
-fun STEP_LEN_C(hop, less_step)
-{
-	return STEP_LEN(hop, less_step) * 1.414
 }
