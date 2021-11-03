@@ -57,7 +57,7 @@ class Archeditor is Editor
 	set_brush_color(val, col)
 	{
 		if (val is Brush) {
-			val.color.set(col.x, col.y, col.z)
+			val.set_color(col.x, col.y, col.z)
 		} else if (val is List) {
 			for (var i in val) {
 				this.set_brush_color(i.value.shape, col)
