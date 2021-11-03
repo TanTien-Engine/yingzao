@@ -2,12 +2,11 @@ import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "archgraph.component.comp_node" for CompNode
-import "archgraph.variant" for PIN_TYPE_INNER_GONG, PIN_TYPE_YC_FANG, PIN_TYPE_FANG
+import "archgraph.variant" for PIN_TYPE_INNER_GONG, PIN_TYPE_NIUJI_CHUAN
 import "archgraph.constant" for ZU_CAI_HEIGHT, FANG_LEN, QI_HEIGHT
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.gen_nodes" for GenNodes
-import "archgraph.corner_helper" for CornerHelper
 import "archgraph.joints_nodes" for JointsNodes
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
@@ -24,7 +23,7 @@ class YaCaoFang is CompNode
 			Pin(this, "prev", PIN_TYPE_INNER_GONG),
 		]
 		this.exports = [
-			Pin(this, "next", PIN_TYPE_YC_FANG),
+			Pin(this, "next", PIN_TYPE_NIUJI_CHUAN),
 		]
 
 		this.layout()

@@ -2,7 +2,7 @@ import "blueprint.pin" for Pin
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "archgraph.component.comp_node" for CompNode
-import "archgraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_LY_FANG
+import "archgraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_YAN_CHUAN
 import "archgraph.constant" for ZU_CAI_HEIGHT, FANG_LEN
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
@@ -24,7 +24,7 @@ class LiaoYanFang is CompNode
 			Pin(this, "prev", PIN_TYPE_HORI_GONG),
 		]
 		this.exports = [
-			Pin(this, "next", PIN_TYPE_LY_FANG),
+			Pin(this, "next", PIN_TYPE_YAN_CHUAN),
 		]
 
 		this.layout()
