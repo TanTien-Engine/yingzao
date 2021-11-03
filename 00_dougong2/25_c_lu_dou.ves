@@ -1,13 +1,13 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "24_lu_dou.ves")
 
-_editor.add_node(node0, -214.08742882629, 349.65680934387)
+_editor.add_node(node0, -358.25544535522, 353.93523909594)
 
 var node1 = ::blueprint::nodes::number::Number()
 
 node1.value = 0.36
 
-_editor.add_node(node1, -394.05823466944, 339.56770596566)
+_editor.add_node(node1, -538.22625119837, 343.84613571773)
 
 var node2 = ::geograph::nodes::box::Box()
 node2.query_param("size").value.set(10, 10, 0.1)
@@ -63,12 +63,24 @@ var node10 = ::geograph::nodes::brush_merge::BrushMerge()
 
 _editor.add_node(node10, 115.9357539346, 325.43041483532)
 
+var node11 = ::geograph::nodes::brush_set_lock::BrushSetLock()
+
+_editor.add_node(node11, -158.87946084028, 342.40466611301)
+
+var node12 = ::blueprint::nodes::boolean::Boolean()
+
+node12.value = false
+
+_editor.add_node(node12, -304.13141676217, 271.01535362054)
+
 Blueprint.connect(node2, "geo", node5, "a")
 Blueprint.connect(node6, "geo", node5, "b")
 Blueprint.connect(node5, "geo", node3, "geo")
 Blueprint.connect(node1, "v", node0, "length")
 Blueprint.connect(node1, "v", node0, "width")
-Blueprint.connect(node0, "geo", node4, "a")
+Blueprint.connect(node0, "geo", node11, "geo")
+Blueprint.connect(node12, "v", node11, "lock")
+Blueprint.connect(node11, "geo", node4, "a")
 Blueprint.connect(node3, "geo", node4, "b")
 Blueprint.connect(node4, "geo", node10, "list")
 Blueprint.connect(node10, "brush", node8, "geo")
