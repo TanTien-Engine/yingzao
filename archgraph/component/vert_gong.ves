@@ -149,9 +149,17 @@ class VertGong is CompNode
 
 	gen_dou(vert, hori, pos)
 	{
-		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU, PINGPAN_DOU, LIANZHU_DOU
+		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU, QIANG_DOU, PINGPAN_DOU, LIANZHU_DOU
 
-		if (pos.z < 0)
+		if (pos.z > 0)
+		{
+			import "archgraph.component.ang" for Ang
+			import "archgraph.component.cha_ang" for ChaAng
+			if (this is Ang or this is ChaAng) {
+				return TransNodes.translate(QIANG_DOU, pos)
+			}
+		}
+		else if (pos.z < 0)
 		{
 			import "archgraph.component.up_ang" for UpAng
 			var next = NodeHelper.get_output_valid_node(this, "next")
