@@ -1,0 +1,50 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "archgraph.component.vert_gong" for VertGong
+import "archgraph.trans_nodes" for TransNodes
+import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.node_helper" for NodeHelper
+import "editor.node_cache" for NODE_CACHE
+import "maths.vector" for Vector3
+
+class ChaAng is VertGong
+{
+	resolve(dg)
+	{
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev is VertGong) {
+			this.outer_hop = prev.outer_hop + 1
+			this.inner_hop = prev.inner_hop + 1
+		} else {
+			this.outer_hop = 1
+			this.inner_hop = 1
+		}
+
+		var a_pos = Blueprint.calc_output_value(this, "outer").value
+
+		var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
+		var v_geo = TransNodes.translate(ANG, a_pos)
+
+		v_geo = JointsNodes.cut_top_planne(v_geo, a_pos.y)
+
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+
+		import "archgraph.component.hua_gong" for HuaGong
+		var v_hua = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos)
+
+		import "archgraph.component.ang" for Ang
+		v_hua = Ang.ang_plane_cut(v_hua, true, a_pos)
+
+		// conn next
+		v_geo = this.add_dou(Variant([ v_hua, v_geo ]), true, true)
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+		this.comp.v_geo_c = this.comp.v_geo
+	}
+
+	get_title()
+	{
+		return "插昂"
+	}
+}
