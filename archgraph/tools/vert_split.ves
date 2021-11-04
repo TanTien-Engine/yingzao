@@ -28,9 +28,12 @@ class VertSplit is VertGong
 	resolve(dg)
 	{
 		var prev = Blueprint.get_input_node(this, "prev")
-		if (prev) {
+		if (prev is VertGong) {
 			this.outer_hop = prev.outer_hop
 			this.inner_hop = prev.inner_hop
+		} else {
+			this.outer_hop = 0
+			this.inner_hop = 0		
 		}
 	}
 
