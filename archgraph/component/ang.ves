@@ -146,7 +146,7 @@ class Ang is VertGong
 		}
 		else
 		{
-			var pos = Blueprint.calc_input_value(this, "prev").value
+			var pos = NodeHelper.calc_curr_pos(this, "prev")
 			return pos.add(Vector3(0, ZU_CAI_HEIGHT, this.calc_outer_step_len()))
 		}
 	}
