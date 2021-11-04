@@ -6,6 +6,7 @@ import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.constant" for DOU_H_WIDTH
+import "archgraph.ang_helper" for AngHelper
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
 import "maths.vector" for Vector3
@@ -75,7 +76,7 @@ class ChenFangTou is VertGong
 		import "archgraph.component.ang" for Ang
 		if (pp_node and pp_node is Ang) {
 			var a_pos = pp_node.calc_ang_pos()
-			v_geo = Ang.ang_plane_cut(v_geo, false, Vector3(0, pp_node.comp.pos.y - this.comp.pos.y, a_pos.z / 1.414))		
+			v_geo = AngHelper.down_ang_cut(v_geo, false, Vector3(0, pp_node.comp.pos.y - this.comp.pos.y, a_pos.z / 1.414))		
 		}
 
 		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, 0)

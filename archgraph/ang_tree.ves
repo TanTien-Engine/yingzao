@@ -10,6 +10,7 @@ import "archgraph.trans_nodes" for TransNodes
 import "archgraph.constant" for ZU_CAI_HEIGHT
 import "archgraph.dou_helper" for DouHelper
 import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.ang_helper" for AngHelper
 import "maths.vector" for Vector2, Vector3
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
@@ -71,8 +72,7 @@ class AngTree
 
 			if (src is AngProxy)
 			{
-				var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
-				var v_ang = TransNodes.translate(ANG, Vector3(0, 0, 0))
+				var v_ang = AngHelper.create_ang(Vector3(0, 0, 0))
 
 				var dist = src.ang_pos.z / 1.414
 				v_ang = GenNodes.corner_gen_2(v_ang, Vector3(src.ang_pos.x, src.ang_pos.y, 0), dist)

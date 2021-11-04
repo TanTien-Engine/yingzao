@@ -4,6 +4,7 @@ import "blueprint.variant_proxy" for VariantProxy
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.component.vert_gong" for VertGong
+import "archgraph.ang_helper" for AngHelper
 import "editor.node_cache" for NODE_CACHE
 
 class HuaGong is VertGong
@@ -33,6 +34,12 @@ class HuaGong is VertGong
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
 		this.comp.v_geo_c = v_geo
+	}
+
+	resolve2(dg)
+	{
+		// todo: v_geo_c
+		this.comp.v_geo = AngHelper.ang_cut(this, this.comp.v_geo)
 	}
 
 	get_title()

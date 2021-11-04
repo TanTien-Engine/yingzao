@@ -20,12 +20,16 @@ class NodeHelper
 
 	static calc_layer_impl(node, layer)
 	{
+		import "archgraph.component.up_ang" for UpAng
+		import "archgraph.tools.vert_split" for VertSplit
+
 		var prev = Blueprint.get_input_node(node, "prev")
 		if (prev) 
 		{
-			import "archgraph.component.up_ang" for UpAng
 			if (prev is UpAng and Blueprint.get_input_pin(node, "prev").slot_idx == 2) {
 				return this.calc_layer_impl(prev, layer + 2)
+			} else if (prev is VertSplit) {
+				return this.calc_layer_impl(prev, layer)
 			} else {
 				return this.calc_layer_impl(prev, layer + 1)
 			}
@@ -46,5 +50,5 @@ class NodeHelper
 		} else {
 			return next
 		}
-	}	
+	}
 }

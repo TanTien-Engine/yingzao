@@ -1,0 +1,53 @@
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "archgraph.component.vert_gong" for VertGong
+import "archgraph.variant" for PIN_TYPE_VERT_GONG
+
+class VertSplit is VertGong
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_VERT_GONG),
+		]
+		this.exports = [
+			Pin(this, "outer", PIN_TYPE_VERT_GONG),
+			Pin(this, "inner", PIN_TYPE_VERT_GONG)
+		]
+
+		this.layout()
+	}
+
+	calc_value(idx)
+	{
+		return Blueprint.calc_input_value(this, "prev")
+	}
+
+	resolve(dg)
+	{
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev) {
+			this.outer_hop = prev.outer_hop
+			this.inner_hop = prev.inner_hop
+		}
+	}
+
+	get_title()
+	{
+		return "split"
+	}
+
+	split_inner(geo)
+	{
+		import "archgraph.component.ang" for Ang
+
+		var o = Blueprint.get_output_node(this, "outer")
+		if (o is Ang) {
+			return o.ang_plane_cut(geo, true)
+		}
+
+		return geo
+	}
+}

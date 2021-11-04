@@ -1,0 +1,78 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "geograph.nodes.knife" for Knife
+import "scenegraph.nodes.transform3d" for Transform3d
+import "archgraph.context" for CONTEXT
+import "archgraph.trans_nodes" for TransNodes
+import "editor.node_cache" for NODE_CACHE
+
+class AngHelper
+{
+	static create_ang(pos)
+	{
+		var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
+		if (CONTEXT.s_ang_slope) {
+			Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", ANG, "slope")
+		}
+		return TransNodes.translate(ANG, pos)
+	}
+
+	static down_ang_cut(geo, down, pos)
+	{
+		var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
+		if (CONTEXT.s_ang_slope) {
+			Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", ANG, "slope")
+		}
+		
+		var KNIFE = Knife()
+		if (down) {
+			KNIFE.query_param("keep").set_value("below")
+		} else {
+			KNIFE.query_param("keep").set_value("above")
+		}
+		KNIFE.query_param("seam").set_value(true)
+
+		var trans = Transform3d()
+		if (down) {
+			Blueprint.connect(ANG, "down_plane", trans, "obj")
+		} else {
+			Blueprint.connect(ANG, "up_plane", trans, "obj")
+		}
+
+		var pos_node = VariantProxy(Variant(pos))
+		Blueprint.connect(pos_node, "out", trans, "translate")
+
+		var geo_node = VariantProxy(geo)
+		Blueprint.connect(geo_node, "out", KNIFE, "geo")
+		Blueprint.connect(trans, "obj", KNIFE, "plane")
+		return Blueprint.calc_output_value(KNIFE, "geo")		
+	}
+
+	static ang_cut(node, geo)
+	{
+		import "archgraph.component.ang" for Ang 
+		import "archgraph.tools.vert_split" for VertSplit
+
+		var prev = Blueprint.get_input_node(node, "prev")
+		while (prev)
+		{
+			if (prev is Ang) 
+			{
+				return prev.ang_plane_cut(geo, false)
+			} 
+			else if (prev is VertSplit) 
+			{
+				var left = Blueprint.get_output_node(prev, "outer")
+				if (left is Ang and left != node) {
+					return left.ang_plane_cut(geo, true)
+				}
+			}
+			// else if prev is merge, return
+
+			prev = Blueprint.get_input_node(prev, "prev")
+		}
+
+		return geo
+	}
+}

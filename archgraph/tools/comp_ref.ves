@@ -1,5 +1,6 @@
 import "blueprint.node" for Node
 import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.node_param" for NodeParam
 import "archgraph.variant" for VarComp, VAR_TYPE_COMPONENT
@@ -23,6 +24,8 @@ class CompRef is Node
 
 	calc_value(idx)
 	{
+		import "archgraph.tools.vert_split" for VertSplit
+
 		if (!CONTEXT.dg) {
 			return nil
 		}
@@ -35,6 +38,20 @@ class CompRef is Node
 		}
 
 		var node = CONTEXT.dg.layers[y][x]
+		if (node is List) 
+		{
+			if (node.isEmpty) {
+				node = nil
+			} else if (node[0] is VertSplit) {
+				node = Blueprint.get_output_node(node[0], "outer")
+				if (!node) {
+					node = Blueprint.get_output_node(node[0], "inner")
+				}
+			} else {
+				node = node[0]
+			}
+		}
+
 		if (node) {
 			return Variant(VAR_TYPE_COMPONENT, VarComp(node.comp))
 		} else {

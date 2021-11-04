@@ -7,6 +7,7 @@ import "archgraph.component.vert_gong" for VertGong
 import "archgraph.context" for CONTEXT
 import "archgraph.constant" for CAI_WIDTH
 import "archgraph.gen_nodes" for GenNodes
+import "archgraph.ang_helper" for AngHelper
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 
@@ -35,11 +36,10 @@ class ShuaTou is VertGong
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		var v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 
-		import "archgraph.component.ang" for Ang
-		import "archgraph.component.up_ang" for UpAng
-		if (prev is Ang) {
-			v_geo = prev.ang_plane_cut(v_geo, false)
-		} else if (prev is UpAng) {
+		v_geo = AngHelper.ang_cut(this, v_geo)
+
+		import "archgraph.component.up_ang" for UpAng			
+		if (prev is UpAng) {
 			v_geo = prev.ang_plane_cut(v_geo)
 		}
 
@@ -90,7 +90,7 @@ class ShuaTou is VertGong
 		import "archgraph.component.ang" for Ang
 		if (prev is Ang) {
 			var a_pos = prev.calc_ang_pos()
-			v_geo = Ang.ang_plane_cut(v_geo, false, Vector3(0, 0, a_pos.z / 1.414))
+			v_geo = AngHelper.down_ang_cut(v_geo, false, Vector3(0, 0, a_pos.z / 1.414))
 		}
 
 		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, 0)
