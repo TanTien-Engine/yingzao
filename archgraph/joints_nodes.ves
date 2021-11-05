@@ -76,7 +76,7 @@ class JointsNodes
 		return JointsNodes.cut_geo_node(v_geo, n_cut_body, pos)
 	}
 
-	static cut_top_planne(v_geo, y)
+	static cut_top_plane(v_geo, y)
 	{
 		var CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/63_top_plane_cut.ves", nil)
 
@@ -89,7 +89,7 @@ class JointsNodes
 		return Blueprint.calc_output_value(CUT, "geo")
 	}
 
-	static cut_bottom_planne(v_geo, y)
+	static cut_bottom_plane(v_geo, y)
 	{
 		var CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/63_bottom_plane_cut.ves", nil)
 

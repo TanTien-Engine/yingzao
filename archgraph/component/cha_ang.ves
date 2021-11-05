@@ -23,7 +23,7 @@ class ChaAng is VertGong
 		var a_pos = Blueprint.calc_output_value(this, "outer").value
 		var v_geo = AngHelper.create_ang(a_pos)
 
-		v_geo = JointsNodes.cut_top_planne(v_geo, a_pos.y)
+		v_geo = JointsNodes.cut_top_plane(v_geo, a_pos.y)
 
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 

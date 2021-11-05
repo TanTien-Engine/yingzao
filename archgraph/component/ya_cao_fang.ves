@@ -67,7 +67,7 @@ class YaCaoFang is CompNode
 		import "archgraph.component.ang" for Ang
 		for (var layer in dg.layers) {
 			if (layer[0] is Ang) {
-				layer[0].comp.v_geo_c = JointsNodes.cut_top_planne(layer[0].comp.v_geo_c, this.comp.pos.y)
+				layer[0].comp.v_geo_c = JointsNodes.cut_top_plane(layer[0].comp.v_geo_c, this.comp.pos.y)
 			}
 		}
 	}
