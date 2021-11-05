@@ -67,6 +67,10 @@ class AngHelper
 				if (left is Ang and left != node) {
 					return left.ang_plane_cut(geo, true)
 				}
+				var right = Blueprint.get_output_node(prev, "inner")
+				if (right is Ang and right != node) {
+					return right.ang_plane_cut(geo, false)
+				}
 			}
 			// else if prev is merge, return
 
