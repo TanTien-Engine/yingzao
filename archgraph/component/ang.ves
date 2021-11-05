@@ -72,16 +72,21 @@ class Ang is VertGong
 			if (prev is Ang) {
 				this.ang_layer = prev.ang_layer + 1
 			}
+
+			import "archgraph.tools.vert_split" for VertSplit
+			if (prev is VertSplit and Blueprint.get_output_node(prev, "outer") == this) 
+			{
+				var top_inner = Blueprint.get_output_node(prev, "inner")
+				while (top_inner) {
+					prev_inner_hop = prev_inner_hop + 1
+					top_inner = Blueprint.get_output_node(top_inner, "next")
+				}
+			}
 		}
 
 		this.outer_hop = prev_outer_hop + 1
+		this.inner_hop = prev_inner_hop	+ 1
 		
-		if (this.ang_layer == 0) {
-			this.inner_hop = prev_inner_hop + 2
-		} else {
-			this.inner_hop = prev_inner_hop	+ 1
-		}
-
 		var ang_pos = this.calc_ang_pos()
 		var v_geo = AngHelper.create_ang(ang_pos)
 
