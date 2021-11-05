@@ -90,21 +90,24 @@ class Ang is VertGong
 		var ang_pos = this.calc_ang_pos()
 		var v_geo = AngHelper.create_ang(ang_pos)
 
-		// cut head
-		if (this.is_tiao_gan()) {
-			v_geo = JointsNodes.cut_bottom_planne(v_geo, ang_pos.y)
+		// cut head, make it to tiao_gan
+		if (this.need_to_tiao_gan()) {
+			v_geo = JointsNodes.cut_bottom_plane(v_geo, ang_pos.y)
 		}
 
-		// conn tiao gan
+		// conn tail
 		var i_next = Blueprint.get_output_node(this, "inner")
-		if (i_next) {
+		var next = Blueprint.get_output_node(this, "next")
+		var conn_tail = i_next or (next is Ang and Blueprint.get_output_node(next, "inner"))
+		if (conn_tail)
+		{
 			var pos = Blueprint.calc_output_value(this, "inner")
 			pos.value.y = pos.value.y - 0.06
 			var slope = AngHelper.get_slope()
 			v_geo = JointsNodes.conn_tiaogan(v_geo, pos.value, slope)
 		}
 
-		v_geo = this.add_dou(v_geo, true, i_next != nil)
+		v_geo = this.add_dou(v_geo, true, conn_tail)
 
 		this.comp.pos = ang_pos
 		this.comp.v_geo = v_geo
@@ -172,7 +175,7 @@ class Ang is VertGong
 			var pos = prev.calc_ang_pos()
 			return pos.add(Vector3(0, ZU_CAI_HEIGHT * 0.5, dist))
 		}
-		else if (this.is_tiao_gan())
+		else if (this.need_to_tiao_gan())
 		{
 			var pos = NodeHelper.calc_curr_pos(this, "prev")
 			return pos.add(Vector3(0, 0, prev.calc_outer_step_len()))
@@ -184,7 +187,7 @@ class Ang is VertGong
 		}
 	}
 
-	is_tiao_gan()
+	need_to_tiao_gan()
 	{
 		import "archgraph.tools.vert_split" for VertSplit
 		var prev = Blueprint.get_input_node(this, "prev")
