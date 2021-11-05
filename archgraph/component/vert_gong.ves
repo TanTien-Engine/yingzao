@@ -174,10 +174,13 @@ class VertGong is CompNode
 		}
 		else if (pos.z < 0)
 		{
+			import "archgraph.component.ang" for Ang
 			import "archgraph.component.up_ang" for UpAng
 			var next = NodeHelper.get_output_valid_node(this, "next")
 			if (next and next is UpAng and !(this is UpAng) and this.inner_hop > 1) {
 				return TransNodes.translate(LIANZHU_DOU, pos)
+			} else if (this is Ang) {
+				return TransNodes.translate(SAN_DOU, pos)
 			}
 		}
 

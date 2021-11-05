@@ -1,0 +1,70 @@
+import "blueprint.pin" for Pin
+import "blueprint.variant" for Variant
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant_proxy" for VariantProxy
+import "archgraph.component.comp_node" for CompNode
+import "archgraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_PING_CHUAN
+import "archgraph.node_helper" for NodeHelper
+import "archgraph.trans_nodes" for TransNodes
+import "maths.vector" for Vector3
+import "editor.node_cache" for NODE_CACHE
+
+var TI_MU = NODE_CACHE.fetch("../yingzao/00_dougong2/43_ti_mu.ves", nil)		
+
+class TiMu is CompNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_HORI_GONG),
+		]
+		this.exports = [
+			Pin(this, "next", PIN_TYPE_PING_CHUAN),
+		]
+
+		this.layout()
+
+		this.gong = nil
+	}
+
+	calc_value(idx)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		return Variant(pos.add(Vector3(0, 0.1, 0)))
+	}
+
+	resolve(dg)
+	{
+		import "archgraph.component.dou" for Dou
+		import "archgraph.component.hori_gong" for HoriGong
+
+		var len = 0.96
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev is Dou) {
+			len = 0.96
+		} else if (prev is HoriGong) {
+			len = 1.04
+			var pp = Blueprint.get_input_node(prev, "prev")
+			if (pp is HoriGong) {
+				len = 1.26
+			}
+		}
+		var len_node = VariantProxy(Variant(len))
+		Blueprint.connect(len_node, "out", TI_MU, "length")
+
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		var v_geo = TransNodes.translate(TI_MU, pos)
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+
+//		this.gen_corner(dg)
+	}
+
+	get_title()
+	{
+		return "替木"
+	}
+}

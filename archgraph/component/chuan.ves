@@ -1,0 +1,58 @@
+import "blueprint.pin" for Pin
+import "blueprint.variant" for Variant
+import "archgraph.component.comp_node" for CompNode
+import "archgraph.variant" for PIN_TYPE_PING_CHUAN
+import "archgraph.node_helper" for NodeHelper
+import "archgraph.trans_nodes" for TransNodes
+import "maths.vector" for Vector3
+import "editor.node_cache" for NODE_CACHE
+
+var CHUAN = NODE_CACHE.fetch("../yingzao/00_dougong2/44_chuan.ves", nil)		
+
+class Chuan is CompNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_PING_CHUAN),
+		]
+		this.exports = [
+			Pin(this, "next", PIN_TYPE_PING_CHUAN),
+		]
+
+		this.layout()
+
+		this.gong = nil
+	}
+
+	calc_value(idx)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		return Variant(pos.add(Vector3(0, 0.12, 0)))
+	}
+
+	resolve(dg)
+	{
+		// translate
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		var v_geo = TransNodes.translate(CHUAN, pos)
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+
+//		this.gen_corner(dg)
+	}
+
+	get_title()
+	{
+		if (this.comp.x_idx == 0) {
+			return "承椽槫"
+		} else if (this.comp.x_idx < 0) {
+			return "下平槫"
+		} else {
+			return "槫"
+		}
+	}
+}
