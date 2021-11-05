@@ -1,0 +1,125 @@
+var node0 = ::blueprint::nodes::input::Input()
+
+node0.var_name = "geo"
+node0.var_type = "num"
+
+_editor.add_node(node0, -119.62997193883, 295.27064680381)
+
+var node1 = ::blueprint::nodes::input::Input()
+
+node1.var_name = "pos"
+node1.var_type = "num3"
+
+_editor.add_node(node1, -669.3726812, 321.4807835)
+
+var node2 = ::blueprint::nodes::input::Input()
+
+node2.var_name = "slope"
+node2.var_type = "num"
+
+_editor.add_node(node2, -400.73012772352, -333.02577009767)
+
+var node3 = ::blueprint::nodes::output::Output()
+
+node3.var_name = "geo"
+node3.var_type = "geo"
+
+_editor.add_node(node3, 472.50205835419, -20.828219011369)
+
+var node4 = ::geograph::nodes::knife::Knife()
+node4.query_param("keep").value = "below"
+node4.query_param("seam").value = true
+
+_editor.add_node(node4, 29.786536938043, 223.59187009926)
+
+var node5 = ::geograph::nodes::plane::Plane()
+node5.query_param("ori").value.set(0, 0, 0)
+node5.query_param("dir").value.set(0, 1, 0)
+
+_editor.add_node(node5, -118.72359354129, 152.83574489633)
+
+var node6 = ::blueprint::nodes::store::Store()
+
+node6.var_name = "pos"
+
+_editor.add_node(node6, -534, 322.5)
+
+var node7 = ::blueprint::nodes::load::Load()
+
+node7.var_name = "pos"
+
+_editor.add_node(node7, -252.71781236999, 222.96427715444)
+
+var node8 = ::scenegraph::nodes::transform3d::Transform3d()
+
+_editor.add_node(node8, 171.44154519096, -193.94472098863)
+
+var node9 = ::blueprint::nodes::combine::Combine()
+
+_editor.add_node(node9, -6.0960329762271, -438.04291510463)
+
+var node10 = ::blueprint::nodes::atan::Atan()
+
+_editor.add_node(node10, -268.58617729342, -359.34171118388)
+
+var node11 = ::blueprint::nodes::number::Number()
+
+node11.value = 1
+
+_editor.add_node(node11, -400.81758461372, -399.91272225784)
+
+var node12 = ::geograph::nodes::knife::Knife()
+node12.query_param("keep").value = "above"
+node12.query_param("seam").value = true
+
+_editor.add_node(node12, 326.88068723826, -51.924454543243)
+
+var node13 = ::geograph::nodes::plane::Plane()
+node13.query_param("ori").value.set(0, 0, 0)
+node13.query_param("dir").value.set(0, 1, 0)
+
+_editor.add_node(node13, -10.323102392527, -52.03639746851)
+
+var node14 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node14, -137.2646582233, -391.84303810813)
+
+var node15 = ::blueprint::nodes::pi::Pi()
+
+_editor.add_node(node15, -270.86961387445, -464.85541084227)
+
+var node16 = ::blueprint::nodes::load::Load()
+
+node16.var_name = "pos"
+
+_editor.add_node(node16, -127.42011236999, -185.83752284556)
+
+var node17 = ::blueprint::nodes::add::Add()
+
+_editor.add_node(node17, 8.1530029296906, -212.30159606934)
+
+var node18 = ::blueprint::nodes::number3::Number3()
+
+node18.value.set(0, 0, -0.06)
+
+_editor.add_node(node18, -130.44699707031, -272.80158996582)
+
+Blueprint.connect(node2, "var", node10, "y")
+Blueprint.connect(node11, "v", node10, "x")
+Blueprint.connect(node10, "v", node14, "a")
+Blueprint.connect(node15, "pi/2", node14, "b")
+Blueprint.connect(node14, "v", node9, "x")
+Blueprint.connect(node1, "var", node6, "var")
+Blueprint.connect(node6, "var", node16, "var")
+Blueprint.connect(node16, "var", node17, "a")
+Blueprint.connect(node18, "v3", node17, "b")
+Blueprint.connect(node13, "plane", node8, "obj")
+Blueprint.connect(node17, "v", node8, "translate")
+Blueprint.connect(node9, "xyz", node8, "rotate")
+Blueprint.connect(node6, "var", node7, "var")
+Blueprint.connect(node7, "var", node5, "origin")
+Blueprint.connect(node0, "var", node4, "geo")
+Blueprint.connect(node5, "plane", node4, "plane")
+Blueprint.connect(node4, "geo", node12, "geo")
+Blueprint.connect(node8, "obj", node12, "plane")
+Blueprint.connect(node12, "geo", node3, "var")

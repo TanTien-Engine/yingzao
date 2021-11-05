@@ -11,6 +11,7 @@ import "archgraph.gen_nodes" for GenNodes
 import "archgraph.dou_helper" for DouHelper
 import "archgraph.ang_helper" for AngHelper
 import "archgraph.ang_tree" for AngTree
+import "archgraph.joints_nodes" for JointsNodes
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
@@ -42,8 +43,19 @@ class Ang is VertGong
 		else if (idx == 2)
 		{
 			var pos = NodeHelper.calc_curr_pos(this, "prev")
-			var z = - this.calc_inner_step_len()
-			return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, z)))
+
+			var len_o = this.calc_outer_step_len()
+			var len_i = this.calc_inner_step_len()
+
+			var z = - len_i
+
+			var slope = AngHelper.get_slope()
+			var h = (len_o + len_i) * slope
+
+			var y_ori = 0.02
+			var y_offset = -0.05 * slope
+
+			return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT + h + y_ori + y_offset, z)))
 		}
 	}
 
@@ -67,16 +79,24 @@ class Ang is VertGong
 		this.outer_hop = prev_outer_hop + 1
 		
 		if (this.ang_layer == 0) {
-			this.inner_hop = prev_inner_hop + 1
-		} else if (this.ang_layer == 1) {
-			this.inner_hop = prev_inner_hop		
+			this.inner_hop = prev_inner_hop + 2
 		} else {
-			this.inner_hop = 0
+			this.inner_hop = prev_inner_hop	+ 1
 		}
 
 		var ang_pos = this.calc_ang_pos()
 		var v_geo = AngHelper.create_ang(ang_pos)
-		v_geo = this.add_dou(v_geo, true, false)
+
+		// conn tiao gan
+		var i_next = Blueprint.get_output_node(this, "inner")
+		if (i_next) {
+			var pos = Blueprint.calc_output_value(this, "inner")
+			pos.value.y = pos.value.y - 0.06
+			var slope = AngHelper.get_slope()
+			v_geo = JointsNodes.conn_tiaogan(v_geo, pos.value, slope)
+		}
+
+		v_geo = this.add_dou(v_geo, true, i_next != nil)
 
 		this.comp.pos = ang_pos
 		this.comp.v_geo = v_geo

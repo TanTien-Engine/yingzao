@@ -114,4 +114,19 @@ class JointsNodes
 
 		return Blueprint.calc_output_value(CUT, "geo")
 	}	
+
+	static conn_tiaogan(v_geo, pos, slope)
+	{
+		var CONN = NODE_CACHE.fetch("../yingzao/00_dougong2/64_tiaogan_joint.ves", nil)
+
+		var geo_node = VariantProxy(v_geo)
+		var pos_node = VariantProxy(Variant(pos))
+		var slope_node = VariantProxy(Variant(slope))
+
+		Blueprint.connect(geo_node, "out", CONN, "geo")
+		Blueprint.connect(pos_node, "out", CONN, "pos")
+		Blueprint.connect(slope_node, "out", CONN, "slope")
+
+		return Blueprint.calc_output_value(CONN, "geo")
+	}
 }

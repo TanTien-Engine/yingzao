@@ -75,4 +75,13 @@ class AngHelper
 
 		return geo
 	}
+
+	static get_slope()
+	{
+		var slope = 1
+		if (CONTEXT.s_ang_slope) {
+			slope = Blueprint.calc_output_value(CONTEXT.s_ang_slope, "ang_slope").value
+		}
+		return slope
+	}
 }
