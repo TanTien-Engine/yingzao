@@ -4,6 +4,10 @@ import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.component.comp_node" for CompNode
 import "archgraph.variant" for PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG
+import "archgraph.node_helper" for NodeHelper
+import "archgraph.trans_nodes" for TransNodes
+import "archgraph.constant" for ZU_CAI_HEIGHT
+import "maths.vector" for Vector3
 
 class HoriMerge is CompNode
 {
@@ -25,12 +29,8 @@ class HoriMerge is CompNode
 
 	calc_value(idx)
 	{
-		var left = Blueprint.get_input_node(this, "left")
-		if (left) {
-			return Blueprint.calc_input_value(this, "left")
-		} else {			
-			return Blueprint.calc_input_value(this, "right")
-		}
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
 	}
 
 	resolve(dg)
@@ -61,23 +61,50 @@ class HoriMerge is CompNode
 			return
 		}
 
+		import "archgraph.component.inner_gong" for InnerGong, NI_DAO_GONG, BI_NEI_MAN_GONG
+
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+
+		var gong_node = nil
+		if (l_node is InnerGong) {
+			gong_node = l_node
+		} else if (r_node is InnerGong) {
+			gong_node = r_node		
+		}
+
+		var gong_geo = nil
+		if (gong_node) 
+		{
+			var prev = Blueprint.get_input_node(this, "prev")
+			if (prev is HoriMerge or prev is InnerGong) {
+				gong_geo = TransNodes.translate(BI_NEI_MAN_GONG, pos)
+			} else {
+				gong_geo = TransNodes.translate(NI_DAO_GONG, pos)
+			}
+
+			gong_geo = gong_node.add_joint(dg, gong_geo, pos)
+			gong_geo = gong_node.add_dou(dg, gong_geo, pos, false, false)
+		}
+
+		var v_geo = nil
+
 		import "archgraph.component.fang" for Fang, FANG
 		if (l_node is Fang)
 		{
-			var pos = l_node.comp.pos.clone()
-			pos.x = pos.x - 1
-			this.comp.v_geo = GenNodes.gong_add_fang(geo_list[1], pos)
+			pos.x = pos.x - 1.2
+			v_geo = GenNodes.gong_add_fang(gong_geo, pos)
 		}
 		else if (r_node is Fang)
 		{
-			var pos = r_node.comp.pos.clone()
-			pos.x = pos.x + 1
-			this.comp.v_geo = GenNodes.gong_add_fang(geo_list[0], pos)
+			pos.x = pos.x + 1.2
+			v_geo = GenNodes.gong_add_fang(gong_geo, pos)
 		}
 		else
 		{
-			this.comp.v_geo = Variant(geo_list)		
+			v_geo = Variant(geo_list)		
 		}
+
+		this.comp.v_geo = v_geo
 	}
 
 	get_title()

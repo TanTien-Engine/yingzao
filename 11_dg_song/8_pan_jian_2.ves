@@ -12,58 +12,54 @@ node0.op_node.speed = 0.29386684298515
 
 _editor.add_node(node0, 0, 0)
 
-var node1 = ::archgraph::component::lu_dou::LuDou()
+var node1 = ::archgraph::component::inner_gong::InnerGong()
 
-_editor.add_node(node1, -94.804958677686, 398.52126220887)
+_editor.add_node(node1, -39.272003278456, 276.38588894202)
 
-var node2 = ::archgraph::component::inner_gong::InnerGong()
+var node2 = ::blueprint::nodes::commentary::Commentary()
 
-_editor.add_node(node2, -17.415572706774, 268.872740933)
+node2.set_size(757.20674817293, 201.94392459531)
+node2.title = "两材襻间斗栱"
 
-var node3 = ::blueprint::nodes::commentary::Commentary()
+_editor.add_node(node2, 251, 450.7460555973)
 
-node3.set_size(873.31903558499, 202.62693805068)
-node3.title = "两材襻间斗栱"
+var node3 = ::archgraph::component::ti_mu::TiMu()
 
-_editor.add_node(node3, 251, 450.7460555973)
+_editor.add_node(node3, 405.71829793046, 412.65438153132)
 
-var node4 = ::archgraph::component::ti_mu::TiMu()
+var node4 = ::archgraph::component::chuan::Chuan()
 
-_editor.add_node(node4, 477.43471074379, 403.77520661157)
+_editor.add_node(node4, 540.81091455501, 415.33773649342)
 
-var node5 = ::archgraph::component::chuan::Chuan()
+var node5 = ::archgraph::component::fang::Fang()
 
-_editor.add_node(node5, 610.47828700225, 402.36048084148)
+_editor.add_node(node5, -39.293209989564, 323.27951236441)
 
-var node6 = ::archgraph::component::fang::Fang()
+var node6 = ::archgraph::tools::hori_merge::HoriMerge()
 
-_editor.add_node(node6, -17.436779417882, 315.76636435539)
+_editor.add_node(node6, 97.290308396748, 393.97722533738)
 
-var node7 = ::archgraph::tools::hori_merge::HoriMerge()
+var node7 = ::archgraph::component::inner_gong::InnerGong()
 
-_editor.add_node(node7, 119.14673896843, 386.46407732836)
+_editor.add_node(node7, 126.49655011495, 319.31604918436)
 
-var node8 = ::archgraph::component::inner_gong::InnerGong()
+var node8 = ::archgraph::tools::hori_merge::HoriMerge()
 
-_editor.add_node(node8, 205.04309748193, 311.80290117534)
+_editor.add_node(node8, 263.79923617441, 393.26208917139)
 
-var node9 = ::archgraph::tools::hori_merge::HoriMerge()
+var node9 = ::archgraph::component::fang::Fang()
 
-_editor.add_node(node9, 342.34578354139, 385.74894116237)
+_editor.add_node(node9, 126.83633009543, 272.01025731824)
 
-var node10 = ::archgraph::component::fang::Fang()
+var node10 = ::archgraph::component::dou::Dou()
 
-_editor.add_node(node10, 205.38287746241, 264.49710930922)
+_editor.add_node(node10, -49.092595880682, 408.82750355114)
 
-Blueprint.connect(node1, "vert", node6, "prev")
-Blueprint.connect(node1, "vert", node2, "prev")
-Blueprint.connect(node2, "next", node8, "prev")
-Blueprint.connect(node1, "hori", node7, "prev")
-Blueprint.connect(node6, "next", node7, "left")
-Blueprint.connect(node2, "next", node7, "right")
-Blueprint.connect(node7, "next", node10, "prev")
-Blueprint.connect(node7, "next", node9, "prev")
-Blueprint.connect(node8, "next", node9, "left")
-Blueprint.connect(node10, "next", node9, "right")
-Blueprint.connect(node9, "next", node4, "prev")
-Blueprint.connect(node4, "next", node5, "prev")
+Blueprint.connect(node10, "next", node6, "prev")
+Blueprint.connect(node5, "next", node6, "left")
+Blueprint.connect(node1, "next", node6, "right")
+Blueprint.connect(node6, "next", node8, "prev")
+Blueprint.connect(node7, "next", node8, "left")
+Blueprint.connect(node9, "next", node8, "right")
+Blueprint.connect(node8, "next", node3, "prev")
+Blueprint.connect(node3, "next", node4, "prev")
