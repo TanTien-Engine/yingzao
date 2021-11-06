@@ -372,7 +372,15 @@ class DouGong
 				if (vert is Ang) 
 				{
 					var ang = vert
+
 					var ang_geo = ang.comp.v_geo
+
+					var ang_test_geo = nil
+					if (ang.comp.v_geo.value is List) {
+						ang_test_geo = ang.comp.v_geo.value[0]
+					} else {
+						ang_test_geo = ang.comp.v_geo
+					}
 
 					for (var j in 0 .. this.layers.count)
 					{
@@ -380,7 +388,7 @@ class DouGong
 						for (var k in 1 .. layer.count)
 						{
 							var pos = layer[k].comp.pos
-							if (SpatialQuery.contain_pos(ang_geo, Vector3(pos.x, pos.y + 0.14, pos.z)))
+							if (SpatialQuery.contain_pos(ang_test_geo, Vector3(pos.x, pos.y + 0.14, pos.z)))
 							{
 								var gong = layer[k]
 
@@ -388,7 +396,7 @@ class DouGong
 								gong.comp.v_geo = g2[0]
 								ang_geo = g2[1]
 							}
-							else if (SpatialQuery.contain_pos(ang_geo, Vector3(pos.x, pos.y + 0.01, pos.z)))
+							else if (SpatialQuery.contain_pos(ang_test_geo, Vector3(pos.x, pos.y + 0.01, pos.z)))
 							{
 								var gong = layer[k]
 
