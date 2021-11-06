@@ -66,7 +66,7 @@ class HoriGong is CompNode
 		var v_geo = TransNodes.translate(this.gong, pos)
 
 		// conn prev
-//		v_geo = this.add_joint(v_geo, pos)
+		v_geo = this.add_joint(dg, v_geo, pos)
 
 		// conn next
 		v_geo = this.add_dou(dg, v_geo, pos)
@@ -114,8 +114,12 @@ class HoriGong is CompNode
 		return GUAZI_GONG
 	}
 
-	add_joint(v_geo, pos)
+	add_joint(dg, v_geo, pos)
 	{
+		if (dg.has_vert_gong(this.comp.y_idx)) {
+			return v_geo
+		}
+
 		var cut_node = nil
 
 		var prev = Blueprint.get_input_node(this, "prev")

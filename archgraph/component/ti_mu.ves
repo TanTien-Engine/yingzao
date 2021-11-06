@@ -6,10 +6,12 @@ import "archgraph.component.comp_node" for CompNode
 import "archgraph.variant" for PIN_TYPE_INNER_GONG, PIN_TYPE_HORI_GONG, PIN_TYPE_PING_CHUAN
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.trans_nodes" for TransNodes
+import "archgraph.joints_nodes" for JointsNodes
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 
-var TI_MU = NODE_CACHE.fetch("../yingzao/00_dougong2/43_ti_mu.ves", nil)		
+var TI_MU      = NODE_CACHE.fetch("../yingzao/00_dougong2/43_ti_mu.ves", nil)		
+var JIAOHU_CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_tu_cut_body.ves", nil)
 
 class TiMu is CompNode
 {
@@ -56,6 +58,10 @@ class TiMu is CompNode
 
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		var v_geo = TransNodes.translate(TI_MU, pos)
+
+		if (prev is HoriGong) {
+			v_geo = JointsNodes.cut_geo_node(v_geo, JIAOHU_CUT, pos)
+		}
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo

@@ -65,7 +65,7 @@ class InnerGong is CompNode
 		var v_geo = TransNodes.translate(this.gong, pos)
 
 		// conn prev
-//		v_geo = this.add_joint(v_geo, prev, pos)
+		v_geo = this.add_joint(dg, v_geo, pos)
 
 		// conn next
 		v_geo = this.add_dou(dg, v_geo, pos, false, false)
@@ -138,9 +138,15 @@ class InnerGong is CompNode
 		}
 	}
 
-	add_joint(v_geo, prev, pos)
+	add_joint(dg, v_geo, pos)
 	{
+		if (dg.has_vert_gong(this.comp.y_idx)) {
+			return v_geo
+		}
+
 		var cut_node = nil
+
+		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev and prev is InnerGong) {
 			cut_node = QIXIN_CUT
 		} else {
