@@ -93,11 +93,13 @@ class AngTree
 			{
 				var gong = nil
 				if (src is Fang) {
-					gong = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
+					import "archgraph.component.fang" for FANG
+					gong = FANG
 				} else if (src is HoriGong) {
 					gong = src.select_gong(nil)
 				} else if (src is LiaoYanFang) {
-					gong = NODE_CACHE.fetch("../yingzao/00_dougong2/41_liaoyan_fang.ves", nil)
+					import "archgraph.component.liao_yan_fang" for FANG
+					gong = FANG
 				} else {
 					import "logger.logger" for Logger
 					Logger.error("Unknown node %(src)")
