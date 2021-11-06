@@ -1,0 +1,40 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
+node0.set_prop_value("ortho", false)
+node0.set_prop_value("offset", 1.1737253665924)
+
+node0.op_node.cam.position.set(1.0090500979809, 1.3371287121195, 1.4980642987059)
+node0.op_node.cam.yaw = -125.9
+node0.op_node.cam.pitch = -7.6
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.29386684298515
+
+_editor.add_node(node0, -383.867176, -295.850687)
+
+var node1 = ::archgraph::component::ti_mu::TiMu()
+
+_editor.add_node(node1, 326.672572, -91.225975)
+
+var node2 = ::archgraph::component::chuan::Chuan()
+
+_editor.add_node(node2, 459.672572, -89.225975)
+
+var node3 = ::blueprint::nodes::commentary::Commentary()
+
+node3.set_size(574.4484, 112.8437)
+node3.title = "昂尾单栱只替"
+
+_editor.add_node(node3, 255.81196272266, -9.6444529296903)
+
+var node4 = ::archgraph::component::ang::Ang()
+
+_editor.add_node(node4, 62.72, -70.32)
+
+var node5 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node5, 198.2708928833, -89.495008422852)
+
+Blueprint.connect(node4, "inner", node5, "prev")
+Blueprint.connect(node5, "next", node1, "prev")
+Blueprint.connect(node1, "next", node2, "prev")
