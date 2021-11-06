@@ -162,7 +162,7 @@ class VertGong is CompNode
 
 	gen_dou(vert, hori, pos)
 	{
-		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU, QIANG_DOU, PINGPAN_DOU, LIANZHU_DOU
+		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU, JIAOHU_TU_DOU, QIANG_DOU, PINGPAN_DOU, LIANZHU_DOU
 
 		if (pos.z > 0)
 		{
@@ -184,9 +184,9 @@ class VertGong is CompNode
 			else if (this is Ang) 
 			{
 				if (next is Ang) {
-					return TransNodes.transform(SAN_DOU, pos, Math.pi() * 0.5)
+					return TransNodes.transform(JIAOHU_TU_DOU, pos, Math.pi() * 0.5)
 				} else {
-					return TransNodes.translate(SAN_DOU, pos)
+					return TransNodes.translate(JIAOHU_TU_DOU, pos)
 				}
 			}
 		}
