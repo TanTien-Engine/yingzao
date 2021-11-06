@@ -158,7 +158,7 @@ class InnerGong is CompNode
 
 	add_dou(dg, v_geo, pos, l_dou_jh, r_dou_jh)
 	{
-		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU
+		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU, QIXIN_DOU
 
 		var next = NodeHelper.get_output_valid_node(this, "next")
 		if (!next) {
@@ -189,10 +189,24 @@ class InnerGong is CompNode
 		var l_dou = TransNodes.transform(l_dou_node, l_pos, l_angle)
 		var r_dou = TransNodes.transform(r_dou_node, r_pos, r_angle)
 
-		// cut sun
-		v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])
+		var has_c = !dg.has_vert_gong(this.comp.y_idx)
+		if (has_c)
+		{
+			var c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))
 
-		return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
+			var c_sun = TransNodes.translate(GD_SUN, c_pos)
+			var c_dou = TransNodes.translate(QIXIN_DOU, c_pos)
+
+			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, c_pos, r_pos ])
+
+			return Variant([ v_geo, [ l_sun, c_sun, r_sun ], [ l_dou, c_dou, r_dou ] ])
+		}
+		else
+		{
+			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])
+
+			return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
+		}
 	}
 
 	get_title()
