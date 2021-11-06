@@ -1,0 +1,87 @@
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
+import "archgraph.gen_nodes" for GenNodes
+import "archgraph.component.comp_node" for CompNode
+import "archgraph.variant" for PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG
+
+class HoriMerge is CompNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev",  [ PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG ]),
+			Pin(this, "left",  [ PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG ]),
+			Pin(this, "right", [ PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG ])
+		]
+		this.exports = [
+			Pin(this, "next", [ PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG ]),
+		]
+
+		this.layout()
+	}
+
+	calc_value(idx)
+	{
+		var left = Blueprint.get_input_node(this, "left")
+		if (left) {
+			return Blueprint.calc_input_value(this, "left")
+		} else {			
+			return Blueprint.calc_input_value(this, "right")
+		}
+	}
+
+	resolve(dg)
+	{
+		var geo_list = []
+
+		var l_node = Blueprint.get_input_node(this, "left")
+		if (l_node) {
+			geo_list.add(l_node.comp.v_geo)
+		}
+
+		var r_node = Blueprint.get_input_node(this, "right")
+		if (r_node) {
+			geo_list.add(r_node.comp.v_geo)
+		}
+
+		if (l_node) {
+			l_node.comp.v_geo = nil
+		}
+		if (r_node) {
+			r_node.comp.v_geo = nil
+		}
+
+		if (geo_list.isEmpty) {
+			return
+		} else if (geo_list.count == 1) {
+			this.comp.v_geo = geo_list[0]
+			return
+		}
+
+		import "archgraph.component.fang" for Fang, FANG
+		if (l_node is Fang)
+		{
+			var pos = l_node.comp.pos.clone()
+			pos.x = pos.x - 1
+			this.comp.v_geo = GenNodes.gong_add_fang(geo_list[1], pos)
+		}
+		else if (r_node is Fang)
+		{
+			var pos = r_node.comp.pos.clone()
+			pos.x = pos.x + 1
+			this.comp.v_geo = GenNodes.gong_add_fang(geo_list[0], pos)
+		}
+		else
+		{
+			this.comp.v_geo = Variant(geo_list)		
+		}
+	}
+
+	get_title()
+	{
+		return "merge"
+	}
+}

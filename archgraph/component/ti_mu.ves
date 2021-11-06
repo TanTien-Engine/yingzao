@@ -41,15 +41,17 @@ class TiMu is CompNode
 	{
 		import "archgraph.component.dou" for Dou
 		import "archgraph.component.hori_gong" for HoriGong
+		import "archgraph.component.inner_gong" for InnerGong
+		import "archgraph.tools.hori_merge" for HoriMerge
 
 		var len = 0.96
 		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev is Dou) {
 			len = 0.96
-		} else if (prev is HoriGong) {
+		} else if (prev is HoriGong or prev is InnerGong or prev is HoriMerge) {
 			len = 1.04
 			var pp = Blueprint.get_input_node(prev, "prev")
-			if (pp is HoriGong) {
+			if (pp is HoriGong or prev is InnerGong or prev is HoriMerge) {
 				len = 1.26
 			}
 		}
@@ -59,7 +61,8 @@ class TiMu is CompNode
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		var v_geo = TransNodes.translate(TI_MU, pos)
 
-		if (prev is HoriGong) {
+		import "archgraph.component.ang" for Ang
+		if (prev is HoriGong or prev is Ang) {
 			v_geo = JointsNodes.cut_geo_node(v_geo, JIAOHU_CUT, pos)
 		}
 
