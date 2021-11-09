@@ -52,34 +52,54 @@ class JointsNodes
 		return [ Blueprint.calc_output_value(CONN3_JOINT, "geo0"), Blueprint.calc_output_value(CONN3_JOINT, "geo1"), Blueprint.calc_output_value(CONN3_JOINT, "geo2") ]
 	}
 
-	static conn_gong_beam(v_gong, v_beam, pos)
+	static conn_gong_beam(gong, beam, pos)
 	{
-		var CONN_JOINT = NODE_CACHE.fetch("../yingzao/00_dougong2/65_beam_bottom_joint.ves", nil)
+		if (beam.is_stright())
+		{
+			var CONN_JOINT = NODE_CACHE.fetch("../yingzao/00_dougong2/65_beam_bottom_joint.ves", nil)
 
-		var n_gong = VariantProxy(v_gong)
-		var n_beam = VariantProxy(v_beam)
-		var n_pos  = VariantProxy(Variant(pos))
+			var n_gong = VariantProxy(gong.comp.v_geo)
+			var n_beam = VariantProxy(beam.comp.v_geo)
+			var n_pos  = VariantProxy(Variant(pos))
 
-		Blueprint.connect(n_gong, "out", CONN_JOINT, "gong")
-		Blueprint.connect(n_beam, "out", CONN_JOINT, "beam")
-		Blueprint.connect(n_pos,  "out", CONN_JOINT, "pos")
+			Blueprint.connect(n_gong, "out", CONN_JOINT, "gong")
+			Blueprint.connect(n_beam, "out", CONN_JOINT, "beam")
+			Blueprint.connect(n_pos,  "out", CONN_JOINT, "pos")
 
-		return [ Blueprint.calc_output_value(CONN_JOINT, "gong"), Blueprint.calc_output_value(CONN_JOINT, "beam") ]
+			gong.comp.v_geo = Blueprint.calc_output_value(CONN_JOINT, "gong")
+			beam.comp.v_geo = Blueprint.calc_output_value(CONN_JOINT, "beam")
+		}
+		else
+		{
+			var g2 = JointsNodes.conn2(gong.comp.v_geo, beam.comp.v_geo, pos, 0)
+			gong.comp.v_geo = g2[0]
+			beam.comp.v_geo = g2[1]
+		}
 	}
 
-	static conn_beam_gong(v_beam, v_gong, pos)
+	static conn_beam_gong(beam, gong, pos)
 	{
-		var CONN_JOINT = NODE_CACHE.fetch("../yingzao/00_dougong2/65_beam_top_joint.ves", nil)
+		if (beam.is_stright())
+		{
+			var CONN_JOINT = NODE_CACHE.fetch("../yingzao/00_dougong2/65_beam_top_joint.ves", nil)
 
-		var n_beam = VariantProxy(v_beam)
-		var n_gong = VariantProxy(v_gong)
-		var n_pos  = VariantProxy(Variant(pos))
+			var n_beam = VariantProxy(beam.comp.v_geo)
+			var n_gong = VariantProxy(gong.comp.v_geo)
+			var n_pos  = VariantProxy(Variant(pos))
 
-		Blueprint.connect(n_beam, "out", CONN_JOINT, "beam")
-		Blueprint.connect(n_gong, "out", CONN_JOINT, "gong")
-		Blueprint.connect(n_pos,  "out", CONN_JOINT, "pos")
+			Blueprint.connect(n_beam, "out", CONN_JOINT, "beam")
+			Blueprint.connect(n_gong, "out", CONN_JOINT, "gong")
+			Blueprint.connect(n_pos,  "out", CONN_JOINT, "pos")
 
-		return [ Blueprint.calc_output_value(CONN_JOINT, "beam"), Blueprint.calc_output_value(CONN_JOINT, "gong") ]
+			beam.comp.v_geo = Blueprint.calc_output_value(CONN_JOINT, "beam")
+			gong.comp.v_geo = Blueprint.calc_output_value(CONN_JOINT, "gong")
+		}
+		else
+		{
+			var g2 = JointsNodes.conn2(beam.comp.v_geo, gong.comp.v_geo, pos, 0)
+			beam.comp.v_geo = g2[0]
+			gong.comp.v_geo = g2[1]
+		}
 	}
 
 	static cut_geo_node(v_geo, cut_node, pos)
@@ -99,6 +119,16 @@ class JointsNodes
 	static cut_jao_hu_er(v_geo, pos, angle)
 	{
 		var JIAOHU_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_cut_body.ves", nil)
+
+		var cut_body = TransNodes.rotate(JIAOHU_CUT, angle)
+		var n_cut_body  = VariantProxy(cut_body)
+
+		return JointsNodes.cut_geo_node(v_geo, n_cut_body, pos)
+	}
+
+	static cut_jao_hu_er_outer(v_geo, pos, angle)
+	{
+		var JIAOHU_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_outer_cut_body.ves", nil)
 
 		var cut_body = TransNodes.rotate(JIAOHU_CUT, angle)
 		var n_cut_body  = VariantProxy(cut_body)

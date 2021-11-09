@@ -191,8 +191,7 @@ class VertGong is CompNode
 			}
 		}
 
-		import "archgraph.component.beam" for Beam
-		if (vert is Beam) {
+		if (NodeHelper.is_stright_beam(vert)) {
 			return TransNodes.translate(PINGPAN_DOU, pos)
 		}
 

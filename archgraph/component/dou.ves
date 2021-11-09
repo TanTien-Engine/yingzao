@@ -63,7 +63,6 @@ class Dou is CompNode
 
 	select_dou(dg)
 	{
-		import "archgraph.component.beam" for Beam
 		import "archgraph.component.vert_gong" for VertGong
 
 		var next_v = dg.layers[this.comp.y_idx + 1][0]
@@ -73,7 +72,7 @@ class Dou is CompNode
 
 		for (var i in next_v) 
 		{
-			if (i is Beam) {
+			if (NodeHelper.is_stright_beam(i)) {
 				return PINGPAN_DOU
 			} else if (i is VertGong) {
 				return JIAOHU_DOU
@@ -83,12 +82,12 @@ class Dou is CompNode
 		return JIAOHU_TU_DOU
 	}
 
-	get_cut_body()
+	get_vert_cut_body()
 	{
 		if (this.dou == JIAOHU_DOU) {
 			return NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_cut_body.ves", nil)
 		} else if (this.dou == JIAOHU_TU_DOU) {
-			return NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_tu_cut_body.ves", nil)
+			return NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_outer_cut_body.ves", nil)
 		} else {
 			return nil
 		}

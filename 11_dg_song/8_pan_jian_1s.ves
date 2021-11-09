@@ -1,11 +1,11 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
 node0.set_prop_value("ortho", false)
-node0.set_prop_value("offset", 1.6564096212387)
+node0.set_prop_value("offset", 0.55114656686783)
 
-node0.op_node.cam.position.set(1.9171652059742, 0.76408541892416, 2.1634317488532)
-node0.op_node.cam.yaw = -132.4
-node0.op_node.cam.pitch = -20.1
+node0.op_node.cam.position.set(2.1528960713425, 2.8810648103571, 0.72683254308574)
+node0.op_node.cam.yaw = -162.4
+node0.op_node.cam.pitch = -41.3
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
@@ -14,7 +14,7 @@ _editor.add_node(node0, 53.641076429206, -32.101632402158)
 
 var node1 = ::archgraph::component::inner_gong::InnerGong()
 
-_editor.add_node(node1, 105.10561785906, 302.11622372586)
+_editor.add_node(node1, 104.27917157807, 316.99225678371)
 
 var node2 = ::blueprint::nodes::commentary::Commentary()
 
@@ -33,7 +33,7 @@ _editor.add_node(node4, 523.79435395112, 406.1787612281)
 
 var node5 = ::archgraph::component::fang::Fang()
 
-_editor.add_node(node5, 104.33309634705, 348.25853234735)
+_editor.add_node(node5, 104.33309634705, 363.1345654052)
 
 var node6 = ::archgraph::tools::hori_merge::HoriMerge()
 
@@ -41,12 +41,13 @@ _editor.add_node(node6, 236.45299761829, 384.7824968578)
 
 var node7 = ::archgraph::component::dou::Dou()
 
-_editor.add_node(node7, -32.2993923576, 386.9769116256)
+_editor.add_node(node7, -33.125838638592, 397.72071327849)
 
 var node8 = ::archgraph::component::beam::Beam()
-node8.query_param("h").value = 0.32232213020325
+node8.query_param("h").value = 0.24
+node8.query_param("stright").value = true
 
-_editor.add_node(node8, 104.70100769043, 246.47689086914)
+_editor.add_node(node8, 100.94443368592, 252.48740927635)
 
 Blueprint.connect(node7, "vert", node8, "prev")
 Blueprint.connect(node7, "hori", node6, "prev")

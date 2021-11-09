@@ -62,4 +62,10 @@ class NodeHelper
 			return next
 		}
 	}
+
+	static is_stright_beam(node)
+	{
+		import "archgraph.component.beam" for Beam
+		return node is Beam and node.is_stright()
+	}
 }

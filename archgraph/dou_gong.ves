@@ -216,7 +216,7 @@ class DouGong
 				{
 					if (SpatialQuery.contain_pos(vert.comp.v_geo, pos))
 					{
-						if (!(vert is Beam))
+						if (!(NodeHelper.is_stright_beam(vert)))
 						{
 							var g2 = JointsNodes.conn2(layer[i].comp.v_geo, vert.comp.v_geo, layer[i].comp.pos, 0)
 							layer[i].comp.v_geo = g2[0]
@@ -340,7 +340,7 @@ class DouGong
 				if (prev is LuDou) {
 					cut_body = NODE_CACHE.fetch("../yingzao/00_dougong2/20_lu_cut_body.ves", nil)
 				} else if (prev is Dou) {
-					cut_body = prev.get_cut_body()
+					cut_body = prev.get_vert_cut_body()
 				}
 
 				if (cut_body) {
@@ -453,24 +453,18 @@ class DouGong
 					var pos = gong.comp.pos.clone()
 					pos.y = pos.y + 0.1
 
-					if (SpatialQuery.contain_pos(beam.comp.v_geo, pos))
-					{
-						var g2 = JointsNodes.conn_gong_beam(gong.comp.v_geo, beam.comp.v_geo, gong.comp.pos)
-						gong.comp.v_geo = g2[0]
-						beam.comp.v_geo = g2[1]
-					}					
+					if (SpatialQuery.contain_pos(beam.comp.v_geo, pos)) {
+						JointsNodes.conn_gong_beam(gong, beam, gong.comp.pos)
+					}
 				}
 
 				var next_layer = this.layers[i + 1]
 				for (var j in 1 .. next_layer.count)
 				{
 					var gong = next_layer[j]
-					if (SpatialQuery.contain_pos(beam.comp.v_geo, gong.comp.pos))
-					{
-						var g2 = JointsNodes.conn_beam_gong(beam.comp.v_geo, gong.comp.v_geo, gong.comp.pos)
-						beam.comp.v_geo = g2[0]
-						gong.comp.v_geo = g2[1]
-					}					
+					if (SpatialQuery.contain_pos(beam.comp.v_geo, gong.comp.pos)) {
+						JointsNodes.conn_beam_gong(beam, gong, gong.comp.pos)
+					}
 				}
 			}
 		}
