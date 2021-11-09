@@ -13,11 +13,7 @@ class HuaGong is VertGong
 	{
 		// select gong
 		var prev = Blueprint.get_input_node(this, "prev")
-		import "archgraph.component.lu_dou" for LuDou
-		if (prev is LuDou) {
-			this.outer_hop = 1
-			this.inner_hop = 1
-		} else if (prev) {
+		if (prev is VertGong) {
 			this.outer_hop = prev.outer_hop + 1
 			this.inner_hop = prev.inner_hop + 1			
 		} else {
