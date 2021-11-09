@@ -89,21 +89,15 @@ class HoriMerge is CompNode
 		var v_geo = nil
 
 		import "archgraph.component.fang" for Fang, FANG
-		if (l_node is Fang)
-		{
-			pos.x = pos.x - 1.2
-			v_geo = GenNodes.gong_add_fang(gong_geo, pos)
-		}
-		else if (r_node is Fang)
-		{
-			pos.x = pos.x + 1.2
-			v_geo = GenNodes.gong_add_fang(gong_geo, pos)
-		}
-		else
-		{
+		if (l_node is Fang) {
+			v_geo = GenNodes.gong_add_fang(gong_geo, Vector3(pos.x - 1.2, pos.y, pos.z))
+		} else if (r_node is Fang) {
+			v_geo = GenNodes.gong_add_fang(gong_geo, Vector3(pos.x + 1.2, pos.y, pos.z))
+		} else {
 			v_geo = Variant(geo_list)		
 		}
 
+		this.comp.pos = pos
 		this.comp.v_geo = v_geo
 	}
 
