@@ -10,6 +10,7 @@ import "archgraph.spatial_query" for SpatialQuery
 import "archgraph.component.comp_node" for CompNode
 import "archgraph.component.ang" for Ang
 import "archgraph.component.vert_gong" for VertGong
+import "archgraph.component.beam" for Beam
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector2, Vector3
 import "maths" for Maths
@@ -139,8 +140,8 @@ class DouGong
 		for (var comp_node in sorted_nodes)
 		{
 			var layer = NodeHelper.calc_y_idx(comp_node)
-			if (comp_node is VertGong) {
-				this.layers[layer][0].add(comp_node)				
+			if (comp_node is VertGong or comp_node is Beam) {
+				this.layers[layer][0].add(comp_node)
 			} else {
 				this.layers[layer].add(comp_node)
 			}
@@ -215,9 +216,12 @@ class DouGong
 				{
 					if (SpatialQuery.contain_pos(vert.comp.v_geo, pos))
 					{
-						var g2 = JointsNodes.conn2(layer[i].comp.v_geo, vert.comp.v_geo, layer[i].comp.pos, 0)
-						layer[i].comp.v_geo = g2[0]
-						vert.comp.v_geo = g2[1]
+						if (!(vert is Beam))
+						{
+							var g2 = JointsNodes.conn2(layer[i].comp.v_geo, vert.comp.v_geo, layer[i].comp.pos, 0)
+							layer[i].comp.v_geo = g2[0]
+							vert.comp.v_geo = g2[1]
+						}
 					}
 				}
 			}
@@ -239,7 +243,7 @@ class DouGong
 						var g3 = JointsNodes.conn3(layer[i].comp.v_geo_c.value[0], layer[i].comp.v_geo_c.value[1], vert.comp.v_geo_c, layer[i].comp.pos, angle)
 						layer[i].comp.v_geo_c.value[0] = g3[0]
 						layer[i].comp.v_geo_c.value[1] = g3[1]
-						vert.comp.v_geo_c          = g3[2]
+						vert.comp.v_geo_c              = g3[2]
 					}
 				}
 			}
@@ -336,6 +340,7 @@ class DouGong
 	{
 		this.build_dou_er_joints()
 		this.build_hori_gong_and_ang_joints()
+		this.build_beam_joints()
 	}
 
 	build_dou_er_joints()
@@ -412,6 +417,51 @@ class DouGong
 		}
 	}
 
+	build_beam_joints()
+	{
+		for (var i in 1 .. this.layers.count - 1)
+		{
+			var layer = this.layers[i]
+
+			var beam = nil
+			for (var vert in layer[0]) {
+				if (vert is Beam) {
+					beam = vert
+				}
+			}
+
+			if (beam)
+			{
+				for (var j in 1 .. layer.count)
+				{
+					var gong = layer[j]
+
+					var pos = gong.comp.pos.clone()
+					pos.y = pos.y + 0.1
+
+					if (SpatialQuery.contain_pos(beam.comp.v_geo, pos))
+					{
+						var g2 = JointsNodes.conn_gong_beam(gong.comp.v_geo, beam.comp.v_geo, gong.comp.pos)
+						gong.comp.v_geo = g2[0]
+						beam.comp.v_geo = g2[1]
+					}					
+				}
+
+				var next_layer = this.layers[i + 1]
+				for (var j in 1 .. next_layer.count)
+				{
+					var gong = next_layer[j]
+					if (SpatialQuery.contain_pos(beam.comp.v_geo, gong.comp.pos))
+					{
+						var g2 = JointsNodes.conn_beam_gong(beam.comp.v_geo, gong.comp.v_geo, gong.comp.pos)
+						beam.comp.v_geo = g2[0]
+						gong.comp.v_geo = g2[1]
+					}					
+				}
+			}
+		}
+	}
+
 	has_vert_gong(y_idx)
 	{
 		return !this.layers[y_idx][0].isEmpty
@@ -423,6 +473,25 @@ class DouGong
 		for (var i in 1 .. layer.count) {
 			if (layer[i].comp.x_idx == x_idx) {
 				return true
+			}
+		}
+
+		return false
+	}
+
+	// for add center dou
+	has_vert_gong_or_prev_beam(y_idx)
+	{
+		if (!this.layers[y_idx][0].isEmpty) {
+			return true
+		}
+
+		if (y_idx > 0)
+		{
+			for (var n in this.layers[y_idx - 1][0]) {
+				if (n is Beam) {
+					return true
+				}
 			}
 		}
 

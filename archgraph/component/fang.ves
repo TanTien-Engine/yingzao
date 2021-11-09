@@ -85,7 +85,7 @@ class Fang is CompNode
 
 		var has_c = true
 		if (dg) {
-			has_c = !dg.has_vert_gong(this.comp.y_idx - 1)		
+			has_c = !dg.has_vert_gong_or_prev_beam(this.comp.y_idx - 1)		
 		}
 		if (has_c) {
 			return JointsNodes.cut_geo_node(v_geo, QIXIN_CUT, pos)		
@@ -128,7 +128,7 @@ class Fang is CompNode
 
 		var has_c = true
 		if (dg) {
-			has_c = !dg.has_vert_gong(this.comp.y_idx)
+			has_c = !dg.has_vert_gong_or_prev_beam(this.comp.y_idx)
 		}
 		if (has_c)
 		{

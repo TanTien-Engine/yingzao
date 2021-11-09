@@ -151,7 +151,7 @@ class HoriGong is CompNode
 		var l_dou = TransNodes.translate(SAN_DOU, l_pos)
 		var r_dou = TransNodes.translate(SAN_DOU, r_pos)
 
-		var has_c = !dg.has_vert_gong(this.comp.y_idx)
+		var has_c = !dg.has_vert_gong_or_prev_beam(this.comp.y_idx)
 		if (has_c)
 		{
 			var c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))

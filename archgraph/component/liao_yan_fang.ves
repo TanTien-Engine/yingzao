@@ -69,7 +69,7 @@ class LiaoYanFang is CompNode
 	{
 		var QIXIN_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
 
-		var has_c = !dg.has_vert_gong(this.comp.y_idx - 1)
+		var has_c = !dg.has_vert_gong_or_prev_beam(this.comp.y_idx - 1)
 		if (has_c) {
 			return JointsNodes.cut_geo_node(v_geo, QIXIN_CUT, pos)		
 		} else {

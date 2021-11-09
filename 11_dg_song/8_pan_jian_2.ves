@@ -1,11 +1,11 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
 node0.set_prop_value("ortho", false)
-node0.set_prop_value("offset", 3.3157894611359)
+node0.set_prop_value("offset", 1.7578947544098)
 
-node0.op_node.cam.position.set(1.2861522637667, 0.91562032506067, 2.0323901074016)
-node0.op_node.cam.yaw = -123.7
-node0.op_node.cam.pitch = -12.7
+node0.op_node.cam.position.set(1.3054145018964, 1.1189499589498, 1.4119718448398)
+node0.op_node.cam.yaw = -125.7
+node0.op_node.cam.pitch = -24.3
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
@@ -14,48 +14,59 @@ _editor.add_node(node0, 0, 0)
 
 var node1 = ::archgraph::component::inner_gong::InnerGong()
 
-_editor.add_node(node1, -39.272003278456, 276.38588894202)
+_editor.add_node(node1, 36.182542176089, 271.84043439657)
 
 var node2 = ::blueprint::nodes::commentary::Commentary()
 
-node2.set_size(757.20674817293, 201.94392459531)
+node2.set_size(902.66129362748, 337.39847004986)
 node2.title = "两材襻间斗栱"
 
 _editor.add_node(node2, 251, 450.7460555973)
 
 var node3 = ::archgraph::component::ti_mu::TiMu()
 
-_editor.add_node(node3, 405.71829793046, 412.65438153132)
+_editor.add_node(node3, 481.17284338501, 408.10892698587)
 
 var node4 = ::archgraph::component::chuan::Chuan()
 
-_editor.add_node(node4, 540.81091455501, 415.33773649342)
+_editor.add_node(node4, 616.26546000956, 410.79228194797)
 
 var node5 = ::archgraph::component::fang::Fang()
 
-_editor.add_node(node5, -39.293209989564, 323.27951236441)
+_editor.add_node(node5, 36.161335464981, 318.73405781896)
 
 var node6 = ::archgraph::tools::hori_merge::HoriMerge()
 
-_editor.add_node(node6, 97.290308396748, 393.97722533738)
+_editor.add_node(node6, 172.74485385129, 389.43177079193)
 
 var node7 = ::archgraph::component::inner_gong::InnerGong()
 
-_editor.add_node(node7, 126.49655011495, 319.31604918436)
+_editor.add_node(node7, 201.9510955695, 314.77059463891)
 
 var node8 = ::archgraph::tools::hori_merge::HoriMerge()
 
-_editor.add_node(node8, 263.79923617441, 393.26208917139)
+_editor.add_node(node8, 339.25378162896, 388.71663462594)
 
 var node9 = ::archgraph::component::fang::Fang()
 
-_editor.add_node(node9, 126.83633009543, 272.01025731824)
+_editor.add_node(node9, 202.29087554998, 267.46480277279)
 
 var node10 = ::archgraph::component::dou::Dou()
 
-_editor.add_node(node10, -49.092595880682, 408.82750355114)
+_editor.add_node(node10, -114.21656282283, 339.48866057594)
 
-Blueprint.connect(node10, "next", node6, "prev")
+var node11 = ::archgraph::component::hua_gong::HuaGong()
+
+_editor.add_node(node11, 189.82756181197, 183.20834350586)
+
+var node12 = ::archgraph::component::beam::Beam()
+node12.query_param("h").value = 0.24
+
+_editor.add_node(node12, 329.8275645863, 192.29924566095)
+
+Blueprint.connect(node10, "vert", node11, "prev")
+Blueprint.connect(node11, "next", node12, "prev")
+Blueprint.connect(node10, "hori", node6, "prev")
 Blueprint.connect(node5, "next", node6, "left")
 Blueprint.connect(node1, "next", node6, "right")
 Blueprint.connect(node6, "next", node8, "prev")

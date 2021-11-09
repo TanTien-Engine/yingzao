@@ -189,7 +189,7 @@ class InnerGong is CompNode
 		var l_dou = TransNodes.transform(l_dou_node, l_pos, l_angle)
 		var r_dou = TransNodes.transform(r_dou_node, r_pos, r_angle)
 
-		var has_c = !dg.has_vert_gong(this.comp.y_idx)
+		var has_c = !dg.has_vert_gong_or_prev_beam(this.comp.y_idx)
 		if (has_c)
 		{
 			var c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))
