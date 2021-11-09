@@ -20,12 +20,12 @@ class NodeHelper
 
 	static calc_layer_impl(node, layer)
 	{
-		import "archgraph.component.up_ang" for UpAng
-		import "archgraph.tools.vert_split" for VertSplit
-
 		var prev = Blueprint.get_input_node(node, "prev")
 		if (prev) 
 		{
+			import "archgraph.component.up_ang" for UpAng
+			import "archgraph.tools.vert_split" for VertSplit
+		
 			if (prev is UpAng and Blueprint.get_input_pin(node, "prev").slot_idx == 2) {
 				return this.calc_layer_impl(prev, layer + 2)
 			} else if (prev is VertSplit) {
@@ -36,6 +36,17 @@ class NodeHelper
 		} 
 		else 
 		{
+			import "archgraph.tools.hori_merge" for HoriMerge
+
+			var next = Blueprint.get_output_node(node, "next")
+			if (next is HoriMerge) 
+			{
+				if (node is HoriMerge) {
+					return 0
+				} else {
+					return this.calc_layer_impl(next, layer)
+				}
+			}
 			return layer
 		}
 	}
