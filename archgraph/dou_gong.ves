@@ -329,9 +329,23 @@ class DouGong
 		}
 		else
 		{
-			for (var vert in this.layers[1][0]) {
-				var LU_CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/20_lu_cut_body.ves", nil)
-				vert.comp.v_geo = JointsNodes.cut_geo_node(vert.comp.v_geo, LU_CUT, vert.comp.pos)
+			import "archgraph.component.dou" for Dou
+			import "archgraph.component.lu_dou" for LuDou
+
+			for (var vert in this.layers[1][0]) 
+			{
+				var cut_body = nil
+
+				var prev = Blueprint.get_input_node(vert, "prev")
+				if (prev is LuDou) {
+					cut_body = NODE_CACHE.fetch("../yingzao/00_dougong2/20_lu_cut_body.ves", nil)
+				} else if (prev is Dou) {
+					cut_body = prev.get_cut_body()
+				}
+
+				if (cut_body) {
+					vert.comp.v_geo = JointsNodes.cut_geo_node(vert.comp.v_geo, cut_body, vert.comp.pos)					
+				}
 			}
 		}
 	}
