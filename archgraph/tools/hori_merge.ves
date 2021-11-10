@@ -6,7 +6,7 @@ import "archgraph.component.comp_node" for CompNode
 import "archgraph.variant" for PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.trans_nodes" for TransNodes
-import "archgraph.constant" for ZU_CAI_HEIGHT
+import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
 import "maths.vector" for Vector3
 
 class HoriMerge is CompNode
@@ -29,8 +29,16 @@ class HoriMerge is CompNode
 
 	calc_value(idx)
 	{
+		import "archgraph.component.ti_mu" for TiMu
+
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
-		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
+
+		var next = NodeHelper.get_output_valid_node(this, "next")
+		if (next is TiMu and next.no_dou) {
+			return Variant(pos.add(Vector3(0, CAI_HEIGHT, 0)))
+		} else {
+			return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
+		}		
 	}
 
 	resolve(dg)
@@ -83,7 +91,13 @@ class HoriMerge is CompNode
 			}
 
 			gong_geo = gong_node.add_joint(dg, gong_geo, pos)
-			gong_geo = gong_node.add_dou(dg, gong_geo, pos, false, false)
+
+			import "archgraph.component.ti_mu" for TiMu
+			var next = NodeHelper.get_output_valid_node(this, "next")
+			var no_dou = next is TiMu and next.no_dou
+			if (!no_dou) {
+				gong_geo = gong_node.add_dou(dg, gong_geo, pos, false, false)
+			}
 		}
 
 		var v_geo = nil
