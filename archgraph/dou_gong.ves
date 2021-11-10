@@ -454,12 +454,9 @@ class DouGong
 				for (var j in 1 .. layer.count)
 				{
 					var gong = layer[j]
-
-					var pos = gong.comp.pos.clone()
-					pos.y = pos.y + 0.1
-
-					if (SpatialQuery.contain_pos(beam.comp.v_geo, pos)) {
-						JointsNodes.conn_gong_beam(gong, beam, gong.comp.pos)
+					var pos = gong.comp.pos
+					if (SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
+						JointsNodes.conn_gong_beam(gong, beam, pos)
 					}
 				}
 
@@ -467,8 +464,9 @@ class DouGong
 				for (var j in 1 .. next_layer.count)
 				{
 					var gong = next_layer[j]
-					if (SpatialQuery.contain_pos(beam.comp.v_geo, gong.comp.pos)) {
-						JointsNodes.conn_beam_gong(beam, gong, gong.comp.pos)
+					var pos = gong.comp.pos
+					if (SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
+						JointsNodes.conn_beam_gong(beam, gong, pos)
 					}
 				}
 			}
