@@ -9,6 +9,7 @@ import "archgraph.node_helper" for NodeHelper
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.component.vert_gong" for VertGong
 import "archgraph.constant" for DOU_H_WIDTH
+import "archgraph.joints_nodes" for JointsNodes
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 
@@ -27,8 +28,9 @@ class Beam is CompNode
 
 		this.layout()
 
-		this.beam_h = 0.21
+		this.beam_h  = 0.21
 		this.stright = true
+		this.shrink  = false
 	}
 
 	calc_value(idx)
@@ -80,6 +82,11 @@ class Beam is CompNode
 		}
 		v_geo = TransNodes.translate(VariantProxy(v_geo), Vector3(0, 0, offset))
 
+		if (this.shrink) {
+			var HEAD_CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/40_beam_shrink_body.ves", nil)
+			v_geo = JointsNodes.cut_geo_node(v_geo, HEAD_CUT, Vector3(pos.x, pos.y, pos.z - 0.05))
+		}
+
 		return v_geo
 	}
 
@@ -112,8 +119,8 @@ class Beam is CompNode
 		return v_geo
 	}
 
-	is_stright()
+	is_wide_head()
 	{
-		return this.stright
+		return this.stright and !this.shrink
 	}
 }

@@ -17,6 +17,7 @@ class BeamStyle is StyleNode
 
 		this.params.add(NodeParam("h", 0.21))
 		this.params.add(NodeParam("stright", true))
+		this.params.add(NodeParam("shrink", false))
 
 		this.layout()
 	}
@@ -40,5 +41,6 @@ class BeamStyle is StyleNode
 
 		beam.beam_h  = this.query_param("h").value
 		beam.stright = this.query_param("stright").value
+		beam.shrink  = this.query_param("shrink").value		
 	}
 }

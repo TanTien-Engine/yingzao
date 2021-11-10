@@ -221,7 +221,7 @@ class DouGong
 				{
 					if (SpatialQuery.contain_pos(vert.comp.v_geo, pos))
 					{
-						if (!(NodeHelper.is_stright_beam(vert)))
+						if (!(NodeHelper.is_wide_beam_head(vert)))
 						{
 							var g2 = JointsNodes.conn2(layer[i].comp.v_geo, vert.comp.v_geo, layer[i].comp.pos, 0)
 							layer[i].comp.v_geo = g2[0]

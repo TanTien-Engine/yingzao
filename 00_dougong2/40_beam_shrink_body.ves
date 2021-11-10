@@ -1,0 +1,59 @@
+var node0 = ::geograph::nodes::box::Box()
+node0.query_param("size").value.set(1, 1, 1)
+node0.query_param("pos").value.set(0, 0, 0)
+node0.query_param("offset_x").value = false
+node0.query_param("offset_y").value = true
+node0.query_param("offset_z").value = false
+
+_editor.add_node(node0, -80.545972656251, 71.380829492187)
+
+var node1 = ::geograph::nodes::box::Box()
+node1.query_param("size").value.set(0.1, 1, 1)
+node1.query_param("pos").value.set(0, 0, 0)
+node1.query_param("offset_x").value = false
+node1.query_param("offset_y").value = true
+node1.query_param("offset_z").value = false
+
+_editor.add_node(node1, -77.876716457912, -183.15917050781)
+
+var node2 = ::geograph::nodes::boolean::Boolean()
+node2.query_param("operator").value = "subtract"
+
+_editor.add_node(node2, 99.36346599484, 53.311250544776)
+
+var node3 = ::blueprint::nodes::number::Number()
+
+node3.value = 0.5
+
+_editor.add_node(node3, 96.884132069988, -23.548282087338)
+
+var node4 = ::blueprint::nodes::subgraph::Subgraph()
+node4.load_from_file(_editor, "../../tantien/assets/blueprints/geograph/translate_z.ves")
+
+_editor.add_node(node4, 301.0163735634, 27.691390865109)
+
+var node5 = ::blueprint::nodes::output::Output()
+
+node5.var_name = "geo"
+node5.var_type = "geo"
+
+_editor.add_node(node5, 622.50396375419, 2.8980122715978)
+
+var node6 = ::blueprint::nodes::input::Input()
+
+node6.var_name = "pos"
+node6.var_type = "num3"
+
+_editor.add_node(node6, 351.42958863314, -58.258996884687)
+
+var node7 = ::geograph::nodes::translate_f::TranslateF()
+
+_editor.add_node(node7, 491.92545904995, -7.8457704654409)
+
+Blueprint.connect(node0, "geo", node2, "a")
+Blueprint.connect(node1, "geo", node2, "b")
+Blueprint.connect(node2, "geo", node4, "geo")
+Blueprint.connect(node3, "v", node4, "offset")
+Blueprint.connect(node4, "geo", node7, "geo")
+Blueprint.connect(node6, "var", node7, "xyz")
+Blueprint.connect(node7, "geo", node5, "var")
