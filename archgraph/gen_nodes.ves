@@ -1,7 +1,10 @@
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
+import "archgraph.tools_nodes" for ToolsNodes
+import "archgraph.trans_nodes" for TransNodes
 import "editor.node_cache" for NODE_CACHE
+import "math" for Math
 
 class GenNodes
 {
@@ -35,5 +38,31 @@ class GenNodes
 		Blueprint.connect(pos_node, "out", ADD_FANG, "pos")
 
 		return Blueprint.calc_output_value(ADD_FANG, "geo")
+	}
+
+	static gong_add_head(v_geo)
+	{
+		var ADD_HEAD = NODE_CACHE.fetch("../yingzao/00_dougong2/50_gong_add_head.ves", nil)
+
+		Blueprint.connect(VariantProxy(0), "out", ADD_HEAD, "head")
+
+		if (ToolsNodes.is_gong_vert(v_geo))
+		{
+			var geo = TransNodes.rotate(VariantProxy(v_geo), Math.pi() * 1.5)
+
+			Blueprint.connect(VariantProxy(geo), "out", ADD_HEAD, "geo")
+			Blueprint.connect(VariantProxy(0), "out", ADD_HEAD, "left")
+
+			geo = Blueprint.calc_output_value(ADD_HEAD, "geo")
+
+			return TransNodes.rotate(VariantProxy(geo), Math.pi() * 0.5)
+		}
+		else
+		{
+			Blueprint.connect(VariantProxy(geo), "out", ADD_HEAD, "geo")
+			Blueprint.connect(VariantProxy(0), "out", ADD_HEAD, "left")
+
+			return Blueprint.calc_output_value(ADD_HEAD, "geo")
+		}
 	}
 }

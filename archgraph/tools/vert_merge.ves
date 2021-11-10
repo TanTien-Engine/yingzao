@@ -1,0 +1,71 @@
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "archgraph.component.vert_gong" for VertGong
+import "archgraph.variant" for PIN_TYPE_VERT_GONG
+import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.node_helper" for NodeHelper
+import "archgraph.tools_nodes" for ToolsNodes
+
+class VertMerge is VertGong
+{
+	init()
+	{
+		super.init()
+
+		this.imports.add(Pin(this, "outer", PIN_TYPE_VERT_GONG))
+		this.imports.add(Pin(this, "inner", PIN_TYPE_VERT_GONG))
+
+		this.layout()
+	}
+
+	resolve(dg)
+	{
+		var prev = Blueprint.get_input_node(this, "prev")
+
+		var outer = Blueprint.get_input_node(this, "outer")
+		if (outer) 
+		{
+			if (prev) {
+				var conn = Blueprint.connect(prev, "vert", outer, "prev")
+				outer.resolve(dg)
+				Blueprint.disconnect(conn)
+			} else {
+				outer.resolve(dg)
+			}
+		}
+
+		var inner = Blueprint.get_input_node(this, "inner")
+		if (inner) 
+		{
+			if (prev) {
+				var conn = Blueprint.connect(prev, "vert", inner, "prev")
+				inner.resolve(dg)
+				Blueprint.disconnect(conn)
+			} else {
+				inner.resolve(dg)
+			}
+		}
+
+		if (!outer or !inner) {
+			return
+		}
+
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+
+		var z = pos.z - 0.05
+		outer.comp.v_geo = JointsNodes.cut_right_plane(outer.comp.v_geo, z)
+		inner.comp.v_geo = JointsNodes.cut_left_plane(inner.comp.v_geo, z)
+
+		this.comp.pos = pos
+		this.comp.v_geo = ToolsNodes.brush_merge([ outer.comp.v_geo, inner.comp.v_geo ])
+
+		outer.comp.v_geo = nil
+		inner.comp.v_geo = nil
+	}
+
+	get_title()
+	{
+		return "merge"
+	}
+}

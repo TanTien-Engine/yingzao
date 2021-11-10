@@ -17,8 +17,10 @@ class ShuaTou is VertGong
 {
 	resolve(dg)
 	{
+		import "archgraph.tools.vert_merge" for VertMerge
+
 		var prev = Blueprint.get_input_node(this, "prev")
-		if (prev) {
+		if (prev is VertGong) {
 			this.outer_hop = prev.outer_hop
 			this.inner_hop = prev.inner_hop
 		} else {
@@ -28,13 +30,25 @@ class ShuaTou is VertGong
 
 		var single_node = nil
 		var next = NodeHelper.get_output_valid_node(this, "next")
-		if (!next) {
-			single_node = VariantProxy(Variant(true))
+		if (next) {
+			if (next is VertMerge) {
+				single_node = VariantProxy(Variant(true))
+			}
+		} else {
+			single_node = VariantProxy(Variant(true))			
+		}
+		if (single_node) {
 			Blueprint.connect(single_node, "out", SHUA_TOU, "single")
 		}
 
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
-		var v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
+
+		var v_geo = nil
+		if (next is VertMerge) {
+			v_geo = ShuaTou.create_geo(0.12, pos)
+		} else {
+			v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
+		}
 
 		v_geo = AngHelper.ang_cut(this, v_geo)
 
@@ -71,6 +85,13 @@ class ShuaTou is VertGong
 		Blueprint.connect(len_l_node, "out", SHUA_TOU, "len_left")
 		Blueprint.connect(len_r_node, "out", SHUA_TOU, "len_right")
 
+		return TransNodes.translate(SHUA_TOU, pos)
+	}
+
+	static create_geo(len, pos)
+	{
+		Blueprint.connect(VariantProxy(Variant(len)), "out", SHUA_TOU, "len_left")
+		Blueprint.connect(VariantProxy(Variant(len)), "out", SHUA_TOU, "len_right")
 		return TransNodes.translate(SHUA_TOU, pos)
 	}
 
