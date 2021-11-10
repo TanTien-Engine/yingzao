@@ -24,6 +24,16 @@ class CompRef is Node
 
 	calc_value(idx)
 	{
+		var node = this.get_node_ref()
+		if (node) {
+			return Variant(VAR_TYPE_COMPONENT, VarComp(node.comp))
+		} else {
+			return nil
+		}
+	}
+
+	get_node_ref()
+	{
 		import "archgraph.tools.vert_split" for VertSplit
 
 		if (!CONTEXT.dg) {
@@ -52,10 +62,6 @@ class CompRef is Node
 			}
 		}
 
-		if (node) {
-			return Variant(VAR_TYPE_COMPONENT, VarComp(node.comp))
-		} else {
-			return nil
-		}
+		return node	
 	}
 }

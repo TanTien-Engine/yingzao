@@ -32,6 +32,11 @@ class DouGong
 	{
 		this.rebuild_layers(scene)
 
+		// pass0: register style
+		for (var n in CONTEXT.style_nodes) {
+			n.register()
+		}
+
 		// pass1: gen gong and dou
 		for (var layer in this.layers) 
 		{

@@ -102,33 +102,33 @@ var node17 = ::blueprint::nodes::output::Output()
 node17.var_name = "geo"
 node17.var_type = "geo"
 
-_editor.add_node(node17, 1792.5202698662, -386.66433907501)
+_editor.add_node(node17, 2053.3990978662, -252.90453107501)
 
 var node18 = ::blueprint::nodes::load::Load()
 
 node18.var_name = "length"
 
-_editor.add_node(node18, 1056.8387281989, -430.96156663123)
+_editor.add_node(node18, 1312.4175141989, -298.49016663123)
 
 var node19 = ::blueprint::nodes::subgraph::Subgraph()
 node19.load_from_file(_editor, "../../tantien/assets/blueprints/geograph/translate_z.ves")
 
-_editor.add_node(node19, 1610.111708258, -396.87141058299)
+_editor.add_node(node19, 1865.690494258, -264.40001058299)
 
 var node20 = ::blueprint::nodes::negate::Negate()
 
-_editor.add_node(node20, 1423.9792223617, -427.2169637885)
+_editor.add_node(node20, 1679.5580083617, -294.7455637885)
 
 var node21 = ::blueprint::nodes::subgraph::Subgraph()
 node21.load_from_file(_editor, "10_entasis_gong.ves")
 
-_editor.add_node(node21, 519.22437255859, -190.80865417481)
+_editor.add_node(node21, 611.62437255859, -20.30865417481)
 
 var node22 = ::blueprint::nodes::integer::Integer()
 
 node22.value = 3
 
-_editor.add_node(node22, 346.75016601563, -310.85440994263)
+_editor.add_node(node22, 439.15016601563, -140.35440994263)
 
 var node23 = ::blueprint::nodes::number::Number()
 
@@ -145,28 +145,28 @@ _editor.add_node(node24, -344.81630630709, -589.16279051773)
 var node25 = ::blueprint::nodes::subgraph::Subgraph()
 node25.load_from_file(_editor, "../../tantien/assets/blueprints/tools/half.ves")
 
-_editor.add_node(node25, 1242.4792773438, -428.26738891602)
+_editor.add_node(node25, 1498.0580633438, -295.79598891602)
 
 var node26 = ::geograph::nodes::rotate_x::RotateX()
 node26.query_param("angle").value = "180"
 
-_editor.add_node(node26, 712.87024169922, -158.37822509766)
+_editor.add_node(node26, 805.27024169922, 12.12177490234)
 
 var node27 = ::blueprint::nodes::subgraph::Subgraph()
 node27.load_from_file(_editor, "../../tantien/assets/blueprints/geograph/translate_y.ves")
 
-_editor.add_node(node27, 900.52826171875, -191.8639175415)
+_editor.add_node(node27, 992.92826171875, -21.3639175415)
 
 var node28 = ::blueprint::nodes::load::Load()
 
 node28.var_name = "height"
 
-_editor.add_node(node28, 712.63963636364, -225.68663636364)
+_editor.add_node(node28, 805.03963636364, -55.18663636364)
 
 var node29 = ::blueprint::nodes::subgraph::Subgraph()
 node29.load_from_file(_editor, "10_entasis_gong.ves")
 
-_editor.add_node(node29, 1270.1767775173, -227.72272855497)
+_editor.add_node(node29, 1362.5767775173, -57.22272855497)
 
 var node30 = ::blueprint::nodes::divide::Divide()
 
@@ -214,31 +214,42 @@ var node38 = ::blueprint::nodes::load::Load()
 
 node38.var_name = "ew"
 
-_editor.add_node(node38, 345.4188051862, -213.62630752317)
+_editor.add_node(node38, 437.8188051862, -43.12630752317)
 
 var node39 = ::blueprint::nodes::load::Load()
 
 node39.var_name = "eh"
 
-_editor.add_node(node39, 346.95873681641, -258.35002832031)
+_editor.add_node(node39, 439.35873681641, -87.85002832031)
 
 var node40 = ::blueprint::nodes::load::Load()
 
 node40.var_name = "ew"
 
-_editor.add_node(node40, 1082.2714177912, -231.01299493963)
+_editor.add_node(node40, 1174.6714177912, -60.51299493963)
 
 var node41 = ::blueprint::nodes::load::Load()
 
 node41.var_name = "eh"
 
-_editor.add_node(node41, 1079.2714399858, -277.19480202415)
+_editor.add_node(node41, 1171.6714399858, -106.69480202415)
 
 var node42 = ::blueprint::nodes::integer::Integer()
 
 node42.value = 3
 
-_editor.add_node(node42, 1080.5370751065, -331.76495539718)
+_editor.add_node(node42, 1172.9370751065, -161.26495539718)
+
+var node43 = ::blueprint::nodes::input::Input()
+
+node43.var_name = "entasis"
+node43.var_type = "bool"
+
+_editor.add_node(node43, 1516.1129407363, -207.23416428223)
+
+var node44 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node44, 1672.0883740859, -218.04099716797)
 
 Blueprint.connect(node13, "v", node14, "var")
 Blueprint.connect(node14, "var", node18, "var")
@@ -286,6 +297,9 @@ Blueprint.connect(node27, "geo", node29, "geo")
 Blueprint.connect(node40, "var", node29, "entasis_w")
 Blueprint.connect(node41, "var", node29, "entasis_h")
 Blueprint.connect(node42, "v", node29, "entasis_num")
-Blueprint.connect(node29, "geo", node19, "geo")
+Blueprint.connect(node43, "var", node44, "cond")
+Blueprint.connect(node29, "geo", node44, "true")
+Blueprint.connect(node16, "geo", node44, "false")
+Blueprint.connect(node44, "result", node19, "geo")
 Blueprint.connect(node20, "v", node19, "offset")
 Blueprint.connect(node19, "geo", node17, "var")

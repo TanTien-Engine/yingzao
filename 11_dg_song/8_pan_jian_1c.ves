@@ -10,7 +10,7 @@ node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
 
-_editor.add_node(node0, 53.641076429206, -32.101632402158)
+_editor.add_node(node0, -363.63165084352, 114.26200396148)
 
 var node1 = ::archgraph::component::inner_gong::InnerGong()
 
@@ -44,11 +44,22 @@ var node7 = ::archgraph::component::dou::Dou()
 _editor.add_node(node7, -33.125838638592, 397.72071327849)
 
 var node8 = ::archgraph::component::beam::Beam()
-node8.query_param("h").value = 0.42
-node8.query_param("stright").value = false
 
-_editor.add_node(node8, 100.94443368592, 252.48740927635)
+_editor.add_node(node8, 228.21716095865, 257.9419547309)
 
+var node9 = ::archgraph::tools::comp_ref::CompRef()
+node9.query_param("y").value = 1
+node9.query_param("x").value = 0
+
+_editor.add_node(node9, -32.283874511719, 120.56171764027)
+
+var node10 = ::archgraph::style::beam_style::BeamStyle()
+node10.query_param("h").value = 0.42
+node10.query_param("stright").value = false
+
+_editor.add_node(node10, 106.73485634544, 120.63650235263)
+
+Blueprint.connect(node9, "comp", node10, "beam")
 Blueprint.connect(node7, "vert", node8, "prev")
 Blueprint.connect(node7, "hori", node6, "prev")
 Blueprint.connect(node5, "next", node6, "left")

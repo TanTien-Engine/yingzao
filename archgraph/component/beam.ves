@@ -2,13 +2,11 @@ import "blueprint.pin" for Pin
 import "blueprint.variant" for Variant
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant_proxy" for VariantProxy
-import "blueprint.node_param" for NodeParam
 import "archgraph.component.comp_node" for CompNode
 import "archgraph.variant" for PIN_TYPE_VERT_GONG
 import "archgraph.constant" for ZU_CAI_HEIGHT
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.trans_nodes" for TransNodes
-import "archgraph.context" for CONTEXT
 import "archgraph.component.vert_gong" for VertGong
 import "archgraph.constant" for DOU_H_WIDTH
 import "maths.vector" for Vector3
@@ -27,10 +25,10 @@ class Beam is CompNode
 			Pin(this, "next", PIN_TYPE_VERT_GONG),
 		]
 
-		this.params.add(NodeParam("h", 0.21))
-		this.params.add(NodeParam("stright", true))
-
 		this.layout()
+
+		this.beam_h = 0.21
+		this.stright = true
 	}
 
 	calc_value(idx)
@@ -39,18 +37,13 @@ class Beam is CompNode
 		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
 	}
 
-	on_node_dirty()
-	{
-		CONTEXT.style_changed = true
-	}
-
 	resolve(dg)
 	{
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 
 		this.comp.pos = pos
 
-		var s = this.query_param("stright").value
+		var s = this.stright
 		if (s) {
 			this.comp.v_geo = this.create_straight(pos)			
 		} else {
@@ -65,9 +58,14 @@ class Beam is CompNode
 
 	create_straight(pos)
 	{
-		var BEAM = NODE_CACHE.fetch("../yingzao/00_dougong2/45_s_beam.ves", nil)
+		var BEAM = NODE_CACHE.fetch("../yingzao/00_dougong2/45_straight_beam.ves", nil)
 
-		var h = this.query_param("h").value
+		var h = this.beam_h
+
+		var entasis = (h >= 0.24)
+		var e_node = VariantProxy(Variant(entasis))
+		Blueprint.connect(e_node, "out", BEAM, "entasis")
+
 		var h_node = VariantProxy(Variant(h))
 		Blueprint.connect(h_node, "out", BEAM, "height")
 		
@@ -87,9 +85,9 @@ class Beam is CompNode
 
 	create_crescent(pos)
 	{
-		var BEAM = NODE_CACHE.fetch("../yingzao/00_dougong2/45_c_beam.ves", nil)
+		var BEAM = NODE_CACHE.fetch("../yingzao/00_dougong2/45_crescent_beam.ves", nil)
 
-		var h = this.query_param("h").value
+		var h = this.beam_h
 		var h_node = VariantProxy(Variant(h))
 		Blueprint.connect(h_node, "out", BEAM, "height")
 
@@ -116,6 +114,6 @@ class Beam is CompNode
 
 	is_stright()
 	{
-		return this.query_param("stright").value
+		return this.stright
 	}
 }

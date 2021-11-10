@@ -1,16 +1,16 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
 node0.set_prop_value("ortho", false)
-node0.set_prop_value("offset", 0.55114656686783)
+node0.set_prop_value("offset", 0.97135716676712)
 
-node0.op_node.cam.position.set(2.1528960713425, 2.8810648103571, 0.72683254308574)
-node0.op_node.cam.yaw = -162.4
-node0.op_node.cam.pitch = -41.3
+node0.op_node.cam.position.set(0.82591329317766, 0.49044091866816, 0.85830681619543)
+node0.op_node.cam.yaw = -125.2
+node0.op_node.cam.pitch = -23
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
 
-_editor.add_node(node0, 53.641076429206, -32.101632402158)
+_editor.add_node(node0, -372.27892357079, 61.068367597842)
 
 var node1 = ::archgraph::component::inner_gong::InnerGong()
 
@@ -44,11 +44,22 @@ var node7 = ::archgraph::component::dou::Dou()
 _editor.add_node(node7, -33.125838638592, 397.72071327849)
 
 var node8 = ::archgraph::component::beam::Beam()
-node8.query_param("h").value = 0.24
-node8.query_param("stright").value = true
 
-_editor.add_node(node8, 100.94443368592, 252.48740927635)
+_editor.add_node(node8, 229.35096329455, 255.21946309781)
 
+var node9 = ::archgraph::tools::comp_ref::CompRef()
+node9.query_param("y").value = 1
+node9.query_param("x").value = 0
+
+_editor.add_node(node9, 15.616479003906, 94.442262451171)
+
+var node10 = ::archgraph::style::beam_style::BeamStyle()
+node10.query_param("h").value = 0.24
+node10.query_param("stright").value = true
+
+_editor.add_node(node10, 149.58557822488, 94.38711825284)
+
+Blueprint.connect(node9, "comp", node10, "beam")
 Blueprint.connect(node7, "vert", node8, "prev")
 Blueprint.connect(node7, "hori", node6, "prev")
 Blueprint.connect(node5, "next", node6, "left")

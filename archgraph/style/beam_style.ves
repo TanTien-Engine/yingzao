@@ -1,0 +1,44 @@
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.node_param" for NodeParam
+import "archgraph.variant" for VAR_TYPE_COMPONENT
+import "archgraph.context" for CONTEXT
+import "archgraph.style.style_node" for StyleNode
+
+class BeamStyle is StyleNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "beam", VAR_TYPE_COMPONENT),
+		]
+
+		this.params.add(NodeParam("h", 0.21))
+		this.params.add(NodeParam("stright", true))
+
+		this.layout()
+	}
+
+	on_node_dirty()
+	{
+		this.register()
+		CONTEXT.style_changed = true
+	}
+
+	register()
+	{
+		var beam = Blueprint.get_input_node(this, "beam")
+		if (!beam) {
+			return
+		}
+		beam = beam.get_node_ref()
+		if (!beam) {
+			return
+		}
+
+		beam.beam_h  = this.query_param("h").value
+		beam.stright = this.query_param("stright").value
+	}
+}

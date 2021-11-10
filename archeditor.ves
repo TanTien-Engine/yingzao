@@ -124,6 +124,8 @@ class Archeditor is Editor
 
 	add_node(bp_node, x, y)
 	{
+		import "archgraph.style.style_node" for StyleNode
+
 		import "archgraph.style.ang_slope" for AngSlope
 		import "archgraph.style.step_length" for StepLength
 		import "archgraph.tools.hori_conn" for HoriConn
@@ -146,6 +148,10 @@ class Archeditor is Editor
 		else if (bp_node is HoriConn)
 		{
 			this.dg.joints.add(bp_node)
+		}
+		else if (bp_node is StyleNode)
+		{
+			CONTEXT.style_nodes.add(bp_node)
 		}
 	}
 }
