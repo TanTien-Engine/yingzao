@@ -1,33 +1,40 @@
-var node0 = ::archgraph::component::dou::Dou()
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
+node0.set_prop_value("ortho", false)
+node0.set_prop_value("offset", 1.0812901258469)
 
-_editor.add_node(node0, -363.60831447945, 258.78470610292)
+node0.op_node.cam.position.set(1.2989649234673, 1.1522770654957, 1.1324563647829)
+node0.op_node.cam.yaw = -136.4
+node0.op_node.cam.pitch = -30.7
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.21
 
-var node1 = ::blueprint::nodes::subgraph::Subgraph()
-node1.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
-node1.set_prop_value("ortho", false)
-node1.set_prop_value("offset", 0.84210526943207)
+_editor.add_node(node0, -282.72255993443, 68.898367597842)
 
-node1.op_node.cam.position.set(-0.76475638426476, 0.93597848304969, 0.87509646281445)
-node1.op_node.cam.yaw = -46.9
-node1.op_node.cam.pitch = -32.4
-node1.op_node.cam.zoom = 45
-node1.op_node.cam.update_vectors()
-node1.op_node.speed = 0.21526837348938
+var node1 = ::blueprint::nodes::commentary::Commentary()
 
-_editor.add_node(node1, 0, 0)
+node1.set_size(581.18845707259, 104.12222730688)
+node1.title = "重栱"
 
-var node2 = ::archgraph::component::gong::Gong()
+_editor.add_node(node1, 154.97, 345.9160555973)
 
-_editor.add_node(node2, -238.23967043033, 259.85122403232)
+var node2 = ::archgraph::component::dou::Dou()
 
-var node3 = ::archgraph::component::gong::Gong()
+_editor.add_node(node2, -46.985520114746, 293.1973908886)
 
-_editor.add_node(node3, -103.52892574594, 256.54543890835)
+var node3 = ::archgraph::component::inner_gong::InnerGong()
+
+_editor.add_node(node3, 87.69038821332, 303.06215228804)
 
 var node4 = ::archgraph::component::fang::Fang()
 
-_editor.add_node(node4, 51.016526624191, 259.02477699469)
+_editor.add_node(node4, 350.87699369951, 302.68178766424)
 
-Blueprint.connect(node0, "next", node2, "prev")
-Blueprint.connect(node2, "next", node3, "prev")
-Blueprint.connect(node3, "next", node4, "prev")
+var node5 = ::archgraph::component::inner_gong::InnerGong()
+
+_editor.add_node(node5, 221, 304)
+
+Blueprint.connect(node2, "hori", node3, "prev")
+Blueprint.connect(node3, "next", node5, "prev")
+Blueprint.connect(node5, "next", node4, "prev")
