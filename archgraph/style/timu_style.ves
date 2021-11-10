@@ -32,11 +32,10 @@ class TimuStyle is StyleNode
 		if (!timu) {
 			return
 		}
+		
 		timu = timu.get_node_ref()
-		if (!timu) {
-			return
+		if (timu) {
+			timu.no_dou = this.query_param("no_dou").value
 		}
-
-		timu.no_dou  = this.query_param("no_dou").value
 	}
 }
