@@ -92,4 +92,13 @@ class Dou is CompNode
 			return nil
 		}
 	}
+
+	get_hori_cut_body()
+	{
+		if (this.dou == JIAOHU_TU_DOU) {
+			return NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_tu_cut_body.ves", nil)
+		} else {
+			return nil
+		}
+	}
 }

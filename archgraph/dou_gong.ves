@@ -337,6 +337,7 @@ class DouGong
 			import "archgraph.component.dou" for Dou
 			import "archgraph.component.lu_dou" for LuDou
 
+			// vert
 			for (var vert in this.layers[1][0]) 
 			{
 				var cut_body = nil
@@ -349,7 +350,23 @@ class DouGong
 				}
 
 				if (cut_body) {
-					vert.comp.v_geo = JointsNodes.cut_geo_node(vert.comp.v_geo, cut_body, vert.comp.pos)					
+					vert.comp.v_geo = JointsNodes.cut_geo_node(vert.comp.v_geo, cut_body, vert.comp.pos)
+				}
+			}
+
+			// hori
+			for (var i in 1 .. this.layers[1].count) 
+			{
+				var cut_body = nil
+
+				var hori = this.layers[1][i]
+				var prev = Blueprint.get_input_node(hori, "prev")
+				if (prev is Dou) {
+					cut_body = prev.get_hori_cut_body()
+				}
+
+				if (cut_body) {
+					hori.comp.v_geo = JointsNodes.cut_geo_node(hori.comp.v_geo, cut_body, hori.comp.pos)
 				}
 			}
 		}
