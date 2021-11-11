@@ -30,17 +30,32 @@ class BeamStyle is StyleNode
 
 	register()
 	{
-		var beam = Blueprint.get_input_node(this, "beam")
-		if (!beam) {
-			return
-		}
-		beam = beam.get_node_ref()
-		if (!beam) {
+		var node = Blueprint.get_input_node(this, "beam")
+		if (!node) {
 			return
 		}
 
-		beam.beam_h  = this.query_param("h").value
-		beam.stright = this.query_param("stright").value
-		beam.shrink  = this.query_param("shrink").value
+		node = node.get_node_ref()
+		if (node) {
+			this.set_beam_style(node)
+		}
+	}
+
+	set_beam_style(node)
+	{
+		import "archgraph.component.beam" for Beam
+		import "archgraph.tools.vert_merge" for VertMerge
+
+		if (node is Beam)
+		{
+			node.beam_h  = this.query_param("h").value
+			node.stright = this.query_param("stright").value
+			node.shrink  = this.query_param("shrink").value
+		}
+		else if (node is VertMerge)
+		{
+			this.set_beam_style(Blueprint.get_input_node(node, "outer"))
+			this.set_beam_style(Blueprint.get_input_node(node, "inner"))
+		}
 	}
 }
