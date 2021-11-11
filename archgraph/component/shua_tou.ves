@@ -18,6 +18,7 @@ class ShuaTou is VertGong
 	resolve(dg)
 	{
 		import "archgraph.tools.vert_merge" for VertMerge
+		import "archgraph.component.lu_dou" for LuDou
 
 		var prev = Blueprint.get_input_node(this, "prev")
 		if (prev is VertGong) {
@@ -44,12 +45,11 @@ class ShuaTou is VertGong
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 
 		var v_geo = nil
-		if (next is VertMerge) {
+		if ((this.outer_hop == 1 or this.inner_hop == 1) and prev is LuDou) {
 			v_geo = ShuaTou.create_geo(0.12, pos)
 		} else {
 			v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 		}
-
 		v_geo = AngHelper.ang_cut(this, v_geo)
 
 		import "archgraph.component.up_ang" for UpAng			
