@@ -173,13 +173,13 @@ var node29 = ::blueprint::nodes::number::Number()
 
 node29.value = 0.36
 
-_editor.add_node(node29, 673.52519059427, 570.38131757014)
+_editor.add_node(node29, 669.76861658976, 571.13263237104)
 
 var node30 = ::blueprint::nodes::store::Store()
 
 node30.var_name = "scale"
 
-_editor.add_node(node30, 946.13107829449, 636.65702227127)
+_editor.add_node(node30, 1180.8418220961, 614.56836712476)
 
 var node31 = ::blueprint::nodes::load::Load()
 
@@ -304,19 +304,30 @@ _editor.add_node(node53, -875.47821044922, -225.32691955566)
 
 var node54 = ::blueprint::nodes::split::Split()
 
-_editor.add_node(node54, 678.18658951688, 467.79390748079)
+_editor.add_node(node54, 671.42475630877, 470.04785188349)
 
 var node55 = ::blueprint::nodes::store::Store()
 
 node55.var_name = "beam_top"
 
-_editor.add_node(node55, 812.88197919357, 479.59789736409)
+_editor.add_node(node55, 811.37934959177, 481.85184176679)
 
 var node56 = ::blueprint::nodes::load::Load()
 
 node56.var_name = "beam_top"
 
 _editor.add_node(node56, -1287.1230132758, -175.11943021597)
+
+var node57 = ::blueprint::nodes::subgraph::Subgraph()
+node57.load_from_file(_editor, "../../tantien/assets/blueprints/tools/min.ves")
+
+_editor.add_node(node57, 998.31020107026, 614.19228743074)
+
+var node58 = ::blueprint::nodes::number::Number()
+
+node58.value = 1
+
+_editor.add_node(node58, 812.35976987132, 572.64461227864)
 
 Blueprint.connect(node37, "v", node38, "var")
 Blueprint.connect(node38, "var", node40, "var")
@@ -347,7 +358,9 @@ Blueprint.connect(node50, "var", node46, "b")
 Blueprint.connect(node26, "size", node27, "xyz")
 Blueprint.connect(node27, "y", node28, "a")
 Blueprint.connect(node29, "v", node28, "b")
-Blueprint.connect(node28, "v", node30, "var")
+Blueprint.connect(node28, "v", node57, "a")
+Blueprint.connect(node58, "v", node57, "b")
+Blueprint.connect(node57, "val", node30, "var")
 Blueprint.connect(node30, "var", node51, "var")
 Blueprint.connect(node51, "var", node44, "a")
 Blueprint.connect(node39, "var", node44, "b")
