@@ -18,6 +18,7 @@ class CompRef is Node
 
 		this.params.add(NodeParam("y", 0, { "integer" : true, "min" : 0, "max" : 10 }))
 		this.params.add(NodeParam("x", 0, { "integer" : true, "min" : 0, "max" : 10 }))
+		this.params.add(NodeParam("inner", false))
 
 		this.layout()
 	}
@@ -50,14 +51,30 @@ class CompRef is Node
 		var node = CONTEXT.dg.layers[y][x]
 		if (node is List) 
 		{
-			if (node.isEmpty) {
+			if (node.isEmpty) 
+			{
 				node = nil
-			} else if (node[0] is VertSplit) {
-				node = Blueprint.get_output_node(node[0], "outer")
-				if (!node) {
+			} 
+			else if (node[0] is VertSplit) 
+			{
+				var inner = this.query_param("inner").value
+				if (inner)
+				{
 					node = Blueprint.get_output_node(node[0], "inner")
+					if (!node) {
+						node = Blueprint.get_output_node(node[0], "outer")
+					}
 				}
-			} else {
+				else
+				{
+					node = Blueprint.get_output_node(node[0], "outer")
+					if (!node) {
+						node = Blueprint.get_output_node(node[0], "inner")
+					}
+				}
+			} 
+			else 
+			{
 				node = node[0]
 			}
 		}
