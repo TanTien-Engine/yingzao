@@ -2,6 +2,7 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
 import "blueprint.variant_proxy" for VariantProxy
 import "geograph.variant" for VAR_TYPE_GEO
+import "geograph.brush" for Brush
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.context" for CONTEXT
 import "archgraph.joints_nodes" for JointsNodes
@@ -12,6 +13,7 @@ import "archgraph.component.ang" for Ang
 import "archgraph.component.vert_gong" for VertGong
 import "archgraph.component.beam" for Beam
 import "archgraph.tools.vert_merge" for VertMerge
+import "scenegraph.nodes.transform3d" for Transform3d
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector2, Vector3
 import "maths" for Maths
@@ -81,21 +83,110 @@ class DouGong
 		}
 	}
 
+	get_first_down_ang_plane()
+	{
+		for (var layer in this.layers) 
+		{
+			for (var i in layer[0]) 
+			{
+				if (i is Ang) 
+				{
+					var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
+					if (CONTEXT.s_ang_slope) {
+						Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", ANG, "slope")
+					}
+					
+					var trans = Transform3d()
+					Blueprint.connect(ANG, "down_plane", trans, "obj")
+
+					var ang_pos = i.calc_ang_pos()
+					Blueprint.connect(VariantProxy(Variant(ang_pos)), "out", trans, "translate")
+
+					return Blueprint.calc_output_value(trans, "obj").value
+				}
+			}
+		}
+		return nil
+	}
+
+	is_hori_above(node, plane)
+	{
+		var p = node.comp.pos
+		return Maths.is_pos_above_plane([ p.x, p.y, p.z ], plane)
+	}
+
+	is_vert_above(v_geo, plane)
+	{
+		if (v_geo.value is List) {
+			return this.is_vert_above(v_geo.value[0], plane)
+		}
+
+		import "model" for Model
+		var b = Model.calc_brush_aabb(v_geo.value.shape.polys)
+
+		return Maths.is_pos_above_plane([ (b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2 ], plane)
+	}
+
 	get_result_geo(out_list)
 	{
 		out_list.clear()
-		for (var layer in this.layers)
+
+		var ang_plane = this.get_first_down_ang_plane()
+		if (ang_plane)
 		{
-			var list = []
-			for (var i in 1 .. layer.count) {
-				list.add(layer[i].comp.v_geo)
-			}
-			for (var i in layer[0]) {
-				if (i.comp.v_geo) {
-					list.add(i.comp.v_geo)				
+			var ang = nil
+			for (var layer in this.layers)
+			{
+				var list = []
+				for (var i in 1 .. layer.count) {
+					if (layer[i].comp.v_geo and !this.is_hori_above(layer[i], ang_plane)) {
+						list.add(layer[i].comp.v_geo)
+					}
+				}
+				for (var i in layer[0]) {
+					if (i.comp.v_geo and !this.is_vert_above(i.comp.v_geo, ang_plane)) {
+						list.add(i.comp.v_geo)
+					}
+				}
+				if (!list.isEmpty) {
+					out_list.add(Variant(list))				
 				}
 			}
-			out_list.add(Variant(list))
+
+			for (var layer in this.layers)
+			{
+				var list = []
+				for (var i in 1 .. layer.count) {
+					if (layer[i].comp.v_geo and this.is_hori_above(layer[i], ang_plane)) {
+						list.add(layer[i].comp.v_geo)
+					}
+				}
+				for (var i in layer[0]) {
+					if (i.comp.v_geo and this.is_vert_above(i.comp.v_geo, ang_plane)) {
+						list.add(i.comp.v_geo)
+					}
+				}
+				if (!list.isEmpty) {
+					out_list.add(Variant(list))
+				}
+			}			
+		}
+		else
+		{
+			for (var layer in this.layers)
+			{
+				var list = []
+				for (var i in 1 .. layer.count) {
+					list.add(layer[i].comp.v_geo)
+				}
+				for (var i in layer[0]) 
+				{
+					if (i.comp.v_geo) {
+						list.add(i.comp.v_geo)
+					}
+				}
+				out_list.add(Variant(list))
+			}
 		}
 	}
 
