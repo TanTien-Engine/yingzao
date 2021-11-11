@@ -10,6 +10,7 @@ import "archgraph.trans_nodes" for TransNodes
 import "archgraph.component.vert_gong" for VertGong
 import "archgraph.constant" for DOU_H_WIDTH
 import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.ang_helper" for AngHelper
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 
@@ -46,7 +47,7 @@ class Beam is CompNode
 
 		var s = this.stright
 		if (s) {
-			this.comp.v_geo = this.create_straight(pos)			
+			this.comp.v_geo = this.create_straight(pos)
 		} else {
 			this.comp.v_geo = this.create_crescent(pos)
 		}
@@ -75,7 +76,7 @@ class Beam is CompNode
 		var prev = Blueprint.get_input_node(this, "prev")
 		var offset = 0
 		if (prev is VertGong) {
-			offset = prev.calc_outer_step_len() + DOU_H_WIDTH
+			offset = prev.calc_outer_step_len() + DOU_H_WIDTH * 3
 		} else {
 			offset = 0.25
 		}
@@ -85,6 +86,8 @@ class Beam is CompNode
 			var HEAD_CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/40_beam_shrink_body.ves", nil)
 			v_geo = JointsNodes.cut_geo_node(v_geo, HEAD_CUT, Vector3(pos.x, pos.y, pos.z - 0.05))
 		}
+
+		v_geo = AngHelper.ang_cut(this, v_geo)
 
 		return v_geo
 	}
