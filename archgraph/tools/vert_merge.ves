@@ -30,11 +30,21 @@ class VertMerge is VertGong
 
 		var prev = Blueprint.get_input_node(this, "prev")
 
+		var prev_pin_out = nil
+		if (prev) 
+		{
+			if (Blueprint.query_pin(prev.exports, "next")) {
+				prev_pin_out = "next"
+			} else if (Blueprint.query_pin(prev.exports, "vert")) {
+				prev_pin_out = "vert"
+			}
+		}
+
 		var outer = Blueprint.get_input_node(this, "outer")
 		if (outer) 
 		{
-			if (prev) {
-				var conn = Blueprint.connect(prev, "vert", outer, "prev")
+			if (prev_pin_out) {
+				var conn = Blueprint.connect(prev, prev_pin_out, outer, "prev")
 				outer.resolve(dg)
 				Blueprint.disconnect(conn)
 			} else {
@@ -49,8 +59,8 @@ class VertMerge is VertGong
 		var inner = Blueprint.get_input_node(this, "inner")
 		if (inner) 
 		{
-			if (prev) {
-				var conn = Blueprint.connect(prev, "vert", inner, "prev")
+			if (prev_pin_out) {
+				var conn = Blueprint.connect(prev, prev_pin_out, inner, "prev")
 				inner.resolve(dg)
 				Blueprint.disconnect(conn)
 			} else {
