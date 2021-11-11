@@ -53,6 +53,12 @@ class Beam is CompNode
 		}
 	}
 
+	resolve2(dg)
+	{
+		// todo: v_geo_c
+		this.comp.v_geo = AngHelper.ang_cut(this, this.comp.v_geo)
+	}
+
 	get_title()
 	{
 		return "梁"
@@ -86,8 +92,6 @@ class Beam is CompNode
 			var HEAD_CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/40_beam_shrink_body.ves", nil)
 			v_geo = JointsNodes.cut_geo_node(v_geo, HEAD_CUT, Vector3(pos.x, pos.y, pos.z - 0.05))
 		}
-
-		v_geo = AngHelper.ang_cut(this, v_geo)
 
 		return v_geo
 	}
