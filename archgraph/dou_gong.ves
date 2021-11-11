@@ -11,6 +11,7 @@ import "archgraph.component.comp_node" for CompNode
 import "archgraph.component.ang" for Ang
 import "archgraph.component.vert_gong" for VertGong
 import "archgraph.component.beam" for Beam
+import "archgraph.tools.vert_merge" for VertMerge
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector2, Vector3
 import "maths" for Maths
@@ -221,7 +222,7 @@ class DouGong
 				{
 					if (SpatialQuery.contain_pos(vert.comp.v_geo, pos))
 					{
-						if (!(NodeHelper.is_wide_beam_head(vert)))
+						if (!(NodeHelper.is_wide_beam_head(vert, pos)))
 						{
 							var g2 = JointsNodes.conn2(layer[i].comp.v_geo, vert.comp.v_geo, layer[i].comp.pos, 0)
 							layer[i].comp.v_geo = g2[0]
@@ -394,7 +395,9 @@ class DouGong
 					{
 						var h_gong = next_layer[j].comp
 						if (h_gong.x_idx == vert.comp.y_idx or h_gong.x_idx == -(vert.comp.y_idx)) {
-							next_vert.comp.v_geo = JointsNodes.cut_jao_hu_er(next_vert.comp.v_geo, h_gong.pos, 0)
+							if (!(NodeHelper.is_wide_beam_head(next_vert, h_gong.pos))) {
+								next_vert.comp.v_geo = JointsNodes.cut_jao_hu_er(next_vert.comp.v_geo, h_gong.pos, 0)
+							}
 						}
 					}
 				}
@@ -460,9 +463,14 @@ class DouGong
 			var layer = this.layers[i]
 
 			var beam = nil
-			for (var vert in layer[0]) {
+			var vert_merge = nil
+			for (var vert in layer[0]) 
+			{
 				if (vert is Beam) {
 					beam = vert
+				}
+				if (vert is VertMerge) {
+					vert_merge = vert
 				}
 			}
 
@@ -484,6 +492,50 @@ class DouGong
 					var pos = gong.comp.pos
 					if (SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
 						JointsNodes.conn_beam_gong(beam, gong, pos)
+					}
+				}
+			}
+
+			if (vert_merge and Blueprint.get_input_node(vert_merge, "outer") is Beam)
+			{
+				for (var j in 1 .. layer.count)
+				{
+					var gong = layer[j]
+					var pos = gong.comp.pos
+					if (pos.z > 0 and SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
+						JointsNodes.conn_gong_beam(gong, beam, pos)
+					}
+				}
+
+				var next_layer = this.layers[i + 1]
+				for (var j in 1 .. next_layer.count)
+				{
+					var gong = next_layer[j]
+					var pos = gong.comp.pos
+					if (pos.z > 0 and SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
+						JointsNodes.conn_beam_gong(beam, gong, pos)
+					}
+				}
+			}
+
+			if (vert_merge and Blueprint.get_input_node(vert_merge, "inner") is Beam)
+			{
+				for (var j in 1 .. layer.count)
+				{
+					var gong = layer[j]
+					var pos = gong.comp.pos
+					if (pos.z < 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
+						JointsNodes.conn_gong_beam(gong, vert_merge, pos)
+					}
+				}
+
+				var next_layer = this.layers[i + 1]
+				for (var j in 1 .. next_layer.count)
+				{
+					var gong = next_layer[j]
+					var pos = gong.comp.pos
+					if (pos.z < 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
+						JointsNodes.conn_beam_gong(vert_merge, gong, pos)
 					}
 				}
 			}

@@ -44,9 +44,10 @@ class Dou is CompNode
 
 	resolve(dg)
 	{
+		this.comp.pos   = NodeHelper.calc_curr_pos(this, "prev")
+
 		this.dou = this.select_dou(dg)
 
-		this.comp.pos   = NodeHelper.calc_curr_pos(this, "prev")
 		this.comp.v_geo = TransNodes.translate(this.dou, this.comp.pos)
 	}
 
@@ -72,7 +73,7 @@ class Dou is CompNode
 
 		for (var i in next_v) 
 		{
-			if (NodeHelper.is_wide_beam_head(i)) {
+			if (NodeHelper.is_wide_beam_head(i, this.comp.pos)) {
 				return PINGPAN_DOU
 			} else if (i is VertGong) {
 				return JIAOHU_DOU
