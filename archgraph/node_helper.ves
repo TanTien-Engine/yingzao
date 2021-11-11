@@ -24,11 +24,12 @@ class NodeHelper
 		if (prev) 
 		{
 			import "archgraph.component.up_ang" for UpAng
+			import "archgraph.component.beam" for Beam
 			import "archgraph.tools.vert_split" for VertSplit
 		
 			if (prev is UpAng and Blueprint.get_input_pin(node, "prev").slot_idx == 2) {
 				return this.calc_layer_impl(prev, layer + 2)
-			} else if (prev is VertSplit) {
+			} else if (prev is VertSplit or prev is Beam) {
 				return this.calc_layer_impl(prev, layer)
 			} else {
 				return this.calc_layer_impl(prev, layer + 1)

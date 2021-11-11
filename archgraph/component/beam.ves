@@ -35,8 +35,7 @@ class Beam is CompNode
 
 	calc_value(idx)
 	{
-		var pos = NodeHelper.calc_curr_pos(this, "prev")
-		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
+		return Blueprint.calc_input_value(this, 0)
 	}
 
 	resolve(dg)
