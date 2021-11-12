@@ -41,16 +41,4 @@ class VertSplit is VertGong
 	{
 		return "split"
 	}
-
-	split_inner(geo)
-	{
-		import "archgraph.component.ang" for Ang
-
-		var o = Blueprint.get_output_node(this, "outer")
-		if (o is Ang) {
-			return o.ang_plane_cut(geo, true)
-		}
-
-		return geo
-	}
 }
