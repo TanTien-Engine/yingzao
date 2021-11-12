@@ -51,31 +51,33 @@ class CompRef is Node
 		var node = CONTEXT.dg.layers[y][x]
 		if (node is List) 
 		{
+			var list = node
+
 			if (node.isEmpty) 
 			{
 				node = nil
 			} 
-			else if (node[0] is VertSplit) 
+			else if (list[0] is VertSplit) 
 			{
 				var inner = this.query_param("inner").value
 				if (inner)
 				{
-					node = Blueprint.get_output_node(node[0], "inner")
+					node = Blueprint.get_output_node(list[0], "inner")
 					if (!node) {
-						node = Blueprint.get_output_node(node[0], "outer")
+						node = Blueprint.get_output_node(list[0], "outer")
 					}
 				}
 				else
 				{
-					node = Blueprint.get_output_node(node[0], "outer")
+					node = Blueprint.get_output_node(list[0], "outer")
 					if (!node) {
-						node = Blueprint.get_output_node(node[0], "inner")
+						node = Blueprint.get_output_node(list[0], "inner")
 					}
 				}
 			} 
 			else 
 			{
-				node = node[0]
+				node = list[0]
 			}
 		}
 
