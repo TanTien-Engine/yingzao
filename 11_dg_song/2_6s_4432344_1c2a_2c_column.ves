@@ -1,11 +1,11 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
 node0.set_prop_value("ortho", false)
-node0.set_prop_value("offset", 7.5394639968872)
+node0.set_prop_value("offset", 7.0657796859741)
 
-node0.op_node.cam.position.set(4.0820403888913, 0.42820344117563, 0.24050667310667)
-node0.op_node.cam.yaw = -170.6
-node0.op_node.cam.pitch = 6.9
+node0.op_node.cam.position.set(3.8714025389322, 0.53136732750525, -1.0355962182982)
+node0.op_node.cam.yaw = -190.9
+node0.op_node.cam.pitch = -4.5
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
@@ -78,11 +78,11 @@ node14.query_param("y").value = 5
 node14.query_param("x").value = 5
 node14.query_param("inner").value = false
 
-_editor.add_node(node14, -298.15538418123, -646.38398166404)
+_editor.add_node(node14, -302.55538418123, -689.28398166404)
 
 var node15 = ::archgraph::tools::hori_conn::HoriConn()
 
-_editor.add_node(node15, -157.85276511336, -604.44833275485)
+_editor.add_node(node15, -155.65276511336, -623.14833275485)
 
 var node16 = ::archgraph::component::ang::Ang()
 
@@ -133,7 +133,7 @@ node27.query_param("y").value = 2
 node27.query_param("x").value = 0
 node27.query_param("inner").value = false
 
-_editor.add_node(node27, -296.14160988548, -559.00653631037)
+_editor.add_node(node27, -298.34160988548, -582.10653631037)
 
 var node28 = ::archgraph::component::ang::Ang()
 
@@ -160,7 +160,7 @@ var node33 = ::archgraph::component::beam::Beam()
 _editor.add_node(node33, 48.951662062969, 57.132302029192)
 
 var node34 = ::archgraph::tools::comp_ref::CompRef()
-node34.query_param("y").value = 2
+node34.query_param("y").value = 3
 node34.query_param("x").value = 0
 node34.query_param("inner").value = true
 
