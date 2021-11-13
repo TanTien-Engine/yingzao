@@ -593,8 +593,8 @@ class DouGong
 				{
 					var gong = layer[j]
 					var pos = gong.comp.pos
-					if (pos.z > 0 and SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
-						JointsNodes.conn_gong_beam(gong, beam, pos)
+					if (pos.z > 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
+						JointsNodes.conn_gong_beam(gong, vert_merge, pos)
 					}
 				}
 
@@ -603,8 +603,8 @@ class DouGong
 				{
 					var gong = next_layer[j]
 					var pos = gong.comp.pos
-					if (pos.z > 0 and SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
-						JointsNodes.conn_beam_gong(beam, gong, pos)
+					if (pos.z > 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
+						JointsNodes.conn_beam_gong(vert_merge, gong, pos)
 					}
 				}
 			}
