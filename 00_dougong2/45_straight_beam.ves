@@ -108,7 +108,7 @@ var node18 = ::blueprint::nodes::load::Load()
 
 node18.var_name = "length"
 
-_editor.add_node(node18, 1312.4175141989, -298.49016663123)
+_editor.add_node(node18, 1172.7480927113, -379.48190216842)
 
 var node19 = ::blueprint::nodes::subgraph::Subgraph()
 node19.load_from_file(_editor, "../../tantien/assets/blueprints/geograph/translate_z.ves")
@@ -117,7 +117,7 @@ _editor.add_node(node19, 1865.690494258, -264.40001058299)
 
 var node20 = ::blueprint::nodes::negate::Negate()
 
-_editor.add_node(node20, 1679.5580083617, -294.7455637885)
+_editor.add_node(node20, 1539.8885868741, -375.73729932569)
 
 var node21 = ::blueprint::nodes::subgraph::Subgraph()
 node21.load_from_file(_editor, "10_entasis_gong.ves")
@@ -145,7 +145,7 @@ _editor.add_node(node24, -344.81630630709, -589.16279051773)
 var node25 = ::blueprint::nodes::subgraph::Subgraph()
 node25.load_from_file(_editor, "../../tantien/assets/blueprints/tools/half.ves")
 
-_editor.add_node(node25, 1498.0580633438, -295.79598891602)
+_editor.add_node(node25, 1358.3886418562, -376.78772445321)
 
 var node26 = ::geograph::nodes::rotate_x::RotateX()
 node26.query_param("angle").value = "180"
@@ -251,10 +251,24 @@ var node44 = ::blueprint::nodes::branch_f::BranchF()
 
 _editor.add_node(node44, 1672.0883740859, -218.04099716797)
 
+var node45 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node45, 1673.0200972124, -312.43130165289)
+
+var node46 = ::blueprint::nodes::input::Input()
+
+node46.var_name = "left"
+node46.var_type = "bool"
+
+_editor.add_node(node46, 1534.1280379091, -303.99151419876)
+
 Blueprint.connect(node13, "v", node14, "var")
 Blueprint.connect(node14, "var", node18, "var")
 Blueprint.connect(node18, "var", node25, "val")
 Blueprint.connect(node25, "val", node20, "v")
+Blueprint.connect(node46, "var", node45, "cond")
+Blueprint.connect(node25, "val", node45, "true")
+Blueprint.connect(node20, "v", node45, "false")
 Blueprint.connect(node14, "var", node15, "var")
 Blueprint.connect(node0, "var", node1, "val")
 Blueprint.connect(node2, "v", node1, "default")
@@ -301,5 +315,5 @@ Blueprint.connect(node43, "var", node44, "cond")
 Blueprint.connect(node29, "geo", node44, "true")
 Blueprint.connect(node16, "geo", node44, "false")
 Blueprint.connect(node44, "result", node19, "geo")
-Blueprint.connect(node20, "v", node19, "offset")
+Blueprint.connect(node45, "result", node19, "offset")
 Blueprint.connect(node19, "geo", node17, "var")

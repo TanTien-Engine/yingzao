@@ -32,6 +32,7 @@ class Beam is CompNode
 		this.beam_h  = 0.21
 		this.stright = true
 		this.shrink  = false
+		this.left    = false
 	}
 
 	calc_value(idx)
@@ -76,6 +77,9 @@ class Beam is CompNode
 
 		var h_node = VariantProxy(Variant(h))
 		Blueprint.connect(h_node, "out", BEAM, "height")
+
+		var left_node = VariantProxy(Variant(this.left))
+		Blueprint.connect(left_node, "out", BEAM, "left")
 		
 		var v_geo = TransNodes.translate(BEAM, pos)
 
@@ -86,6 +90,10 @@ class Beam is CompNode
 		} else {
 			offset = 0.25
 		}
+		if (this.left) {
+			offset = -offset
+		}
+
 		v_geo = TransNodes.translate(VariantProxy(v_geo), Vector3(0, 0, offset))
 
 		if (this.shrink) {
@@ -107,6 +115,9 @@ class Beam is CompNode
 		var w_node = VariantProxy(Variant(h * 2 / 3))
 		Blueprint.connect(w_node, "out", BEAM, "width")
 
+		var left_node = VariantProxy(Variant(this.left))
+		Blueprint.connect(left_node, "out", BEAM, "left")
+
 		var prev = Blueprint.get_input_node(this, "prev")
 		var offset = 0
 		if (prev is VertGong) {
@@ -114,8 +125,12 @@ class Beam is CompNode
 		} else {
 			offset = 0.25
 		}
+		offset = offset + 0.09
+		if (this.left) {
+			offset = -offset
+		}
 
-		var h_len_node = VariantProxy(Variant(offset + 0.09))
+		var h_len_node = VariantProxy(Variant(offset))
 		Blueprint.connect(h_len_node, "out", BEAM, "head_len")
 
 		var v_geo = TransNodes.translate(BEAM, pos)

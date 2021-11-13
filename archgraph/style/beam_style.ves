@@ -18,6 +18,7 @@ class BeamStyle is StyleNode
 		this.params.add(NodeParam("h", 0.21))
 		this.params.add(NodeParam("stright", true))
 		this.params.add(NodeParam("shrink", false))
+		this.params.add(NodeParam("left", false))
 
 		this.layout()
 	}
@@ -51,6 +52,7 @@ class BeamStyle is StyleNode
 			node.beam_h  = this.query_param("h").value
 			node.stright = this.query_param("stright").value
 			node.shrink  = this.query_param("shrink").value
+			node.left    = this.query_param("left").value			
 		}
 		else if (node is VertMerge)
 		{
