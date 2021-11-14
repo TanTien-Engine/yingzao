@@ -1,16 +1,16 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
-node0.set_prop_value("ortho", false)
-node0.set_prop_value("offset", 2.4663777351379)
+node0.set_prop_value("ortho", true)
+node0.set_prop_value("offset", 2.7941315174103)
 
-node0.op_node.cam.position.set(3.001345002215, 0.5255926562316, 0.77063133086611)
-node0.op_node.cam.yaw = -174.1
-node0.op_node.cam.pitch = -3.8
+node0.op_node.cam.position.set(2.0844677434084, 1.6671785527157, 0.072346033269349)
+node0.op_node.cam.yaw = -168.5
+node0.op_node.cam.pitch = -23.5
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
 
-_editor.add_node(node0, -998.39227777085, -217.01934057027)
+_editor.add_node(node0, -538.49504217085, -244.30137997027)
 
 var node1 = ::archgraph::component::lu_dou::LuDou()
 
@@ -43,7 +43,7 @@ var node7 = ::archgraph::style::step_length::StepLength()
 node7.query_param("outer").value = [ 0.28, 0.25, 0.25, 0.25, 0.25 ]
 node7.query_param("inner").value = [ 0.28, 0.25, 0.25, 0.25, 0.25 ]
 
-_editor.add_node(node7, -390.09502509458, -353.36754117007)
+_editor.add_node(node7, -482.32393551855, -152.12321568495)
 
 var node8 = ::archgraph::component::hori_gong::HoriGong()
 
@@ -61,37 +61,60 @@ var node11 = ::archgraph::component::fang::Fang()
 
 _editor.add_node(node11, 179.93507749887, -53.268389931765)
 
-var node12 = ::archgraph::tools::vert_merge::VertMerge()
+var node12 = ::archgraph::tools::comp_ref::CompRef()
+node12.query_param("y").value = 2
+node12.query_param("x").value = 0
+node12.query_param("inner").value = false
 
-_editor.add_node(node12, 42.902735102035, 81.430520013736)
+_editor.add_node(node12, -163.08901517819, -201.40275503651)
 
-var node13 = ::archgraph::component::beam::Beam()
+var node13 = ::archgraph::style::beam_style::BeamStyle()
+node13.query_param("h").value = 0.36
+node13.query_param("stright").value = true
+node13.query_param("shrink").value = false
+node13.query_param("left").value = true
 
-_editor.add_node(node13, -91.467684909844, 61.839316017052)
+_editor.add_node(node13, 25.178122356366, -183.14876560409)
 
-var node14 = ::archgraph::tools::comp_ref::CompRef()
-node14.query_param("y").value = 2
-node14.query_param("x").value = 0
-node14.query_param("inner").value = false
+var node14 = ::archgraph::tools::vert_split::VertSplit()
 
-_editor.add_node(node14, -109.30424194336, -176.76675415039)
+_editor.add_node(node14, -96.54206791397, 85.889277560652)
 
-var node15 = ::archgraph::style::beam_style::BeamStyle()
-node15.query_param("h").value = 0.36
-node15.query_param("stright").value = true
-node15.query_param("shrink").value = false
+var node15 = ::archgraph::component::beam::Beam()
 
-_editor.add_node(node15, 34.945214768087, -177.90008040499)
+_editor.add_node(node15, 43.127355276061, 112.33555830018)
 
 var node16 = ::archgraph::component::beam::Beam()
 
-_editor.add_node(node16, -91.550891064611, 107.581862778)
+_editor.add_node(node16, 44.780243298239, 52.004979661674)
 
-Blueprint.connect(node14, "comp", node15, "beam")
+var node17 = ::archgraph::tools::comp_ref::CompRef()
+node17.query_param("y").value = 2
+node17.query_param("x").value = 0
+node17.query_param("inner").value = true
+
+_editor.add_node(node17, -161.12688569284, -345.46368258023)
+
+var node18 = ::archgraph::style::beam_style::BeamStyle()
+node18.query_param("h").value = 0.36
+node18.query_param("stright").value = true
+node18.query_param("shrink").value = false
+node18.query_param("left").value = false
+
+_editor.add_node(node18, 22.755925511705, -377.9468563547)
+
+var node19 = ::archgraph::tools::hori_conn::HoriConn()
+
+_editor.add_node(node19, 24.353199925125, -278.2636516293)
+
+Blueprint.connect(node17, "comp", node18, "beam")
+Blueprint.connect(node12, "comp", node19, "left")
+Blueprint.connect(node17, "comp", node19, "right")
+Blueprint.connect(node12, "comp", node13, "beam")
 Blueprint.connect(node1, "vert", node6, "prev")
-Blueprint.connect(node6, "next", node12, "prev")
-Blueprint.connect(node16, "next", node12, "outer")
-Blueprint.connect(node13, "next", node12, "inner")
+Blueprint.connect(node6, "next", node14, "prev")
+Blueprint.connect(node14, "inner", node16, "prev")
+Blueprint.connect(node14, "outer", node15, "prev")
 Blueprint.connect(node6, "inner", node9, "prev")
 Blueprint.connect(node9, "next", node11, "prev")
 Blueprint.connect(node6, "outer", node8, "prev")
