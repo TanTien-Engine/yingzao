@@ -235,4 +235,24 @@ class JointsNodes
 
 		return Blueprint.calc_output_value(CONN, "geo")
 	}
+
+	static conn_beam(beam0, beam1, offset)
+	{
+		var CONN = NODE_CACHE.fetch("../yingzao/00_dougong2/65_beam_conn2.ves", nil)
+
+		var geo0_node = VariantProxy(beam0.comp.v_geo)
+		var geo1_node = VariantProxy(beam1.comp.v_geo)
+		var pos_node  = VariantProxy(Variant(beam0.comp.pos))
+		var offset_node = VariantProxy(Variant(offset))
+
+		Blueprint.connect(geo0_node, "out", CONN, "geo0")
+		Blueprint.connect(geo1_node, "out", CONN, "geo1")
+		Blueprint.connect(pos_node, "out", CONN, "pos")
+		Blueprint.connect(offset_node, "out", CONN, "offset")
+
+		System.print("++ beam_off %(offset)")
+
+		beam0.comp.v_geo = Blueprint.calc_output_value(CONN, "geo0")
+		beam1.comp.v_geo = Blueprint.calc_output_value(CONN, "geo1")
+	}	
 }

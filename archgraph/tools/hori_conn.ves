@@ -22,21 +22,35 @@ class HoriConn is Node
 
 	resolve()
 	{
-		var v_left  = Blueprint.calc_input_value(this, 0)
-		var v_right = Blueprint.calc_input_value(this, 1)
-		if (!v_left or !v_right) {
+		var n_left = Blueprint.get_input_node(this, "left")
+		var n_right = Blueprint.get_input_node(this, "right")
+		if (!n_left or !n_right) {
 			return
 		}
 
-		if (ToolsNodes.is_gong_vert(v_left.value.comp.v_geo))
+		n_left = n_left.get_node_ref()
+		n_right = n_right.get_node_ref()
+		if (!n_left or !n_right) {
+			return
+		}
+
+		import "archgraph.component.beam" for Beam
+		if (n_left is Beam and n_right is Beam)
 		{
-			var z = v_right.value.comp.pos.z + CAI_WIDTH * 0.5
-			v_left.value.comp.v_geo = JointsNodes.cut_right_plane(v_left.value.comp.v_geo, z)
+			JointsNodes.conn_beam(n_right, n_left, 0.2)
 		}
 		else
 		{
-			var z = v_left.value.comp.pos.z - CAI_WIDTH * 0.5
-			v_right.value.comp.v_geo = JointsNodes.cut_left_plane(v_right.value.comp.v_geo, z)
+			if (ToolsNodes.is_gong_vert(n_left.comp.v_geo))
+			{
+				var z = n_right.comp.pos.z + CAI_WIDTH * 0.5
+				n_left.comp.v_geo = JointsNodes.cut_right_plane(n_left.comp.v_geo, z)
+			}
+			else
+			{
+				var z = n_left.comp.pos.z - CAI_WIDTH * 0.5
+				n_right.comp.v_geo = JointsNodes.cut_left_plane(n_right.comp.v_geo, z)
+			}
 		}
 	}
 }
