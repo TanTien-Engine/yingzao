@@ -552,81 +552,76 @@ class DouGong
 		for (var i in 1 .. this.layers.count - 1)
 		{
 			var layer = this.layers[i]
-
-			var beam = nil
-			var vert_merge = nil
 			for (var vert in layer[0]) 
 			{
-				if (vert is Beam) {
-					beam = vert
+				if (vert is Beam) 
+				{
+					var beam = vert
+					for (var j in 1 .. layer.count)
+					{
+						var gong = layer[j]
+						var pos = gong.comp.pos
+						if (SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
+							JointsNodes.conn_gong_beam(gong, beam, pos)
+						}
+					}
+
+					var next_layer = this.layers[i + 1]
+					for (var j in 1 .. next_layer.count)
+					{
+						var gong = next_layer[j]
+						var pos = gong.comp.pos
+						if (SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
+							JointsNodes.conn_beam_gong(beam, gong, pos)
+						}
+					}
 				}
-				if (vert is VertMerge) {
+				else if (vert is VertMerge) 
+				{
 					vert_merge = vert
-				}
-			}
 
-			if (beam)
-			{
-				for (var j in 1 .. layer.count)
-				{
-					var gong = layer[j]
-					var pos = gong.comp.pos
-					if (SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
-						JointsNodes.conn_gong_beam(gong, beam, pos)
+					if (Blueprint.get_input_node(vert_merge, "outer") is Beam)
+					{
+						for (var j in 1 .. layer.count)
+						{
+							var gong = layer[j]
+							var pos = gong.comp.pos
+							if (pos.z > 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
+								JointsNodes.conn_gong_beam(gong, vert_merge, pos)
+							}
+						}
+
+						var next_layer = this.layers[i + 1]
+						for (var j in 1 .. next_layer.count)
+						{
+							var gong = next_layer[j]
+							var pos = gong.comp.pos
+							if (pos.z > 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
+								JointsNodes.conn_beam_gong(vert_merge, gong, pos)
+							}
+						}
 					}
-				}
 
-				var next_layer = this.layers[i + 1]
-				for (var j in 1 .. next_layer.count)
-				{
-					var gong = next_layer[j]
-					var pos = gong.comp.pos
-					if (SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
-						JointsNodes.conn_beam_gong(beam, gong, pos)
-					}
-				}
-			}
+					if (Blueprint.get_input_node(vert_merge, "inner") is Beam)
+					{
+						for (var j in 1 .. layer.count)
+						{
+							var gong = layer[j]
+							var pos = gong.comp.pos
+							if (pos.z < 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
+								JointsNodes.conn_gong_beam(gong, vert_merge, pos)
+							}
+						}
 
-			if (vert_merge and Blueprint.get_input_node(vert_merge, "outer") is Beam)
-			{
-				for (var j in 1 .. layer.count)
-				{
-					var gong = layer[j]
-					var pos = gong.comp.pos
-					if (pos.z > 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
-						JointsNodes.conn_gong_beam(gong, vert_merge, pos)
-					}
-				}
-
-				var next_layer = this.layers[i + 1]
-				for (var j in 1 .. next_layer.count)
-				{
-					var gong = next_layer[j]
-					var pos = gong.comp.pos
-					if (pos.z > 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
-						JointsNodes.conn_beam_gong(vert_merge, gong, pos)
-					}
-				}
-			}
-
-			if (vert_merge and Blueprint.get_input_node(vert_merge, "inner") is Beam)
-			{
-				for (var j in 1 .. layer.count)
-				{
-					var gong = layer[j]
-					var pos = gong.comp.pos
-					if (pos.z < 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
-						JointsNodes.conn_gong_beam(gong, vert_merge, pos)
-					}
-				}
-
-				var next_layer = this.layers[i + 1]
-				for (var j in 1 .. next_layer.count)
-				{
-					var gong = next_layer[j]
-					var pos = gong.comp.pos
-					if (pos.z < 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
-						JointsNodes.conn_beam_gong(vert_merge, gong, pos)
+						var next_layer = this.layers[i + 1]
+						for (var j in 1 .. next_layer.count)
+						{
+							var gong = next_layer[j]
+							var pos = gong.comp.pos
+							if (pos.z < 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
+								JointsNodes.conn_beam_gong(vert_merge, gong, pos)
+							}
+						}
 					}
 				}
 			}
