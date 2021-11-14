@@ -250,8 +250,6 @@ class JointsNodes
 		Blueprint.connect(pos_node, "out", CONN, "pos")
 		Blueprint.connect(offset_node, "out", CONN, "offset")
 
-		System.print("++ beam_off %(offset)")
-
 		beam0.comp.v_geo = Blueprint.calc_output_value(CONN, "geo0")
 		beam1.comp.v_geo = Blueprint.calc_output_value(CONN, "geo1")
 	}	
