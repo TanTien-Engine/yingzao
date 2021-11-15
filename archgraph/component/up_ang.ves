@@ -61,25 +61,35 @@ class UpAng is VertGong
 		var v_geo = TransNodes.translate(ANG, ang_pos)
 
 		var v_left = nil
-		var pos_n = NodeHelper.calc_curr_pos(this, "prev")		
-		if (prev is UpAng) 
+		var pz = this.is_ping_zuo()
+		if (pz)
 		{
-			if (this.comp.y_idx > 3) {
-				import "archgraph.component.chen_fang_tou" for ChenFangTou
-				v_left = ChenFangTou.create_geo(this.outer_hop, this.inner_hop, pos_n, true)
-			} else {
-				import "archgraph.component.shua_tou" for ShuaTou
-				v_left = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos_n)
-			}
-		} 
-		else 
+			import "archgraph.component.chen_fang_tou" for ChenFangTou
+			var pos_n = NodeHelper.calc_curr_pos(this, "prev")
+			v_left = ChenFangTou.create_geo(1, 1, pos_n, true)
+		}
+		else
 		{
-			if (this.comp.y_idx > 3) {
-				import "archgraph.component.shua_tou" for ShuaTou
-				v_left = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos_n)
-			} else {
-				import "archgraph.component.hua_gong" for HuaGong
-				v_left = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos_n)
+			var pos_n = NodeHelper.calc_curr_pos(this, "prev")		
+			if (prev is UpAng) 
+			{
+				if (this.comp.y_idx > 3) {
+					import "archgraph.component.chen_fang_tou" for ChenFangTou
+					v_left = ChenFangTou.create_geo(this.outer_hop, this.inner_hop, pos_n, true)
+				} else {
+					import "archgraph.component.shua_tou" for ShuaTou
+					v_left = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos_n)
+				}
+			} 
+			else 
+			{
+				if (this.comp.y_idx > 3) {
+					import "archgraph.component.shua_tou" for ShuaTou
+					v_left = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos_n)
+				} else {
+					import "archgraph.component.hua_gong" for HuaGong
+					v_left = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos_n)
+				}
 			}
 		}
 
@@ -93,7 +103,7 @@ class UpAng is VertGong
 		v_left = this.ang_plane_cut(v_left)
 
 		// conn next
-		v_geo = this.add_dou(Variant([v_xue, v_geo, v_left]), true, true)
+		v_geo = this.add_dou(Variant([v_xue, v_geo, v_left]), !pz, true)
 
 		this.comp.pos = ang_pos
 		this.comp.v_geo = v_geo
@@ -150,6 +160,27 @@ class UpAng is VertGong
 		var ang_pos = this.calc_ang_pos()
 		ang_pos.y = ang_pos.y + this.calc_first_dy()
 		return UpAng.ang_plane_cut(geo, ang_pos)
+	}
+
+	is_ping_zuo()
+	{
+		import "archgraph.tools.vert_merge" for VertMerge
+		import "archgraph.component.chen_fang_tou" for ChenFangTou
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev is VertMerge) 
+		{
+			var outer = Blueprint.get_input_node(prev, "outer")
+			if (outer is ChenFangTou) {
+				return true
+			}
+		}
+		else if (prev is UpAng)
+		{
+			return prev.is_ping_zuo()
+		}
+
+		return false
 	}
 
 	static ang_plane_cut(geo, pos)
