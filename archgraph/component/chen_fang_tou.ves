@@ -15,20 +15,42 @@ var TOU = NODE_CACHE.fetch("../yingzao/00_dougong2/14_tou.ves", nil)
 
 class ChenFangTou is VertGong
 {
+	init()
+	{
+		super.init()
+
+		this.full_h = false
+		this.head_o = false
+		this.head_i = false		
+	}
+
 	resolve(dg)
 	{
 		var prev = Blueprint.get_input_node(this, "prev")
-		if (prev) {
+		if (prev is VertGong) {
 			this.outer_hop = prev.outer_hop
 			this.inner_hop = prev.inner_hop
 		} else {
 			this.outer_hop = 1
 			this.inner_hop = 1		
 		}
-		
+
+		var inner_hop = this.inner_hop
+		var outer_hop = this.outer_hop
+		if (this.head_i and this.head_o) {
+			inner_hop = inner_hop + 4
+			outer_hop = outer_hop + 1
+		} else if (this.head_i) {
+			inner_hop = inner_hop + 4
+			outer_hop = outer_hop + 4
+		} else if (this.head_o) {
+			inner_hop = inner_hop + 1
+			outer_hop = outer_hop + 1			
+		}
+
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		var full = NodeHelper.get_output_valid_node(this, "next") != nil
-		var v_geo = ChenFangTou.create_geo(this.outer_hop, this.inner_hop, pos, full)
+		var v_geo = ChenFangTou.create_geo(outer_hop, inner_hop, pos, full or this.full_h)
 		
 		// ang cut
 		var pp_node = nil
@@ -57,8 +79,17 @@ class ChenFangTou is VertGong
 
 	gen_corner(dg)
 	{
-		var len_l = VertGong.calc_tot_step_len(this.outer_hop) + DOU_H_WIDTH
-		var len_r = VertGong.calc_tot_step_len(-this.inner_hop) + DOU_H_WIDTH
+		var inner_hop = this.inner_hop
+		if (this.head_i) {
+			inner_hop = inner_hop + 4
+		}
+		var outer_hop = this.outer_hop
+		if (this.head_i) {
+			outer_hop = outer_hop + 1
+		}
+
+		var len_l = VertGong.calc_tot_step_len(outer_hop) + DOU_H_WIDTH
+		var len_r = VertGong.calc_tot_step_len(-inner_hop) + DOU_H_WIDTH
 		var len_l_node = VariantProxy(Variant(len_l / 1.414))
 		var len_r_node = VariantProxy(Variant(len_r / 1.414))
 
