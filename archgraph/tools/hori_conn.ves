@@ -37,7 +37,13 @@ class HoriConn is Node
 		import "archgraph.component.beam" for Beam
 		if (n_left is Beam and n_right is Beam)
 		{
-			JointsNodes.conn_beam(n_right, n_left, 0.2)
+			var len = 0.2
+			import "archgraph.component.vert_gong" for VertGong
+			var prev_beam = Blueprint.get_input_node(n_left, "prev")
+			if (prev_beam is VertGong and prev_beam.inner_hop == 0) {
+				len = 0.15
+			}
+			JointsNodes.conn_beam(n_right, n_left, len)
 		}
 		else
 		{
