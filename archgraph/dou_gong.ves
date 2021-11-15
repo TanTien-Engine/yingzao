@@ -302,10 +302,10 @@ class DouGong
 		}
 
 		// gong conn hua
-		import "archgraph.component.dummy_gong" for DummyGong
+		import "archgraph.tools.dummy_hori" for DummyHori
 		for (var i in 1 .. layer.count)
 		{
-			if (!(layer[i] is DummyGong))
+			if (!(layer[i] is DummyHori))
 			{
 				var pos = layer[i].comp.pos.clone()
 				pos.y = pos.y + 0.1

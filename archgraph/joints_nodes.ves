@@ -2,7 +2,7 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.variant" for Variant
 import "archgraph.trans_nodes" for TransNodes
-import "archgraph.component.dummy_gong" for DummyGong
+import "archgraph.tools.dummy_hori" for DummyHori
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
 
@@ -79,7 +79,7 @@ class JointsNodes
 
 	static conn_gong_beam(gong, beam, pos)
 	{
-		if (gong is DummyGong) {
+		if (gong is DummyHori) {
 			return
 		}
 
@@ -108,7 +108,7 @@ class JointsNodes
 
 	static conn_beam_gong(beam, gong, pos)
 	{
-		if (gong is DummyGong) {
+		if (gong is DummyHori) {
 			return
 		}
 

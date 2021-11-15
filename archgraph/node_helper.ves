@@ -54,10 +54,10 @@ class NodeHelper
 
 	static get_output_valid_node(node, slot)
 	{
-		import "archgraph.component.dummy_gong" for DummyGong
+		import "archgraph.tools.dummy_hori" for DummyHori
 
 		var next = Blueprint.get_output_node(node, slot)
-		if (!next or next is DummyGong) {
+		if (!next or next is DummyHori) {
 			return nil
 		} else {
 			return next
