@@ -27,20 +27,16 @@ class ShuaTou is VertGong
 		} else {
 			this.outer_hop = 1
 			this.inner_hop = 1		
-		}
+		}		
 
-		var single_node = nil
 		var next = NodeHelper.get_output_valid_node(this, "next")
 		if (next) {
 			if (next is VertMerge) {
-				single_node = VariantProxy(Variant(true))
+				next = NodeHelper.get_output_valid_node(next, "next")
 			}
-		} else {
-			single_node = VariantProxy(Variant(true))			
 		}
-		if (single_node) {
-			Blueprint.connect(single_node, "out", SHUA_TOU, "single")
-		}
+		var single_node = VariantProxy(Variant(next == nil))
+		Blueprint.connect(single_node, "out", SHUA_TOU, "single")
 
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 
@@ -65,9 +61,7 @@ class ShuaTou is VertGong
 		// todo: you ang
 		this.gen_corner(dg)
 
-		if (single_node) {
-			single_node.disconnect()
-		}
+		single_node.disconnect()
 	}
 
 	resolve2(dg)
