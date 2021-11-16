@@ -49,7 +49,7 @@ _editor.add_node(node7, 198.40177394478, -432.3317584974)
 
 var node8 = ::blueprint::nodes::merge::Merge()
 
-_editor.add_node(node8, -101.76935484257, 20.432049435364)
+_editor.add_node(node8, -92.76935484257, -1.5679505646361)
 
 var node9 = ::blueprint::nodes::subgraph::Subgraph()
 node9.load_from_file(_editor, "10_zu_cai_head.ves")
@@ -221,6 +221,36 @@ var node40 = ::geograph::nodes::brush_merge::BrushMerge()
 
 _editor.add_node(node40, 278.38433825987, 44.152110824705)
 
+var node41 = ::blueprint::nodes::input::Input()
+
+node41.var_name = "single"
+node41.var_type = "bool"
+
+_editor.add_node(node41, -1002.6810302734, 212.88047790527)
+
+var node42 = ::blueprint::nodes::n_o_t::NOT()
+
+_editor.add_node(node42, -866.28101806641, 223.88048706055)
+
+var node43 = ::blueprint::nodes::store::Store()
+
+node43.var_name = "full"
+
+_editor.add_node(node43, -732.08103027344, 215.08048706055)
+
+var node44 = ::blueprint::nodes::load::Load()
+
+node44.var_name = "full"
+
+_editor.add_node(node44, -211.98100585937, 277.58049926758)
+
+var node45 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node45, 52.057434082031, 119.73780822754)
+
+Blueprint.connect(node41, "var", node42, "in")
+Blueprint.connect(node42, "out", node43, "var")
+Blueprint.connect(node43, "var", node44, "var")
 Blueprint.connect(node19, "var", node18, "val")
 Blueprint.connect(node17, "v", node18, "default")
 Blueprint.connect(node18, "val", node21, "var")
@@ -252,7 +282,10 @@ Blueprint.connect(node2, "v", node0, "entasis_h")
 Blueprint.connect(node3, "v", node0, "entasis_num")
 Blueprint.connect(node9, "geo", node38, "list")
 Blueprint.connect(node0, "geo", node38, "add")
-Blueprint.connect(node38, "list", node12, "a")
+Blueprint.connect(node44, "var", node45, "cond")
+Blueprint.connect(node38, "list", node45, "true")
+Blueprint.connect(node0, "geo", node45, "false")
+Blueprint.connect(node45, "result", node12, "a")
 Blueprint.connect(node11, "geo", node12, "b")
 Blueprint.connect(node12, "geo", node40, "list")
 Blueprint.connect(node40, "brush", node33, "var")

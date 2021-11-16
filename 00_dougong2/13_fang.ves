@@ -1,7 +1,7 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "01_gong_size.ves")
 
-_editor.add_node(node0, -410.38800235327, 117.45276918062)
+_editor.add_node(node0, -730.44810753734, 128.72249119414)
 
 var node1 = ::blueprint::nodes::subgraph::Subgraph()
 node1.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
@@ -31,13 +31,13 @@ var node5 = ::blueprint::nodes::store::Store()
 
 node5.var_name = "width"
 
-_editor.add_node(node5, -223.68377781891, 168.49910165833)
+_editor.add_node(node5, -543.74388300298, 179.76882367185)
 
 var node6 = ::blueprint::nodes::store::Store()
 
 node6.var_name = "height"
 
-_editor.add_node(node6, -225.09644046856, 101.91579513719)
+_editor.add_node(node6, -407.66593708764, 107.9263135444)
 
 var node7 = ::blueprint::nodes::load::Load()
 
@@ -94,11 +94,25 @@ node15.var_type = "num3"
 
 _editor.add_node(node15, 166.26380179014, -151.22935523017)
 
+var node16 = ::blueprint::nodes::input::Input()
+
+node16.var_name = "full"
+node16.var_type = "bool"
+
+_editor.add_node(node16, -675.96839488636, 13.213735533155)
+
+var node17 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node17, -543.37159734736, 99.605305133591)
+
 Blueprint.connect(node2, "var", node1, "val")
 Blueprint.connect(node3, "v", node1, "default")
 Blueprint.connect(node1, "val", node4, "var")
 Blueprint.connect(node4, "var", node7, "var")
-Blueprint.connect(node0, "cai_h", node6, "var")
+Blueprint.connect(node16, "var", node17, "cond")
+Blueprint.connect(node0, "zu_cai_h", node17, "true")
+Blueprint.connect(node0, "cai_h", node17, "false")
+Blueprint.connect(node17, "result", node6, "var")
 Blueprint.connect(node6, "var", node13, "var")
 Blueprint.connect(node13, "var", node14, "y")
 Blueprint.connect(node14, "xyz", node15, "var")
