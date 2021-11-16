@@ -17,14 +17,14 @@ var node2 = ::blueprint::nodes::output::Output()
 node2.var_name = "geo0"
 node2.var_type = "geo"
 
-_editor.add_node(node2, -886.41924887066, 694.12967845206)
+_editor.add_node(node2, -761.61406293577, 758.70549605021)
 
 var node3 = ::blueprint::nodes::output::Output()
 
 node3.var_name = "geo1"
 node3.var_type = "geo"
 
-_editor.add_node(node3, -898.28561657976, 93.348228987221)
+_editor.add_node(node3, -770.15003445755, 157.1337830833)
 
 var node4 = ::blueprint::nodes::input::Input()
 
@@ -379,6 +379,36 @@ node61.var_name = "top_cut_body"
 
 _editor.add_node(node61, -540.29806771333, -448.15305601829)
 
+var node62 = ::blueprint::nodes::is_null::IsNull()
+
+_editor.add_node(node62, -220.52559037642, -241.36103682085)
+
+var node63 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node63, -898.04747699514, 738.99606448684)
+
+var node64 = ::blueprint::nodes::store::Store()
+
+node64.var_name = "no_corner"
+
+_editor.add_node(node64, -87.651222578661, -252.97666539079)
+
+var node65 = ::blueprint::nodes::load::Load()
+
+node65.var_name = "no_corner"
+
+_editor.add_node(node65, -1031.824166085, 771.56150762607)
+
+var node66 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node66, -906.788123788, 136.26098950946)
+
+var node67 = ::blueprint::nodes::load::Load()
+
+node67.var_name = "no_corner"
+
+_editor.add_node(node67, -1040.0003389478, 160.35932369788)
+
 Blueprint.connect(node26, "var", node27, "var")
 Blueprint.connect(node27, "var", node52, "var")
 Blueprint.connect(node52, "var", node54, "v")
@@ -413,6 +443,10 @@ Blueprint.connect(node20, "geo", node57, "a")
 Blueprint.connect(node61, "var", node57, "b")
 Blueprint.connect(node58, "var", node60, "var")
 Blueprint.connect(node58, "var", node59, "var")
+Blueprint.connect(node4, "var", node62, "in")
+Blueprint.connect(node62, "out", node64, "var")
+Blueprint.connect(node64, "var", node67, "var")
+Blueprint.connect(node64, "var", node65, "var")
 Blueprint.connect(node4, "var", node24, "a")
 Blueprint.connect(node57, "geo", node24, "b")
 Blueprint.connect(node24, "geo", node7, "var")
@@ -442,7 +476,10 @@ Blueprint.connect(node29, "geo", node42, "true")
 Blueprint.connect(node43, "geo", node42, "false")
 Blueprint.connect(node42, "result", node14, "a")
 Blueprint.connect(node60, "var", node14, "b")
-Blueprint.connect(node14, "geo", node3, "var")
+Blueprint.connect(node67, "var", node66, "cond")
+Blueprint.connect(node42, "result", node66, "true")
+Blueprint.connect(node14, "geo", node66, "false")
+Blueprint.connect(node66, "result", node3, "var")
 Blueprint.connect(node35, "var", node36, "var")
 Blueprint.connect(node55, "var", node30, "var")
 Blueprint.connect(node30, "var", node28, "geo")
@@ -453,4 +490,7 @@ Blueprint.connect(node28, "geo", node37, "true")
 Blueprint.connect(node38, "geo", node37, "false")
 Blueprint.connect(node37, "result", node13, "a")
 Blueprint.connect(node59, "var", node13, "b")
-Blueprint.connect(node13, "geo", node2, "var")
+Blueprint.connect(node65, "var", node63, "cond")
+Blueprint.connect(node37, "result", node63, "true")
+Blueprint.connect(node13, "geo", node63, "false")
+Blueprint.connect(node63, "result", node2, "var")
