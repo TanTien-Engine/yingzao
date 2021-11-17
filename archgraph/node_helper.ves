@@ -63,28 +63,4 @@ class NodeHelper
 			return next
 		}
 	}
-
-	static is_wide_beam_head(node, pos)
-	{
-		import "archgraph.component.beam" for Beam
-		if (node is Beam and node.is_wide_head()) {
-			return true
-		}
-
-		import "archgraph.tools.vert_merge" for VertMerge
-		if (node is VertMerge)
-		{
-			var outer = Blueprint.get_input_node(node, "outer")
-			if (outer is Beam and pos.z > 0 and outer.is_wide_head()) {
-				return true
-			}
-
-			var inner = Blueprint.get_input_node(node, "inner")
-			if (inner is Beam and pos.z < 0 and inner.is_wide_head()) {
-				return true
-			}
-		}
-
-		return false
-	}
 }

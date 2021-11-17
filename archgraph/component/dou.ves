@@ -7,6 +7,7 @@ import "archgraph.variant" for VarComp, PIN_TYPE_ROOT, PIN_TYPE_INNER_GONG, PIN_
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.constant" for QI_HEIGHT
+import "archgraph.gong_helper" for GongHelper
 import "maths.vector" for Vector3
 
 var SAN_DOU       = NODE_CACHE.fetch("../yingzao/00_dougong2/21_san_dou.ves", nil)
@@ -73,7 +74,7 @@ class Dou is CompNode
 
 		for (var i in next_v) 
 		{
-			if (NodeHelper.is_wide_beam_head(i, this.comp.pos)) {
+			if (GongHelper.is_wide_beam_head(i, this.comp.pos)) {
 				return PINGPAN_DOU
 			} else if (i is VertGong) {
 				return JIAOHU_DOU

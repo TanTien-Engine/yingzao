@@ -1,0 +1,54 @@
+import "blueprint.blueprint" for Blueprint
+
+var VERT_POS_MIDDLE = 0
+var VERT_POS_INNER  = 1
+var VERT_POS_OUTER  = 2
+
+class GongHelper
+{
+	static is_wide_beam_head(node, pos)
+	{
+		import "archgraph.component.beam" for Beam
+		if (node is Beam and node.is_wide_head()) {
+			return true
+		}
+
+		import "archgraph.tools.vert_merge" for VertMerge
+		if (node is VertMerge)
+		{
+			var outer = Blueprint.get_input_node(node, "outer")
+			if (outer is Beam and pos.z > 0 and outer.is_wide_head()) {
+				return true
+			}
+
+			var inner = Blueprint.get_input_node(node, "inner")
+			if (inner is Beam and pos.z < 0 and inner.is_wide_head()) {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	static calc_vert_pos(node)
+	{
+		import "archgraph.tools.vert_split" for VertSplit
+
+		var prev = Blueprint.get_input_pin(node, "prev")
+		while (prev)
+		{
+			if (prev.node is VertSplit) 
+			{
+				if (prev.name == "outer") {
+					return VERT_POS_OUTER
+				} else if (prev.name == "inner") {
+					return VERT_POS_INNER
+				}
+			}
+
+			prev = Blueprint.get_input_pin(prev.node, "prev")
+		}
+
+		return VERT_POS_MIDDLE
+	}	
+}

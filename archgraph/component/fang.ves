@@ -12,6 +12,7 @@ import "archgraph.component" for Component
 import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.corner_helper" for CornerHelper
+import "archgraph.corner_builder" for CornerBuilder
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 import "math" for Math
@@ -66,17 +67,20 @@ class Fang is CompNode
 
 	gen_corner(dg)
 	{
-		var offset = 0
-		if (this.comp.x_idx != 0)
+		if (this.comp.x_idx == 0)
+		{
+			this.comp.v_geo_c = CornerBuilder.compose_vert_inner(dg, this)
+		}
+		else
 		{
 			var len_o = CornerHelper.calc_outer_len(this.comp.x_idx)
 			var len_i = FANG_LEN - len_o
-			offset = - (len_o - len_i) / 2
-		}
+			var offset = - (len_o - len_i) / 2
 
-		var v_geo = Blueprint.calc_output_value(FANG, "geo")
-		v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
-		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
+			var v_geo = Blueprint.calc_output_value(FANG, "geo")
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
+			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
+		}
 	}
 
 	add_joint(dg, v_geo, pos)

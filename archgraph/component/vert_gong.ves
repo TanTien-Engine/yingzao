@@ -9,6 +9,7 @@ import "archgraph.trans_nodes" for TransNodes
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.context" for CONTEXT
 import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.gong_helper" for GongHelper
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
@@ -191,7 +192,7 @@ class VertGong is CompNode
 			}
 		}
 
-		if (NodeHelper.is_wide_beam_head(vert, pos)) {
+		if (GongHelper.is_wide_beam_head(vert, pos)) {
 			return TransNodes.translate(PINGPAN_DOU, pos)
 		}
 

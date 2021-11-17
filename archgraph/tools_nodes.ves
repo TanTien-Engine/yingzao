@@ -1,6 +1,7 @@
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
+import "blueprint.nodes.list_flatten" for ListFlatten
 import "geograph.nodes.box" for Box
 import "geograph.nodes.brush_merge" for BrushMerge
 import "editor.node_cache" for NODE_CACHE
@@ -37,5 +38,18 @@ class ToolsNodes
 		Blueprint.connect(geo_node, "out", TEST, "gong")
 
 		return Blueprint.calc_output_value(TEST, "vert").value
+	}
+
+	static list_flatten(v_list, deep)
+	{
+		var flatten = ListFlatten()
+
+		var list_node = VariantProxy(v_list)
+		Blueprint.connect(list_node, "out", flatten, "list")
+
+		var deep_node = VariantProxy(Variant(deep))
+		Blueprint.connect(deep_node, "out", flatten, "deep")		
+
+		return Blueprint.calc_output_value(flatten, "list")		
 	}
 }

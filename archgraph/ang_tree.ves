@@ -7,7 +7,7 @@ import "archgraph.component.liao_yan_fang" for LiaoYanFang
 import "archgraph.tools.ang_proxy" for AngProxy
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.trans_nodes" for TransNodes
-import "archgraph.constant" for ZU_CAI_HEIGHT
+import "archgraph.constant" for ZU_CAI_HEIGHT, QI_HEIGHT
 import "archgraph.dou_helper" for DouHelper
 import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.ang_helper" for AngHelper
@@ -73,16 +73,22 @@ class AngTree
 			if (src is AngProxy)
 			{
 				var v_ang = AngHelper.create_ang(Vector3(0, 0, 0))
+				v_ang = AngHelper.add_dou(v_ang, Vector3(0, -QI_HEIGHT, 0))
 
 				var dist = src.ang_pos.z / 1.414
 				v_ang = GenNodes.corner_gen_2(v_ang, Vector3(src.ang_pos.x, src.ang_pos.y, 0), dist)
 
 				var top_y = nil
-				for (var item in dg.layers[this.begin_layer + i + 2]) {
-					if (item.comp.x_idx == 0 and (item is Fang or item is YaCaoFang)) {
-						top_y = item.comp.pos.y
+				var layer_idx_begin = this.begin_layer + i + 2
+				for (var layer_idx in layer_idx_begin .. dg.layers.count) {
+					var layer = dg.layers[layer_idx]
+					for (var item in layer) {
+						if (item.comp.x_idx == 0 and (item is Fang or item is YaCaoFang)) {
+							top_y = item.comp.pos.y
+						}
 					}
 				}
+
 				if (top_y) {
 					v_ang = JointsNodes.cut_top_plane(v_ang, top_y)
 				}

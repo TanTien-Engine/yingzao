@@ -18,6 +18,16 @@ class AngHelper
 		return TransNodes.translate(ANG, pos)
 	}
 
+	static add_dou(v_geo, pos)
+	{
+		import "archgraph.component.dou" for QIANG_DOU
+
+		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
+		var v_sun = TransNodes.translate(GD_SUN, pos)
+		var v_dou = TransNodes.translate(QIANG_DOU, pos)
+		return Variant([ v_geo, v_sun, v_dou ])
+	}
+
 	static down_ang_cut(geo, down, pos)
 	{
 		var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
@@ -51,6 +61,22 @@ class AngHelper
 
 	static ang_cut(node, geo)
 	{
+		return this.ang_cut(node, geo, false)
+	}
+
+	static ang_plane_cut(v_geo, v_ang, down, corner_trans)
+	{
+		var ang_pos = v_ang.calc_ang_pos()
+
+		if (corner_trans) {
+			ang_pos.z = ang_pos.z / 1.414		
+		}
+
+		return AngHelper.down_ang_cut(v_geo, down, ang_pos)	
+	}
+
+	static ang_cut(node, geo, corner_trans)
+	{
 		import "archgraph.component.ang" for Ang 
 		import "archgraph.tools.vert_split" for VertSplit
 
@@ -59,17 +85,17 @@ class AngHelper
 		{
 			if (prev is Ang) 
 			{
-				return prev.ang_plane_cut(geo, false)
+				return this.ang_plane_cut(geo, prev, false, corner_trans)
 			} 
 			else if (prev is VertSplit) 
 			{
 				var left = Blueprint.get_output_node(prev, "outer")
 				if (left is Ang and left != node) {
-					return left.ang_plane_cut(geo, true)
+					return this.ang_plane_cut(geo, left, true, corner_trans)
 				}
 				var right = Blueprint.get_output_node(prev, "inner")
 				if (right is Ang and right != node) {
-					return right.ang_plane_cut(geo, false)
+					return this.ang_plane_cut(geo, right, false, corner_trans)
 				}
 			}
 			// else if prev is merge, return

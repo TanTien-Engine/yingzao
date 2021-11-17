@@ -1,0 +1,17 @@
+import "archgraph.style.style_node" for StyleNode
+import "archgraph.context" for CONTEXT
+
+class CornerStyle is StyleNode
+{
+	init()
+	{
+		super.init()
+
+		this.layout()
+	}
+
+	register()
+	{
+		CONTEXT.gen_corner = true
+	}
+}

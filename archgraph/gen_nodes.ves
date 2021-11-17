@@ -48,7 +48,7 @@ class GenNodes
 
 		if (ToolsNodes.is_gong_vert(v_geo))
 		{
-			var geo = TransNodes.rotate(VariantProxy(v_geo), Math.pi() * 1.5)
+			var geo = TransNodes.rotate(VariantProxy(v_geo), -Math.pi() * 0.5)
 
 			Blueprint.connect(VariantProxy(geo), "out", ADD_HEAD, "geo")
 			Blueprint.connect(VariantProxy(0), "out", ADD_HEAD, "left")
@@ -64,5 +64,18 @@ class GenNodes
 
 			return Blueprint.calc_output_value(ADD_HEAD, "geo")
 		}
+	}
+
+	static compose_gong(v_geo0, v_geo1)
+	{
+		var COMPOSE = NODE_CACHE.fetch("../yingzao/00_dougong2/52_compose_gong.ves", nil)
+
+		var geo0_node = VariantProxy(v_geo0)
+		Blueprint.connect(geo0_node, "out", COMPOSE, "geo0")
+
+		var geo1_node = VariantProxy(v_geo1)
+		Blueprint.connect(geo1_node, "out", COMPOSE, "geo1")
+
+		return Blueprint.calc_output_value(COMPOSE, "geo")		
 	}
 }
