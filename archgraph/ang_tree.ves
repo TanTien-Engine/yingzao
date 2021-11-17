@@ -1,5 +1,6 @@
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant_proxy" for VariantProxy
+import "blueprint.variant" for Variant
 import "archgraph.component.hori_gong" for HoriGong
 import "archgraph.component.fang" for Fang
 import "archgraph.component.ya_cao_fang" for YaCaoFang
@@ -97,16 +98,28 @@ class AngTree
 			}
 			else
 			{
+				var len_node = VariantProxy(Variant(1))
+				var len_conn = nil
+
 				var gong = nil
-				if (src is Fang) {
+				if (src is Fang) 
+				{
 					import "archgraph.component.fang" for FANG
 					gong = FANG
-				} else if (src is HoriGong) {
+					len_conn = Blueprint.connect(len_node, "out", gong, "length")
+				} 
+				else if (src is HoriGong) 
+				{
 					gong = src.select_gong(nil)
-				} else if (src is LiaoYanFang) {
+				} 
+				else if (src is LiaoYanFang) 
+				{
 					import "archgraph.component.liao_yan_fang" for FANG
 					gong = FANG
-				} else {
+					len_conn = Blueprint.connect(len_node, "out", gong, "length")
+				} 
+				else 
+				{
 					import "logger.logger" for Logger
 					Logger.error("Unknown node %(src)")
 				}
@@ -123,6 +136,10 @@ class AngTree
 
 				dst.value.add(TransNodes.transform(gong, Vector3(pos0.x, y, pos0.y), Math.pi() * 0.25))
 				dst.value.add(TransNodes.transform(gong, Vector3(pos1.x, y, pos1.y), -Math.pi() * 0.25))
+
+				if (len_conn) {
+					len_node.disconnect()
+				}
 			}
 		}
 	}
