@@ -8,6 +8,7 @@ import "archgraph.constant" for ZU_CAI_HEIGHT
 import "archgraph.ang_helper" for AngHelper
 import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.gong_helper" for GongHelper, VERT_POS_MIDDLE, VERT_POS_INNER, VERT_POS_OUTER
+import "archgraph.context" for CONTEXT
 import "editor.node_cache" for NODE_CACHE
 
 var SHUA_TOU = NODE_CACHE.fetch("../yingzao/00_dougong2/36_shua_tou.ves", nil)
@@ -64,7 +65,7 @@ class ShuaTou is VertGong
 	{
 		this.comp.v_geo = AngHelper.ang_cut(this, this.comp.v_geo)
 
-		if (GongHelper.calc_vert_pos(this) == VERT_POS_INNER) {
+		if (CONTEXT.no_you or GongHelper.calc_vert_pos(this) == VERT_POS_INNER) {
 			this.comp.v_geo_c = this.comp.v_geo
 		} else {
 			this.gen_corner(dg)		

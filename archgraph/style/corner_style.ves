@@ -1,3 +1,4 @@
+import "blueprint.node_param" for NodeParam
 import "archgraph.style.style_node" for StyleNode
 import "archgraph.context" for CONTEXT
 
@@ -7,11 +8,15 @@ class CornerStyle is StyleNode
 	{
 		super.init()
 
+		this.params.add(NodeParam("no_you", false))
+
 		this.layout()
 	}
 
 	register()
 	{
 		CONTEXT.gen_corner = true
+
+		CONTEXT.no_you = this.query_param("no_you").value
 	}
 }
