@@ -7,6 +7,7 @@ import "archgraph.dou_helper" for DouHelper
 import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
 import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.ang_helper" for AngHelper
+import "archgraph.gong_helper" for GongHelper, VERT_POS_INNER
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 import "math" for Math
@@ -43,6 +44,10 @@ class CornerBuilder
 			} else {
 				return GenNodes.corner_gen_2(inner.comp.v_geo, inner.comp.pos, 0)
 			}
+		}
+		else if (GongHelper.calc_vert_pos(vert) == VERT_POS_INNER)
+		{
+			inner_v = true
 		}
 
 		var v_geo0 = nil
