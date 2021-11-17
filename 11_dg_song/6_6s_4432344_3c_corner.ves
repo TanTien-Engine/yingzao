@@ -1,0 +1,161 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
+node0.set_prop_value("ortho", false)
+node0.set_prop_value("offset", 11.60613155365)
+
+node0.op_node.cam.position.set(1.6227547031813, 3.1698307728375, 1.1205920359223)
+node0.op_node.cam.yaw = -137.6
+node0.op_node.cam.pitch = -56.5
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.29386684298515
+
+_editor.add_node(node0, -677.20661157025, -280.24042073629)
+
+var node1 = ::archgraph::component::lu_dou::LuDou()
+
+_editor.add_node(node1, -232.44731376408, 41.693222374154)
+
+var node2 = ::archgraph::component::inner_gong::InnerGong()
+
+_editor.add_node(node2, -94.174419175147, 168.96031439401)
+
+var node3 = ::archgraph::component::inner_gong::InnerGong()
+
+_editor.add_node(node3, 36.281153852161, 171.00935303214)
+
+var node4 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node4, 171.85268229454, 171.57236077328)
+
+var node5 = ::blueprint::nodes::commentary::Commentary()
+
+node5.set_size(837.92924112397, 441.85064927949)
+node5.title = "六铺作里外跳俱均"
+
+_editor.add_node(node5, 105.90364629491, 212.91341334281)
+
+var node6 = ::archgraph::component::hua_gong::HuaGong()
+
+_editor.add_node(node6, -94.876181528962, -85.346928102161)
+
+var node7 = ::archgraph::style::step_length::StepLength()
+node7.query_param("outer").value = [ 0.28, 0.25, 0.25, 0.25, 0.25 ]
+node7.query_param("inner").value = [ 0.28, 0.25, 0.25, 0.25, 0.25 ]
+
+_editor.add_node(node7, -390.09502509458, -353.36754117007)
+
+var node8 = ::archgraph::component::shua_tou::ShuaTou()
+
+_editor.add_node(node8, 306.50500409804, 103.55659865942)
+
+var node9 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node9, 309.49128756182, 36.865667631437)
+
+var node10 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node10, 311.75888080439, -8.6093731792838)
+
+var node11 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node11, 438.62180504344, 37.821881401792)
+
+var node12 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node12, 440.45910591223, -8.4659310833261)
+
+var node13 = ::archgraph::component::hua_gong::HuaGong()
+
+_editor.add_node(node13, 172.31555221638, 57.744552967693)
+
+var node14 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node14, 48.603886166959, -162.9092572386)
+
+var node15 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node15, 49.218586847549, -210.0371906113)
+
+var node16 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node16, 310.06143049101, -161.95304346824)
+
+var node17 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node17, 312.72517764079, -210.72019479634)
+
+var node18 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node18, 178.83795074685, -162.45787031587)
+
+var node19 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node19, 178.58523196852, -210.26881460932)
+
+var node20 = ::archgraph::component::ya_cao_fang::YaCaoFang()
+
+_editor.add_node(node20, 438.82527308248, 171.82049375434)
+
+var node21 = ::archgraph::component::hua_gong::HuaGong()
+
+_editor.add_node(node21, 39.390683696469, 1.9489105935387)
+
+var node22 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node22, 175.05016715869, -63.735703519592)
+
+var node23 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node23, 175.66486783928, -110.86363689229)
+
+var node24 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node24, 436.50771148274, -62.779489749232)
+
+var node25 = ::archgraph::component::fang::Fang()
+
+_editor.add_node(node25, 439.17145863252, -111.54664107733)
+
+var node26 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node26, 308.59001686255, -61.631424034878)
+
+var node27 = ::archgraph::component::hori_gong::HoriGong()
+
+_editor.add_node(node27, 311.64308320819, -111.09526089031)
+
+var node28 = ::archgraph::tools::dummy_hori::DummyHori()
+
+_editor.add_node(node28, 306.43210911969, 173.95076763519)
+
+var node29 = ::archgraph::style::corner_style::CornerStyle()
+node29.query_param("no_you").value = true
+
+_editor.add_node(node29, -66.467939453126, -345.69693847656)
+
+Blueprint.connect(node1, "vert", node6, "prev")
+Blueprint.connect(node6, "next", node21, "prev")
+Blueprint.connect(node21, "inner", node23, "prev")
+Blueprint.connect(node23, "next", node27, "prev")
+Blueprint.connect(node27, "next", node25, "prev")
+Blueprint.connect(node21, "outer", node22, "prev")
+Blueprint.connect(node22, "next", node26, "prev")
+Blueprint.connect(node26, "next", node24, "prev")
+Blueprint.connect(node21, "next", node13, "prev")
+Blueprint.connect(node13, "inner", node10, "prev")
+Blueprint.connect(node10, "next", node12, "prev")
+Blueprint.connect(node13, "outer", node9, "prev")
+Blueprint.connect(node9, "next", node11, "prev")
+Blueprint.connect(node13, "next", node8, "prev")
+Blueprint.connect(node6, "inner", node15, "prev")
+Blueprint.connect(node15, "next", node19, "prev")
+Blueprint.connect(node19, "next", node17, "prev")
+Blueprint.connect(node6, "outer", node14, "prev")
+Blueprint.connect(node14, "next", node18, "prev")
+Blueprint.connect(node18, "next", node16, "prev")
+Blueprint.connect(node1, "hori", node2, "prev")
+Blueprint.connect(node2, "next", node3, "prev")
+Blueprint.connect(node3, "next", node4, "prev")
+Blueprint.connect(node4, "next", node28, "prev")
+Blueprint.connect(node28, "next", node20, "prev")
