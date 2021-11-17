@@ -54,6 +54,9 @@ class HuaGong is VertGong
 		Blueprint.connect(len_l_node, "out", HUA_GONG, "len_left")
 		Blueprint.connect(len_r_node, "out", HUA_GONG, "len_right")
 
+		var single_node = VariantProxy(Variant(false))
+		Blueprint.connect(single_node, "out", HUA_GONG, "single")
+
 		return TransNodes.translate(HUA_GONG, pos)
 	}
 }
