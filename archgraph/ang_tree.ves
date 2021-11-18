@@ -5,6 +5,7 @@ import "archgraph.component.hori_gong" for HoriGong
 import "archgraph.component.fang" for Fang
 import "archgraph.component.ya_cao_fang" for YaCaoFang
 import "archgraph.component.liao_yan_fang" for LiaoYanFang
+import "archgraph.component.cheng_chuan_fang" for ChengChuanFang
 import "archgraph.tools.ang_proxy" for AngProxy
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.trans_nodes" for TransNodes
@@ -87,7 +88,7 @@ class AngTree
 					for (var layer_idx in layer_idx_begin .. dg.layers.count) {
 						var layer = dg.layers[layer_idx]
 						for (var item in layer) {
-							if (item.comp.x_idx == 0 and (item is Fang or item is YaCaoFang)) {
+							if (item.comp.x_idx == 0 and (item is Fang or item is YaCaoFang or item is ChengChuanFang)) {
 								top_y = item.comp.pos.y
 							}
 						}
