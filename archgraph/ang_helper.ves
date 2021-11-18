@@ -18,6 +18,23 @@ class AngHelper
 		return TransNodes.translate(ANG, pos)
 	}
 
+	static create_ang(pos, len)
+	{
+		var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
+		if (CONTEXT.s_ang_slope) {
+			Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", ANG, "slope")
+		}
+
+		var len_node = VariantProxy(Variant(len))
+		Blueprint.connect(len_node, "out", ANG, "length")
+		
+		var ret = TransNodes.translate(ANG, pos)
+
+		len_node.disconnect()
+
+		return ret
+	}
+
 	static add_dou(v_geo, pos)
 	{
 		import "archgraph.component.dou" for QIANG_DOU

@@ -87,9 +87,19 @@ class Ang is VertGong
 
 		this.outer_hop = prev_outer_hop + 1
 		this.inner_hop = prev_inner_hop	+ 1
+
+		// conn tail
+		var i_next = Blueprint.get_output_node(this, "inner")
+		var next = Blueprint.get_output_node(this, "next")
+		var conn_tail = i_next or (next is Ang and Blueprint.get_output_node(next, "inner"))
 		
 		var ang_pos = this.calc_ang_pos()
-		var v_geo = AngHelper.create_ang(ang_pos)
+		var v_geo = nil
+		if (conn_tail) {
+			v_geo = AngHelper.create_ang(ang_pos, 5)
+		} else {
+			v_geo = AngHelper.create_ang(ang_pos)
+		}
 
 		// cut head, make it to tiao_gan
 		if (this.need_to_tiao_gan()) {
@@ -97,9 +107,6 @@ class Ang is VertGong
 		}
 
 		// conn tail
-		var i_next = Blueprint.get_output_node(this, "inner")
-		var next = Blueprint.get_output_node(this, "next")
-		var conn_tail = i_next or (next is Ang and Blueprint.get_output_node(next, "inner"))
 		if (conn_tail)
 		{
 			var pos = Blueprint.calc_output_value(this, "inner")
