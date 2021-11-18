@@ -19,6 +19,7 @@ class CornerBuilder
 		import "archgraph.component.vert_gong" for VertGong
 		import "archgraph.tools.vert_split" for VertSplit
 		import "archgraph.tools.vert_merge" for VertMerge
+		import "archgraph.component.shua_tou" for ShuaTou
 
 		var vert = nil
 
@@ -39,10 +40,17 @@ class CornerBuilder
 		{
 			var outer = Blueprint.get_output_node(vert, "outer")
 			var inner = Blueprint.get_output_node(vert, "inner")
-			if (outer is Ang) {
+			if (outer is Ang) 
+			{
 				vert = inner
 				inner_v = true
-			} else {
+			} 
+			else if (outer is ShuaTou)
+			{
+				vert = outer
+			}
+			else 
+			{
 				return GenNodes.corner_gen_2(inner.comp.v_geo, inner.comp.pos, 0)
 			}
 		}
@@ -58,7 +66,6 @@ class CornerBuilder
 		var v_geo0 = nil
 		var v_geo1 = nil
 
-		import "archgraph.component.shua_tou" for ShuaTou
 		import "archgraph.component.hua_gong" for HuaGong
 		import "archgraph.component.chen_fang_tou" for ChenFangTou
 		import "archgraph.component.cha_ang" for ChaAng

@@ -94,7 +94,7 @@ class AngHelper
 					return this.ang_plane_cut(geo, left, true, corner_trans)
 				}
 				var right = Blueprint.get_output_node(prev, "inner")
-				if (right is Ang and right != node) {
+				if (!CONTEXT.gen_corner and right is Ang and right != node) {
 					return this.ang_plane_cut(geo, right, false, corner_trans)
 				}
 			}

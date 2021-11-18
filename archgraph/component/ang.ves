@@ -12,6 +12,7 @@ import "archgraph.dou_helper" for DouHelper
 import "archgraph.ang_helper" for AngHelper
 import "archgraph.ang_tree" for AngTree
 import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.gong_helper" for GongHelper, VERT_POS_INNER
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
@@ -131,6 +132,10 @@ class Ang is VertGong
 
 	cut_fang(dg, layer_idx, a_pos)
 	{
+		if (GongHelper.calc_vert_pos(this) == VERT_POS_INNER and CONTEXT.gen_corner) {
+			return
+		}
+
 		import "archgraph.component.fang" for Fang, FANG
 
 		var layer = dg.layers[layer_idx]
