@@ -80,30 +80,34 @@ class HoriGong is CompNode
 
 	gen_corner(dg)
 	{
-		var len_o = CornerHelper.calc_outer_len(this.comp.x_idx)
-
-		var inner_begin = this.comp.x_idx
-		if (this.comp.x_idx < 0) {
-			inner_begin = inner_begin - 1
+		if (GongHelper.is_ang_inside(this))
+		{
+			var v_geo = Blueprint.calc_output_value(this.gong, "geo")			
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
+			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, 0)
 		}
-		var inner_count = this.calc_inner_step_len_num(dg)
-		var len_i = CoordTrans.calc_step_len_section(inner_begin, -inner_count) + DOU_H_WIDTH
+		else
+		{
+			var len_o = CornerHelper.calc_outer_len(this.comp.x_idx)
 
-		if (GongHelper.is_ang_inside(this)) {
-			len_i = len_o * 1.5
+			var inner_begin = this.comp.x_idx
+			if (this.comp.x_idx < 0) {
+				inner_begin = inner_begin - 1
+			}
+			var inner_count = this.calc_inner_step_len_num(dg)
+			var len_i = CoordTrans.calc_step_len_section(inner_begin, -inner_count) + DOU_H_WIDTH
+
+			var offset = - (len_o - len_i) / 2
+			
+			var len_node = VariantProxy(Variant(len_o + len_i))
+			Blueprint.connect(len_node, "out", this.gong, "length")
+
+			var v_geo = Blueprint.calc_output_value(this.gong, "geo")
+			len_node.disconnect()
+
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
+			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
 		}
-
-		var offset = - (len_o - len_i) / 2
-		
-		var len_node = VariantProxy(Variant(len_o + len_i))
-		Blueprint.connect(len_node, "out", this.gong, "length")
-
-		var v_geo = Blueprint.calc_output_value(this.gong, "geo")
-		len_node.disconnect()
-		var dou_pos_x = DouHelper.calc_dou_pos_x(v_geo)
-
-		v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
-		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
 	}
 
 	select_gong(dg)

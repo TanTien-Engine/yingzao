@@ -78,10 +78,6 @@ class TiMu is CompNode
 		var v_geo = Blueprint.calc_output_value(TI_MU, "geo")
 
 		var offset = 0
-		if (GongHelper.is_ang_inside(this)) {
-			offset = 0.1
-		}
-
 		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
 	}
 
