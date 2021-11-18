@@ -130,8 +130,11 @@ class CornerBuilder
 		{
 			var p = vert.comp.pos
 			v_geo0 = TransNodes.transform(VariantProxy(v_geo0), p, Math.pi() * 0.5)
+
 			v_geo0 = AngHelper.ang_cut(vert, v_geo0, true)
-			v_geo0 = TransNodes.transform(VariantProxy(v_geo0), Vector3(-p.x, -p.y, -p.z), -Math.pi() * 0.5)
+
+			v_geo0 = TransNodes.translate(VariantProxy(v_geo0), Vector3(-p.x, -p.y, -p.z))
+			v_geo0 = TransNodes.rotate(VariantProxy(v_geo0), -Math.pi() * 0.5)
 		}
 
 		import "archgraph.component.inner_gong" for InnerGong
