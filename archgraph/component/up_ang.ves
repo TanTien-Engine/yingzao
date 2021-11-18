@@ -60,38 +60,7 @@ class UpAng is VertGong
 
 		var v_geo = TransNodes.translate(ANG, ang_pos)
 
-		var v_left = nil
-		var pz = this.is_ping_zuo()
-		if (pz)
-		{
-			import "archgraph.component.chen_fang_tou" for ChenFangTou
-			var pos_n = NodeHelper.calc_curr_pos(this, "prev")
-			v_left = ChenFangTou.create_geo(1, 1, pos_n, true)
-		}
-		else
-		{
-			var pos_n = NodeHelper.calc_curr_pos(this, "prev")		
-			if (prev is UpAng) 
-			{
-				if (this.comp.y_idx > 3) {
-					import "archgraph.component.chen_fang_tou" for ChenFangTou
-					v_left = ChenFangTou.create_geo(this.outer_hop, this.inner_hop, pos_n, true)
-				} else {
-					import "archgraph.component.shua_tou" for ShuaTou
-					v_left = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos_n)
-				}
-			} 
-			else 
-			{
-				if (this.comp.y_idx > 3) {
-					import "archgraph.component.shua_tou" for ShuaTou
-					v_left = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos_n)
-				} else {
-					import "archgraph.component.hua_gong" for HuaGong
-					v_left = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos_n)
-				}
-			}
-		}
+		var v_left = this.create_left_geo()
 
 		var v_xue = nil
 		if (!(prev is UpAng)) {
@@ -103,6 +72,7 @@ class UpAng is VertGong
 		v_left = this.ang_plane_cut(v_left)
 
 		// conn next
+		var pz = this.is_ping_zuo()
 		v_geo = this.add_dou(Variant([v_xue, v_geo, v_left]), !pz, true)
 
 		this.comp.pos = ang_pos
@@ -181,6 +151,47 @@ class UpAng is VertGong
 		}
 
 		return false
+	}
+
+	create_left_geo()
+	{
+		var v_left = nil
+
+		var prev = Blueprint.get_input_node(this, "prev")
+
+		var pz = this.is_ping_zuo()
+		if (pz)
+		{
+			import "archgraph.component.chen_fang_tou" for ChenFangTou
+			var pos_n = NodeHelper.calc_curr_pos(this, "prev")
+			v_left = ChenFangTou.create_geo(1, 1, pos_n, true)
+		}
+		else
+		{
+			var pos_n = NodeHelper.calc_curr_pos(this, "prev")		
+			if (prev is UpAng) 
+			{
+				if (this.comp.y_idx > 3) {
+					import "archgraph.component.chen_fang_tou" for ChenFangTou
+					v_left = ChenFangTou.create_geo(this.outer_hop, this.inner_hop, pos_n, true)
+				} else {
+					import "archgraph.component.shua_tou" for ShuaTou
+					v_left = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos_n)
+				}
+			} 
+			else 
+			{
+				if (this.comp.y_idx > 3) {
+					import "archgraph.component.shua_tou" for ShuaTou
+					v_left = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos_n)
+				} else {
+					import "archgraph.component.hua_gong" for HuaGong
+					v_left = HuaGong.create_geo(this.outer_hop, this.inner_hop, pos_n)
+				}
+			}
+		}
+
+		return v_left
 	}
 
 	static ang_plane_cut(geo, pos)
