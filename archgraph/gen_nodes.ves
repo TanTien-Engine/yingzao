@@ -27,6 +27,21 @@ class GenNodes
 		return Variant([ geo0, geo1 ])
 	}
 
+	// fixme
+	static corner_gen_2_no_mirror(v_geo, pos, offset)
+	{
+		var CORNER_GEN_2 = NODE_CACHE.fetch("../yingzao/00_dougong2/51_corner_gen_2.ves", nil)
+
+		var no_mirror_node = VariantProxy(Variant(true))
+		Blueprint.connect(no_mirror_node, "out", CORNER_GEN_2, "no_mirror")
+
+		var ret = this.corner_gen_2(v_geo, pos, offset)
+
+		no_mirror_node.disconnect()
+
+		return ret
+	}	
+
 	static gong_add_fang(v_geo, pos)
 	{
 		var ADD_FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/50_gong_add_fang.ves", nil)

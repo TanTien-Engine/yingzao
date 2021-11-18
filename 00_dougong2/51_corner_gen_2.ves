@@ -42,7 +42,7 @@ var node7 = ::blueprint::nodes::output::Output()
 node7.var_name = "geo1"
 node7.var_type = [ "geo", "array" ]
 
-_editor.add_node(node7, 514.26842363274, 116.67245369629)
+_editor.add_node(node7, 709.01192950129, 204.16591285463)
 
 var node8 = ::geograph::nodes::translate_f::TranslateF()
 
@@ -178,6 +178,17 @@ node33.query_param("dir").value.set(1, 0, 0)
 
 _editor.add_node(node33, 246.30780552789, 35.733002911123)
 
+var node34 = ::blueprint::nodes::input::Input()
+
+node34.var_name = "no_mirror"
+node34.var_type = "bool"
+
+_editor.add_node(node34, 442.95597755502, 191.80948458123)
+
+var node35 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node35, 577.66075014648, 181.9193832684)
+
 Blueprint.connect(node11, "pi/4", node15, "v")
 Blueprint.connect(node10, "var", node29, "z")
 Blueprint.connect(node10, "var", node9, "x")
@@ -215,5 +226,8 @@ Blueprint.connect(node1, "geo", node3, "geo")
 Blueprint.connect(node4, "var", node3, "xyz")
 Blueprint.connect(node3, "geo", node32, "geo")
 Blueprint.connect(node33, "plane", node32, "plane")
-Blueprint.connect(node32, "geo", node7, "var")
+Blueprint.connect(node34, "var", node35, "cond")
+Blueprint.connect(node5, "geo", node35, "true")
+Blueprint.connect(node32, "geo", node35, "false")
+Blueprint.connect(node35, "result", node7, "var")
 Blueprint.connect(node3, "geo", node6, "var")

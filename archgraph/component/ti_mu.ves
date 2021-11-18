@@ -7,6 +7,8 @@ import "archgraph.variant" for PIN_TYPE_INNER_GONG, PIN_TYPE_HORI_GONG, PIN_TYPE
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.trans_nodes" for TransNodes
 import "archgraph.joints_nodes" for JointsNodes
+import "archgraph.gen_nodes" for GenNodes
+import "archgraph.gong_helper" for GongHelper
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 
@@ -68,7 +70,19 @@ class TiMu is CompNode
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
 
-//		this.gen_corner(dg)
+		this.gen_corner(dg)
+	}
+
+	gen_corner(dg)
+	{
+		var v_geo = Blueprint.calc_output_value(TI_MU, "geo")
+
+		var offset = 0
+		if (GongHelper.is_ang_inside(this)) {
+			offset = 0.1
+		}
+
+		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
 	}
 
 	get_title()

@@ -1,9 +1,12 @@
 import "blueprint.pin" for Pin
 import "blueprint.variant" for Variant
+import "blueprint.blueprint" for Blueprint
 import "archgraph.component.comp_node" for CompNode
 import "archgraph.variant" for PIN_TYPE_PING_CHUAN
 import "archgraph.node_helper" for NodeHelper
 import "archgraph.trans_nodes" for TransNodes
+import "archgraph.gong_helper" for GongHelper
+import "archgraph.gen_nodes" for GenNodes
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 
@@ -42,7 +45,19 @@ class Chuan is CompNode
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
 
-//		this.gen_corner(dg)
+		this.gen_corner(dg)
+	}
+
+	gen_corner(dg)
+	{
+		var v_geo = Blueprint.calc_output_value(CHUAN, "geo")
+
+		var offset = 0
+		if (GongHelper.is_ang_inside(this)) {
+			offset = 0.5
+		}
+
+		this.comp.v_geo_c = GenNodes.corner_gen_2_no_mirror(v_geo, this.comp.pos, offset)
 	}
 
 	get_title()

@@ -16,6 +16,7 @@ import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.gen_nodes" for GenNodes
 import "archgraph.spatial_query" for SpatialQuery
 import "archgraph.corner_helper" for CornerHelper
+import "archgraph.gong_helper" for GongHelper
 import "geograph.nodes.brush_get_size" for BrushGetSize
 import "maths.vector" for Vector3
 import "math" for Math
@@ -88,8 +89,12 @@ class HoriGong is CompNode
 		var inner_count = this.calc_inner_step_len_num(dg)
 		var len_i = CoordTrans.calc_step_len_section(inner_begin, -inner_count) + DOU_H_WIDTH
 
-		var offset = - (len_o - len_i) / 2
+		if (GongHelper.is_ang_inside(this)) {
+			len_i = len_o * 1.5
+		}
 
+		var offset = - (len_o - len_i) / 2
+		
 		var len_node = VariantProxy(Variant(len_o + len_i))
 		Blueprint.connect(len_node, "out", this.gong, "length")
 

@@ -30,6 +30,21 @@ class GongHelper
 		return false
 	}
 
+	static is_ang_inside(node)
+	{
+		import "archgraph.component.ang" for Ang
+
+		var prev = Blueprint.get_input_pin(node, "prev")
+		while (prev) {
+			if (prev.node is Ang) {
+				return prev.name == "inner"
+			}
+			prev = Blueprint.get_input_pin(prev.node, "prev")
+		}
+
+		return false
+	}
+
 	static calc_vert_pos(node)
 	{
 		import "archgraph.tools.vert_split" for VertSplit
