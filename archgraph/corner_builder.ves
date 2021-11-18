@@ -157,6 +157,8 @@ class CornerBuilder
 			Blueprint.connect(full_node, "out", FANG, "full")
 
 			v_geo1 = Blueprint.calc_output_value(FANG, "geo")
+
+			full_node.disconnect()
 		}
 
 		var v_geo = nil
