@@ -198,11 +198,16 @@ class CornerBuilder
 
 		var l_x = -VertGong.calc_tot_step_len(vert.outer_hop) / 1.414
 
-		var dou_pos_x = DouHelper.calc_dou_pos_x(v_geo1)
-		var r_x = dou_pos_x[1]
+		var r_x = 0
 
-		if (r_x > 0.9) {
-			r_x = 0.41
+		if (v_geo1) 
+		{
+			var dou_pos_x = DouHelper.calc_dou_pos_x(v_geo1)
+			var r_x = dou_pos_x[1]
+
+			if (r_x > 0.9) {
+				r_x = 0.41
+			}
 		}
 
 		var add_dou = true
@@ -210,14 +215,45 @@ class CornerBuilder
 			add_dou = false
 		}
 
-		var left_dou = true
+		var no_right_dou = false
+		if (!v_geo1) {
+			no_right_dou = true
+		}
+
+		var no_left_dou = false
 		if (inner_v) {
-			left_dou = false
+			no_left_dou = true
+		}
+
+		if (no_left_dou and no_right_dou) {
+			add_dou = false
 		}
 
 		if (add_dou)
 		{
-			if (left_dou)
+			if (no_left_dou)
+			{
+				var r_pos = Vector3(r_x, CAI_HEIGHT, 0)
+
+				var r_sun = TransNodes.translate(GD_SUN, r_pos)
+
+				var r_dou = TransNodes.translate(SAN_DOU, r_pos)
+
+				v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ r_pos ])
+				v_geo = Variant([ v_geo, r_sun, r_dou ])
+			}
+			else if (no_right_dou)
+			{
+				var l_pos = Vector3(l_x, CAI_HEIGHT, 0)
+
+				var l_sun = TransNodes.translate(GD_SUN, l_pos)
+
+				var l_dou = TransNodes.transform(JIAOHU_DOU, l_pos, Math.pi() * 0.5)
+
+				v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, l_pos)
+				v_geo = Variant([ v_geo, l_sun, l_dou ])
+			}
+			else
 			{
 				var l_pos = Vector3(l_x, CAI_HEIGHT, 0)
 				var r_pos = Vector3(r_x, CAI_HEIGHT, 0)
@@ -229,18 +265,7 @@ class CornerBuilder
 				var r_dou = TransNodes.translate(SAN_DOU, r_pos)
 
 				v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])
-				v_geo = Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])	
-			}
-			else
-			{
-				var r_pos = Vector3(r_x, CAI_HEIGHT, 0)
-
-				var r_sun = TransNodes.translate(GD_SUN, r_pos)
-
-				var r_dou = TransNodes.translate(SAN_DOU, r_pos)
-
-				v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ r_pos ])
-				v_geo = Variant([ v_geo, r_sun, r_dou ])	
+				v_geo = Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
 			}
 		}
 

@@ -176,6 +176,10 @@ node37.query_param("no_you").value = true
 
 _editor.add_node(node37, 334.7799609375, -462.40613830566)
 
+var node38 = ::archgraph::tools::dummy_hori::DummyHori()
+
+_editor.add_node(node38, 459.159, 73.123019042969)
+
 Blueprint.connect(node16, "comp", node17, "fang")
 Blueprint.connect(node10, "comp", node11, "fang")
 Blueprint.connect(node1, "vert", node12, "prev")
@@ -208,3 +212,4 @@ Blueprint.connect(node21, "next", node9, "prev")
 Blueprint.connect(node1, "hori", node2, "prev")
 Blueprint.connect(node2, "next", node3, "prev")
 Blueprint.connect(node3, "next", node4, "prev")
+Blueprint.connect(node4, "next", node38, "prev")

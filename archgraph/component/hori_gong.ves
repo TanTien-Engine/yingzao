@@ -80,6 +80,8 @@ class HoriGong is CompNode
 
 	gen_corner(dg)
 	{
+		import "archgraph.component.vert_gong" for VertGong
+
 		if (GongHelper.is_ang_inside(this))
 		{
 			var v_geo = Blueprint.calc_output_value(this.gong, "geo")			
@@ -106,7 +108,18 @@ class HoriGong is CompNode
 			len_node.disconnect()
 
 			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
+
 			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
+
+			// sides
+			if (inner_count == 1 and this.comp.x_idx > 0) 
+			{
+				var offset = VertGong.calc_tot_step_len(this.comp.x_idx) / 1.414
+				var v_sides = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
+				for (var v in v_sides.value) {
+					this.comp.v_geo_c.value.add(v)
+				}
+			}
 		}
 	}
 
@@ -221,6 +234,7 @@ class HoriGong is CompNode
 				} else {
 					n_step = 1
 				}
+
 				return n_step
 			}
 		}

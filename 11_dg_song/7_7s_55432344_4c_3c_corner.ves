@@ -3,9 +3,9 @@ node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
 node0.set_prop_value("ortho", false)
 node0.set_prop_value("offset", 19.242971420288)
 
-node0.op_node.cam.position.set(2.6381309337497, 4.148395463621, 0.28520038440373)
-node0.op_node.cam.yaw = -159.3
-node0.op_node.cam.pitch = -38.7
+node0.op_node.cam.position.set(2.6471310254692, 0.60238569860446, 2.8956968395637)
+node0.op_node.cam.yaw = -131.3
+node0.op_node.cam.pitch = -1.6000000000001
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
@@ -184,6 +184,10 @@ node39.query_param("no_you").value = true
 
 _editor.add_node(node39, 228.45227050781, -572.42639923096)
 
+var node40 = ::archgraph::tools::dummy_hori::DummyHori()
+
+_editor.add_node(node40, 456.14499733665, 72.910077181729)
+
 Blueprint.connect(node14, "comp", node15, "fang")
 Blueprint.connect(node10, "comp", node11, "fang")
 Blueprint.connect(node1, "vert", node6, "prev")
@@ -218,3 +222,4 @@ Blueprint.connect(node17, "next", node9, "prev")
 Blueprint.connect(node1, "hori", node2, "prev")
 Blueprint.connect(node2, "next", node3, "prev")
 Blueprint.connect(node3, "next", node4, "prev")
+Blueprint.connect(node4, "next", node40, "prev")
