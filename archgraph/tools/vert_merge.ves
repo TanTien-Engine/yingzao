@@ -93,11 +93,12 @@ class VertMerge is VertGong
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 
 		var z = pos.z - 0.05
-		outer.comp.v_geo = JointsNodes.cut_right_plane(outer.comp.v_geo, z)
-		inner.comp.v_geo = JointsNodes.cut_left_plane(inner.comp.v_geo, z)
+		var v_outer = JointsNodes.cut_right_plane(outer.comp.v_geo, z)
+		var v_inner = JointsNodes.cut_left_plane(inner.comp.v_geo, z)
 
 		this.comp.pos = pos
-		this.comp.v_geo = ToolsNodes.brush_merge([ outer.comp.v_geo, inner.comp.v_geo ])
+		this.comp.v_geo = ToolsNodes.brush_merge([ v_outer, v_inner ])
+		this.comp.v_geo_c = this.comp.v_geo
 
 		this.add_dou(dg)
 

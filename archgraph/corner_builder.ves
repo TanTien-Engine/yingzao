@@ -18,6 +18,7 @@ class CornerBuilder
 	{
 		import "archgraph.component.vert_gong" for VertGong
 		import "archgraph.tools.vert_split" for VertSplit
+		import "archgraph.tools.vert_merge" for VertMerge
 
 		var vert = nil
 
@@ -44,6 +45,10 @@ class CornerBuilder
 			} else {
 				return GenNodes.corner_gen_2(inner.comp.v_geo, inner.comp.pos, 0)
 			}
+		}
+		else if (vert is VertMerge)
+		{
+			vert = Blueprint.get_input_node(vert, "outer")
 		}
 		else if (GongHelper.calc_vert_pos(vert) == VERT_POS_INNER)
 		{
