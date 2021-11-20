@@ -70,12 +70,12 @@ class HoriGong is CompNode
 		v_geo = this.add_joint(dg, v_geo, pos)
 
 		// conn next
-		v_geo = this.add_dou(dg, v_geo, pos)
+		v_geo = this.add_dou(dg, v_geo, pos, nil)
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
 
-		this.gen_corner(dg)
+		this.gen_corner2(dg)
 	}
 
 	gen_corner(dg)
@@ -85,7 +85,7 @@ class HoriGong is CompNode
 		if (GongHelper.is_ang_inside(this))
 		{
 			var v_geo = Blueprint.calc_output_value(this.gong, "geo")			
-			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0), nil)
 			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, 0)
 		}
 		else
@@ -107,7 +107,7 @@ class HoriGong is CompNode
 			var v_geo = Blueprint.calc_output_value(this.gong, "geo")
 			len_node.disconnect()
 
-			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0), nil)
 
 			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
 
@@ -121,6 +121,82 @@ class HoriGong is CompNode
 				}
 			}
 		}
+	}
+
+	gen_corner2(dg)
+	{
+		import "archgraph.component.vert_gong" for VertGong
+
+		if (GongHelper.is_ang_inside(this))
+		{
+			var v_geo = Blueprint.calc_output_value(this.gong, "geo")			
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0), nil)
+			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, 0)
+		}
+		else
+		{
+			var len_o = CornerHelper.calc_outer_len(this.comp.x_idx)
+
+			var inner_begin = this.comp.x_idx
+			if (this.comp.x_idx < 0) {
+				inner_begin = inner_begin - 1
+			}
+			var inner_count = this.calc_inner_step_len_num2(dg)
+			var len_i = CoordTrans.calc_step_len_section(inner_begin, -inner_count) + DOU_H_WIDTH
+
+			var offset = - (len_o - len_i) / 2
+			
+			var len_node = VariantProxy(Variant(len_o + len_i))
+			Blueprint.connect(len_node, "out", this.gong, "length")
+
+			var v_left = Blueprint.calc_output_value(this.gong, "geo")
+			len_node.disconnect()
+
+			var side_x = VertGong.calc_tot_step_len(this.comp.x_idx) / 1.414
+			var v_right = TransNodes.translate(this.gong, Vector3(side_x - offset, 0, 0))
+
+			var l_aabb = []
+			BrushGetSize.calc_aabb(v_left, l_aabb)
+			var l_min = l_aabb[0].x
+			var l_max = l_aabb[1].x
+
+			var r_aabb = []
+			BrushGetSize.calc_aabb(v_right, r_aabb)
+			var r_min = r_aabb[0].x
+			var r_max = r_aabb[1].x
+
+			var v_geo = nil
+			if (l_max < r_min) 
+			{
+				v_left = this.add_dou(dg, v_left, Vector3(0, 0, 0), nil)
+				v_right = this.add_dou(dg, v_right, Vector3(0, 0, 0), nil)
+				v_geo = Variant([ v_left, v_right ])
+			} 
+			else
+			{
+				var center = (l_max + r_min) * 0.5
+				v_geo = this.compose_yy_gong(l_min, center, r_max)
+				v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0), Vector3(center, 0, 0))
+			}
+
+			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)			
+		}
+	}
+
+	create_gong(left, right)
+	{
+		var len_node = VariantProxy(Variant(right - left))
+		Blueprint.connect(len_node, "out", this.gong, "length")
+		var v_geo = TransNodes.translate(this.gong, Vector3((left + right) * 0.5, 0, 0))
+		len_node.disconnect()
+		return v_geo
+	}
+
+	compose_yy_gong(left, center, right)
+	{
+		var v_left = this.create_gong(left, center + DOU_H_WIDTH)
+		var v_right = this.create_gong(center - DOU_H_WIDTH, right)
+		return Variant([ v_left, v_right ])
 	}
 
 	select_gong(dg)
@@ -154,7 +230,7 @@ class HoriGong is CompNode
 		return JointsNodes.cut_geo_node(v_geo, cut_node, pos)
 	}
 
-	add_dou(dg, v_geo, pos)
+	add_dou(dg, v_geo, pos, c_pos)
 	{
 		import "archgraph.component.dou" for SAN_DOU, QIXIN_DOU
 
@@ -173,10 +249,14 @@ class HoriGong is CompNode
 		var l_dou = TransNodes.translate(SAN_DOU, l_pos)
 		var r_dou = TransNodes.translate(SAN_DOU, r_pos)
 
-		var has_c = !dg.has_vert_gong_or_prev_beam(this.comp.y_idx)
+		var has_c = c_pos or !dg.has_vert_gong_or_prev_beam(this.comp.y_idx)
 		if (has_c)
 		{
-			var c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))
+			if (c_pos) {
+				c_pos.y = c_pos.y + CAI_HEIGHT
+			} else {
+				c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))
+			}
 
 			var c_sun = TransNodes.translate(GD_SUN, c_pos)
 			var c_dou = TransNodes.translate(QIXIN_DOU, c_pos)
@@ -203,6 +283,19 @@ class HoriGong is CompNode
 			return "令栱"
 		} else {
 			return "横栱"		
+		}
+	}
+
+	calc_inner_step_len_num2(dg)
+	{
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (!prev or !(prev is HoriGong))
+		{
+			return 1
+		}
+		else
+		{
+			return 2
 		}
 	}
 
