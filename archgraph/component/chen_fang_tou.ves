@@ -54,16 +54,7 @@ class ChenFangTou is VertGong
 			full = true
 		}
 		var v_geo = ChenFangTou.create_geo(outer_hop, inner_hop, pos, full or this.full_h)
-		
-		// ang cut
-		var pp_node = nil
-		if (prev) {
-			pp_node = Blueprint.get_input_node(prev, "prev")
-		}
-		import "archgraph.component.ang" for Ang
-		if (pp_node and pp_node is Ang) {
-			v_geo = pp_node.ang_plane_cut(v_geo, false)
-		}
+		v_geo = AngHelper.ang_cut(this, v_geo)
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
