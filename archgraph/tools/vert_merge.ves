@@ -106,6 +106,19 @@ class VertMerge is VertGong
 		inner.comp.v_geo = nil
 	}
 
+	resolve2(dg)
+	{
+		var outer = Blueprint.get_input_node(this, "outer")
+		var inner = Blueprint.get_input_node(this, "inner")
+		if (outer and inner)
+		{
+			outer.comp.v_geo = nil
+			inner.comp.v_geo = nil
+			outer.comp.v_geo_c = nil
+			inner.comp.v_geo_c = nil
+		}
+	}
+
 	get_title()
 	{
 		return "merge"
