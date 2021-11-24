@@ -27,7 +27,12 @@ class VertSplit is VertGong
 
 	resolve(dg)
 	{
+		import "archgraph.component.beam" for Beam
+		
 		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev is Beam) {
+			prev = Blueprint.get_input_node(prev, "prev")
+		}
 		if (prev is VertGong) {
 			this.outer_hop = prev.outer_hop
 			this.inner_hop = prev.inner_hop
