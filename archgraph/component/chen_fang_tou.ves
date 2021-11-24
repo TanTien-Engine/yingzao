@@ -50,6 +50,9 @@ class ChenFangTou is VertGong
 
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		var full = NodeHelper.get_output_valid_node(this, "next") != nil
+		if (!dg.layers[this.comp.y_idx + 1][0].isEmpty) {
+			full = true
+		}
 		var v_geo = ChenFangTou.create_geo(outer_hop, inner_hop, pos, full or this.full_h)
 		
 		// ang cut
@@ -58,10 +61,6 @@ class ChenFangTou is VertGong
 			pp_node = Blueprint.get_input_node(prev, "prev")
 		}
 		import "archgraph.component.ang" for Ang
-		import "archgraph.component.up_ang" for UpAng
-		if (prev is UpAng) {
-			v_geo = prev.ang_plane_cut(v_geo)
-		}
 		if (pp_node and pp_node is Ang) {
 			v_geo = pp_node.ang_plane_cut(v_geo, false)
 		}
@@ -69,7 +68,7 @@ class ChenFangTou is VertGong
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
 
-		this.gen_corner(dg)
+		//this.gen_corner(dg)
 	}
 
 	get_title()

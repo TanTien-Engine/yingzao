@@ -35,8 +35,42 @@ class ShuaTou is VertGong
 				next = NodeHelper.get_output_valid_node(next, "next")
 			}
 		}
-		var single_node = VariantProxy(Variant(next == nil))
+		var single = (next == nil)
+		var v_geo = this.create_geo(single)
+
+		// conn next
+//		v_geo = this.add_dou(dg, v_geo, true, true)
+
+		this.comp.pos = NodeHelper.calc_curr_pos(this, "prev")
+		this.comp.v_geo = v_geo
+	}
+
+	resolve2(dg)
+	{
+		var single = true
+		if (this.comp.y_idx < dg.layers.count - 1 and !dg.layers[this.comp.y_idx + 1].isEmpty) {
+			single = false
+		}
+		this.comp.v_geo = this.create_geo(single)
+
+		this.comp.v_geo = AngHelper.ang_cut(this, this.comp.v_geo)
+
+		if (CONTEXT.no_you or GongHelper.calc_vert_pos(this) == VERT_POS_INNER) {
+			this.comp.v_geo_c = this.comp.v_geo
+		} else {
+			this.gen_corner(dg)		
+		}
+	}
+
+	create_geo(single)
+	{
+		import "archgraph.tools.vert_merge" for VertMerge
+		import "archgraph.component.lu_dou" for LuDou
+
+		var single_node = VariantProxy(Variant(single))
 		Blueprint.connect(single_node, "out", SHUA_TOU, "single")
+
+		var prev = Blueprint.get_input_node(this, "prev")
 
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 
@@ -46,30 +80,9 @@ class ShuaTou is VertGong
 		} else {
 			v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 		}
-
-		import "archgraph.component.up_ang" for UpAng			
-		if (prev is UpAng) {
-			v_geo = prev.ang_plane_cut(v_geo)
-		}
-
-		// conn next
-//		v_geo = this.add_dou(v_geo, true, true)
-
-		this.comp.pos = pos
-		this.comp.v_geo = v_geo
-
 		single_node.disconnect()
-	}
 
-	resolve2(dg)
-	{
-		this.comp.v_geo = AngHelper.ang_cut(this, this.comp.v_geo)
-
-		if (CONTEXT.no_you or GongHelper.calc_vert_pos(this) == VERT_POS_INNER) {
-			this.comp.v_geo_c = this.comp.v_geo
-		} else {
-			this.gen_corner(dg)		
-		}
+		return v_geo
 	}
 
 	get_title()

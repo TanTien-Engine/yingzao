@@ -88,7 +88,7 @@ class VertGong is CompNode
 		return 0.06
 	}
 
-	add_dou(v_geo, left, right)
+	add_dou(dg, v_geo, left, right)
 	{
 		if (!left and !right) {
 			return v_geo
@@ -110,6 +110,9 @@ class VertGong is CompNode
 			var r_sun = TransNodes.translate(GD_SUN, r_pos)
 
 			var next_v = NodeHelper.get_output_valid_node(this, "next")
+			if (this.comp.y_idx < dg.layers.count - 1 and !dg.layers[this.comp.y_idx + 1].isEmpty) {
+				next_v = true
+			}
 			var next_o = NodeHelper.get_output_valid_node(this, "outer")
 			var next_i = NodeHelper.get_output_valid_node(this, "inner")
 
