@@ -99,6 +99,11 @@ class VertGong is CompNode
 
 		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
+		var next_v = NodeHelper.get_output_valid_node(this, "next")
+		if (this.comp.y_idx < dg.layers.count - 1 and !dg.layers[this.comp.y_idx + 1].isEmpty) {
+			next_v = true
+		}
+
 		if (left and right)
 		{
 			var l_pos = Blueprint.calc_output_value(this, "outer").value
@@ -109,10 +114,6 @@ class VertGong is CompNode
 			var l_sun = TransNodes.translate(GD_SUN, l_pos)
 			var r_sun = TransNodes.translate(GD_SUN, r_pos)
 
-			var next_v = NodeHelper.get_output_valid_node(this, "next")
-			if (this.comp.y_idx < dg.layers.count - 1 and !dg.layers[this.comp.y_idx + 1].isEmpty) {
-				next_v = true
-			}
 			var next_o = NodeHelper.get_output_valid_node(this, "outer")
 			var next_i = NodeHelper.get_output_valid_node(this, "inner")
 
@@ -137,7 +138,6 @@ class VertGong is CompNode
 
 			v_sun = TransNodes.translate(GD_SUN, pos)
 
-			var next_v = NodeHelper.get_output_valid_node(this, "next")
 			var next_h = nil
 			if (left) {
 				next_h = NodeHelper.get_output_valid_node(this, "outer")
