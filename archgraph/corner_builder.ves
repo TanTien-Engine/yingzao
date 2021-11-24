@@ -223,7 +223,7 @@ class CornerBuilder
 		}
 
 		// add dou
-		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU
+		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU, LIANZHU_DOU
 		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
 		var l_x = -VertGong.calc_tot_step_len(vert.outer_hop) / 1.414
@@ -292,10 +292,23 @@ class CornerBuilder
 
 				var r_pos = Vector3(r_x, CAI_HEIGHT, 0)
 
+				var l_dou_geo = JIAOHU_DOU
+
+				var next_vert = dg.layers[inner.comp.y_idx + 1][0]
+				for (var i in next_vert) {
+					if (i is UpAng) {
+						//next_up_ang = i
+						var prev_pin = Blueprint.get_input_pin(i, "prev")
+						if (prev_pin.node is VertSplit and prev_pin.name == "outer") {
+							l_dou_geo = LIANZHU_DOU
+						}
+					}
+				}
+
 				var l_sun = TransNodes.translate(GD_SUN, l_pos)
 				var r_sun = TransNodes.translate(GD_SUN, r_pos)
 
-				var l_dou = TransNodes.transform(JIAOHU_DOU, l_pos, Math.pi() * 0.5)
+				var l_dou = TransNodes.transform(l_dou_geo, l_pos, Math.pi() * 0.5)
 				var r_dou = TransNodes.translate(SAN_DOU, r_pos)
 
 				v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])

@@ -168,21 +168,40 @@ class VertGong is CompNode
 	{
 		import "archgraph.component.dou" for SAN_DOU, JIAOHU_DOU, JIAOHU_TU_DOU, QIANG_DOU, PINGPAN_DOU, LIANZHU_DOU
 
+		import "archgraph.component.ang" for Ang
+		import "archgraph.tools.vert_split" for VertSplit
+		import "archgraph.tools.vert_merge" for VertMerge
+		import "archgraph.component.up_ang" for UpAng
+		import "archgraph.component.cha_ang" for ChaAng
+
+		var next = NodeHelper.get_output_valid_node(this, "next")
 		if (pos.z > 0)
 		{
-			import "archgraph.component.ang" for Ang
-			import "archgraph.component.cha_ang" for ChaAng
-			if (this is Ang or this is ChaAng) {
+			if (this is Ang or this is ChaAng) 
+			{
 				return TransNodes.translate(QIANG_DOU, pos)
+			}
+			else if (next is VertSplit)
+			{
+				var outer = Blueprint.get_output_node(next, "outer")
+				if (outer is UpAng) {
+					return TransNodes.translate(LIANZHU_DOU, pos)
+				}
+			}
+			else if (next is VertMerge)
+			{
+				next = NodeHelper.get_output_valid_node(next, "next")
+				if (next is VertSplit)
+				{
+					var outer = Blueprint.get_output_node(next, "outer")
+					if (outer is UpAng) {
+						return TransNodes.translate(LIANZHU_DOU, pos)
+					}
+				}
 			}
 		}
 		else if (pos.z < 0)
 		{
-			import "archgraph.component.ang" for Ang
-			import "archgraph.component.up_ang" for UpAng
-			import "archgraph.tools.vert_split" for VertSplit
-
-			var next = NodeHelper.get_output_valid_node(this, "next")
 			if (next and next is UpAng and !(this is UpAng) and this.inner_hop > 1) 
 			{
 				return TransNodes.translate(LIANZHU_DOU, pos)
@@ -197,13 +216,8 @@ class VertGong is CompNode
 			}
 			else if (next is VertSplit)
 			{
-				var outer = Blueprint.get_output_node(next, "outer")
-				if (outer is UpAng and pos.z > 0) {
-					return TransNodes.translate(LIANZHU_DOU, pos)
-				}
-
 				var inner = Blueprint.get_output_node(next, "inner")
-				if (inner is UpAng and pos.z < 0) {
+				if (inner is UpAng) {
 					return TransNodes.translate(LIANZHU_DOU, pos)
 				}
 			}
@@ -231,7 +245,6 @@ class VertGong is CompNode
 		} 
 		else 
 		{
-//			return nil
 			return TransNodes.translate(SAN_DOU, pos)
 		}
 	}
