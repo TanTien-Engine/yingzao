@@ -8,6 +8,7 @@ import "archgraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT
 import "archgraph.joints_nodes" for JointsNodes
 import "archgraph.ang_helper" for AngHelper
 import "archgraph.gong_helper" for GongHelper, VERT_POS_INNER
+import "archgraph.context" for CONTEXT
 import "editor.node_cache" for NODE_CACHE
 import "maths.vector" for Vector3
 import "math" for Math
@@ -16,6 +17,10 @@ class CornerBuilder
 {
 	static compose_vert_inner(dg, inner)
 	{
+		if (!CONTEXT.gen_corner) {
+			return nil
+		}
+
 		import "archgraph.component.vert_gong" for VertGong
 		import "archgraph.tools.vert_split" for VertSplit
 		import "archgraph.tools.vert_merge" for VertMerge
@@ -34,8 +39,11 @@ class CornerBuilder
 		}
 
 		var inner_v = false
+		var up_ang_inner = true
 
 		import "archgraph.component.ang" for Ang 
+		import "archgraph.component.up_ang" for UpAng
+
 		if (vert is VertSplit) 
 		{
 			var outer = Blueprint.get_output_node(vert, "outer")
@@ -44,6 +52,17 @@ class CornerBuilder
 			{
 				vert = inner
 				inner_v = true
+			}
+			else if (outer is UpAng)
+			{
+				vert = outer
+				up_ang_inner = false
+			}
+			else if (inner is UpAng)
+			{
+				vert = outer
+				inner_v = false
+				up_ang_inner = true
 			} 
 			else if (outer is ShuaTou)
 			{
@@ -69,7 +88,6 @@ class CornerBuilder
 		import "archgraph.component.hua_gong" for HuaGong
 		import "archgraph.component.chen_fang_tou" for ChenFangTou
 		import "archgraph.component.cha_ang" for ChaAng
-		import "archgraph.component.up_ang" for UpAng
 
 		var len_l = VertGong.calc_tot_step_len(vert.outer_hop) / 1.414 + VertGong.get_dou_half_len()
 		var len_r = VertGong.calc_tot_step_len(-vert.inner_hop) / 1.414 + VertGong.get_dou_half_len()
@@ -114,15 +132,27 @@ class CornerBuilder
 		}
 		else if (vert is UpAng)
 		{
-			var HUA_GONG = NODE_CACHE.fetch("../yingzao/00_dougong2/35_hua_gong.ves", nil)
+			if (up_ang_inner)
+			{
+				var HUA_GONG = NODE_CACHE.fetch("../yingzao/00_dougong2/35_hua_gong.ves", nil)
 
-			Blueprint.connect(len_l_node, "out", HUA_GONG, "len_left")
-			Blueprint.connect(len_r_node, "out", HUA_GONG, "len_right")
+				Blueprint.connect(len_l_node, "out", HUA_GONG, "len_left")
+				Blueprint.connect(len_r_node, "out", HUA_GONG, "len_right")
 
-			var single_node = VariantProxy(Variant(true))
-			Blueprint.connect(single_node, "out", HUA_GONG, "single")
+				var single_node = VariantProxy(Variant(true))
+				Blueprint.connect(single_node, "out", HUA_GONG, "single")
 
-			v_geo0 = TransNodes.rotate(HUA_GONG, -Math.pi() * 0.5)
+				v_geo0 = TransNodes.rotate(HUA_GONG, -Math.pi() * 0.5)
+			}
+			else
+			{
+				var p = vert.calc_ang_pos()
+				var ang_pos = Vector3(p.x, 0.42, -p.z / 1.414)
+
+				var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/38_up_ang.ves", nil)
+				v_geo0 = TransNodes.translate(ANG, ang_pos)
+				v_geo0 = TransNodes.rotate(VariantProxy(v_geo0), Math.pi() * 0.5)
+			}
 		}
 
 		// ang cut
@@ -256,6 +286,10 @@ class CornerBuilder
 			else
 			{
 				var l_pos = Vector3(l_x, CAI_HEIGHT, 0)
+				if (vert is UpAng and !up_ang_inner) {
+					l_pos.y = l_pos.y + ZU_CAI_HEIGHT
+				}
+
 				var r_pos = Vector3(r_x, CAI_HEIGHT, 0)
 
 				var l_sun = TransNodes.translate(GD_SUN, l_pos)

@@ -177,6 +177,8 @@ class VertGong is CompNode
 		{
 			import "archgraph.component.ang" for Ang
 			import "archgraph.component.up_ang" for UpAng
+			import "archgraph.tools.vert_split" for VertSplit
+
 			var next = NodeHelper.get_output_valid_node(this, "next")
 			if (next and next is UpAng and !(this is UpAng) and this.inner_hop > 1) 
 			{
@@ -188,6 +190,18 @@ class VertGong is CompNode
 					return TransNodes.transform(JIAOHU_TU_DOU, pos, Math.pi() * 0.5)
 				} else {
 					return TransNodes.translate(JIAOHU_TU_DOU, pos)
+				}
+			}
+			else if (next is VertSplit)
+			{
+				var outer = Blueprint.get_output_node(next, "outer")
+				if (outer is UpAng and pos.z > 0) {
+					return TransNodes.translate(LIANZHU_DOU, pos)
+				}
+
+				var inner = Blueprint.get_output_node(next, "inner")
+				if (inner is UpAng and pos.z < 0) {
+					return TransNodes.translate(LIANZHU_DOU, pos)
 				}
 			}
 		}

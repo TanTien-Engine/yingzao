@@ -81,6 +81,11 @@ class AngHelper
 		return this.ang_cut(node, geo, false)
 	}
 
+	static up_ang_cut(node, geo, outer, corner_trans)
+	{
+		return node.ang_plane_cut(geo, outer, corner_trans)
+	}
+
 	static ang_plane_cut(v_geo, v_ang, down, corner_trans)
 	{
 		var ang_pos = v_ang.calc_ang_pos()
@@ -95,7 +100,14 @@ class AngHelper
 	static ang_cut(node, geo, corner_trans)
 	{
 		import "archgraph.component.ang" for Ang 
+		import "archgraph.component.up_ang" for UpAng 
 		import "archgraph.tools.vert_split" for VertSplit
+
+		var pin_name = nil
+		var prev_pin = Blueprint.get_input_pin(node, "prev")
+		if (prev_pin) {
+			pin_name = prev_pin.name
+		}
 
 		var prev = Blueprint.get_input_node(node, "prev")
 		while (prev)
@@ -109,13 +121,23 @@ class AngHelper
 				var left = Blueprint.get_output_node(prev, "outer")
 				if (left is Ang and left != node) {
 					return this.ang_plane_cut(geo, left, true, corner_trans)
+				} else if (left is UpAng and pin_name == "inner") {
+					return this.up_ang_cut(left, geo, true, corner_trans)
 				}
+
 				var right = Blueprint.get_output_node(prev, "inner")
 				if (!CONTEXT.gen_corner and right is Ang and right != node) {
 					return this.ang_plane_cut(geo, right, false, corner_trans)
+				} else if (right is UpAng and pin_name == "outer") {
+					return this.up_ang_cut(right, geo, false, corner_trans)
 				}
 			}
 			// else if prev is merge, return
+
+			var prev_pin = Blueprint.get_input_pin(prev, "prev")
+			if (prev_pin) {
+				pin_name = prev_pin.name
+			}
 
 			prev = Blueprint.get_input_node(prev, "prev")
 		}

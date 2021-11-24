@@ -20,18 +20,39 @@ var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
 
 class UpAng is VertGong
 {
+	init()
+	{
+		super.init()
+
+		this.next_ang = false
+	}
+
 	calc_value(idx)
 	{
-		if (idx == 2) 
+		var pos_inner = this.is_pos_inner()
+
+		if (idx == 0)
+		{
+			var pos = NodeHelper.calc_curr_pos(this, "prev")
+			return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT * 2, 0)))
+		}
+		else if ((idx == 1 and pos_inner) or (idx == 2 and !pos_inner))
+		{
+			var pos = NodeHelper.calc_curr_pos(this, "prev")
+			var z = 0
+			if (idx == 1) {
+				z = this.calc_outer_step_len()			
+			} else {
+				z = -this.calc_inner_step_len()			
+			}
+			return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, z)))
+		}
+		else if ((idx == 2 and pos_inner) or (idx == 1 and !pos_inner))
 		{
 			var ang_pos = this.calc_ang_pos()
 			ang_pos.y = ang_pos.y + this.calc_first_dy()
 			return Variant(ang_pos)
 		} 
-		else 
-		{
-			return super.calc_value(idx)
-		}
 	}
 
 	resolve(dg)
@@ -55,12 +76,32 @@ class UpAng is VertGong
 			Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", ANG, "slope")
 		}
 
+		this.comp.pos = Vector3(0, 0, 0)
+	}
+
+	resolve2(dg)
+	{
+		var next_vert = dg.layers[this.comp.y_idx + 1][0]
+		for (var i in next_vert) {
+			if (i is UpAng) {
+				this.next_ang = true
+			}
+		}
+
 		var ang_pos = this.calc_ang_pos()
 		ang_pos.y = ang_pos.y + this.calc_first_dy()
 
-		var v_geo = TransNodes.translate(ANG, ang_pos)
+		var pos_inner = this.is_pos_inner()
+		var v_geo = nil
+		if (pos_inner) {
+			v_geo = TransNodes.translate(ANG, ang_pos)
+		} else {
+			v_geo = TransNodes.transform(ANG, ang_pos, Math.pi())
+		}
 
-		var v_left = this.create_left_geo()
+//		var v_left = this.create_left_geo()
+
+		var prev = Blueprint.get_input_node(this, "prev")
 
 		var v_xue = nil
 		if (!(prev is UpAng)) {
@@ -69,11 +110,16 @@ class UpAng is VertGong
 		}
 
 		// ang cut
-		v_left = this.ang_plane_cut(v_left)
+//		v_left = this.ang_plane_cut(v_left, false)
 
 		// conn next
 		var pz = this.is_ping_zuo()
-		v_geo = this.add_dou(Variant([v_xue, v_geo, v_left]), !pz, true)
+//		v_geo = this.add_dou(dg, Variant([v_xue, v_geo, v_left]), !pz, true)
+		if (pos_inner) {
+			v_geo = this.add_dou(dg, Variant([v_xue, v_geo]), !pz, true)
+		} else {
+			v_geo = this.add_dou(dg, Variant([v_xue, v_geo]), true, true)
+		}
 
 		this.comp.pos = ang_pos
 		this.comp.v_geo = v_geo
@@ -87,49 +133,89 @@ class UpAng is VertGong
 
 	calc_ang_pos()
 	{
+		var prev_pin = Blueprint.get_input_pin(this, "prev")
+		if (!prev_pin) {
+			return Vector3(0, 0, 0)
+		}
+
+		var pos_inner = prev_pin.name == "inner"
+
+		var hop = 0
+		if (pos_inner) {
+			hop = -this.inner_hop
+		} else {
+			hop = this.outer_hop
+		}
+
 		var dist = 0
 		if (CONTEXT.gen_corner) {
-			dist = CONTEXT.step_len_c_func(-this.inner_hop, true)
+			dist = CONTEXT.step_len_c_func(hop, true)
 		} else {
-			dist = CONTEXT.step_len_func(-this.inner_hop, true)
+			dist = CONTEXT.step_len_func(hop, true)
+		}
+		if (pos_inner) {
+			dist = -dist
 		}
 
 		var prev = Blueprint.get_input_node(this, "prev")
+
+		import "archgraph.tools.vert_split" for VertSplit
+		if (prev is VertSplit) {
+			prev = Blueprint.get_input_node(prev, "prev")
+		}
+
 		if (prev is UpAng)
 		{
 			var pos = prev.calc_ang_pos()
 			if (pos) {
-				return pos.add(Vector3(0, ZU_CAI_HEIGHT, -dist))
+				return pos.add(Vector3(0, ZU_CAI_HEIGHT, dist))
 			}
 		}
 		else
 		{
-			var pos = Blueprint.calc_output_value(prev, "inner").value
+			var pos = Blueprint.calc_output_value(prev, prev_pin.name).value
 			if (pos) {
-				return pos.add(Vector3(0, ZU_CAI_HEIGHT * 2, -dist))
+				return pos.add(Vector3(0, ZU_CAI_HEIGHT * 2, dist))
 			}
 		}
 
 		return Vector3(0, 0, 0)
 	}
 
+	is_pos_inner()
+	{
+		var pos_inner = true
+
+		var prev_pin = Blueprint.get_input_pin(this, "prev")
+		if (prev_pin) {
+			pos_inner = prev_pin.name == "inner"
+		}
+
+		return pos_inner
+	}
+
 	calc_first_dy()
 	{
-		var next = NodeHelper.get_output_valid_node(this, "next")
-		if (next is UpAng and CONTEXT.s_ang_slope)
+		import "archgraph.tools.vert_split" for VertSplit
+
+		if (this.next_ang and CONTEXT.s_ang_slope)
 		{
 			var slope = Blueprint.calc_output_value(CONTEXT.s_ang_slope, "ang_slope").value
 			var angle = Math.atan2(slope, 1)
 			return ZU_CAI_HEIGHT - (CONTEXT.step_len_func(-this.inner_hop - 1, true) * slope + CAI_HEIGHT / Math.cos(angle))
 		}
+
 		return 0
 	}
 
-	ang_plane_cut(geo)
+	ang_plane_cut(geo, outer, corner_trans)
 	{
 		var ang_pos = this.calc_ang_pos()
 		ang_pos.y = ang_pos.y + this.calc_first_dy()
-		return UpAng.ang_plane_cut(geo, ang_pos)
+		if (corner_trans) {
+			ang_pos.z = ang_pos.z / 1.414		
+		}		
+		return UpAng.ang_plane_cut(geo, ang_pos, outer)
 	}
 
 	is_ping_zuo()
@@ -194,7 +280,7 @@ class UpAng is VertGong
 		return v_left
 	}
 
-	static ang_plane_cut(geo, pos)
+	static ang_plane_cut(geo, pos, outer)
 	{
 		var KNIFE = Knife()
 		KNIFE.query_param("keep").set_value("above")
@@ -205,6 +291,11 @@ class UpAng is VertGong
 
 		var pos_node = VariantProxy(Variant(pos))
 		Blueprint.connect(pos_node, "out", trans, "translate")
+
+		if (outer) {
+			var rot_node = VariantProxy(Variant(Vector3(0, Math.pi(), 0)))
+			Blueprint.connect(rot_node, "out", trans, "rotate")
+		}
 
 		var geo_node = VariantProxy(geo)
 		Blueprint.connect(geo_node, "out", KNIFE, "geo")
