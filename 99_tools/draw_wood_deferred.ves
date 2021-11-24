@@ -40,6 +40,7 @@ layout (location = 4) in mat4 aInstanceMatrix;
 out VS_OUT {
     vec3 frag_pos;
     vec3 view_pos;
+    vec3 ori_pos;
     float mat_id;
 } vs_out;
 
@@ -76,6 +77,7 @@ void main()
 
 	vs_out.frag_pos = vec3(model_mat * vec4(pos, 1.0));
 	vs_out.view_pos = vec3(view * new_model * vec4(pos, 1.0));
+    vs_out.ori_pos = aPos;
     vs_out.mat_id = aMatID;
     gl_Position = projection * view * new_model * vec4(pos, 1.0);
 }
@@ -93,6 +95,7 @@ layout (location = 3) out vec3 gPos;
 in VS_OUT {
     vec3 frag_pos;
     vec3 view_pos;
+    vec3 ori_pos;
     float mat_id;
 } fs_in;
 
@@ -257,7 +260,8 @@ void main()
 {
     // Wood shader
     // https://www.shadertoy.com/view/ldscDM
-    vec3 pos = fs_in.frag_pos.xyz * 5;
+//    vec3 pos = fs_in.frag_pos.xyz * 5;
+    vec3 pos = fs_in.ori_pos.xyz * 5;
 //    if (size.x > size.y * 1.5 && size.x > size.z * 1.5) 
     if (fs_in.mat_id == 1)
     {
@@ -270,8 +274,8 @@ void main()
     }
 //    pos = pos.yxz;
 
-    float rand = size.x + size.y + size.z;
-    pos = pos + vec3(rand/3);
+//    float rand = size.x + size.y + size.z;
+//    pos = pos + vec3(rand/3);
 
     if (false && size.z > 2.1) 
     {
