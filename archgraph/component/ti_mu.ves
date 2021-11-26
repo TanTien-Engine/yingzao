@@ -63,9 +63,9 @@ class TiMu is CompNode
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 		var v_geo = TransNodes.translate(TI_MU, pos)
 
-		if (!dg.has_vert_gong(this.comp.y_idx)) {
-			v_geo = JointsNodes.cut_geo_node(v_geo, QIXIN_CUT, pos)
-		}		
+//		if (!dg.has_vert_gong(this.comp.y_idx)) {
+//			v_geo = JointsNodes.cut_geo_node(v_geo, QIXIN_CUT, pos)
+//		}		
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
