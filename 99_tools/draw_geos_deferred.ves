@@ -88,6 +88,8 @@ uniform UBO
 {
 	vec3 light_pos;
 	vec3 cam_pos;
+
+	float geo_idx;	
 };
 
 float near = 0.01;
@@ -120,6 +122,8 @@ void main()
     vec3 specular = spec * vec3(1.0);
 
     float depth = LinearizeDepth(gl_FragCoord.z) / far; // divide by far to get depth in range [0,1] for visualization purposes
+//    depth = depth + 0.001 * mod(geo_idx, 10);
+    depth = depth + 0.001 * geo_idx;
     gDepth = vec3(depth);
 
     gMain = ambient + diffuse + specular; 
@@ -604,7 +608,7 @@ _editor.add_node(node57, 996.93920714177, -1083.2246731741)
 
 var node58 = ::blueprint::nodes::number::Number()
 
-node58.value = 0.05
+node58.value = 0.15
 
 _editor.add_node(node58, 993.5241920331, -1150.159968538)
 
@@ -680,6 +684,7 @@ Blueprint.connect(node39, "var", node5, "offset")
 Blueprint.connect(node45, "out", node5, "use_inst_mat")
 Blueprint.connect(node35, "result", node5, "light_pos")
 Blueprint.connect(node8, "pos", node5, "cam_pos")
+Blueprint.connect(node10, "curr_idx", node5, "geo_idx")
 Blueprint.connect(node0, "gltf", node11, "in")
 Blueprint.connect(node11, "out", node12, "cond")
 Blueprint.connect(node13, "next", node12, "true")
