@@ -1,0 +1,91 @@
+import "blueprint.pin" for Pin
+import "blueprint.node" for Node
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.node_param" for NodeParam
+import "beamgraph.variant" for PIN_TYPE_CHUAN
+import "beamgraph.constant" for BEAM_DX, BEAM_DY, TOT_HEIGHT
+import "beamgraph.comp_nodes" for CompNodes
+import "maths.vector" for Vector3
+import "math" for Math
+
+class Chuan is Node
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_CHUAN),
+		]
+		this.exports = [
+			Pin(this, "next", PIN_TYPE_CHUAN),
+		]
+
+		this.params.add(NodeParam("l_column", false))
+		this.params.add(NodeParam("r_column", false))
+
+		this.layout()
+
+		this.title = "槫"
+	}
+
+	resolve()
+	{
+		this.title = this.calc_title()
+
+		var dist = 0
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		while (prev) {
+			dist = dist + 1
+			prev = Blueprint.get_input_node(prev, "prev")
+		}
+
+		var rot = Math.pi() * 0.5
+		var pos_l = Vector3(-BEAM_DX * dist, -BEAM_DY * dist, 0)
+		var pos_r = Vector3( BEAM_DX * dist, -BEAM_DY * dist, 0)
+
+		var geo_l = CompNodes.create_chuan(pos_l)
+		var geo_r = CompNodes.create_chuan(pos_r)
+
+		var ret = [ geo_l, geo_r ]
+
+		var l_column = this.query_param("l_column").value
+		if (l_column) {
+			ret.add(CompNodes.create_column(pos_l, TOT_HEIGHT - dist * BEAM_DY))
+		}
+
+		var r_column = this.query_param("r_column").value
+		if (r_column) {
+			ret.add(CompNodes.create_column(pos_r, TOT_HEIGHT - dist * BEAM_DY))
+		}
+
+		return Variant(ret)
+	}
+
+	calc_title()
+	{
+		import "beamgraph.nodes.ji_chuan" for JiChuan
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		var next = Blueprint.get_output_node(this, "next")
+
+		if (prev and prev is JiChuan) {
+			return "上平槫"
+		} else if (next and !Blueprint.get_output_node(this, "next")) {
+			return "下平槫"			
+		} else if (!next) {
+			return "承椽槫"
+		} else if (prev) {
+			return "中平槫"
+		} else {
+			return "槫"
+		}
+	}
+
+	get_title()
+	{
+		return this.title	
+	}
+}

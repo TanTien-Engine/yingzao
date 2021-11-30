@@ -1,0 +1,26 @@
+import "blueprint.blueprint" for Blueprint
+
+class BeamFrame
+{
+	init()
+	{
+	}
+
+	rebuild(scene, out_list)
+	{
+		var comp_nodes = []
+		for (var node in scene.nodes) {
+			var bp_node = node.components["bp"]
+			if (bp_node and bp_node.has_method("resolve()")) {
+				comp_nodes.add(bp_node)
+			}
+		}
+		var sorted_nodes = Blueprint.topo_sort(comp_nodes)		
+
+		for (var node in sorted_nodes) 
+		{
+			var ret = node.resolve()
+			out_list.add(ret)
+		}
+	}
+}

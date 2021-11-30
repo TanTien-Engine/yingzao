@@ -1,0 +1,31 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+
+node0.op_node.cam.position.set(0.59617211229882, -1.7185732741362, 6.9403348505804)
+node0.op_node.cam.yaw = -86.1
+node0.op_node.cam.pitch = 4
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.21526837348938
+
+_editor.add_node(node0, -241.1, 166)
+
+var node1 = ::beamgraph::nodes::ji_chuan::JiChuan()
+node1.query_param("column").value = false
+
+_editor.add_node(node1, -191, 15)
+
+var node2 = ::beamgraph::nodes::chuan::Chuan()
+node2.query_param("l_column").value = false
+node2.query_param("r_column").value = true
+
+_editor.add_node(node2, -41, 16)
+
+var node3 = ::beamgraph::nodes::chuan::Chuan()
+node3.query_param("l_column").value = true
+node3.query_param("r_column").value = true
+
+_editor.add_node(node3, 102, 16)
+
+Blueprint.connect(node1, "next", node2, "prev")
+Blueprint.connect(node2, "next", node3, "prev")

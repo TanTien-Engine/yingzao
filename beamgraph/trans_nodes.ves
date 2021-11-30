@@ -1,0 +1,45 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "geograph.nodes.rotate_y" for RotateY
+import "geograph.nodes.translate_f" for TranslateF
+
+fun get_geo_idx(geo_node)
+{
+	if (geo_node is VariantProxy) {
+		return 0
+	} else {
+		return "geo"
+	}
+}
+
+class TransNodes
+{
+	static translate(geo_node, pos)
+	{
+		var trans = TranslateF()
+		Blueprint.connect(geo_node, get_geo_idx(geo_node), trans, "geo")
+
+		var pos_node = VariantProxy(Variant(pos))
+		Blueprint.connect(pos_node, "out", trans, "xyz")
+
+		return Blueprint.calc_output_value(trans, "geo")
+	}
+
+	static transform(geo_node, pos, angle)
+	{
+		var rot_y = RotateY()
+		Blueprint.connect(geo_node, get_geo_idx(geo_node), rot_y, "geo")
+
+		var angle_node = VariantProxy(Variant(angle))
+		Blueprint.connect(angle_node, "out", rot_y, "angle")
+
+		var trans = TranslateF()
+		Blueprint.connect(rot_y, "geo", trans, "geo")
+
+		var pos_node = VariantProxy(Variant(pos))
+		Blueprint.connect(pos_node, "out", trans, "xyz")
+
+		return Blueprint.calc_output_value(trans, "geo")
+	}
+}

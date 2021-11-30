@@ -1,0 +1,30 @@
+import "editor.node_cache" for NODE_CACHE
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "blueprint.blueprint" for Blueprint
+import "beamgraph.trans_nodes" for TransNodes
+import "maths.vector" for Vector3
+import "math" for Math
+
+var CHUAN  = NODE_CACHE.fetch("../yingzao/00_dougong2/44_chuan.ves", nil)
+var COLUMN = NODE_CACHE.fetch("../yingzao/00_dougong2/46_column.ves", nil)
+
+class CompNodes
+{
+	static create_chuan(pos)
+	{
+		return TransNodes.transform(CHUAN, pos, Math.pi() * 0.5)
+	}
+
+	static create_column(pos, height)
+	{
+		var h_node = VariantProxy(Variant(height))
+		Blueprint.connect(h_node, "out", COLUMN, "height")		
+
+		var ret = TransNodes.translate(COLUMN, Vector3(pos.x, pos.y, pos.z))
+
+		h_node.disconnect()
+
+		return ret
+	}
+}
