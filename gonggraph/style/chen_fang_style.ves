@@ -1,0 +1,61 @@
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.node_param" for NodeParam
+import "gonggraph.variant" for VAR_TYPE_COMPONENT
+import "gonggraph.context" for CONTEXT
+import "gonggraph.style.style_node" for StyleNode
+
+class ChenFangStyle is StyleNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "fang", VAR_TYPE_COMPONENT),
+		]
+
+		this.params.add(NodeParam("full_h", false))
+		this.params.add(NodeParam("head_o", false))
+		this.params.add(NodeParam("head_i", false))
+
+		this.layout()
+	}
+
+	on_node_dirty()
+	{
+		this.register()
+		CONTEXT.style_changed = true
+	}
+
+	register()
+	{
+		var node = Blueprint.get_input_node(this, "fang")
+		if (!node) {
+			return
+		}
+
+		node = node.get_node_ref()
+		if (node) {
+			this.set_fang_style(node)
+		}
+	}
+
+	set_fang_style(node)
+	{
+		import "gonggraph.component.chen_fang_tou" for ChenFangTou
+		import "gonggraph.tools.vert_merge" for VertMerge
+
+		if (node is ChenFangTou)
+		{
+			node.full_h = this.query_param("full_h").value
+			node.head_o = this.query_param("head_o").value
+			node.head_i = this.query_param("head_i").value
+		}
+		else if (node is VertMerge)
+		{
+			this.set_fang_style(Blueprint.get_input_node(node, "outer"))
+			this.set_fang_style(Blueprint.get_input_node(node, "inner"))
+		}
+	}
+}

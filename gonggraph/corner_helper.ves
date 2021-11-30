@@ -1,0 +1,16 @@
+import "gonggraph.context" for CONTEXT
+import "gonggraph.constant" for MIN_GONG_SPACE
+
+class CornerHelper
+{
+	static calc_outer_len(x_idx)
+	{
+		if (x_idx < 0) {
+			return CONTEXT.step_len_func(x_idx) - MIN_GONG_SPACE
+		} else if (x_idx > 0) {
+			return CONTEXT.step_len_func(x_idx + 1) - MIN_GONG_SPACE
+		} else {
+			return 0.3
+		}
+	}
+}

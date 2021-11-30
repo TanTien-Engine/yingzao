@@ -1,0 +1,61 @@
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "gonggraph.component.comp_node" for CompNode
+import "gonggraph.variant" for PIN_TYPE_INNER_GONG, PIN_TYPE_NIUJI_CHUAN
+import "gonggraph.constant" for ZU_CAI_HEIGHT, FANG_LEN, QI_HEIGHT
+import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.node_helper" for NodeHelper
+import "gonggraph.gen_nodes" for GenNodes
+import "gonggraph.joints_nodes" for JointsNodes
+import "editor.node_cache" for NODE_CACHE
+import "maths.vector" for Vector3
+
+var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/42_chengchuan_fang.ves", nil)
+
+class ChengChuanFang is CompNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_INNER_GONG),
+		]
+		this.exports = [
+			Pin(this, "next", PIN_TYPE_NIUJI_CHUAN),
+		]
+
+		this.layout()
+	}
+
+	calc_value(idx)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
+	}
+
+	resolve(dg)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+
+		var v_geo = TransNodes.translate(FANG, pos)
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+
+		this.gen_corner(dg)
+	}
+
+	gen_corner(dg)
+	{
+		var offset = FANG_LEN / 2 - 0.1
+		var v_geo = Blueprint.calc_output_value(FANG, "geo")
+		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
+	}
+
+	get_title()
+	{
+		return "承椽方"
+	}
+}

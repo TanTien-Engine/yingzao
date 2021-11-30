@@ -1,0 +1,356 @@
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
+import "blueprint.variant_proxy" for VariantProxy
+import "editor.node_cache" for NODE_CACHE
+import "gonggraph.component.comp_node" for CompNode
+import "gonggraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_FANG
+import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.node_helper" for NodeHelper
+import "gonggraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT, DOU_H_WIDTH, MIN_GONG_SPACE
+import "gonggraph.component" for Component
+import "gonggraph.context" for CONTEXT
+import "gonggraph.coord_trans" for CoordTrans
+import "gonggraph.dou_helper" for DouHelper
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.gen_nodes" for GenNodes
+import "gonggraph.spatial_query" for SpatialQuery
+import "gonggraph.corner_helper" for CornerHelper
+import "gonggraph.gong_helper" for GongHelper
+import "geograph.nodes.brush_get_size" for BrushGetSize
+import "maths.vector" for Vector3
+import "math" for Math
+
+var GUAZI_GONG = NODE_CACHE.fetch("../yingzao/00_dougong2/32_guazi_gong.ves", nil)
+var MAN_GONG   = NODE_CACHE.fetch("../yingzao/00_dougong2/33_man_gong.ves", nil)
+var LING_GONG  = NODE_CACHE.fetch("../yingzao/00_dougong2/34_ling_gong.ves", nil)
+
+var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
+
+var JIAOHU_CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_tu_cut_body.ves", nil)
+var QIXIN_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
+
+class HoriGong is CompNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_HORI_GONG),
+		]
+		this.exports = [
+			Pin(this, "next", PIN_TYPE_HORI_GONG),
+		]
+
+		this.layout()
+
+		this.gong = nil
+	}
+
+	calc_value(idx)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
+	}
+
+	resolve(dg)
+	{
+		// select gong
+		this.gong = this.select_gong(dg)
+		if (this.gong == MAN_GONG) {
+			this.exports[0].type = PIN_TYPE_FANG
+		}
+
+		// translate
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		var v_geo = TransNodes.translate(this.gong, pos)
+
+		// conn prev
+		v_geo = this.add_joint(dg, v_geo, pos)
+
+		// conn next
+		v_geo = this.add_dou(dg, v_geo, pos, nil)
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+
+		this.gen_corner2(dg)
+	}
+
+	gen_corner(dg)
+	{
+		import "gonggraph.component.vert_gong" for VertGong
+
+		if (GongHelper.is_ang_inside(this))
+		{
+			var v_geo = Blueprint.calc_output_value(this.gong, "geo")			
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0), nil)
+			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, 0)
+		}
+		else
+		{
+			var len_o = CornerHelper.calc_outer_len(this.comp.x_idx)
+
+			var inner_begin = this.comp.x_idx
+			if (this.comp.x_idx < 0) {
+				inner_begin = inner_begin - 1
+			}
+			var inner_count = this.calc_inner_step_len_num(dg)
+			var len_i = CoordTrans.calc_step_len_section(inner_begin, -inner_count) + DOU_H_WIDTH
+
+			var offset = - (len_o - len_i) / 2
+			
+			var len_node = VariantProxy(Variant(len_o + len_i))
+			Blueprint.connect(len_node, "out", this.gong, "length")
+
+			var v_geo = Blueprint.calc_output_value(this.gong, "geo")
+			len_node.disconnect()
+
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0), nil)
+
+			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
+
+			// sides
+			if (inner_count == 1 and this.comp.x_idx > 0) 
+			{
+				var offset = VertGong.calc_tot_step_len(this.comp.x_idx) / 1.414
+				var v_sides = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
+				for (var v in v_sides.value) {
+					this.comp.v_geo_c.value.add(v)
+				}
+			}
+		}
+	}
+
+	gen_corner2(dg)
+	{
+		import "gonggraph.component.vert_gong" for VertGong
+
+		if (GongHelper.is_ang_inside(this))
+		{
+			var v_geo = Blueprint.calc_output_value(this.gong, "geo")			
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0), nil)
+			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, 0)
+		}
+		else
+		{
+			var len_o = CornerHelper.calc_outer_len(this.comp.x_idx)
+
+			var inner_begin = this.comp.x_idx
+			if (this.comp.x_idx < 0) {
+				inner_begin = inner_begin - 1
+			}
+			var inner_count = this.calc_inner_step_len_num2(dg)
+			var len_i = CoordTrans.calc_step_len_section(inner_begin, -inner_count) + DOU_H_WIDTH
+
+			var offset = - (len_o - len_i) / 2
+			
+			var len_node = VariantProxy(Variant(len_o + len_i))
+			Blueprint.connect(len_node, "out", this.gong, "length")
+
+			var v_left = Blueprint.calc_output_value(this.gong, "geo")
+			len_node.disconnect()
+
+			var v_geo = nil
+			if (this.comp.x_idx < 0)
+			{
+				//v_geo = v_left
+				v_geo = this.add_dou(dg, v_left, Vector3(0, 0, 0), nil)
+			}
+			else
+			{
+				var side_x = VertGong.calc_tot_step_len(this.comp.x_idx) / 1.414
+				var v_right = TransNodes.translate(this.gong, Vector3(side_x - offset, 0, 0))
+
+				var l_aabb = []
+				BrushGetSize.calc_aabb(v_left, l_aabb)
+				var l_min = l_aabb[0].x
+				var l_max = l_aabb[1].x
+
+				var r_aabb = []
+				BrushGetSize.calc_aabb(v_right, r_aabb)
+				var r_min = r_aabb[0].x
+				var r_max = r_aabb[1].x
+
+				if (l_max < r_min) 
+				{
+					v_left = this.add_dou(dg, v_left, Vector3(0, 0, 0), nil)
+					v_right = this.add_dou(dg, v_right, Vector3(0, 0, 0), nil)
+					v_geo = Variant([ v_left, v_right ])
+				} 
+				else
+				{
+					var center = (l_max + r_min) * 0.5
+					v_geo = this.compose_yy_gong(l_min, center, r_max)
+					v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0), Vector3(center, 0, 0))
+				}
+			}
+
+			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)			
+		}
+	}
+
+	create_gong(left, right)
+	{
+		var len_node = VariantProxy(Variant(right - left))
+		Blueprint.connect(len_node, "out", this.gong, "length")
+		var v_geo = TransNodes.translate(this.gong, Vector3((left + right) * 0.5, 0, 0))
+		len_node.disconnect()
+		return v_geo
+	}
+
+	compose_yy_gong(left, center, right)
+	{
+		var v_left = this.create_gong(left, center + DOU_H_WIDTH)
+		var v_right = this.create_gong(center - DOU_H_WIDTH, right)
+		return Variant([ v_left, v_right ])
+	}
+
+	select_gong(dg)
+	{
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev and prev is HoriGong) {
+			return MAN_GONG
+		} else if (dg) {
+			if (this.comp.x_idx == dg.x_min or this.comp.x_idx == dg.x_max) {
+				return LING_GONG
+			}
+		}
+		return GUAZI_GONG
+	}
+
+	add_joint(dg, v_geo, pos)
+	{
+		if (dg.has_vert_gong(this.comp.y_idx)) {
+			return v_geo
+		}
+
+		var cut_node = nil
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev and prev is HoriGong) {
+			cut_node = QIXIN_CUT
+		} else {
+			cut_node = JIAOHU_CUT
+		}
+
+		return JointsNodes.cut_geo_node(v_geo, cut_node, pos)
+	}
+
+	add_dou(dg, v_geo, pos, c_pos)
+	{
+		import "gonggraph.component.dou" for SAN_DOU, QIXIN_DOU
+
+		var next = NodeHelper.get_output_valid_node(this, "next")
+		if (!next) {
+			return v_geo
+		}
+
+		var dou_pos_x = DouHelper.calc_dou_pos_x(v_geo)
+		var l_pos = Vector3(dou_pos_x[0], pos.y + CAI_HEIGHT, pos.z)
+		var r_pos = Vector3(dou_pos_x[1], pos.y + CAI_HEIGHT, pos.z)
+
+		var l_sun = TransNodes.translate(GD_SUN, l_pos)
+		var r_sun = TransNodes.translate(GD_SUN, r_pos)
+
+		var l_dou = TransNodes.translate(SAN_DOU, l_pos)
+		var r_dou = TransNodes.translate(SAN_DOU, r_pos)
+
+		var has_c = c_pos or !dg.has_vert_gong_or_prev_beam(this.comp.y_idx)
+		if (has_c)
+		{
+			if (c_pos) {
+				c_pos.y = c_pos.y + CAI_HEIGHT
+			} else {
+				c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))
+			}
+
+			var c_sun = TransNodes.translate(GD_SUN, c_pos)
+			var c_dou = TransNodes.translate(QIXIN_DOU, c_pos)
+
+			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, c_pos, r_pos ])
+
+			return Variant([ v_geo, [ l_sun, c_sun, r_sun ], [ l_dou, c_dou, r_dou ] ])
+		}
+		else
+		{
+			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])
+
+			return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
+		}
+	}
+
+	get_title()
+	{
+		if (this.gong == MAN_GONG) {
+			return "慢栱"
+		} else if (this.gong == GUAZI_GONG) {
+			return "瓜子栱"
+		} else if (this.gong == LING_GONG) {
+			return "令栱"
+		} else {
+			return "横栱"		
+		}
+	}
+
+	calc_inner_step_len_num2(dg)
+	{
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (!prev or !(prev is HoriGong))
+		{
+			return 1
+		}
+		else
+		{
+			return 2
+		}
+	}
+
+	calc_inner_step_len_num(dg)
+	{
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (!prev or !(prev is HoriGong))
+		{
+			if (this.comp.x_idx < 0)
+			{
+				return 1
+			}
+			else if (this.comp.x_idx > 0)
+			{
+				var side_p1 = CoordTrans.calc_corner_pos(this.comp.x_idx, -1)
+				var side_p2 = CoordTrans.calc_corner_pos(this.comp.x_idx, -2)
+				var prev_layer = dg.layers[this.comp.y_idx - 1]
+				var test_y = this.comp.pos.y - 0.1
+				var has_1 = SpatialQuery.layer_contain_pos(prev_layer, Vector3(side_p1.x, test_y, side_p1.y))
+				var has_2 = SpatialQuery.layer_contain_pos(prev_layer, Vector3(side_p2.x, test_y, side_p2.y))
+
+				var n_step = 1
+				if (has_1 and has_2) {
+					n_step = 3
+				} else if (has_1) {
+					n_step = 2
+				} else if (has_2) {
+					n_step = 3
+				} else {
+					n_step = 1
+				}
+
+				return n_step
+			}
+		}
+		else
+		{
+			if (this.comp.x_idx < 0)
+			{
+				return 2
+			}
+			else if (this.comp.x_idx > 0)
+			{
+				return prev.calc_inner_step_len_num(dg) + 1
+			}
+		}
+
+		return 0
+	}
+}

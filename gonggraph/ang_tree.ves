@@ -1,0 +1,151 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant_proxy" for VariantProxy
+import "blueprint.variant" for Variant
+import "gonggraph.component.hori_gong" for HoriGong
+import "gonggraph.component.fang" for Fang
+import "gonggraph.component.ya_cao_fang" for YaCaoFang
+import "gonggraph.component.liao_yan_fang" for LiaoYanFang
+import "gonggraph.component.cheng_chuan_fang" for ChengChuanFang
+import "gonggraph.tools.ang_proxy" for AngProxy
+import "gonggraph.gen_nodes" for GenNodes
+import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.constant" for ZU_CAI_HEIGHT, QI_HEIGHT
+import "gonggraph.dou_helper" for DouHelper
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.ang_helper" for AngHelper
+import "gonggraph.gong_helper" for GongHelper, VERT_POS_INNER
+import "maths.vector" for Vector2, Vector3
+import "editor.node_cache" for NODE_CACHE
+import "math" for Math
+
+class AngTree
+{
+	init(ang, pos)
+	{
+		this.begin_layer = ang.comp.y_idx
+		this.root = AngProxy(ang, pos)
+
+		var prev = this.root
+		var next = Blueprint.get_output_node(ang, "outer")
+
+		while (next)
+		{
+			var n = nil
+			if (next is HoriGong) {
+				n = HoriGong()
+			} else if (next is Fang) {
+				n = Fang()
+			} else if (next is LiaoYanFang) {
+				n = LiaoYanFang()				
+			} else {
+				import "logger.logger" for Logger
+				Logger.error("Unknown node %(next)")
+			}
+
+			Blueprint.connect(prev, "next", n, "prev")
+
+			prev = n
+			next = Blueprint.get_output_node(next, "next")
+		}
+
+		this.layers = []
+	}
+
+	rebuild_layers()
+	{
+		this.layers.clear()
+
+		if (!this.root) {
+			return
+		}
+
+		var curr = this.root
+		while (curr) {
+			this.layers.add(curr)
+			curr = Blueprint.get_output_node(curr, "next")
+		}
+	}	
+
+	get_result_geo(dg, out_list)
+	{
+		for (var i in 0 .. this.layers.count)
+		{
+			var src = this.layers[i]
+			var dst = out_list[this.begin_layer + i]
+
+			if (src is AngProxy)
+			{
+				if (GongHelper.calc_vert_pos(src.ang_node) != VERT_POS_INNER)
+				{
+					var v_ang = AngHelper.create_ang(Vector3(0, 0, 0))
+					v_ang = AngHelper.add_dou(v_ang, Vector3(0, -QI_HEIGHT, 0))
+
+					var dist = src.ang_pos.z / 1.414
+					v_ang = GenNodes.corner_gen_2(v_ang, Vector3(src.ang_pos.x, src.ang_pos.y, 0), dist)
+
+					var top_y = nil
+					var layer_idx_begin = this.begin_layer + i + 2
+					for (var layer_idx in layer_idx_begin .. dg.layers.count) {
+						var layer = dg.layers[layer_idx]
+						for (var item in layer) {
+							if (item.comp.x_idx == 0 and (item is Fang or item is YaCaoFang or item is ChengChuanFang)) {
+								top_y = item.comp.pos.y
+							}
+						}
+					}
+
+					if (top_y) {
+						v_ang = JointsNodes.cut_top_plane(v_ang, top_y)
+					}
+
+					dst.value.add(v_ang)
+				}
+			}
+			else
+			{
+				var len_node = VariantProxy(Variant(1))
+				var len_conn = nil
+
+				var gong = nil
+				if (src is Fang) 
+				{
+					import "gonggraph.component.fang" for FANG
+					gong = FANG
+					len_conn = Blueprint.connect(len_node, "out", gong, "length")
+				} 
+				else if (src is HoriGong) 
+				{
+					gong = src.select_gong(nil)
+				} 
+				else if (src is LiaoYanFang) 
+				{
+					import "gonggraph.component.liao_yan_fang" for FANG
+					gong = FANG
+					len_conn = Blueprint.connect(len_node, "out", gong, "length")
+				} 
+				else 
+				{
+					import "logger.logger" for Logger
+					Logger.error("Unknown node %(src)")
+				}
+
+				if (i != this.layers.count - 1) {
+					gong = VariantProxy(DouHelper.add_dou(Blueprint.calc_output_value(gong, "geo")))
+				}
+
+				var pos = this.root.ang_pos
+				var y = pos.y + (i - 1) * ZU_CAI_HEIGHT
+
+				var pos0 = Vector2(pos.x, pos.z / 1.414).rotated(- Math.pi() / 4)
+				var pos1 = Vector2(pos.x, pos.z / 1.414).rotated(Math.pi() / 4)
+
+				dst.value.add(TransNodes.transform(gong, Vector3(pos0.x, y, pos0.y), Math.pi() * 0.25))
+				dst.value.add(TransNodes.transform(gong, Vector3(pos1.x, y, pos1.y), -Math.pi() * 0.25))
+
+				if (len_conn) {
+					len_node.disconnect()
+				}
+			}
+		}
+	}
+}

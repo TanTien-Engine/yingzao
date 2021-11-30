@@ -1,0 +1,84 @@
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "gonggraph.component.comp_node" for CompNode
+import "gonggraph.variant" for PIN_TYPE_HORI_GONG, PIN_TYPE_YAN_CHUAN
+import "gonggraph.constant" for ZU_CAI_HEIGHT, FANG_LEN
+import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.node_helper" for NodeHelper
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.gen_nodes" for GenNodes
+import "gonggraph.corner_helper" for CornerHelper
+import "editor.node_cache" for NODE_CACHE
+import "maths.vector" for Vector3
+
+var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/41_liaoyan_fang.ves", nil)
+
+class LiaoYanFang is CompNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", PIN_TYPE_HORI_GONG),
+		]
+		this.exports = [
+			Pin(this, "next", PIN_TYPE_YAN_CHUAN),
+		]
+
+		this.layout()
+	}
+
+	calc_value(idx)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
+	}
+
+	resolve(dg)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+
+		var v_geo = TransNodes.translate(FANG, pos)
+
+		// conn prev
+		v_geo = this.add_joint(dg, v_geo, pos)
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+
+		this.gen_corner(dg)
+	}
+
+	gen_corner(dg)
+	{
+		var offset = 0
+		if (this.comp.x_idx != 0)
+		{
+			var len_o = CornerHelper.calc_outer_len(this.comp.x_idx)
+			var len_i = FANG_LEN - len_o
+			offset = - (len_o - len_i) / 2
+		}
+
+		var v_geo = Blueprint.calc_output_value(FANG, "geo")
+		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
+	}
+
+	add_joint(dg, v_geo, pos)
+	{
+		var QIXIN_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
+
+		var has_c = !dg.has_vert_gong_or_prev_beam(this.comp.y_idx - 1)
+		if (has_c) {
+			return JointsNodes.cut_geo_node(v_geo, QIXIN_CUT, pos)		
+		} else {
+			return v_geo
+		}
+	}
+
+	get_title()
+	{
+		return "橑檐方"
+	}
+}

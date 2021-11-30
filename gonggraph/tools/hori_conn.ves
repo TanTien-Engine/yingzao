@@ -1,0 +1,62 @@
+import "blueprint.node" for Node
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "gonggraph.variant" for VarComp, VAR_TYPE_COMPONENT
+import "gonggraph.constant" for CAI_WIDTH
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.tools_nodes" for ToolsNodes
+
+class HoriConn is Node
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "left",  VAR_TYPE_COMPONENT),
+			Pin(this, "right", VAR_TYPE_COMPONENT),
+		]
+
+		this.layout()
+	}
+
+	resolve()
+	{
+		var n_left = Blueprint.get_input_node(this, "left")
+		var n_right = Blueprint.get_input_node(this, "right")
+		if (!n_left or !n_right) {
+			return
+		}
+
+		n_left = n_left.get_node_ref()
+		n_right = n_right.get_node_ref()
+		if (!n_left or !n_right) {
+			return
+		}
+
+		import "gonggraph.component.beam" for Beam
+		if (n_left is Beam and n_right is Beam)
+		{
+			var len = 0.2
+			import "gonggraph.component.vert_gong" for VertGong
+			var prev_beam = Blueprint.get_input_node(n_left, "prev")
+			if (prev_beam is VertGong and prev_beam.inner_hop == 0) {
+				len = 0.15
+			}
+			JointsNodes.conn_beam(n_right, n_left, len)
+		}
+		else
+		{
+			if (ToolsNodes.is_gong_vert(n_left.comp.v_geo))
+			{
+				var z = n_right.comp.pos.z + CAI_WIDTH * 0.5
+				n_left.comp.v_geo = JointsNodes.cut_right_plane(n_left.comp.v_geo, z)
+			}
+			else
+			{
+				var z = n_left.comp.pos.z - CAI_WIDTH * 0.5
+				n_right.comp.v_geo = JointsNodes.cut_left_plane(n_right.comp.v_geo, z)
+			}
+		}
+	}
+}

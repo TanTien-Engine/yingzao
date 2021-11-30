@@ -1,0 +1,63 @@
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.node_param" for NodeParam
+import "gonggraph.variant" for VAR_TYPE_COMPONENT
+import "gonggraph.context" for CONTEXT
+import "gonggraph.style.style_node" for StyleNode
+
+class BeamStyle is StyleNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "beam", VAR_TYPE_COMPONENT),
+		]
+
+		this.params.add(NodeParam("h", 0.21))
+		this.params.add(NodeParam("stright", true))
+		this.params.add(NodeParam("shrink", false))
+		this.params.add(NodeParam("left", false))
+
+		this.layout()
+	}
+
+	on_node_dirty()
+	{
+		this.register()
+		CONTEXT.style_changed = true
+	}
+
+	register()
+	{
+		var node = Blueprint.get_input_node(this, "beam")
+		if (!node) {
+			return
+		}
+
+		node = node.get_node_ref()
+		if (node) {
+			this.set_beam_style(node)
+		}
+	}
+
+	set_beam_style(node)
+	{
+		import "gonggraph.component.beam" for Beam
+		import "gonggraph.tools.vert_merge" for VertMerge
+
+		if (node is Beam)
+		{
+			node.beam_h  = this.query_param("h").value
+			node.stright = this.query_param("stright").value
+			node.shrink  = this.query_param("shrink").value
+			node.left    = this.query_param("left").value			
+		}
+		else if (node is VertMerge)
+		{
+			this.set_beam_style(Blueprint.get_input_node(node, "outer"))
+			this.set_beam_style(Blueprint.get_input_node(node, "inner"))
+		}
+	}
+}

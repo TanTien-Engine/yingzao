@@ -1,0 +1,148 @@
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "gonggraph.component.vert_gong" for VertGong
+import "gonggraph.variant" for PIN_TYPE_VERT_GONG
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.node_helper" for NodeHelper
+import "gonggraph.tools_nodes" for ToolsNodes
+import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.constant" for CAI_HEIGHT
+import "maths.vector" for Vector3
+import "editor.node_cache" for NODE_CACHE
+
+class VertMerge is VertGong
+{
+	init()
+	{
+		super.init()
+
+		this.imports.add(Pin(this, "outer", PIN_TYPE_VERT_GONG))
+		this.imports.add(Pin(this, "inner", PIN_TYPE_VERT_GONG))
+
+		this.layout()
+	}
+
+	resolve(dg)
+	{
+		this.outer_hop = nil
+		this.inner_hop = nil
+
+		var prev = Blueprint.get_input_node(this, "prev")
+
+		var prev_pin_out = nil
+		if (prev) 
+		{
+			if (Blueprint.query_pin(prev.exports, "next")) {
+				prev_pin_out = "next"
+			} else if (Blueprint.query_pin(prev.exports, "vert")) {
+				prev_pin_out = "vert"
+			}
+		}
+
+		var outer = Blueprint.get_input_node(this, "outer")
+		if (outer) 
+		{
+			if (prev_pin_out) {
+				var conn = Blueprint.connect(prev, prev_pin_out, outer, "prev")
+				outer.resolve(dg)
+				Blueprint.disconnect(conn)
+			} else {
+				outer.resolve(dg)
+			}
+
+			if (outer is VertGong) {
+				this.outer_hop = outer.outer_hop
+				if (!this.inner_hop) {
+					this.inner_hop = outer.inner_hop
+				}
+			}
+		}
+
+		var inner = Blueprint.get_input_node(this, "inner")
+		if (inner) 
+		{
+			if (prev_pin_out) {
+				var conn = Blueprint.connect(prev, prev_pin_out, inner, "prev")
+				inner.resolve(dg)
+				Blueprint.disconnect(conn)
+			} else {
+				inner.resolve(dg)
+			}
+
+			if (inner is VertGong) {
+				this.inner_hop = inner.inner_hop
+				if (!this.outer_hop) {
+					this.outer_hop = inner.outer_hop
+				}
+			}
+		}
+
+		if (!this.outer_hop) {
+			this.outer_hop = 1
+		}
+		if (!this.inner_hop) {
+			this.inner_hop = 1
+		}
+
+		if (!outer or !inner) {
+			this.comp.pos = Vector3(0, 0, 0)
+			return
+		}
+
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+
+		var z = pos.z - 0.05
+		var v_outer = JointsNodes.cut_right_plane(outer.comp.v_geo, z)
+		var v_inner = JointsNodes.cut_left_plane(inner.comp.v_geo, z)
+
+		this.comp.pos = pos
+		this.comp.v_geo = ToolsNodes.brush_merge([ v_outer, v_inner ])
+		this.comp.v_geo_c = this.comp.v_geo
+
+		//this.add_dou(dg)
+
+		outer.comp.v_geo = nil
+		inner.comp.v_geo = nil
+	}
+
+	resolve2(dg)
+	{
+		var outer = Blueprint.get_input_node(this, "outer")
+		var inner = Blueprint.get_input_node(this, "inner")
+		if (outer and inner)
+		{
+			outer.comp.v_geo = nil
+			inner.comp.v_geo = nil
+			outer.comp.v_geo_c = nil
+			inner.comp.v_geo_c = nil
+		}
+	}
+
+	get_title()
+	{
+		return "merge"
+	}
+
+	add_dou(dg)
+	{
+		import "gonggraph.component.ti_mu" for TiMu
+		for (var i in dg.layers[this.comp.y_idx]) {
+			if (i.comp.x_idx == 0 and i is TiMu) {
+				return
+			}
+		}
+
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		var c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))
+
+		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
+		import "gonggraph.component.dou" for QIXIN_DOU
+
+		var c_sun = TransNodes.translate(GD_SUN, c_pos)
+		var c_dou = TransNodes.translate(QIXIN_DOU, c_pos)
+
+		var v_geo = JointsNodes.cut_geo_node(this.comp.v_geo, GD_SUN, c_pos)
+		this.comp.v_geo = Variant([ v_geo, c_sun, c_dou ])
+	}
+}

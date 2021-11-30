@@ -1,0 +1,213 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "geograph.nodes.translate_f" for TranslateF
+import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.node_helper" for NodeHelper
+import "gonggraph.constant" for ZU_CAI_HEIGHT
+import "gonggraph.component.vert_gong" for VertGong
+import "gonggraph.context" for CONTEXT
+import "gonggraph.gen_nodes" for GenNodes
+import "gonggraph.dou_helper" for DouHelper
+import "gonggraph.ang_helper" for AngHelper
+import "gonggraph.ang_tree" for AngTree
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.gong_helper" for GongHelper, VERT_POS_INNER
+import "maths.vector" for Vector3
+import "editor.node_cache" for NODE_CACHE
+import "math" for Math
+
+class Ang is VertGong
+{
+	init()
+	{
+		super.init()
+
+		this.ang_layer = 0
+
+		this.corner_others = []
+		this.virt_tree = nil
+	}
+
+	calc_value(idx)
+	{
+		if (idx == 0)
+		{
+			var pos = this.calc_ang_pos()
+			return Variant(Vector3(0, pos.y, 0))
+		}
+		else if (idx == 1)
+		{
+			var pos = this.calc_ang_pos()
+			return Variant(pos)
+		}
+		else if (idx == 2)
+		{
+			var pos = this.calc_ang_pos()
+
+			var len_o = this.calc_outer_step_len()
+			var len_i = this.calc_inner_step_len()
+
+			var slope = AngHelper.get_slope()
+			var h = (len_o + len_i) * slope
+
+			var y_ori = 0.02
+			var y_offset = -0.05 * slope
+
+			return Variant(pos.add(Vector3(0, h + y_ori + y_offset, - (len_o + len_i))))
+		}
+	}
+
+	resolve(dg)
+	{
+		var prev_outer_hop = 1
+		var prev_inner_hop = 1
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev)
+		{
+			if (prev is VertGong) {
+				prev_outer_hop = prev.outer_hop
+				prev_inner_hop = prev.inner_hop
+			}
+			if (prev is Ang) {
+				this.ang_layer = prev.ang_layer + 1
+			}
+
+			import "gonggraph.tools.vert_split" for VertSplit
+			if (prev is VertSplit and Blueprint.get_output_node(prev, "outer") == this) 
+			{
+				var top_inner = Blueprint.get_output_node(prev, "inner")
+				while (top_inner) {
+					prev_inner_hop = prev_inner_hop + 1
+					top_inner = Blueprint.get_output_node(top_inner, "next")
+				}
+			}
+		}
+
+		this.outer_hop = prev_outer_hop + 1
+		this.inner_hop = prev_inner_hop	+ 1
+
+		// conn tail
+		var i_next = Blueprint.get_output_node(this, "inner")
+		var next = Blueprint.get_output_node(this, "next")
+		var conn_tail = i_next or (next is Ang and Blueprint.get_output_node(next, "inner"))
+		
+		var ang_pos = this.calc_ang_pos()
+		var v_geo = nil
+		if (conn_tail) {
+			v_geo = AngHelper.create_ang(ang_pos, 5)
+		} else {
+			v_geo = AngHelper.create_ang(ang_pos)
+		}
+
+		// cut head, make it to tiao_gan
+		if (this.need_to_tiao_gan()) {
+			v_geo = JointsNodes.cut_bottom_plane(v_geo, ang_pos.y)
+		}
+
+		// conn tail
+		if (conn_tail)
+		{
+			var pos = Blueprint.calc_output_value(this, "inner")
+			pos.value.y = pos.value.y - 0.06
+			var slope = AngHelper.get_slope()
+			v_geo = JointsNodes.conn_tiaogan(v_geo, pos.value, slope)
+		}
+
+		v_geo = this.add_dou(dg, v_geo, true, conn_tail)
+
+		this.comp.pos = ang_pos
+		this.comp.v_geo = v_geo
+		this.comp.v_geo_c = this.comp.v_geo
+
+		this.virt_tree = AngTree(this, ang_pos)
+		this.virt_tree.rebuild_layers()
+	}
+
+	resolve2(dg)
+	{
+		var a_pos = this.calc_ang_pos()
+		a_pos.z = a_pos.z / 1.414
+
+		this.cut_fang(dg, this.comp.y_idx + 1, a_pos)
+
+		if (this.ang_layer == 0) {
+			this.cut_fang(dg, this.comp.y_idx, a_pos)
+		}
+	}
+
+	cut_fang(dg, layer_idx, a_pos)
+	{
+		if (GongHelper.calc_vert_pos(this) == VERT_POS_INNER and CONTEXT.gen_corner) {
+			return
+		}
+
+		import "gonggraph.component.fang" for Fang, FANG
+
+		var layer = dg.layers[layer_idx]
+
+		for (var i in 1 .. layer.count)
+		{
+			var node = layer[i]
+			if (node.comp.x_idx == 0 and node is Fang)
+			{
+				var f_pos = NodeHelper.calc_curr_pos(node, "prev")
+
+				var v_fang = Blueprint.calc_output_value(FANG, "geo")
+				v_fang = node.add_dou(dg, v_fang, Vector3(0, 0, 0))
+
+				v_fang = TransNodes.transform(VariantProxy(v_fang), f_pos, Math.pi() / 2)
+
+				v_fang = AngHelper.down_ang_cut(v_fang, true, a_pos)
+
+				node.comp.v_geo_c = GenNodes.corner_gen_2(v_fang, Vector3(0, 0, 0), 0)
+			}
+		}
+	}
+
+	get_title()
+	{
+		return "下昂%(this.ang_layer + 1)"
+	}	
+	
+	calc_ang_pos()
+	{
+		var dist = 0
+		if (CONTEXT.gen_corner) {
+			dist = CONTEXT.step_len_c_func(this.outer_hop, true)
+		} else {
+			dist = CONTEXT.step_len_func(this.outer_hop, true)
+		}
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev is Ang)
+		{
+			var pos = prev.calc_ang_pos()
+			return pos.add(Vector3(0, ZU_CAI_HEIGHT * 0.5, dist))
+		}
+		else if (this.need_to_tiao_gan())
+		{
+			var pos = NodeHelper.calc_curr_pos(this, "prev")
+			return pos.add(Vector3(0, 0, prev.calc_outer_step_len()))
+		}
+		else
+		{
+			var pos = NodeHelper.calc_curr_pos(this, "prev")
+			return pos.add(Vector3(0, ZU_CAI_HEIGHT, this.calc_outer_step_len()))
+		}
+	}
+
+	need_to_tiao_gan()
+	{
+		import "gonggraph.tools.vert_split" for VertSplit
+		var prev = Blueprint.get_input_node(this, "prev")
+		return prev is VertSplit and Blueprint.get_output_node(prev, "inner") == this
+	}
+
+	ang_plane_cut(geo, down)
+	{
+		var ang_pos = this.calc_ang_pos()
+		return AngHelper.down_ang_cut(geo, down, ang_pos)	
+	}
+}

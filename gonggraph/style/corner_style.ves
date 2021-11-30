@@ -1,0 +1,22 @@
+import "blueprint.node_param" for NodeParam
+import "gonggraph.style.style_node" for StyleNode
+import "gonggraph.context" for CONTEXT
+
+class CornerStyle is StyleNode
+{
+	init()
+	{
+		super.init()
+
+		this.params.add(NodeParam("no_you", false))
+
+		this.layout()
+	}
+
+	register()
+	{
+		CONTEXT.gen_corner = true
+
+		CONTEXT.no_you = this.query_param("no_you").value
+	}
+}

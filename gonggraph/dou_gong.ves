@@ -1,0 +1,686 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
+import "blueprint.variant_proxy" for VariantProxy
+import "geograph.variant" for VAR_TYPE_GEO
+import "geograph.brush" for Brush
+import "gonggraph.node_helper" for NodeHelper
+import "gonggraph.context" for CONTEXT
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.spatial_query" for SpatialQuery
+import "gonggraph.component.comp_node" for CompNode
+import "gonggraph.component.ang" for Ang
+import "gonggraph.component.vert_gong" for VertGong
+import "gonggraph.component.beam" for Beam
+import "gonggraph.tools.vert_merge" for VertMerge
+import "gonggraph.tools_nodes" for ToolsNodes
+import "gonggraph.gong_helper" for GongHelper
+import "scenegraph.nodes.transform3d" for Transform3d
+import "editor.node_cache" for NODE_CACHE
+import "maths.vector" for Vector2, Vector3
+import "maths" for Maths
+import "math" for Math
+
+class DouGong
+{
+	init()
+	{
+		this.layers = []
+
+		this.x_max = 0
+		this.x_min = 0
+
+		this.joints = []
+	}
+
+	rebuild(scene, out_list)
+	{
+		this.rebuild_layers(scene)
+
+		// pass0: register style
+		for (var n in CONTEXT.style_nodes) {
+			n.register()
+		}
+
+		// pass1: gen gong and dou
+		for (var layer in this.layers) 
+		{
+			for (var i in layer) 
+			{
+				if (i is List) {
+					for (var j in i) {
+						j.resolve(this)
+					}
+				} else {
+					i.resolve(this)
+				}
+			}
+		}
+
+		// pass2: fix corner dou
+		for (var node in scene.nodes) {
+			var bp_node = node.components["bp"]
+			if (bp_node and bp_node is CompNode and bp_node.has_method("resolve2(_)")) {
+				bp_node.resolve2(this)
+			}
+		}
+
+		// joint
+		for (var j in this.joints) {
+			j.resolve()
+		}
+
+		for (var i in 1..this.layers.count) {
+			var layer = this.layers[i]
+			this.build_layer_joints(layer)
+			this.build_layer_side_joints(layer)
+		}
+		this.build_between_layers_joint()
+
+		// output
+		if (CONTEXT.gen_corner) {
+			this.get_result_geo_corner(out_list)		
+		} else {
+			this.get_result_geo(out_list)		
+		}
+	}
+
+	get_first_down_ang_plane()
+	{
+		for (var layer in this.layers) 
+		{
+			for (var i in layer[0]) 
+			{
+				if (i is Ang) 
+				{
+					var ANG = NODE_CACHE.fetch("../yingzao/00_dougong2/37_ang.ves", nil)
+					if (CONTEXT.s_ang_slope) {
+						Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", ANG, "slope")
+					}
+					
+					var trans = Transform3d()
+					Blueprint.connect(ANG, "down_plane", trans, "obj")
+
+					var ang_pos = i.calc_ang_pos()
+					Blueprint.connect(VariantProxy(Variant(ang_pos)), "out", trans, "translate")
+
+					return Blueprint.calc_output_value(trans, "obj").value
+				}
+			}
+		}
+		return nil
+	}
+
+	is_hori_above(node, plane)
+	{
+		var p = node.comp.pos
+		return Maths.is_pos_above_plane([ p.x, p.y, p.z ], plane)
+	}
+
+	is_vert_above(v_geo, plane)
+	{
+		if (v_geo.value is List) {
+			return this.is_vert_above(v_geo.value[0], plane)
+		}
+
+		import "model" for Model
+		var b = Model.calc_brush_aabb(v_geo.value.shape.polys)
+
+		return Maths.is_pos_above_plane([ (b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2 ], plane)
+	}
+
+	get_result_geo(out_list)
+	{
+		out_list.clear()
+
+		var ang_plane = this.get_first_down_ang_plane()
+		if (ang_plane)
+		{
+			var ang = nil
+			for (var layer in this.layers)
+			{
+				var list = []
+				for (var i in 1 .. layer.count) {
+					if (layer[i].comp.v_geo and !this.is_hori_above(layer[i], ang_plane)) {
+						list.add(layer[i].comp.v_geo)
+					}
+				}
+				for (var i in layer[0]) {
+					if (i.comp.v_geo and !this.is_vert_above(i.comp.v_geo, ang_plane)) {
+						list.add(i.comp.v_geo)
+					}
+				}
+				if (!list.isEmpty) {
+					out_list.add(Variant(list))				
+				}
+			}
+
+			for (var layer in this.layers)
+			{
+				var list = []
+				for (var i in 1 .. layer.count) {
+					if (layer[i].comp.v_geo and this.is_hori_above(layer[i], ang_plane)) {
+						list.add(layer[i].comp.v_geo)
+					}
+				}
+				for (var i in layer[0]) {
+					if (i.comp.v_geo and this.is_vert_above(i.comp.v_geo, ang_plane)) {
+						list.add(i.comp.v_geo)
+					}
+				}
+				if (!list.isEmpty) {
+					out_list.add(Variant(list))
+				}
+			}			
+		}
+		else
+		{
+			for (var layer in this.layers)
+			{
+				var list = []
+				for (var i in 1 .. layer.count) {
+					list.add(layer[i].comp.v_geo)
+				}
+				for (var i in layer[0]) 
+				{
+					if (i.comp.v_geo) {
+						list.add(i.comp.v_geo)
+					}
+				}
+				out_list.add(Variant(list))
+			}
+		}
+	}
+
+	get_result_geo_corner(out_list)
+	{
+		out_list.clear()
+
+		for (var layer in this.layers)
+		{
+			var list = []
+			for (var i in 1 .. layer.count) {
+				list.add(ToolsNodes.list_flatten(layer[i].comp.v_geo_c, 2))
+			}
+			for (var i in layer[0]) {
+				list.add(i.comp.v_geo_c)
+			}
+			out_list.add(Variant(list))
+		}
+
+		// ang outer
+		for (var layer in this.layers) 
+		{
+			for (var i in layer[0]) {
+				if (i is Ang) {
+					i.virt_tree.get_result_geo(this, out_list)
+				}
+			}
+		}
+	}
+
+	rebuild_layers(scene)
+	{
+		this.layers.clear()
+		for (var i in 0..10) {
+			var layer = [[]]
+			this.layers.add(layer)
+		}
+
+		var comp_nodes = []
+		for (var node in scene.nodes) {
+			var bp_node = node.components["bp"]
+			if (bp_node and bp_node is CompNode and bp_node.has_method("resolve(_)")) {
+				comp_nodes.add(bp_node)
+			}
+		}
+		var sorted_nodes = Blueprint.topo_sort(comp_nodes)
+
+		for (var comp_node in sorted_nodes)
+		{
+			var layer = NodeHelper.calc_y_idx(comp_node)
+			if (comp_node is VertGong or comp_node is Beam) {
+				this.layers[layer][0].add(comp_node)
+			} else {
+				this.layers[layer].add(comp_node)
+			}
+
+			comp_node.comp.y_idx = layer
+		}
+
+		// set x_idx
+		this.x_max = 0
+		this.x_min = 0
+		for (var layer in this.layers)
+		{
+			for (var vert in layer[0])
+			{
+				var o_idx = vert.comp.y_idx
+				var o = Blueprint.get_output_node(vert, "outer")
+				while (o) 
+				{
+					o.comp.x_idx = o_idx
+					if (o_idx > this.x_max) {
+						this.x_max = o_idx
+					}
+					o = Blueprint.get_output_node(o, "next")
+				}
+
+				var i_idx = -(vert.comp.y_idx)
+				var i = Blueprint.get_output_node(vert, "inner")
+				while (i) 
+				{
+					i.comp.x_idx = i_idx
+					if (i_idx < this.x_min) {
+						this.x_min = i_idx
+					}
+					i = Blueprint.get_output_node(i, "next")
+				}
+			}
+		}
+
+		// sort each layer
+		for (var layer in this.layers)
+		{
+			if (layer.count > 2)
+			{
+				for (var i in 1 .. layer.count - 1) {
+					for (var j in i + 1 .. layer.count) {
+						if (layer[i].comp.x_idx < layer[j].comp.x_idx) {
+							var tmp = layer[i]
+							layer[i] = layer[j]
+							layer[j] = tmp
+						}
+					}
+				}
+			}
+		}
+	}
+
+	build_layer_joints(layer)
+	{	
+		import "gonggraph.tools.dummy_hori" for DummyHori
+
+		// gong conn hua
+		for (var i in 1 .. layer.count)
+		{
+			if (!(layer[i] is DummyHori))
+			{
+				var pos = layer[i].comp.pos.clone()
+				pos.y = pos.y + 0.1
+				for (var vert in layer[0])
+				{
+					if (SpatialQuery.contain_pos(vert.comp.v_geo, pos))
+					{
+						if (!(GongHelper.is_wide_beam_head(vert, pos)))
+						{
+							var g2 = JointsNodes.conn2(layer[i].comp.v_geo, vert.comp.v_geo, layer[i].comp.pos, 0)
+							layer[i].comp.v_geo = g2[0]
+							vert.comp.v_geo = g2[1]
+						}
+					}
+				}
+			}
+		}
+
+		// gong conn corner hua
+		var angle = Math.pi() / 4
+		for (var i in 1 .. layer.count)
+		{
+			if (!(layer[i] is DummyHori) and layer[i].comp.v_geo_c)
+			{
+				var cut = false
+
+				var pos = layer[i].comp.pos.clone()
+				pos.y = pos.y + 0.1
+				for (var vert in layer[0])
+				{
+					if (SpatialQuery.contain_pos(vert.comp.v_geo, pos))
+					{
+						if (!(GongHelper.is_wide_beam_head(vert, pos)))
+						{
+							var g3 = JointsNodes.conn3(layer[i].comp.v_geo_c.value[0], layer[i].comp.v_geo_c.value[1], vert.comp.v_geo_c, layer[i].comp.pos, angle)
+							layer[i].comp.v_geo_c.value[0] = g3[0]
+							layer[i].comp.v_geo_c.value[1] = g3[1]
+							vert.comp.v_geo_c              = g3[2]
+
+							var g2 = JointsNodes.conn2(layer[i].comp.v_geo, vert.comp.v_geo, layer[i].comp.pos, 0)
+							layer[i].comp.v_geo = g2[0]
+							vert.comp.v_geo = g2[1]
+							cut = true
+						}
+					}
+				}
+
+				if (!cut)
+				{
+					var g3 = JointsNodes.conn3(layer[i].comp.v_geo_c.value[0], layer[i].comp.v_geo_c.value[1], nil, layer[i].comp.pos, angle)
+					layer[i].comp.v_geo_c.value[0] = g3[0]
+					layer[i].comp.v_geo_c.value[1] = g3[1]
+				}
+			}
+		}
+	}
+
+	build_layer_side_joints(layer)
+	{
+		if (CONTEXT.gen_corner and layer.count > 2)
+		{
+			var dir0 = Vector2(0, -1)
+			dir0.rotate(-Math.pi() / 4)
+
+			var dir1 = Vector2(0, -1)
+			dir1.rotate(Math.pi() / 4)
+
+			for (var i in 1 .. layer.count - 1)
+			{
+				var x0 = layer[i].comp.pos.x
+				var y0 = layer[i].comp.pos.z
+				var a0 = [ x0, y0, x0 + dir0.x, y0 + dir0.y ]
+				var a1 = [ x0, y0, x0 + dir1.x, y0 + dir1.y ]
+
+				for (var j in i + 1 .. layer.count)
+				{
+					var x1 = layer[j].comp.pos.x
+					var y1 = layer[j].comp.pos.z
+					var b0 = [ x1, y1, x1 + dir0.x, y1 + dir0.y ]
+					var b1 = [ x1, y1, x1 + dir1.x, y1 + dir1.y ]
+
+					var c0 = Maths.get_line_intersect_line(b0, a1, false)
+					var p0 = Vector3(c0[0], layer[i].comp.pos.y + 0.1, c0[1])
+					if (c0 and SpatialQuery.contain_pos(layer[i].comp.v_geo_c.value[0], p0) and SpatialQuery.contain_pos(layer[j].comp.v_geo_c.value[1], p0))
+					{
+						var pos = Vector3(c0[0], layer[i].comp.pos.y, c0[1])
+						var g2 = JointsNodes.conn2(layer[i].comp.v_geo_c.value[0], layer[j].comp.v_geo_c.value[1], pos, Math.pi() / 4)
+						layer[i].comp.v_geo_c.value[0] = g2[0]
+						layer[j].comp.v_geo_c.value[1] = g2[1]
+
+						if (layer[j].comp.x_idx == 0 and layer[i].comp.x_idx + 1 == layer[j].comp.y_idx) 
+						{
+							 layer[j].comp.v_geo_c.value[1] = JointsNodes.cut_jao_hu_er(layer[j].comp.v_geo_c.value[1], pos, Math.pi() / 4)
+						}
+					}
+
+					var c1 = Maths.get_line_intersect_line(b1, a0, false)
+					var p1 = Vector3(c1[0], layer[i].comp.pos.y + 0.1, c1[1])
+					if (c1 and SpatialQuery.contain_pos(layer[i].comp.v_geo_c.value[1], p1) and SpatialQuery.contain_pos(layer[j].comp.v_geo_c.value[0], p1))
+					{
+						var pos = Vector3(c1[0], layer[i].comp.pos.y, c1[1])
+						var g2 = JointsNodes.conn2(layer[i].comp.v_geo_c.value[1], layer[j].comp.v_geo_c.value[0], pos, Math.pi() / 4)
+						layer[i].comp.v_geo_c.value[1] = g2[0]
+						layer[j].comp.v_geo_c.value[0] = g2[1]
+
+						if (layer[j].comp.x_idx == 0 and layer[i].comp.x_idx + 1 == layer[j].comp.y_idx) 
+						{
+							 layer[j].comp.v_geo_c.value[0] = JointsNodes.cut_jao_hu_er(layer[j].comp.v_geo_c.value[0], pos, -Math.pi() / 4)
+						}
+					}
+				}
+			}
+		}
+	}
+
+	build_lu_hua_joint()
+	{
+		if (CONTEXT.gen_corner)
+		{
+			for (var vert in this.layers[1][0]) {
+				var C_LU_CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/20_c_lu_cut_body.ves", nil)
+				vert.comp.v_geo_c = JointsNodes.cut_geo_node(vert.comp.v_geo_c, C_LU_CUT, vert.comp.pos)
+			}
+
+			if (this.layers[1].count > 1)
+			{
+				var LU_CUT = NODE_CACHE.fetch("../yingzao/00_dougong2/20_lu_cut_body.ves", nil)
+				var v_cut_geo = TransNodes.rotate(LU_CUT, Math.pi() / 4)
+				var cut_node = VariantProxy(v_cut_geo)
+
+				var nidao = this.layers[1][1].comp
+				nidao.v_geo_c.value[1] = JointsNodes.cut_geo_node(nidao.v_geo_c.value[1], cut_node, nidao.pos)
+			}
+		}
+		else
+		{
+			import "gonggraph.component.dou" for Dou
+			import "gonggraph.component.lu_dou" for LuDou
+
+			// vert
+			for (var vert in this.layers[1][0]) 
+			{
+				var cut_body = nil
+
+				var prev = Blueprint.get_input_node(vert, "prev")
+				if (prev is LuDou) {
+					cut_body = NODE_CACHE.fetch("../yingzao/00_dougong2/20_lu_cut_body.ves", nil)
+				} else if (prev is Dou) {
+					cut_body = prev.get_vert_cut_body()
+				}
+
+				if (cut_body) {
+					vert.comp.v_geo = JointsNodes.cut_geo_node(vert.comp.v_geo, cut_body, vert.comp.pos)
+				}
+			}
+
+			// hori
+			for (var i in 1 .. this.layers[1].count) 
+			{
+				var cut_body = nil
+
+				var hori = this.layers[1][i]
+				var prev = Blueprint.get_input_node(hori, "prev")
+				if (prev is Dou) {
+					cut_body = prev.get_hori_cut_body()
+				}
+
+				if (cut_body) {
+					hori.comp.v_geo = JointsNodes.cut_geo_node(hori.comp.v_geo, cut_body, hori.comp.pos)
+				}
+			}
+		}
+	}
+
+	build_between_layers_joint()
+	{
+		this.build_dou_er_joints()
+		this.build_hori_gong_and_ang_joints()
+		this.build_beam_joints()
+	}
+
+	build_dou_er_joints()
+	{
+		this.build_lu_hua_joint()
+
+		for (var i in 1 .. this.layers.count - 1)
+		{
+			for (var vert in this.layers[i][0])
+			{
+				var next_layer = this.layers[i + 1]
+				for (var next_vert in next_layer[0])
+				{
+					for (var j in 1 .. next_layer.count)
+					{
+						var h_gong = next_layer[j].comp
+						if (h_gong.x_idx == vert.comp.y_idx or h_gong.x_idx == -(vert.comp.y_idx)) {
+							if (!(GongHelper.is_wide_beam_head(next_vert, h_gong.pos))) {
+								next_vert.comp.v_geo = JointsNodes.cut_jao_hu_er(next_vert.comp.v_geo, h_gong.pos, 0)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	build_hori_gong_and_ang_joints()
+	{
+		import "gonggraph.tools.dummy_hori" for DummyHori
+		
+		for (var i in 0 .. this.layers.count)
+		{
+			var layer = this.layers[i]
+			for (var vert in layer[0])
+			{
+				if (vert is Ang) 
+				{
+					var ang = vert
+
+					var ang_geo = ang.comp.v_geo
+
+					var ang_test_geo = nil
+					if (ang.comp.v_geo.value is List) {
+						ang_test_geo = ang.comp.v_geo.value[0]
+					} else {
+						ang_test_geo = ang.comp.v_geo
+					}
+
+					for (var j in 0 .. this.layers.count)
+					{
+						var layer = this.layers[j]
+						for (var k in 1 .. layer.count)
+						{
+							if (!(layer[k] is DummyHori))
+							{
+								var pos = layer[k].comp.pos
+								if (SpatialQuery.contain_pos(ang_test_geo, Vector3(pos.x, pos.y + 0.14, pos.z)))
+								{
+									var gong = layer[k]
+
+									var g2 = JointsNodes.conn2(gong.comp.v_geo, ang_geo, gong.comp.pos, 0)
+									gong.comp.v_geo = g2[0]
+									ang_geo = g2[1]
+								}
+								else if (SpatialQuery.contain_pos(ang_test_geo, Vector3(pos.x, pos.y + 0.01, pos.z)))
+								{
+									var gong = layer[k]
+
+									var g2 = JointsNodes.conn2(ang_geo, gong.comp.v_geo, gong.comp.pos, 0)
+									ang_geo = g2[0]
+									gong.comp.v_geo = g2[1]
+								}
+							}
+						}
+					}
+
+					ang.comp.v_geo = ang_geo
+				}
+			}
+		}
+	}
+
+	build_beam_joints()
+	{
+		for (var i in 1 .. this.layers.count - 1)
+		{
+			var layer = this.layers[i]
+			for (var vert in layer[0]) 
+			{
+				if (vert is Beam) 
+				{
+					var beam = vert
+					for (var j in 1 .. layer.count)
+					{
+						var gong = layer[j]
+						var pos = gong.comp.pos
+						if (SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
+							JointsNodes.conn_gong_beam(gong, beam, pos)
+						}
+					}
+
+					var next_layer = this.layers[i + 1]
+					for (var j in 1 .. next_layer.count)
+					{
+						var gong = next_layer[j]
+						var pos = gong.comp.pos
+						if (SpatialQuery.contain_pos(beam.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
+							JointsNodes.conn_beam_gong(beam, gong, pos)
+						}
+					}
+				}
+				else if (vert is VertMerge) 
+				{
+					var vert_merge = vert
+
+					if (Blueprint.get_input_node(vert_merge, "outer") is Beam)
+					{
+						for (var j in 1 .. layer.count)
+						{
+							var gong = layer[j]
+							var pos = gong.comp.pos
+							if (pos.z > 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
+								JointsNodes.conn_gong_beam(gong, vert_merge, pos)
+							}
+						}
+
+						var next_layer = this.layers[i + 1]
+						for (var j in 1 .. next_layer.count)
+						{
+							var gong = next_layer[j]
+							var pos = gong.comp.pos
+							if (pos.z > 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
+								JointsNodes.conn_beam_gong(vert_merge, gong, pos)
+							}
+						}
+					}
+
+					if (Blueprint.get_input_node(vert_merge, "inner") is Beam)
+					{
+						for (var j in 1 .. layer.count)
+						{
+							var gong = layer[j]
+							var pos = gong.comp.pos
+							if (pos.z < 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.1, pos.z))) {
+								JointsNodes.conn_gong_beam(gong, vert_merge, pos)
+							}
+						}
+
+						var next_layer = this.layers[i + 1]
+						for (var j in 1 .. next_layer.count)
+						{
+							var gong = next_layer[j]
+							var pos = gong.comp.pos
+							if (pos.z < 0 and SpatialQuery.contain_pos(vert_merge.comp.v_geo, Vector3(pos.x, pos.y + 0.01, pos.z))) {
+								JointsNodes.conn_beam_gong(vert_merge, gong, pos)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	has_vert_gong(y_idx)
+	{
+		return !this.layers[y_idx][0].isEmpty
+	}
+
+	has_hori_gong(y_idx, x_idx)
+	{
+		var layer = this.layers[y_idx]
+		for (var i in 1 .. layer.count) {
+			if (layer[i].comp.x_idx == x_idx) {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	// for add center dou
+	has_vert_gong_or_prev_beam(y_idx)
+	{
+		if (!this.layers[y_idx][0].isEmpty) {
+			return true
+		}
+
+		if (y_idx > 0)
+		{
+			for (var n in this.layers[y_idx - 1][0]) {
+				if (n is Beam) {
+					return true
+				}
+			}
+		}
+
+		return false
+	}
+}

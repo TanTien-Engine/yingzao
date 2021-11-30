@@ -1,0 +1,88 @@
+import "blueprint.pin" for Pin
+import "blueprint.variant" for Variant
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant_proxy" for VariantProxy
+import "gonggraph.component.comp_node" for CompNode
+import "gonggraph.variant" for PIN_TYPE_INNER_GONG, PIN_TYPE_HORI_GONG, PIN_TYPE_PING_CHUAN
+import "gonggraph.node_helper" for NodeHelper
+import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.gen_nodes" for GenNodes
+import "gonggraph.gong_helper" for GongHelper
+import "maths.vector" for Vector3
+import "editor.node_cache" for NODE_CACHE
+
+var TI_MU      = NODE_CACHE.fetch("../yingzao/00_dougong2/43_ti_mu.ves", nil)		
+var QIXIN_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
+
+class TiMu is CompNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", [ PIN_TYPE_INNER_GONG, PIN_TYPE_HORI_GONG ]),
+		]
+		this.exports = [
+			Pin(this, "next", PIN_TYPE_PING_CHUAN),
+		]
+
+		this.layout()
+
+		this.no_dou = false
+	}
+
+	calc_value(idx)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		return Variant(pos.add(Vector3(0, 0.1, 0)))
+	}
+
+	resolve(dg)
+	{
+		import "gonggraph.component.dou" for Dou
+		import "gonggraph.component.hori_gong" for HoriGong
+		import "gonggraph.component.inner_gong" for InnerGong
+		import "gonggraph.tools.hori_merge" for HoriMerge
+
+		var len = 0.96
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev is Dou) {
+			len = 0.96
+		} else if (prev is HoriGong or prev is InnerGong or prev is HoriMerge) {
+			len = 1.04
+			var pp = Blueprint.get_input_node(prev, "prev")
+			if (pp is HoriGong or prev is InnerGong or prev is HoriMerge) {
+				len = 1.26
+			}
+		}
+		var len_node = VariantProxy(Variant(len))
+		Blueprint.connect(len_node, "out", TI_MU, "length")
+
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		var v_geo = TransNodes.translate(TI_MU, pos)
+
+//		if (!dg.has_vert_gong(this.comp.y_idx)) {
+//			v_geo = JointsNodes.cut_geo_node(v_geo, QIXIN_CUT, pos)
+//		}		
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+
+		this.gen_corner(dg)
+	}
+
+	gen_corner(dg)
+	{
+		var v_geo = Blueprint.calc_output_value(TI_MU, "geo")
+
+		var offset = 0
+		this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
+	}
+
+	get_title()
+	{
+		return "替木"
+	}
+}

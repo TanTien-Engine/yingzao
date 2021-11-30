@@ -1,0 +1,237 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "geograph.nodes.knife" for Knife
+import "scenegraph.nodes.transform3d" for Transform3d
+import "gonggraph.component.vert_gong" for VertGong
+import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.context" for CONTEXT
+import "gonggraph.node_helper" for NodeHelper
+import "gonggraph.constant" for CAI_HEIGHT, ZU_CAI_HEIGHT, QI_HEIGHT
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.tools_nodes" for ToolsNodes
+import "maths.vector" for Vector3
+import "editor.node_cache" for NODE_CACHE
+import "math" for Math
+
+var ANG    = NODE_CACHE.fetch("../yingzao/00_dougong2/38_up_ang.ves", nil)
+var XUE    = NODE_CACHE.fetch("../yingzao/00_dougong2/38_xue_qi.ves", nil)
+var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
+
+class UpAng is VertGong
+{
+	init()
+	{
+		super.init()
+
+		this.next_ang = false
+	}
+
+	calc_value(idx)
+	{
+		var pos_inner = this.is_pos_inner()
+
+		if (idx == 0)
+		{
+			var pos = NodeHelper.calc_curr_pos(this, "prev")
+			return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT * 2, 0)))
+		}
+		else if ((idx == 1 and pos_inner) or (idx == 2 and !pos_inner))
+		{
+			var pos = NodeHelper.calc_curr_pos(this, "prev")
+			var z = 0
+			if (idx == 1) {
+				z = this.calc_outer_step_len()			
+			} else {
+				z = -this.calc_inner_step_len()			
+			}
+			return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, z)))
+		}
+		else if ((idx == 2 and pos_inner) or (idx == 1 and !pos_inner))
+		{
+			var ang_pos = this.calc_ang_pos()
+			ang_pos.y = ang_pos.y + this.calc_first_dy()
+			return Variant(ang_pos)
+		} 
+	}
+
+	resolve(dg)
+	{
+		this.outer_hop = 1
+		this.inner_hop = 1
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev) 
+		{
+			if (prev is VertGong) {
+				this.outer_hop = prev.outer_hop	+ 1
+				this.inner_hop = prev.inner_hop + 1
+			}
+			if (prev is UpAng or this.comp.y_idx > 3) {
+				this.outer_hop = prev.outer_hop
+			}
+		}
+
+		if (CONTEXT.s_ang_slope) {
+			Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", ANG, "slope")
+		}
+
+		this.comp.pos = Vector3(0, 0, 0)
+	}
+
+	resolve2(dg)
+	{
+		var next_vert = dg.layers[this.comp.y_idx + 1][0]
+		for (var i in next_vert) {
+			if (i is UpAng) {
+				this.next_ang = true
+			}
+		}
+
+		var ang_pos = this.calc_ang_pos()
+		ang_pos.y = ang_pos.y + this.calc_first_dy()
+
+		var pos_inner = this.is_pos_inner()
+		var v_geo = nil
+		if (pos_inner) {
+			v_geo = TransNodes.translate(ANG, ang_pos)
+		} else {
+			v_geo = TransNodes.transform(ANG, ang_pos, Math.pi())
+		}
+
+		var prev = Blueprint.get_input_node(this, "prev")
+
+		var v_xue = nil
+		if (!(prev is UpAng)) {
+			Blueprint.connect(CONTEXT.s_ang_slope, "ang_slope", XUE, "slope")
+//			v_xue = TransNodes.translate(XUE, ang_pos)			
+		}
+
+		// conn next		
+		if (pos_inner) {
+			v_geo = this.add_dou(dg, Variant([v_xue, v_geo]), false, true)
+		} else {
+			v_geo = this.add_dou(dg, Variant([v_xue, v_geo]), true, false)
+		}
+
+		this.comp.pos = ang_pos
+		this.comp.v_geo = v_geo
+		this.comp.v_geo_c = this.comp.v_geo
+	}
+
+	get_title()
+	{
+		return "上昂"
+	}
+
+	calc_ang_pos()
+	{
+		var prev_pin = Blueprint.get_input_pin(this, "prev")
+		if (!prev_pin) {
+			return Vector3(0, 0, 0)
+		}
+
+		var pos_inner = prev_pin.name == "inner"
+
+		var hop = 0
+		if (pos_inner) {
+			hop = -this.inner_hop
+		} else {
+			hop = this.outer_hop
+		}
+
+		var dist = 0
+		if (CONTEXT.gen_corner) {
+			dist = CONTEXT.step_len_c_func(hop, true)
+		} else {
+			dist = CONTEXT.step_len_func(hop, true)
+		}
+		if (pos_inner) {
+			dist = -dist
+		}
+
+		var prev = Blueprint.get_input_node(this, "prev")
+
+		import "gonggraph.tools.vert_split" for VertSplit
+
+		if (prev is VertSplit) {
+			prev = Blueprint.get_input_node(prev, "prev")
+		}
+
+		if (prev is UpAng)
+		{
+			var pos = prev.calc_ang_pos()
+			if (pos) {
+				return pos.add(Vector3(0, ZU_CAI_HEIGHT, dist))
+			}
+		}
+		else
+		{
+			var pos = Blueprint.calc_output_value(prev, prev_pin.name).value
+			if (pos) {
+				return pos.add(Vector3(0, ZU_CAI_HEIGHT * 2, dist))
+			}
+		}
+
+		return Vector3(0, 0, 0)
+	}
+
+	is_pos_inner()
+	{
+		var pos_inner = true
+
+		var prev_pin = Blueprint.get_input_pin(this, "prev")
+		if (prev_pin) {
+			pos_inner = prev_pin.name == "inner"
+		}
+
+		return pos_inner
+	}
+
+	calc_first_dy()
+	{
+		import "gonggraph.tools.vert_split" for VertSplit
+
+		if (this.next_ang and CONTEXT.s_ang_slope)
+		{
+			var slope = Blueprint.calc_output_value(CONTEXT.s_ang_slope, "ang_slope").value
+			var angle = Math.atan2(slope, 1)
+			return ZU_CAI_HEIGHT - (CONTEXT.step_len_func(-this.inner_hop - 1, true) * slope + CAI_HEIGHT / Math.cos(angle))
+		}
+
+		return 0
+	}
+
+	ang_plane_cut(geo, outer, corner_trans)
+	{
+		var ang_pos = this.calc_ang_pos()
+		ang_pos.y = ang_pos.y + this.calc_first_dy()
+		if (corner_trans) {
+			ang_pos.z = ang_pos.z / 1.414		
+		}		
+		return UpAng.ang_plane_cut(geo, ang_pos, outer)
+	}
+
+	static ang_plane_cut(geo, pos, outer)
+	{
+		var KNIFE = Knife()
+		KNIFE.query_param("keep").set_value("above")
+		KNIFE.query_param("seam").set_value(true)
+
+		var trans = Transform3d()
+		Blueprint.connect(ANG, "plane", trans, "obj")
+
+		var pos_node = VariantProxy(Variant(pos))
+		Blueprint.connect(pos_node, "out", trans, "translate")
+
+		if (outer) {
+			var rot_node = VariantProxy(Variant(Vector3(0, Math.pi(), 0)))
+			Blueprint.connect(rot_node, "out", trans, "rotate")
+		}
+
+		var geo_node = VariantProxy(geo)
+		Blueprint.connect(geo_node, "out", KNIFE, "geo")
+		Blueprint.connect(trans, "obj", KNIFE, "plane")
+		return Blueprint.calc_output_value(KNIFE, "geo")		
+	}
+}

@@ -1,0 +1,170 @@
+import "blueprint.node" for Node
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant, VAR_TYPE_ARRAY
+import "blueprint.variant_proxy" for VariantProxy
+import "gonggraph.component.comp_node" for CompNode
+import "gonggraph.variant" for PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG, VAR_TYPE_COMPONENT
+import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.node_helper" for NodeHelper
+import "gonggraph.constant" for ZU_CAI_HEIGHT, CAI_HEIGHT, FANG_LEN
+import "gonggraph.component" for Component
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.gen_nodes" for GenNodes
+import "gonggraph.corner_helper" for CornerHelper
+import "gonggraph.corner_builder" for CornerBuilder
+import "editor.node_cache" for NODE_CACHE
+import "maths.vector" for Vector3
+import "math" for Math
+
+var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
+
+class Fang is CompNode
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "prev", [ PIN_TYPE_FANG, PIN_TYPE_HORI_GONG, PIN_TYPE_INNER_GONG ]),
+		]
+		this.exports = [
+			Pin(this, "next", [ PIN_TYPE_FANG ]),
+		]
+
+		this.layout()
+	}
+
+	calc_value(idx)
+	{
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+		return Variant(pos.add(Vector3(0, ZU_CAI_HEIGHT, 0)))
+	}
+
+	resolve(dg)
+	{
+		if (this.comp.x_idx == 0) {
+			this.exports[0].type = [ PIN_TYPE_FANG, PIN_TYPE_INNER_GONG ]
+		} else {
+			this.exports[0].type = [ PIN_TYPE_FANG, PIN_TYPE_HORI_GONG ]
+		}
+
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+
+		var v_geo = TransNodes.translate(FANG, pos)
+
+		// conn prev
+		v_geo = this.add_joint(dg, v_geo, pos)
+
+		// conn next
+		v_geo = this.add_dou(dg, v_geo, pos)
+
+		this.comp.pos = pos
+		this.comp.v_geo = v_geo
+
+		this.gen_corner(dg)
+	}
+
+	gen_corner(dg)
+	{
+		if (this.comp.x_idx == 0) {
+			this.comp.v_geo_c = CornerBuilder.compose_vert_inner(dg, this)
+		}
+
+		if (!this.comp.v_geo_c)
+		{
+			var len_o = 0
+			if (this.comp.x_idx == 0) {
+				len_o = CornerHelper.calc_outer_len(1)
+			} else {
+				len_o = CornerHelper.calc_outer_len(this.comp.x_idx)
+			}
+
+			var len_i = FANG_LEN - len_o
+			var offset = - (len_o - len_i) / 2
+
+			var v_geo = Blueprint.calc_output_value(FANG, "geo")
+			v_geo = this.add_dou(dg, v_geo, Vector3(0, 0, 0))
+			this.comp.v_geo_c = GenNodes.corner_gen_2(v_geo, this.comp.pos, offset)
+		}
+	}
+
+	add_joint(dg, v_geo, pos)
+	{
+		var QIXIN_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_qixin_cut_body.ves", nil)
+
+		var has_c = true
+		if (dg) {
+			has_c = !dg.has_vert_gong_or_prev_beam(this.comp.y_idx - 1)		
+		}
+		if (has_c) {
+			return JointsNodes.cut_geo_node(v_geo, QIXIN_CUT, pos)		
+		} else {
+			return v_geo
+		}
+	}
+
+	add_dou(dg, v_geo, pos)
+	{
+		import "gonggraph.component.dou" for SAN_DOU, QIXIN_DOU
+
+		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
+
+		var next = NodeHelper.get_output_valid_node(this, "next")
+		if (!next) {
+			return v_geo
+		}
+
+		import "gonggraph.component.ya_cao_fang" for YaCaoFang
+		if (next is YaCaoFang) {
+			return v_geo
+		}
+
+		var dist = 0.41
+
+		import "gonggraph.component.inner_gong" for InnerGong
+		if (next is InnerGong) {
+			dist = 0.14
+		}
+
+		var l_pos = Vector3(-dist, pos.y + CAI_HEIGHT, pos.z)
+		var r_pos = Vector3( dist, pos.y + CAI_HEIGHT, pos.z)
+
+		var l_sun = TransNodes.translate(GD_SUN, l_pos)
+		var r_sun = TransNodes.translate(GD_SUN, r_pos)
+
+		var l_dou = TransNodes.translate(SAN_DOU, l_pos)
+		var r_dou = TransNodes.translate(SAN_DOU, r_pos)
+
+		var has_c = true
+		if (dg) {
+			has_c = !dg.has_vert_gong_or_prev_beam(this.comp.y_idx)
+		}
+		if (has_c)
+		{
+			var c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))
+
+			var c_sun = TransNodes.translate(GD_SUN, c_pos)
+			var c_dou = TransNodes.translate(QIXIN_DOU, c_pos)
+
+			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, c_pos, r_pos ])
+
+			return Variant([ v_geo, [ l_sun, c_sun, r_sun ], [ l_dou, c_dou, r_dou ] ])
+		}
+		else
+		{
+			v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, [ l_pos, r_pos ])
+
+			return Variant([ v_geo, [ l_sun, r_sun ], [ l_dou, r_dou ] ])
+		}
+	}
+
+	get_title()
+	{
+		if (this.comp.x_idx == 0) {
+			return "柱头方"
+		} else {
+			return "罗汉方"		
+		}
+	}
+}

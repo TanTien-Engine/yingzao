@@ -1,0 +1,148 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.node_helper" for NodeHelper
+import "gonggraph.component.vert_gong" for VertGong
+import "gonggraph.constant" for ZU_CAI_HEIGHT
+import "gonggraph.ang_helper" for AngHelper
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.gong_helper" for GongHelper, VERT_POS_MIDDLE, VERT_POS_INNER, VERT_POS_OUTER
+import "gonggraph.context" for CONTEXT
+import "editor.node_cache" for NODE_CACHE
+
+var SHUA_TOU = NODE_CACHE.fetch("../yingzao/00_dougong2/36_shua_tou.ves", nil)
+
+class ShuaTou is VertGong
+{
+	resolve(dg)
+	{
+		import "gonggraph.tools.vert_merge" for VertMerge
+		import "gonggraph.component.lu_dou" for LuDou
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev is VertGong) {
+			this.outer_hop = prev.outer_hop
+			this.inner_hop = prev.inner_hop
+		} else {
+			this.outer_hop = 1
+			this.inner_hop = 1		
+		}		
+
+		var next = NodeHelper.get_output_valid_node(this, "next")
+		if (next) {
+			if (next is VertMerge) {
+				next = NodeHelper.get_output_valid_node(next, "next")
+			}
+		}
+		var single = (next == nil)
+		var v_geo = this.create_geo(single)
+
+		// conn next
+//		v_geo = this.add_dou(dg, v_geo, true, true)
+
+		this.comp.pos = NodeHelper.calc_curr_pos(this, "prev")
+		this.comp.v_geo = v_geo
+	}
+
+	resolve2(dg)
+	{
+		var single = true
+		if (this.comp.y_idx < dg.layers.count - 1 and !dg.layers[this.comp.y_idx + 1].isEmpty) {
+			single = false
+		}
+		this.comp.v_geo = this.create_geo(single)
+
+		this.comp.v_geo = AngHelper.ang_cut(this, this.comp.v_geo)
+
+		if (CONTEXT.no_you or GongHelper.calc_vert_pos(this) == VERT_POS_INNER) {
+			this.comp.v_geo_c = this.comp.v_geo
+		} else {
+			this.gen_corner(dg)		
+		}
+	}
+
+	create_geo(single)
+	{
+		import "gonggraph.tools.vert_merge" for VertMerge
+		import "gonggraph.component.lu_dou" for LuDou
+
+		var single_node = VariantProxy(Variant(single))
+		Blueprint.connect(single_node, "out", SHUA_TOU, "single")
+
+		var prev = Blueprint.get_input_node(this, "prev")
+
+		var pos = NodeHelper.calc_curr_pos(this, "prev")
+
+		var v_geo = nil
+		if ((this.outer_hop == 1 or this.inner_hop == 1) and prev is LuDou) {
+			v_geo = ShuaTou.create_geo(0.12, pos)
+		} else {
+			v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
+		}
+		single_node.disconnect()
+
+		return v_geo
+	}
+
+	get_title()
+	{
+		return "耍头"
+	}
+
+	static create_geo(outer_hop, inner_hop, pos)
+	{
+		var len_l = VertGong.calc_tot_step_len(outer_hop) + VertGong.get_dou_half_len()
+		var len_r = VertGong.calc_tot_step_len(-inner_hop) + VertGong.get_dou_half_len()
+		var len_l_node = VariantProxy(Variant(len_l))
+		var len_r_node = VariantProxy(Variant(len_r))
+		Blueprint.connect(len_l_node, "out", SHUA_TOU, "len_left")
+		Blueprint.connect(len_r_node, "out", SHUA_TOU, "len_right")
+
+		return TransNodes.translate(SHUA_TOU, pos)
+	}
+
+	static create_geo(len, pos)
+	{
+		Blueprint.connect(VariantProxy(Variant(len)), "out", SHUA_TOU, "len_left")
+		Blueprint.connect(VariantProxy(Variant(len)), "out", SHUA_TOU, "len_right")
+		return TransNodes.translate(SHUA_TOU, pos)
+	}
+
+	gen_corner(dg)
+	{
+		var pos = GongHelper.calc_vert_pos(this)
+
+		if (pos == VERT_POS_INNER) {
+			return
+		}
+
+		var a_pos = Blueprint.calc_output_value(this, "outer").value
+		a_pos.y = a_pos.y - ZU_CAI_HEIGHT * 0.5
+		a_pos.z = VertGong.calc_tot_step_len(this.outer_hop + 1)
+		var v_ang = AngHelper.create_ang(a_pos)
+
+//		import "gonggraph.component.ya_cao_fang" for YaCaoFang
+//		var top_y = nil
+//		for (var layer in dg.layers) {
+//			for (var item in layer) {
+//				if (item is YaCaoFang) {
+//					top_y = item.comp.pos.y
+//				}
+//			}
+//		}
+//		if (top_y) {
+//			v_ang = JointsNodes.cut_top_plane(v_ang, top_y)
+//		}
+
+		if (pos == VERT_POS_OUTER)
+		{
+			this.comp.v_geo_c = v_ang
+		}
+		else if (pos == VERT_POS_MIDDLE)
+		{
+			var v_shua = AngHelper.down_ang_cut(this.comp.v_geo, true, a_pos)
+			this.comp.v_geo_c = Variant([ v_shua, v_ang ])
+		}
+	}
+}

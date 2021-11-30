@@ -1,0 +1,31 @@
+import "blueprint.node" for Node
+import "blueprint.pin" for Pin
+import "blueprint.variant" for Variant, VAR_TYPE_NUMBER
+import "blueprint.node_param" for NodeParam
+import "gonggraph.context" for CONTEXT
+
+class AngSlope is Node
+{
+	init()
+	{
+		super.init()
+
+		this.exports = [
+			Pin(this, "ang_slope", VAR_TYPE_NUMBER),
+		]
+
+		this.params.add(NodeParam("ang_slope", 1.0))
+
+		this.layout()
+	}
+
+	calc_value(idx)
+	{
+		return Variant(this.query_param("ang_slope").value)
+	}
+
+	on_node_dirty()
+	{
+		CONTEXT.style_changed = true
+	}
+}
