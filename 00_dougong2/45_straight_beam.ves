@@ -74,13 +74,13 @@ var node13 = ::blueprint::nodes::number::Number()
 
 node13.value = 4
 
-_editor.add_node(node13, 236.96070922852, 238.37622680664)
+_editor.add_node(node13, 180.96070922852, 212.37622680664)
 
 var node14 = ::blueprint::nodes::store::Store()
 
 node14.var_name = "length"
 
-_editor.add_node(node14, 372.48070800781, 236.56121337891)
+_editor.add_node(node14, 558.48070800781, 239.56121337891)
 
 var node15 = ::blueprint::nodes::load::Load()
 
@@ -262,7 +262,21 @@ node46.var_type = "bool"
 
 _editor.add_node(node46, 1534.1280379091, -303.99151419876)
 
-Blueprint.connect(node13, "v", node14, "var")
+var node47 = ::blueprint::nodes::subgraph::Subgraph()
+node47.load_from_file(_editor, "../../tantien/assets/blueprints/tools/opt_value.ves")
+
+_editor.add_node(node47, 370.44049, 241.01392)
+
+var node48 = ::blueprint::nodes::input::Input()
+
+node48.var_name = "length"
+node48.var_type = "num"
+
+_editor.add_node(node48, 182, 283.5)
+
+Blueprint.connect(node48, "var", node47, "val")
+Blueprint.connect(node13, "v", node47, "default")
+Blueprint.connect(node47, "val", node14, "var")
 Blueprint.connect(node14, "var", node18, "var")
 Blueprint.connect(node18, "var", node25, "val")
 Blueprint.connect(node25, "val", node20, "v")

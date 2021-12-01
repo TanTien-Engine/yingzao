@@ -1,6 +1,7 @@
 import "blueprint.blueprint" for Blueprint
 import "blueprint.nodes.array" for Array
 import "blueprint.nodes.subgraph" for Subgraph
+import "beamgraph.context" for CONTEXT
 import "editor.editor" for Editor
 import "editor.node_cache" for NODE_CACHE
 
@@ -49,8 +50,10 @@ class Beameditor is Editor
 
 	draw_preview()
 	{
-		if (this.scene_stack.bp_dirty)
+		if (this.scene_stack.bp_dirty or CONTEXT.prop_changed)
 		{			
+			CONTEXT.prop_changed = false
+			
 			this.rebuild_all_geos()
 
 			Blueprint.send_pin_dirty_root(this.all_geos.exports[0])

@@ -6,6 +6,7 @@ import "blueprint.node_param" for NodeParam
 import "beamgraph.variant" for PIN_TYPE_CHUAN
 import "beamgraph.constant" for BEAM_DX, BEAM_DY, TOT_HEIGHT
 import "beamgraph.comp_nodes" for CompNodes
+import "beamgraph.context" for CONTEXT
 import "maths.vector" for Vector3
 import "math" for Math
 
@@ -30,19 +31,33 @@ class Chuan is Node
 		this.title = "槫"
 	}
 
-	resolve()
+	on_node_dirty()
+	{
+		CONTEXT.prop_changed = true
+	}
+
+	resolve(bf)
+	{
+		var dist = this.calc_dist()
+
+		var l_column = this.query_param("l_column").value
+		if (l_column) {
+			bf.column_idx.add(-dist)
+		} 
+
+		var r_column = this.query_param("r_column").value
+		if (r_column) {
+			bf.column_idx.add(dist)
+		}
+	}
+
+	resolve2(bf)
 	{
 		this.title = this.calc_title()
 
-		var dist = 0
+		var dist = this.calc_dist()
 
-		var prev = Blueprint.get_input_node(this, "prev")
-		while (prev) {
-			dist = dist + 1
-			prev = Blueprint.get_input_node(prev, "prev")
-		}
-
-		var rot = Math.pi() * 0.5
+		var rot = -Math.pi() * 0.5
 		var pos_l = Vector3(-BEAM_DX * dist, -BEAM_DY * dist, 0)
 		var pos_r = Vector3( BEAM_DX * dist, -BEAM_DY * dist, 0)
 
@@ -55,13 +70,26 @@ class Chuan is Node
 		if (l_column) {
 			ret.add(CompNodes.create_column(pos_l, TOT_HEIGHT - dist * BEAM_DY))
 		}
+		var l_beam = this.create_left_beam(bf, dist, pos_l)
+		if (l_beam) {
+			ret.add(l_beam)
+		}
 
 		var r_column = this.query_param("r_column").value
 		if (r_column) {
 			ret.add(CompNodes.create_column(pos_r, TOT_HEIGHT - dist * BEAM_DY))
 		}
+		var r_beam = this.create_right_beam(bf, dist, pos_r)
+		if (r_beam) {
+			ret.add(r_beam)
+		}
 
 		return Variant(ret)
+	}
+
+	get_title()
+	{
+		return this.title	
 	}
 
 	calc_title()
@@ -84,8 +112,72 @@ class Chuan is Node
 		}
 	}
 
-	get_title()
+	calc_dist()
 	{
-		return this.title	
+		var dist = 0
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		while (prev) {
+			dist = dist + 1
+			prev = Blueprint.get_input_node(prev, "prev")
+		}
+
+		return dist
+	}
+
+	calc_left_beam_dist(bf, idx)
+	{
+		var dist = -idx * 2
+		for (var i in bf.column_idx)
+		{
+			if (i > idx) {
+				var d = i - idx
+				if (d < dist) {
+					dist = d
+				}
+			}
+		}
+		return dist
+	}
+
+	calc_right_beam_dist(bf, idx)
+	{
+		var dist = idx * 2
+		for (var i in bf.column_idx)
+		{
+			if (i < idx) {
+				var d = idx - i
+				if (d < dist) {
+					dist = d
+				}
+			}
+		}
+		return dist
+	}
+
+	create_left_beam(bf, dist, pos)
+	{
+		var d = this.calc_left_beam_dist(bf, -dist)
+//		if (d == dist * 2) {
+//			return nil
+//		}
+
+		var h = Math.max(d * 0.12, 0.24)
+		var y = pos.y - h
+		var len = d * BEAM_DX
+		return CompNodes.create_straight_beam(Vector3(pos.x, y, pos.z), h, len)
+	}
+
+	create_right_beam(bf, dist, pos)
+	{
+		var d = this.calc_right_beam_dist(bf, dist)
+		if (d == dist * 2) {
+			return nil
+		}
+
+		var h = Math.max(d * 0.12, 0.24)
+		var y = pos.y - h
+		var len = d * BEAM_DX
+		return CompNodes.create_straight_beam(Vector3(pos.x - len, y, pos.z), h, len)
 	}
 }

@@ -4,22 +4,31 @@ class BeamFrame
 {
 	init()
 	{
+		this.column_idx = []
 	}
 
 	rebuild(scene, out_list)
 	{
+		this.column_idx.clear()
+
 		var comp_nodes = []
 		for (var node in scene.nodes) {
 			var bp_node = node.components["bp"]
-			if (bp_node and bp_node.has_method("resolve()")) {
+			if (bp_node and bp_node.has_method("resolve(_)")) {
 				comp_nodes.add(bp_node)
 			}
 		}
 		var sorted_nodes = Blueprint.topo_sort(comp_nodes)		
 
+		// pass 1
+		for (var node in sorted_nodes) {
+			node.resolve(this)
+		}
+
+		// pass 2
 		for (var node in sorted_nodes) 
 		{
-			var ret = node.resolve()
+			var ret = node.resolve2(this)
 			out_list.add(ret)
 		}
 	}

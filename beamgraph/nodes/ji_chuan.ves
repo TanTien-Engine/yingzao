@@ -22,7 +22,15 @@ class JiChuan is Node
 		this.layout()
 	}
 
-	resolve()
+	resolve(bf)
+	{
+		var column = this.query_param("column").value
+		if (column) {
+			bf.column_idx.add(0)
+		}
+	}
+
+	resolve2(bf)
 	{
 		var pos = Vector3(0, 0, 0)
 		var ret = [ CompNodes.create_chuan(pos) ]

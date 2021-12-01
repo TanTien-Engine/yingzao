@@ -6,18 +6,18 @@ import "beamgraph.trans_nodes" for TransNodes
 import "maths.vector" for Vector3
 import "math" for Math
 
-var CHUAN  = NODE_CACHE.fetch("../yingzao/00_dougong2/44_chuan.ves", nil)
-var COLUMN = NODE_CACHE.fetch("../yingzao/00_dougong2/46_column.ves", nil)
-
 class CompNodes
 {
 	static create_chuan(pos)
 	{
-		return TransNodes.transform(CHUAN, pos, Math.pi() * 0.5)
+		var CHUAN  = NODE_CACHE.fetch("../yingzao/00_dougong2/44_chuan.ves", nil)
+		return TransNodes.transform(CHUAN, pos, -Math.pi() * 0.5)
 	}
 
 	static create_column(pos, height)
 	{
+		var COLUMN = NODE_CACHE.fetch("../yingzao/00_dougong2/46_column.ves", nil)
+
 		var h_node = VariantProxy(Variant(height))
 		Blueprint.connect(h_node, "out", COLUMN, "height")		
 
@@ -26,5 +26,47 @@ class CompNodes
 		h_node.disconnect()
 
 		return ret
+	}
+
+	static create_straight_beam(pos, h, len)
+	{
+		var BEAM = NODE_CACHE.fetch("../yingzao/00_dougong2/45_straight_beam.ves", nil)
+
+		var entasis = (h >= 0.24)
+		var e_node = VariantProxy(Variant(entasis))
+		Blueprint.connect(e_node, "out", BEAM, "entasis")
+
+		var h_node = VariantProxy(Variant(h))
+		Blueprint.connect(h_node, "out", BEAM, "height")
+
+		var len_node = VariantProxy(Variant(len))
+		Blueprint.connect(len_node, "out", BEAM, "length")
+		
+		var v_geo = TransNodes.transform(BEAM, pos, -Math.pi() * 0.5)
+		return v_geo
+	}
+
+	static create_crescent_beam(pos, h, len)
+	{
+		var BEAM = NODE_CACHE.fetch("../yingzao/00_dougong2/45_crescent_beam.ves", nil)
+
+		var h_node = VariantProxy(Variant(h))
+		Blueprint.connect(h_node, "out", BEAM, "height")
+
+		var w_node = VariantProxy(Variant(h * 2 / 3))
+		Blueprint.connect(w_node, "out", BEAM, "width")
+
+		var h_len_node = VariantProxy(Variant(0.09))
+		Blueprint.connect(h_len_node, "out", BEAM, "head_len")
+
+		var len_node = VariantProxy(Variant(len))
+		Blueprint.connect(len_node, "out", BEAM, "length")
+
+		var v_geo = TransNodes.transform(BEAM, pos, -Math.pi() * 0.5)
+
+		var offset = len * 0.5
+		v_geo = TransNodes.translate(VariantProxy(v_geo), Vector3(offset, 0, 0))
+
+		return v_geo
 	}
 }
