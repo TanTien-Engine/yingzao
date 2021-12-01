@@ -39,7 +39,7 @@ class Chuan is Node
 		CONTEXT.prop_changed = true
 	}
 
-	resolve(bf)
+	resolve_deep(bf)
 	{
 		this.deep = this.calc_deep()
 
@@ -54,11 +54,14 @@ class Chuan is Node
 		}
 	}
 
-	resolve2(bf)
+	resolve_height(bf)
+	{
+		this.height = this.calc_height(bf)
+	}
+
+	resolve_geo(bf)
 	{
 		this.title = this.calc_title(bf)
-
-		this.height = this.calc_height(bf)
 
 		var rot = -Math.pi() * 0.5
 		var pos_l = Vector3(-BEAM_DX * this.deep, this.height, 0)
@@ -72,6 +75,9 @@ class Chuan is Node
 		var l_column = this.query_param("l_column").value
 		if (l_column) {
 			ret.add(CompNodes.create_column(pos_l, this.height))
+		} else {
+			var beam_h = this.calc_beam_height(this.calc_left_beam_dist(bf, -this.deep))
+			ret.add(this.create_tuo_feng(pos_l, beam_h))
 		}
 		var l_beam = this.create_left_beam(bf, this.deep, pos_l)
 		if (l_beam) {
@@ -81,6 +87,9 @@ class Chuan is Node
 		var r_column = this.query_param("r_column").value
 		if (r_column) {
 			ret.add(CompNodes.create_column(pos_r, this.height))
+		} else {
+			var beam_h = this.calc_beam_height(this.calc_right_beam_dist(bf, this.deep))
+			ret.add(this.create_tuo_feng(pos_r, beam_h))
 		}
 		var r_beam = this.create_right_beam(bf, this.deep, pos_r)
 		if (r_beam) {
@@ -209,5 +218,19 @@ class Chuan is Node
 		} else {
 			return 0.36
 		}
+	}
+
+	create_tuo_feng(pos, beam_h)
+	{
+		var dh = 0
+
+		var next = Blueprint.get_output_node(this, "next")
+		if (next) {
+			dh = this.height - next.height
+		}
+
+		System.print("++ %(dh)")
+
+		return CompNodes.create_tuo_feng(Vector3(pos.x, pos.y - dh, pos.z), dh - beam_h)
 	}
 }

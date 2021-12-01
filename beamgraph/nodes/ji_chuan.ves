@@ -23,7 +23,7 @@ class JiChuan is Node
 		this.height = 0
 	}
 
-	resolve(bf)
+	resolve_deep(bf)
 	{
 		var column = this.query_param("column").value
 		if (column) {
@@ -31,10 +31,13 @@ class JiChuan is Node
 		}
 	}
 
-	resolve2(bf)
+	resolve_height(bf)
 	{
 		this.height = bf.height
+	}
 
+	resolve_geo(bf)
+	{
 		var pos = Vector3(0, bf.height, 0)
 		var ret = [ CompNodes.create_chuan(pos) ]
 

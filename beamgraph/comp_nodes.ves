@@ -74,4 +74,19 @@ class CompNodes
 
 		return v_geo
 	}
+
+	static create_tuo_feng(pos, h)
+	{
+		var tuo_h = (h - 0.06)
+		var tuo_s = tuo_h / 0.25
+
+		var TUO = NODE_CACHE.fetch("../yingzao/00_dougong2/47_tuo_feng.ves", nil)
+		var tuo = TransNodes.scale(TUO, Vector3(1.0, tuo_s, tuo_s))
+		tuo = TransNodes.transform(VariantProxy(tuo), pos, -Math.pi() * 0.5)
+
+		var DOU = NODE_CACHE.fetch("../yingzao/00_dougong2/21_san_dou.ves", nil)
+		var dou = TransNodes.translate(DOU, Vector3(pos.x, pos.y + tuo_h, pos.z))
+
+		return Variant([ tuo, dou ])
+	}
 }

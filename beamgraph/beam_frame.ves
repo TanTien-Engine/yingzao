@@ -18,24 +18,26 @@ class BeamFrame
 		var comp_nodes = []
 		for (var node in scene.nodes) {
 			var bp_node = node.components["bp"]
-			if (bp_node and bp_node.has_method("resolve(_)")) {
+			if (bp_node and bp_node.has_method("resolve_geo(_)")) {
 				comp_nodes.add(bp_node)
 			}
 		}
 		var sorted_nodes = Blueprint.topo_sort(comp_nodes)		
 
-		// pass 1
+		// pass 1, deep
 		for (var node in sorted_nodes) {
-			node.resolve(this)
+			node.resolve_deep(this)
 		}
 
+		// pass 2, height
 		this.calc_height()
+		for (var node in sorted_nodes) {
+			node.resolve_height(this)
+		}
 
-		// pass 2
-		for (var node in sorted_nodes) 
-		{
-			var ret = node.resolve2(this)
-			out_list.add(ret)
+		// pass 3, geo
+		for (var node in sorted_nodes) {
+			out_list.add(node.resolve_geo(this))
 		}
 	}
 

@@ -3,6 +3,7 @@ import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "geograph.nodes.rotate_y" for RotateY
 import "geograph.nodes.translate_f" for TranslateF
+import "scenegraph.nodes.transform3d" for Transform3d
 
 fun get_geo_idx(geo_node)
 {
@@ -26,6 +27,17 @@ class TransNodes
 		return Blueprint.calc_output_value(trans, "geo")
 	}
 
+	static scale(geo_node, scale)
+	{
+		var trans = Transform3d()
+		Blueprint.connect(geo_node, get_geo_idx(geo_node), trans, "obj")
+
+		var scale_node = VariantProxy(Variant(scale))
+		Blueprint.connect(scale_node, "out", trans, "scale")
+
+		return Blueprint.calc_output_value(trans, "obj")
+	}
+	
 	static transform(geo_node, pos, angle)
 	{
 		var rot_y = RotateY()
