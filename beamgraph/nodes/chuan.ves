@@ -4,7 +4,7 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.node_param" for NodeParam
 import "beamgraph.variant" for PIN_TYPE_CHUAN
-import "beamgraph.constant" for BEAM_DX, BEAM_DY
+import "beamgraph.constant" for BEAM_DX
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.context" for CONTEXT
 import "maths.vector" for Vector3
@@ -31,6 +31,7 @@ class Chuan is Node
 		this.title = "槫"
 
 		this.deep = 0
+		this.height = 0
 	}
 
 	on_node_dirty()
@@ -57,9 +58,11 @@ class Chuan is Node
 	{
 		this.title = this.calc_title(bf)
 
+		this.height = this.calc_height(bf)
+
 		var rot = -Math.pi() * 0.5
-		var pos_l = Vector3(-BEAM_DX * this.deep, bf.height - BEAM_DY * this.deep, 0)
-		var pos_r = Vector3( BEAM_DX * this.deep, bf.height - BEAM_DY * this.deep, 0)
+		var pos_l = Vector3(-BEAM_DX * this.deep, this.height, 0)
+		var pos_r = Vector3( BEAM_DX * this.deep, this.height, 0)
 
 		var geo_l = CompNodes.create_chuan(pos_l)
 		var geo_r = CompNodes.create_chuan(pos_r)
@@ -68,7 +71,7 @@ class Chuan is Node
 
 		var l_column = this.query_param("l_column").value
 		if (l_column) {
-			ret.add(CompNodes.create_column(pos_l, (bf.max_deep - this.deep) * BEAM_DY))
+			ret.add(CompNodes.create_column(pos_l, this.height))
 		}
 		var l_beam = this.create_left_beam(bf, this.deep, pos_l)
 		if (l_beam) {
@@ -77,7 +80,7 @@ class Chuan is Node
 
 		var r_column = this.query_param("r_column").value
 		if (r_column) {
-			ret.add(CompNodes.create_column(pos_r, (bf.max_deep - this.deep) * BEAM_DY))
+			ret.add(CompNodes.create_column(pos_r, this.height))
 		}
 		var r_beam = this.create_right_beam(bf, this.deep, pos_r)
 		if (r_beam) {
@@ -116,6 +119,25 @@ class Chuan is Node
 		}
 
 		return deep
+	}
+
+	calc_height(bf)
+	{
+		if (this.deep == bf.max_deep) {
+			return 0
+		}
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev)
+		{
+			var d = bf.max_deep - this.deep
+			var dh = 0.1 * Math.pow(0.5, (this.deep - 1)) * bf.height
+			return d / (d + 1) * prev.height - dh
+		}
+		else
+		{
+			return (bf.max_deep - this.deep) / bf.max_deep * bf.height
+		}
 	}
 
 	calc_left_beam_dist(bf, idx)

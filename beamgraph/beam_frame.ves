@@ -1,5 +1,5 @@
 import "blueprint.blueprint" for Blueprint
-import "beamgraph.constant" for BEAM_DY
+import "beamgraph.constant" for BEAM_DX
 
 class BeamFrame
 {
@@ -48,6 +48,6 @@ class BeamFrame
 			}
 		}
 
-		this.height = this.max_deep * BEAM_DY
+		this.height = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 3
 	}
 }

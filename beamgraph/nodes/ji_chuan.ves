@@ -19,6 +19,8 @@ class JiChuan is Node
 		this.params.add(NodeParam("column", false))
 
 		this.layout()
+
+		this.height = 0
 	}
 
 	resolve(bf)
@@ -31,6 +33,8 @@ class JiChuan is Node
 
 	resolve2(bf)
 	{
+		this.height = bf.height
+
 		var pos = Vector3(0, bf.height, 0)
 		var ret = [ CompNodes.create_chuan(pos) ]
 
