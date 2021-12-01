@@ -177,7 +177,7 @@ class Chuan is Node
 //			return nil
 //		}
 
-		var h = Math.max(d * 0.12, 0.24)
+		var h = this.calc_beam_height(d)
 		var y = pos.y - h
 		var len = d * BEAM_DX
 		return CompNodes.create_straight_beam(Vector3(pos.x, y, pos.z), h, len)
@@ -190,9 +190,20 @@ class Chuan is Node
 			return nil
 		}
 
-		var h = Math.max(d * 0.12, 0.24)
+		var h = this.calc_beam_height(d)
 		var y = pos.y - h
 		var len = d * BEAM_DX
 		return CompNodes.create_straight_beam(Vector3(pos.x - len, y, pos.z), h, len)
+	}
+
+	calc_beam_height(deep)
+	{
+		if (deep <= 2) {
+			return 0.24
+		} else if (deep <= 4) {
+			return 0.3
+		} else {
+			return 0.36
+		}
 	}
 }
