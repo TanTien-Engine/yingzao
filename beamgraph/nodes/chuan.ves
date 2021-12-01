@@ -4,7 +4,7 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.node_param" for NodeParam
 import "beamgraph.variant" for PIN_TYPE_CHUAN
-import "beamgraph.constant" for BEAM_DX
+import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.context" for CONTEXT
 import "maths.vector" for Vector3
@@ -179,8 +179,12 @@ class Chuan is Node
 
 		var h = this.calc_beam_height(d)
 		var y = pos.y - h
-		var len = d * BEAM_DX
-		return CompNodes.create_straight_beam(Vector3(pos.x, y, pos.z), h, len)
+		var len = d * BEAM_DX + BEAM_HEAD_LEN
+		if (d == dist * 2) {
+			len = len + BEAM_HEAD_LEN
+		}
+
+		return CompNodes.create_straight_beam(Vector3(pos.x - BEAM_HEAD_LEN, y, pos.z), h, len)
 	}
 
 	create_right_beam(bf, dist, pos)
@@ -192,8 +196,8 @@ class Chuan is Node
 
 		var h = this.calc_beam_height(d)
 		var y = pos.y - h
-		var len = d * BEAM_DX
-		return CompNodes.create_straight_beam(Vector3(pos.x - len, y, pos.z), h, len)
+		var len = d * BEAM_DX + BEAM_HEAD_LEN
+		return CompNodes.create_straight_beam(Vector3(pos.x - len + BEAM_HEAD_LEN, y, pos.z), h, len)
 	}
 
 	calc_beam_height(deep)
