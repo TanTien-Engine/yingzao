@@ -1,10 +1,14 @@
 import "blueprint.blueprint" for Blueprint
+import "beamgraph.constant" for BEAM_DY
 
 class BeamFrame
 {
 	init()
 	{
 		this.column_idx = []
+
+		this.max_deep = 0
+		this.height = 0
 	}
 
 	rebuild(scene, out_list)
@@ -25,11 +29,25 @@ class BeamFrame
 			node.resolve(this)
 		}
 
+		this.calc_height()
+
 		// pass 2
 		for (var node in sorted_nodes) 
 		{
 			var ret = node.resolve2(this)
 			out_list.add(ret)
 		}
+	}
+
+	calc_height()
+	{
+		this.max_deep = 0
+		for (var i in this.column_idx) {
+			if (i > this.max_deep) {
+				this.max_deep = i
+			}
+		}
+
+		this.height = this.max_deep * BEAM_DY
 	}
 }

@@ -4,7 +4,7 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.node_param" for NodeParam
 import "beamgraph.variant" for PIN_TYPE_CHUAN
-import "beamgraph.constant" for BEAM_DX, BEAM_DY, TOT_HEIGHT
+import "beamgraph.constant" for BEAM_DX, BEAM_DY
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.context" for CONTEXT
 import "maths.vector" for Vector3
@@ -23,12 +23,14 @@ class Chuan is Node
 			Pin(this, "next", PIN_TYPE_CHUAN),
 		]
 
-		this.params.add(NodeParam("l_column", false))
-		this.params.add(NodeParam("r_column", false))
+		this.params.add(NodeParam("l_column", true))
+		this.params.add(NodeParam("r_column", true))
 
 		this.layout()
 
 		this.title = "槫"
+
+		this.deep = 0
 	}
 
 	on_node_dirty()
@@ -38,28 +40,26 @@ class Chuan is Node
 
 	resolve(bf)
 	{
-		var dist = this.calc_dist()
+		this.deep = this.calc_deep()
 
 		var l_column = this.query_param("l_column").value
 		if (l_column) {
-			bf.column_idx.add(-dist)
+			bf.column_idx.add(-this.deep)
 		} 
 
 		var r_column = this.query_param("r_column").value
 		if (r_column) {
-			bf.column_idx.add(dist)
+			bf.column_idx.add(this.deep)
 		}
 	}
 
 	resolve2(bf)
 	{
-		this.title = this.calc_title()
-
-		var dist = this.calc_dist()
+		this.title = this.calc_title(bf)
 
 		var rot = -Math.pi() * 0.5
-		var pos_l = Vector3(-BEAM_DX * dist, -BEAM_DY * dist, 0)
-		var pos_r = Vector3( BEAM_DX * dist, -BEAM_DY * dist, 0)
+		var pos_l = Vector3(-BEAM_DX * this.deep, bf.height - BEAM_DY * this.deep, 0)
+		var pos_r = Vector3( BEAM_DX * this.deep, bf.height - BEAM_DY * this.deep, 0)
 
 		var geo_l = CompNodes.create_chuan(pos_l)
 		var geo_r = CompNodes.create_chuan(pos_r)
@@ -68,18 +68,18 @@ class Chuan is Node
 
 		var l_column = this.query_param("l_column").value
 		if (l_column) {
-			ret.add(CompNodes.create_column(pos_l, TOT_HEIGHT - dist * BEAM_DY))
+			ret.add(CompNodes.create_column(pos_l, (bf.max_deep - this.deep) * BEAM_DY))
 		}
-		var l_beam = this.create_left_beam(bf, dist, pos_l)
+		var l_beam = this.create_left_beam(bf, this.deep, pos_l)
 		if (l_beam) {
 			ret.add(l_beam)
 		}
 
 		var r_column = this.query_param("r_column").value
 		if (r_column) {
-			ret.add(CompNodes.create_column(pos_r, TOT_HEIGHT - dist * BEAM_DY))
+			ret.add(CompNodes.create_column(pos_r, (bf.max_deep - this.deep) * BEAM_DY))
 		}
-		var r_beam = this.create_right_beam(bf, dist, pos_r)
+		var r_beam = this.create_right_beam(bf, this.deep, pos_r)
 		if (r_beam) {
 			ret.add(r_beam)
 		}
@@ -92,37 +92,30 @@ class Chuan is Node
 		return this.title	
 	}
 
-	calc_title()
+	calc_title(bf)
 	{
-		import "beamgraph.nodes.ji_chuan" for JiChuan
-
-		var prev = Blueprint.get_input_node(this, "prev")
-		var next = Blueprint.get_output_node(this, "next")
-
-		if (prev and prev is JiChuan) {
+		if (this.deep == 1) {
 			return "上平槫"
-		} else if (next and !Blueprint.get_output_node(this, "next")) {
-			return "下平槫"			
-		} else if (!next) {
+		} else if (this.deep == bf.max_deep) {
 			return "承椽槫"
-		} else if (prev) {
-			return "中平槫"
+		} else if (this.deep == bf.max_deep - 1) {
+			return "下平槫"
 		} else {
-			return "槫"
+			return "中平槫"
 		}
 	}
 
-	calc_dist()
+	calc_deep()
 	{
-		var dist = 0
+		var deep = 0
 
 		var prev = Blueprint.get_input_node(this, "prev")
 		while (prev) {
-			dist = dist + 1
+			deep = deep + 1
 			prev = Blueprint.get_input_node(prev, "prev")
 		}
 
-		return dist
+		return deep
 	}
 
 	calc_left_beam_dist(bf, idx)

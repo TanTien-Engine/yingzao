@@ -18,8 +18,13 @@ class CompNodes
 	{
 		var COLUMN = NODE_CACHE.fetch("../yingzao/00_dougong2/46_column.ves", nil)
 
-		var h_node = VariantProxy(Variant(height))
-		Blueprint.connect(h_node, "out", COLUMN, "height")		
+		var d = 0.36
+		var radius_node = VariantProxy(Variant(d * 0.5))
+		Blueprint.connect(radius_node, "out", COLUMN, "radius")	
+
+		var h = d * 8 + height
+		var h_node = VariantProxy(Variant(h))
+		Blueprint.connect(h_node, "out", COLUMN, "height")
 
 		var ret = TransNodes.translate(COLUMN, Vector3(pos.x, pos.y, pos.z))
 

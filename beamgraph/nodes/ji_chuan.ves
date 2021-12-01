@@ -3,7 +3,6 @@ import "blueprint.node" for Node
 import "blueprint.node_param" for NodeParam
 import "blueprint.variant" for Variant
 import "beamgraph.variant" for PIN_TYPE_CHUAN
-import "beamgraph.constant" for TOT_HEIGHT
 import "beamgraph.comp_nodes" for CompNodes
 import "maths.vector" for Vector3
 
@@ -32,12 +31,12 @@ class JiChuan is Node
 
 	resolve2(bf)
 	{
-		var pos = Vector3(0, 0, 0)
+		var pos = Vector3(0, bf.height, 0)
 		var ret = [ CompNodes.create_chuan(pos) ]
 
 		var column = this.query_param("column").value
 		if (column) {
-			ret.add(CompNodes.create_column(pos, TOT_HEIGHT))
+			ret.add(CompNodes.create_column(pos, bf.height))
 		}
 
 		return Variant(ret)
