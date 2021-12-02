@@ -1,0 +1,70 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
+node0.set_prop_value("ortho", false)
+node0.set_prop_value("offset", 2.2236833572388)
+
+node0.op_node.cam.position.set(1.6165460685222, 1.0869721693997, 1.3783418300731)
+node0.op_node.cam.yaw = -133.7
+node0.op_node.cam.pitch = -24.3
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.29386684298515
+
+_editor.add_node(node0, -350.9, -62.92)
+
+var node1 = ::gonggraph::component::inner_gong::InnerGong()
+
+_editor.add_node(node1, 36.182542176089, 271.84043439657)
+
+var node2 = ::blueprint::nodes::commentary::Commentary()
+
+node2.set_size(902.66129362748, 337.39847004986)
+node2.title = "两材襻间斗栱"
+
+_editor.add_node(node2, 251, 450.7460555973)
+
+var node3 = ::gonggraph::component::ti_mu::TiMu()
+
+_editor.add_node(node3, 481.17284338501, 408.10892698587)
+
+var node4 = ::gonggraph::component::chuan::Chuan()
+
+_editor.add_node(node4, 616.26546000956, 410.79228194797)
+
+var node5 = ::gonggraph::component::fang::Fang()
+
+_editor.add_node(node5, 36.161335464981, 318.73405781896)
+
+var node6 = ::gonggraph::tools::hori_merge::HoriMerge()
+
+_editor.add_node(node6, 172.74485385129, 389.43177079193)
+
+var node7 = ::gonggraph::component::inner_gong::InnerGong()
+
+_editor.add_node(node7, 201.9510955695, 314.77059463891)
+
+var node8 = ::gonggraph::tools::hori_merge::HoriMerge()
+
+_editor.add_node(node8, 339.25378162896, 388.71663462594)
+
+var node9 = ::gonggraph::component::fang::Fang()
+
+_editor.add_node(node9, 202.29087554998, 267.46480277279)
+
+var node10 = ::gonggraph::component::dou::Dou()
+
+_editor.add_node(node10, -114.21656282283, 339.48866057594)
+
+var node11 = ::gonggraph::component::shua_tou::ShuaTou()
+
+_editor.add_node(node11, 176.7197265625, 181.47561645508)
+
+Blueprint.connect(node10, "vert", node11, "prev")
+Blueprint.connect(node10, "hori", node6, "prev")
+Blueprint.connect(node5, "next", node6, "left")
+Blueprint.connect(node1, "next", node6, "right")
+Blueprint.connect(node6, "next", node8, "prev")
+Blueprint.connect(node7, "next", node8, "left")
+Blueprint.connect(node9, "next", node8, "right")
+Blueprint.connect(node8, "next", node3, "prev")
+Blueprint.connect(node3, "next", node4, "prev")

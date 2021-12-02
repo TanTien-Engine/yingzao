@@ -4,12 +4,13 @@ import "blueprint.variant_proxy" for VariantProxy
 import "gonggraph.trans_nodes" for TransNodes
 import "gonggraph.node_helper" for NodeHelper
 import "gonggraph.component.vert_gong" for VertGong
-import "gonggraph.constant" for ZU_CAI_HEIGHT
+import "gonggraph.constant" for ZU_CAI_HEIGHT, CAI_HEIGHT
 import "gonggraph.ang_helper" for AngHelper
 import "gonggraph.joints_nodes" for JointsNodes
 import "gonggraph.gong_helper" for GongHelper, VERT_POS_MIDDLE, VERT_POS_INNER, VERT_POS_OUTER
 import "gonggraph.context" for CONTEXT
 import "editor.node_cache" for NODE_CACHE
+import "maths.vector" for Vector3
 
 var SHUA_TOU = NODE_CACHE.fetch("../yingzao/00_dougong2/36_shua_tou.ves", nil)
 
@@ -66,6 +67,7 @@ class ShuaTou is VertGong
 	{
 		import "gonggraph.tools.vert_merge" for VertMerge
 		import "gonggraph.component.lu_dou" for LuDou
+		import "gonggraph.component.dou" for Dou
 
 		var single_node = VariantProxy(Variant(single))
 		Blueprint.connect(single_node, "out", SHUA_TOU, "single")
@@ -75,8 +77,9 @@ class ShuaTou is VertGong
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
 
 		var v_geo = nil
-		if ((this.outer_hop == 1 or this.inner_hop == 1) and prev is LuDou) {
+		if ((this.outer_hop == 1 or this.inner_hop == 1) and (prev is LuDou or prev is Dou)) {
 			v_geo = ShuaTou.create_geo(0.12, pos)
+			v_geo = ShuaTou.add_qixin_dou(v_geo, pos)
 		} else {
 			v_geo = ShuaTou.create_geo(this.outer_hop, this.inner_hop, pos)
 		}
@@ -107,6 +110,22 @@ class ShuaTou is VertGong
 		Blueprint.connect(VariantProxy(Variant(len)), "out", SHUA_TOU, "len_left")
 		Blueprint.connect(VariantProxy(Variant(len)), "out", SHUA_TOU, "len_right")
 		return TransNodes.translate(SHUA_TOU, pos)
+	}
+
+	static add_qixin_dou(v_geo, pos)
+	{
+		import "gonggraph.component.dou" for QIXIN_DOU
+
+		var GD_SUN = NODE_CACHE.fetch("../yingzao/00_dougong2/10_gd_sun.ves", nil)
+
+		var c_pos = pos.add(Vector3(0, CAI_HEIGHT, 0))
+
+		var c_sun = TransNodes.translate(GD_SUN, c_pos)
+		var c_dou = TransNodes.translate(QIXIN_DOU, c_pos)
+
+		v_geo = JointsNodes.cut_geo_node(v_geo, GD_SUN, c_pos)
+
+		return Variant([ v_geo, c_sun, c_dou ])
 	}
 
 	gen_corner(dg)
