@@ -49,7 +49,7 @@ class ShuaTou is VertGong
 	resolve2(dg)
 	{
 		var single = true
-		if (this.comp.y_idx < dg.layers.count - 1 and !dg.layers[this.comp.y_idx + 1].isEmpty) {
+		if (this.comp.y_idx < dg.layers.count - 1 and !dg.layers[this.comp.y_idx + 1][0].isEmpty) {
 			single = false
 		}
 		this.comp.v_geo = this.create_geo(single)
