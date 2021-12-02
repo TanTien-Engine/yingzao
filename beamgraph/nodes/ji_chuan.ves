@@ -8,6 +8,7 @@ import "beamgraph.variant" for PIN_TYPE_CHUAN
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.gong_helper" for GongHelper
 import "beamgraph.trans_nodes" for TransNodes
+import "beamgraph.context" for CONTEXT
 import "maths.vector" for Vector3
 import "math" for Math
 import "editor.node_cache" for NODE_CACHE
@@ -60,7 +61,13 @@ class JiChuan is Node
 			ret.add(CompNodes.create_column(Vector3(pos.x, pos.y - dh - h_beam, pos.z), bf.height - dh - h_beam))
 		}
 
-		var v_gong = GongHelper.load_dou_gong("../yingzao/11_dg_song/802_pan_jian_2d.ves")
+		var v_gong = nil
+		if (CONTEXT.pan_jian) {
+			v_gong = GongHelper.load_dou_gong("../yingzao/11_dg_song/802_pan_jian_2d.ves")
+		} else {
+			v_gong = GongHelper.load_dou_gong("../yingzao/11_dg_song/806_ding_hua_ji_chuan.ves")
+		}
+
 		if (v_gong) 
 		{
 			var h_gong = 0.06 + 0.21 + 0.21 + (0.12 - 0.02)
