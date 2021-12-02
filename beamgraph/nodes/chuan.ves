@@ -3,10 +3,26 @@ import "blueprint.node" for Node
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.node_param" for NodeParam
+import "blueprint.variant_proxy" for VariantProxy
+import "gonggraph.component.dou" for Dou
+import "gonggraph.component.lu_dou" for LuDou
+import "gonggraph.component.inner_gong" for InnerGong
+import "gonggraph.component.ti_mu" for TiMu
+import "gonggraph.component.fang" for Fang
+import "gonggraph.component.cheng_chuan_fang" for ChengChuanFang
+import "gonggraph.component.shua_tou" for ShuaTou
+import "gonggraph.component.beam" for Beam
+import "gonggraph.component.hua_gong" for HuaGong
+import "gonggraph.component.hori_gong" for HoriGong
+import "gonggraph.component.liao_yan_fang" for LiaoYanFang
+import "gonggraph.tools.hori_merge" for HoriMerge
+import "gonggraph.tools.vert_merge" for VertMerge
 import "beamgraph.variant" for PIN_TYPE_CHUAN
 import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.context" for CONTEXT
+import "beamgraph.trans_nodes" for TransNodes
+import "gonggraph.dou_gong" for DouGong
 import "maths.vector" for Vector3
 import "math" for Math
 
@@ -61,23 +77,40 @@ class Chuan is Node
 
 	resolve_geo(bf)
 	{
+		var ret = []
+
 		this.title = this.calc_title(bf)
 
 		var rot = -Math.pi() * 0.5
 		var pos_l = Vector3(-BEAM_DX * this.deep, this.height, 0)
 		var pos_r = Vector3( BEAM_DX * this.deep, this.height, 0)
 
-		var geo_l = CompNodes.create_chuan(pos_l)
-		var geo_r = CompNodes.create_chuan(pos_r)
-
-		var ret = [ geo_l, geo_r ]
+		var sides = this.deep == bf.max_deep
+		if (!sides) {
+			ret.add(CompNodes.create_chuan(pos_l))
+			ret.add(CompNodes.create_chuan(pos_r))
+		}
 
 		var l_column = this.query_param("l_column").value
-		if (l_column) {
-			ret.add(CompNodes.create_column(pos_l, this.height))
+		if (l_column) 
+		{
+			ret.add(this.create_column(bf, pos_l))
+		} 
+		else 
+		{
+			var next_beam_h = 0
+			if (this.deep == bf.max_deep - 1) {
+				var next = Blueprint.get_output_node(this, "next")
+				if (next) {
+					next_beam_h = next.calc_beam_height(next.calc_left_beam_dist(bf, -next.deep))
+				}
+			}
+			ret.add(this.create_tuo_feng(bf, pos_l, next_beam_h))
+		}
+		if (sides) {
+			ret.add(this.create_4s_dg(pos_l, false))
 		} else {
-			var beam_h = this.calc_beam_height(this.calc_left_beam_dist(bf, -this.deep))
-			ret.add(this.create_tuo_feng(pos_l, beam_h))
+			ret.add(this.create_3s_dg(pos_l, l_column))
 		}
 		var l_beam = this.create_left_beam(bf, this.deep, pos_l)
 		if (l_beam) {
@@ -85,12 +118,26 @@ class Chuan is Node
 		}
 
 		var r_column = this.query_param("r_column").value
-		if (r_column) {
-			ret.add(CompNodes.create_column(pos_r, this.height))
-		} else {
-			var beam_h = this.calc_beam_height(this.calc_right_beam_dist(bf, this.deep))
-			ret.add(this.create_tuo_feng(pos_r, beam_h))
+		if (r_column) 
+		{
+			ret.add(this.create_column(bf, pos_r))
+		} 
+		else 
+		{
+			var next_beam_h = 0
+			if (this.deep == bf.max_deep - 1) {
+				var next = Blueprint.get_output_node(this, "next")
+				if (next) {
+					next_beam_h = next.calc_beam_height(next.calc_right_beam_dist(bf, next.deep))
+				}
+			}
+			ret.add(this.create_tuo_feng(bf, pos_r, next_beam_h))
 		}
+		if (sides) {
+			ret.add(this.create_4s_dg(pos_r, true))
+		} else {
+			ret.add(this.create_3s_dg(pos_r, r_column))
+		}		
 		var r_beam = this.create_right_beam(bf, this.deep, pos_r)
 		if (r_beam) {
 			ret.add(r_beam)
@@ -149,6 +196,20 @@ class Chuan is Node
 		}
 	}
 
+	create_column(bf, pos)
+	{
+		var h_gong = 0
+
+		var sides = this.deep == bf.max_deep
+		if (sides) {
+			h_gong = this.calc_4s_gong_height()
+		} else {
+			h_gong = this.calc_3s_gong_height(true)		
+		}
+
+		return CompNodes.create_column(Vector3(pos.x, pos.y - h_gong, pos.z), this.height - h_gong)
+	}
+
 	calc_left_beam_dist(bf, idx)
 	{
 		var dist = -idx * 2
@@ -187,10 +248,17 @@ class Chuan is Node
 //		}
 
 		var h = this.calc_beam_height(d)
-		var y = pos.y - h
 		var len = d * BEAM_DX + BEAM_HEAD_LEN
 		if (d == dist * 2) {
 			len = len + BEAM_HEAD_LEN
+		}
+
+		var y = 0
+		var sides = this.deep == bf.max_deep
+		if (sides) {
+			y = pos.y - 0.21 * 2
+		} else {
+			y = pos.y - h
 		}
 
 		return CompNodes.create_straight_beam(Vector3(pos.x - BEAM_HEAD_LEN, y, pos.z), h, len)
@@ -204,8 +272,16 @@ class Chuan is Node
 		}
 
 		var h = this.calc_beam_height(d)
-		var y = pos.y - h
 		var len = d * BEAM_DX + BEAM_HEAD_LEN
+
+		var y = 0
+		var sides = this.deep == bf.max_deep
+		if (sides) {
+			y = pos.y - 0.21 * 2
+		} else {
+			y = pos.y - h
+		}
+
 		return CompNodes.create_straight_beam(Vector3(pos.x - len + BEAM_HEAD_LEN, y, pos.z), h, len)
 	}
 
@@ -220,7 +296,7 @@ class Chuan is Node
 		}
 	}
 
-	create_tuo_feng(pos, beam_h)
+	create_tuo_feng(bf, pos, next_beam_h)
 	{
 		var dh = 0
 
@@ -229,6 +305,125 @@ class Chuan is Node
 			dh = this.height - next.height
 		}
 
-		return CompNodes.create_tuo_feng(Vector3(pos.x, pos.y - dh, pos.z), dh - beam_h)
+		var sides = this.deep == bf.max_deep - 1
+		if (sides) {
+			dh = dh + 0.21 * 2 - next_beam_h
+		}
+
+		return CompNodes.create_tuo_feng(Vector3(pos.x, pos.y - dh, pos.z), dh - this.calc_3s_gong_height(false))
+	}
+
+	calc_3s_gong_height(column)
+	{
+		var h_dou = 0
+		if (column) {
+			h_dou = 0.12
+		} else {
+			h_dou = 0.06
+		}
+		return h_dou + 0.21 + (0.12 - 0.02)
+	}
+
+	calc_4s_gong_height()
+	{
+		return 0.12 + 0.21 * 3
+	}
+
+	create_3s_dg(pos, column)
+	{
+		var dou = nil
+		if (column) {
+			dou = LuDou()
+		} else {
+			dou = Dou()
+		}
+
+		var nodes = [ dou ]
+
+		var gong = nil
+		if (CONTEXT.pan_jian)
+		{
+			var g = InnerGong()
+			var f = Fang()
+			gong = HoriMerge()
+
+			if (Math.mod(this.deep, 2) > 0) {
+				Blueprint.connect(g, "next", gong, "left")
+				Blueprint.connect(f, "next", gong, "right")
+			} else {
+				Blueprint.connect(f, "next", gong, "left")
+				Blueprint.connect(g, "next", gong, "right")
+			}
+
+			nodes.add(g)
+			nodes.add(f)
+		}
+		else
+		{
+			gong  = InnerGong()
+		}
+		nodes.add(gong)
+
+		var ti = TiMu()
+		nodes.add(ti)
+
+		Blueprint.connect(dou, "hori", gong, "prev")
+		Blueprint.connect(gong, "next", ti, "prev")
+
+		var geos = []
+
+		var dg = DouGong()
+		dg.rebuild(nodes, geos)
+
+		var v_gong = Variant(geos)
+
+		var h_gong = this.calc_3s_gong_height(column)
+		v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, pos.y - h_gong, pos.z), -Math.pi() * 0.5)
+
+		return v_gong
+	}
+
+	create_4s_dg(pos, rot)
+	{
+		var lu = LuDou()
+
+		var ni_dao = InnerGong()
+		var bi_man = InnerGong()
+		var zhu_fang = Fang()
+		var cheng_fang = ChengChuanFang()
+
+		var hua = HuaGong()
+		var shua = ShuaTou()		
+		var ling = HoriGong()
+		var yan = LiaoYanFang()
+
+		Blueprint.connect(lu, "hori", ni_dao, "prev")
+		Blueprint.connect(ni_dao, "next", bi_man, "prev")
+		Blueprint.connect(bi_man, "next", zhu_fang, "prev")
+		Blueprint.connect(zhu_fang, "next", cheng_fang, "prev")
+
+		Blueprint.connect(lu, "vert", hua, "prev")
+		Blueprint.connect(hua, "next", shua, "prev")
+
+		Blueprint.connect(hua, "outer", ling, "prev")
+		Blueprint.connect(ling, "next", yan, "prev")
+
+		var geos = []
+
+		var dg = DouGong()
+		dg.rebuild([ lu, ni_dao, bi_man, zhu_fang, cheng_fang, shua, hua, ling, yan ], geos)
+
+		var v_gong = Variant(geos)
+
+		var h_gong = this.calc_4s_gong_height()
+
+		var angle = -Math.pi() * 0.5
+		if (rot) {
+			angle = angle + Math.pi()
+		}
+
+		v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, pos.y - h_gong, pos.z), angle)
+
+		return v_gong
 	}
 }
