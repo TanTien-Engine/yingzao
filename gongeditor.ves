@@ -49,11 +49,22 @@ class Gongeditor is Editor
 
 	rebuild_all_geos()
 	{
+		import "gonggraph.component.comp_node" for CompNode
+
 		this.all_geos.list.clear()
 
+		var comp_nodes = []
+
 		var scene = this.scene_stack.root()
+		for (var node in scene.nodes) {
+			var bp_node = node.components["bp"]
+			if (bp_node and bp_node is CompNode) {
+				comp_nodes.add(bp_node)
+			}
+		}
+
 		if (!scene.nodes.isEmpty) {
-			this.dg.rebuild(scene, this.all_geos.list)
+			this.dg.rebuild(comp_nodes, this.all_geos.list)
 		}
 	}
 

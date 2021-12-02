@@ -1,0 +1,29 @@
+import "blueprint.variant" for Variant
+import "gonggraph.component.comp_node" for CompNode
+import "gonggraph.dou_gong" for DouGong
+import "editor.node_cache" for NODE_CACHE
+
+class GongHelper
+{
+	static load_dou_gong(filepath)
+	{
+		var dg_sg = NODE_CACHE.fetch("../yingzao/11_dg_song/802_pan_jian_2d.ves", nil)
+
+		var comp_nodes = []
+		for (var item in dg_sg.all_items) {
+			if (item[0] is CompNode) {
+				comp_nodes.add(item[0])
+			}
+		}
+
+		if (comp_nodes.isEmpty) {
+			return nil
+		}
+
+		var dg = DouGong()
+		var geos = []
+		dg.rebuild(comp_nodes, geos)
+
+		return Variant(geos)
+	}
+}

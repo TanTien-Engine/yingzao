@@ -33,9 +33,9 @@ class DouGong
 		this.joints = []
 	}
 
-	rebuild(scene, out_list)
+	rebuild(comp_nodes, out_list)
 	{
-		this.rebuild_layers(scene)
+		this.rebuild_layers(comp_nodes)
 
 		// pass0: register style
 		for (var n in CONTEXT.style_nodes) {
@@ -58,10 +58,9 @@ class DouGong
 		}
 
 		// pass2: fix corner dou
-		for (var node in scene.nodes) {
-			var bp_node = node.components["bp"]
-			if (bp_node and bp_node is CompNode and bp_node.has_method("resolve2(_)")) {
-				bp_node.resolve2(this)
+		for (var node in comp_nodes) {
+			if (node.has_method("resolve2(_)")) {
+				node.resolve2(this)
 			}
 		}
 
@@ -219,7 +218,7 @@ class DouGong
 		}
 	}
 
-	rebuild_layers(scene)
+	rebuild_layers(comp_nodes)
 	{
 		this.layers.clear()
 		for (var i in 0..10) {
@@ -227,13 +226,6 @@ class DouGong
 			this.layers.add(layer)
 		}
 
-		var comp_nodes = []
-		for (var node in scene.nodes) {
-			var bp_node = node.components["bp"]
-			if (bp_node and bp_node is CompNode and bp_node.has_method("resolve(_)")) {
-				comp_nodes.add(bp_node)
-			}
-		}
 		var sorted_nodes = Blueprint.topo_sort(comp_nodes)
 
 		for (var comp_node in sorted_nodes)
