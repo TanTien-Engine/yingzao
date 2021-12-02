@@ -2,9 +2,15 @@ import "blueprint.pin" for Pin
 import "blueprint.node" for Node
 import "blueprint.node_param" for NodeParam
 import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "blueprint.blueprint" for Blueprint
 import "beamgraph.variant" for PIN_TYPE_CHUAN
 import "beamgraph.comp_nodes" for CompNodes
+import "beamgraph.gong_helper" for GongHelper
+import "beamgraph.trans_nodes" for TransNodes
 import "maths.vector" for Vector3
+import "math" for Math
+import "editor.node_cache" for NODE_CACHE
 
 class JiChuan is Node
 {
@@ -39,11 +45,35 @@ class JiChuan is Node
 	resolve_geo(bf)
 	{
 		var pos = Vector3(0, bf.height, 0)
-		var ret = [ CompNodes.create_chuan(pos) ]
+//		var ret = [ CompNodes.create_chuan(pos) ]
+		var ret = []
+
+		var dh = 0
+		var next = Blueprint.get_output_node(this, "next")
+		if (next) {
+			dh = this.height - next.height
+		}
 
 		var column = this.query_param("column").value
 		if (column) {
-			ret.add(CompNodes.create_column(pos, bf.height))
+			var h_beam = 0.24
+			ret.add(CompNodes.create_column(Vector3(pos.x, pos.y - dh - h_beam, pos.z), bf.height - dh - h_beam))
+		}
+
+		var v_gong = GongHelper.load_dou_gong("../yingzao/11_dg_song/802_pan_jian_2d.ves")
+		if (v_gong) 
+		{
+			var h_gong = 0.06 + 0.21 + 0.21 + (0.12 - 0.02)
+			v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, pos.y - h_gong, pos.z), -Math.pi() * 0.5)
+
+			if (dh > h_gong)
+			{
+				var h_column = dh - h_gong
+				var v_column = this.create_zhuru_column(Vector3(pos.x, pos.y - dh + h_column, pos.z), h_column)
+				ret.add(v_column)
+			}
+			
+			ret.add(v_gong)
 		}
 
 		return Variant(ret)
@@ -52,5 +82,23 @@ class JiChuan is Node
 	get_title()
 	{
 		return "脊椽"
+	}
+
+	create_zhuru_column(pos, height)
+	{
+		var COLUMN = NODE_CACHE.fetch("../yingzao/00_dougong2/46_column.ves", nil)
+
+		var d = 0.2
+		var radius_node = VariantProxy(Variant(d * 0.5))
+		Blueprint.connect(radius_node, "out", COLUMN, "radius")	
+
+		var h_node = VariantProxy(Variant(height))
+		Blueprint.connect(h_node, "out", COLUMN, "height")
+
+		var ret = TransNodes.translate(COLUMN, Vector3(pos.x, pos.y, pos.z))
+
+		h_node.disconnect()
+
+		return ret
 	}
 }
