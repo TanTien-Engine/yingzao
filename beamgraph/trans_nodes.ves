@@ -37,7 +37,18 @@ class TransNodes
 
 		return Blueprint.calc_output_value(trans, "obj")
 	}
-	
+
+	static rotate(geo_node, angle)
+	{
+		var rot_y = RotateY()
+		Blueprint.connect(geo_node, get_geo_idx(geo_node), rot_y, "geo")
+
+		var angle_node = VariantProxy(Variant(angle))
+		Blueprint.connect(angle_node, "out", rot_y, "angle")
+
+		return Blueprint.calc_output_value(rot_y, "geo")
+	}
+		
 	static transform(geo_node, pos, angle)
 	{
 		var rot_y = RotateY()

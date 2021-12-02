@@ -111,6 +111,9 @@ class Chuan is Node
 			ret.add(this.create_4s_dg(pos_l, false))
 		} else {
 			ret.add(this.create_3s_dg(pos_l, l_column))
+			if (CONTEXT.cha_shou) {
+				ret.add(this.create_tuo_jiao(bf, pos_l, false))			
+			}
 		}
 		var l_beam = this.create_left_beam(bf, this.deep, pos_l)
 		if (l_beam) {
@@ -137,6 +140,9 @@ class Chuan is Node
 			ret.add(this.create_4s_dg(pos_r, true))
 		} else {
 			ret.add(this.create_3s_dg(pos_r, r_column))
+			if (CONTEXT.cha_shou) {
+				ret.add(this.create_tuo_jiao(bf, pos_r, true))			
+			}
 		}		
 		var r_beam = this.create_right_beam(bf, this.deep, pos_r)
 		if (r_beam) {
@@ -425,5 +431,22 @@ class Chuan is Node
 		v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, pos.y - h_gong, pos.z), angle)
 
 		return v_gong
+	}
+
+	create_tuo_jiao(bf, pos, rot)
+	{
+		var dh = 0
+
+		var next = Blueprint.get_output_node(this, "next")
+		if (next) {
+			dh = this.height - next.height
+		}
+
+		if (this.deep == bf.max_deep - 1) {
+			dh = dh + 0.21
+		}
+
+		var off_h = 0.05
+		return CompNodes.create_tuo_jiao(Vector3(pos.x, pos.y - off_h, pos.z), dh - off_h, BEAM_DX - 0.3, rot)
 	}
 }

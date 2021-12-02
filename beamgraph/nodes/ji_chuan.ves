@@ -9,6 +9,7 @@ import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.gong_helper" for GongHelper
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.context" for CONTEXT
+import "beamgraph.constant" for BEAM_DX
 import "maths.vector" for Vector3
 import "math" for Math
 import "editor.node_cache" for NODE_CACHE
@@ -81,6 +82,13 @@ class JiChuan is Node
 			}
 			
 			ret.add(v_gong)
+		}
+
+		if (CONTEXT.cha_shou)
+		{
+			var off_h = 0.2
+			var c = CompNodes.create_cha_shou(Vector3(pos.x, pos.y - off_h, pos.z), dh - off_h, BEAM_DX - 0.35)
+			ret.add(c)
 		}
 
 		return Variant(ret)

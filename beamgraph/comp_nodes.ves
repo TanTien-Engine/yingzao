@@ -2,6 +2,7 @@ import "editor.node_cache" for NODE_CACHE
 import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.blueprint" for Blueprint
+import "geograph.nodes.plane" for Plane
 import "beamgraph.trans_nodes" for TransNodes
 import "maths.vector" for Vector3
 import "math" for Math
@@ -82,6 +83,53 @@ class CompNodes
 		var TUO = NODE_CACHE.fetch("../yingzao/00_dougong2/47_tuo_feng.ves", nil)
 		var tuo = TransNodes.scale(TUO, Vector3(1.0, s, s))
 		tuo = TransNodes.transform(VariantProxy(tuo), pos, -Math.pi() * 0.5)
+
+		return Variant(tuo)
+	}
+
+	static create_cha_shou(pos, dy, dx)
+	{
+		var CHA = NODE_CACHE.fetch("../yingzao/01_beam_column/51_cha_shou.ves", nil)
+
+		var plane = Plane()
+		plane.query_param("ori").value.y = -dy
+		plane.query_param("dir").value.y = -1
+
+		Blueprint.connect(plane, "plane", CHA, "cut_plane")
+
+		var angle = Math.atan2(dy, dx)
+		Blueprint.connect(VariantProxy(angle), "out", CHA, "angle")
+
+		Blueprint.connect(VariantProxy(0.18), "out", CHA, "height")
+		Blueprint.connect(VariantProxy(0.06), "out", CHA, "width")
+
+		var l_cha = TransNodes.transform(CHA, pos, -Math.pi() * 0.5)
+		var r_cha = TransNodes.rotate(VariantProxy(l_cha), Math.pi())
+
+		return Variant([ l_cha, r_cha ])
+	}
+
+	static create_tuo_jiao(pos, dy, dx, rot)
+	{
+		var TUO = NODE_CACHE.fetch("../yingzao/01_beam_column/51_cha_shou.ves", nil)
+
+		var plane = Plane()
+		plane.query_param("ori").value.y = -dy
+		plane.query_param("dir").value.y = -1
+
+		Blueprint.connect(plane, "plane", TUO, "cut_plane")
+
+		var angle = Math.atan2(dy, dx)
+		Blueprint.connect(VariantProxy(angle), "out", TUO, "angle")
+
+		Blueprint.connect(VariantProxy(0.15), "out", TUO, "height")
+		Blueprint.connect(VariantProxy(0.05), "out", TUO, "width")
+
+		var a = -Math.pi() * 0.5
+		if (rot) {
+			a = a + Math.pi()
+		}
+		var tuo = TransNodes.transform(TUO, pos, a)
 
 		return Variant(tuo)
 	}
