@@ -481,12 +481,23 @@ class Chuan is Node
 		var l_p1 = Vector3(-BEAM_DX * prev.deep, prev.height + d, 0)
 
 		var ex_len = 0
-		if (this.deep == bf.max_deep) {
+		var ex_len_f = 0
+		if (this.deep == bf.max_deep) 
+		{
 			var angle = Math.atan2(l_p1.y - l_p0.y, l_p1.x - l_p0.x)
 			ex_len = (0.3 + 0.8) / Math.cos(angle)
+			ex_len_f = (0.3 + 0.8 + 0.48) / Math.cos(angle)
 		}
 
 		var l_yuan = CompNodes.create_yuan(l_p0, l_p1, ex_len)
+
+		// fei zi
+		if (this.deep == bf.max_deep) 
+		{
+			var fei = CompNodes.create_fei_zi(l_p0, Vector3(l_p1.x, l_p1.y, l_p1.z), ex_len_f)
+			l_yuan = Variant([ l_yuan, fei ])
+		}
+
 		var r_yuan = TransNodes.rotate(VariantProxy(l_yuan), Math.pi())
 
 		var ret = []
