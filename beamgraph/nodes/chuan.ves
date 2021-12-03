@@ -26,6 +26,8 @@ import "gonggraph.dou_gong" for DouGong
 import "maths.vector" for Vector3
 import "math" for Math
 
+var YAN_FANG_HEIGHT_FIXED = 0.08
+
 class Chuan is Node
 {
 	init()
@@ -266,7 +268,7 @@ class Chuan is Node
 		var y = 0
 		var sides = this.deep == bf.max_deep
 		if (sides) {
-			y = pos.y - 0.21 * 2
+			y = pos.y - 0.21 * 2 - YAN_FANG_HEIGHT_FIXED
 		} else {
 			y = pos.y - h
 		}
@@ -287,7 +289,7 @@ class Chuan is Node
 		var y = 0
 		var sides = this.deep == bf.max_deep
 		if (sides) {
-			y = pos.y - 0.21 * 2
+			y = pos.y - 0.21 * 2 - YAN_FANG_HEIGHT_FIXED
 		} else {
 			y = pos.y - h
 		}
@@ -317,7 +319,7 @@ class Chuan is Node
 
 		var sides = this.deep == bf.max_deep - 1
 		if (sides) {
-			dh = dh + 0.21 * 2 - next_beam_h
+			dh = dh + 0.21 * 2 - next_beam_h + YAN_FANG_HEIGHT_FIXED
 		}
 
 		return CompNodes.create_tuo_feng(Vector3(pos.x, pos.y - dh, pos.z), dh - this.calc_3s_gong_height(false))
@@ -336,7 +338,7 @@ class Chuan is Node
 
 	calc_4s_gong_height()
 	{
-		return 0.12 + 0.21 * 3
+		return 0.12 + 0.21 * 3 + YAN_FANG_HEIGHT_FIXED
 	}
 
 	create_3s_dg(pos, column)
@@ -447,7 +449,7 @@ class Chuan is Node
 		}
 
 		if (this.deep == bf.max_deep - 1) {
-			dh = dh + 0.21
+			dh = dh + 0.21 + YAN_FANG_HEIGHT_FIXED
 		}
 
 		var off_h = 0.05
