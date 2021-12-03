@@ -213,6 +213,52 @@ var node35 = ::geograph::nodes::translate_f::TranslateF()
 
 _editor.add_node(node35, 218.97479658345, -283.56065326432)
 
+var node36 = ::geograph::nodes::circle::Circle()
+node36.query_param("x").value = 0
+node36.query_param("y").value = 0
+node36.query_param("r").value = 100
+node36.query_param("fill").value = false
+node36.query_param("color").value.set(1, 0, 0)
+
+_editor.add_node(node36, 135.34547227692, -672.90538253608)
+
+var node37 = ::blueprint::nodes::load::Load()
+
+node37.var_name = "radius"
+
+_editor.add_node(node37, -5.6844054585328, -605.44786767367)
+
+var node38 = ::blueprint::nodes::subgraph::Subgraph()
+node38.load_from_file(_editor, "../../tantien/assets/blueprints/geograph/translate_y.ves")
+
+_editor.add_node(node38, 476.83846768466, -701.92376154119)
+
+var node39 = ::blueprint::nodes::load::Load()
+
+node39.var_name = "height"
+
+_editor.add_node(node39, 147.09278415758, -813.66817711023)
+
+var node40 = ::blueprint::nodes::negate::Negate()
+
+_editor.add_node(node40, 277.77232776989, -813.35976063121)
+
+var node41 = ::geograph::nodes::column::Column()
+node41.query_param("height").value = 0.1
+node41.query_param("generatrix").value = [ 
+0, 1.5, 
+0.2, 1.5, 
+0.4, 1.4, 
+0.6, 1.15, 
+0.7, 1.15, 
+0.8, 1.05, 
+0.9, 1.02, 
+1, 1 
+]
+node41.query_param("offset_z_absolute").value = false
+
+_editor.add_node(node41, 275.00945427222, -622.02132298984)
+
 Blueprint.connect(node28, "geo", node29, "in0")
 Blueprint.connect(node26, "geo", node29, "in1")
 Blueprint.connect(node25, "geo", node27, "in0")
@@ -230,6 +276,8 @@ Blueprint.connect(node15, "var", node23, "pos")
 Blueprint.connect(node8, "var", node7, "val")
 Blueprint.connect(node9, "v", node7, "default")
 Blueprint.connect(node7, "val", node10, "var")
+Blueprint.connect(node10, "var", node39, "var")
+Blueprint.connect(node39, "var", node40, "v")
 Blueprint.connect(node10, "var", node21, "var")
 Blueprint.connect(node10, "var", node18, "var")
 Blueprint.connect(node18, "var", node17, "y")
@@ -239,6 +287,11 @@ Blueprint.connect(node10, "var", node11, "var")
 Blueprint.connect(node3, "var", node2, "val")
 Blueprint.connect(node4, "v", node2, "default")
 Blueprint.connect(node2, "val", node5, "var")
+Blueprint.connect(node5, "var", node37, "var")
+Blueprint.connect(node37, "var", node36, "raduis")
+Blueprint.connect(node36, "geo", node41, "base")
+Blueprint.connect(node41, "geo", node38, "geo")
+Blueprint.connect(node40, "v", node38, "offset")
 Blueprint.connect(node5, "var", node6, "var")
 Blueprint.connect(node6, "var", node0, "raduis")
 Blueprint.connect(node0, "geo", node20, "base")
@@ -247,8 +300,9 @@ Blueprint.connect(node20, "geo", node19, "geo")
 Blueprint.connect(node16, "v", node19, "xyz")
 Blueprint.connect(node19, "geo", node24, "a")
 Blueprint.connect(node35, "geo", node24, "b")
-Blueprint.connect(node24, "geo", node22, "in0")
+Blueprint.connect(node19, "geo", node22, "in0")
 Blueprint.connect(node23, "geo", node22, "in1")
+Blueprint.connect(node38, "geo", node22, "in2")
 Blueprint.connect(node22, "list", node34, "list")
 Blueprint.connect(node34, "brush", node12, "var")
 Blueprint.connect(node0, "polytope", node1, "geo")

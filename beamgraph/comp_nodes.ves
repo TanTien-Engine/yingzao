@@ -17,7 +17,7 @@ class CompNodes
 
 	static create_column(pos, height)
 	{
-		var COLUMN = NODE_CACHE.fetch("../yingzao/00_dougong2/46_column.ves", nil)
+		var COLUMN = NODE_CACHE.fetch("../yingzao/01_beam_column/10_column.ves", nil)
 
 		var d = 0.36
 		var radius_node = VariantProxy(Variant(d * 0.5))
@@ -28,7 +28,7 @@ class CompNodes
 		var h_node = VariantProxy(Variant(h))
 		Blueprint.connect(h_node, "out", COLUMN, "height")
 
-		var ret = TransNodes.translate(COLUMN, Vector3(pos.x, pos.y, pos.z))
+		var ret = TransNodes.transform(COLUMN, pos, -Math.pi() * 0.5)
 
 		h_node.disconnect()
 
