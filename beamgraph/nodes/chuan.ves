@@ -155,6 +155,14 @@ class Chuan is Node
 			ret.add(this.create_yuan(bf))
 		}
 
+		if (!bf.shun_fu_chuan) {
+			var chuan = this.create_shun_fu_chuan(bf)
+			if (chuan) {
+				ret.add(chuan)
+				bf.shun_fu_chuan = true
+			}
+		}
+
 		return Variant(ret)
 	}
 
@@ -545,5 +553,47 @@ class Chuan is Node
 		}
 
 		return Variant(ret)
+	}
+
+	create_shun_fu_chuan(bf)
+	{
+		var l_column = this.query_param("l_column").value
+		var r_column = this.query_param("r_column").value
+		if (!l_column or !r_column) {
+			return nil
+		}
+
+		var next_cc = this.find_next_cc()
+		if (!next_cc or next_cc.deep - this.deep <= 1) {
+			return nil
+		}
+
+		var len = BEAM_DX * this.deep * 2
+		var next_beam_h = next_cc.calc_beam_height(next_cc.calc_left_beam_dist(bf, -next_cc.deep))
+		if (next_cc.deep == bf.max_deep) {
+			next_beam_h = next_beam_h + 0.21
+		}
+		return CompNodes.create_shun_fu_chuan(Vector3(-len * 0.5, next_cc.height - next_beam_h, 0), len)
+	}
+
+	find_next_cc()
+	{
+		var curr = this
+		while (curr) 
+		{
+			var next = Blueprint.get_output_node(curr, "next")
+			if (!next) {
+				return nil
+			}
+
+			var l_column = next.query_param("l_column").value
+			var r_column = next.query_param("r_column").value
+			if (l_column and r_column) {
+				return next
+			}
+
+			curr = next
+		}
+		return nil
 	}
 }

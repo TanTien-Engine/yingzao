@@ -3,6 +3,7 @@ import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.blueprint" for Blueprint
 import "geograph.nodes.plane" for Plane
+import "geograph.nodes.box" for Box
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.constant" for FRAME_DIST
 import "maths.vector" for Vector3
@@ -182,5 +183,22 @@ class CompNodes
 		Blueprint.connect(VariantProxy(Variant(FRAME_DIST)), "out", FANG, "length")
 
 		return TransNodes.transform(FANG, pos, -Math.pi() * 0.5)	
+	}
+
+	static create_shun_fu_chuan(pos, len)
+	{
+		var box = Box()
+
+		var h = 0.21
+
+		var sz = box.query_param("size").value
+		sz.x = len
+		sz.y = h
+		sz.z = 0.1
+
+		box.query_param("offset_y").value = true
+		box.query_param("offset_x").value = true
+
+		return TransNodes.translate(box, Vector3(pos.x, pos.y - h, pos.z))
 	}
 }
