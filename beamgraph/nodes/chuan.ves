@@ -149,6 +149,10 @@ class Chuan is Node
 			ret.add(r_beam)
 		}
 
+		if (CONTEXT.yuan) {
+			ret.add(this.create_yuan(bf))
+		}
+
 		return Variant(ret)
 	}
 
@@ -448,5 +452,37 @@ class Chuan is Node
 
 		var off_h = 0.05
 		return CompNodes.create_tuo_jiao(Vector3(pos.x, pos.y - off_h, pos.z), dh - off_h, BEAM_DX - 0.3, rot)
+	}
+
+	create_yuan(bf)
+	{
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (!prev) {
+			return nil
+		}
+
+		var d = 0.08 * 2
+
+		var l_p0 = Vector3(-BEAM_DX * this.deep, this.height + d, 0)
+		var l_p1 = Vector3(-BEAM_DX * prev.deep, prev.height + d, 0)
+
+		var ex_len = 0
+		if (this.deep == bf.max_deep) {
+			var angle = Math.atan2(l_p1.y - l_p0.y, l_p1.x - l_p0.x)
+			ex_len = (0.3 + 0.8) / Math.cos(angle)
+		}
+
+		var l_yuan = CompNodes.create_yuan(l_p0, l_p1, ex_len)
+		var r_yuan = TransNodes.rotate(VariantProxy(l_yuan), Math.pi())
+
+		var ret = []
+
+		var num = 12
+		var dist = 0.16
+		for (var i in 0..num) {
+			ret.add(TransNodes.translate(VariantProxy(Variant([l_yuan, r_yuan])), Vector3(0, 0, i * dist - (num - 1) * 0.5 * dist)))
+		}
+
+		return Variant(ret)
 	}
 }
