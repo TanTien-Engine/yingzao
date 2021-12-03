@@ -45,7 +45,8 @@ class CompNodes
 	{
 		var BEAM = NODE_CACHE.fetch("../yingzao/00_dougong2/45_straight_beam.ves", nil)
 
-		var entasis = (h >= 0.24)
+		//var entasis = (h >= 0.24)
+		var entasis = true
 		var e_node = VariantProxy(Variant(entasis))
 		Blueprint.connect(e_node, "out", BEAM, "entasis")
 
