@@ -4,6 +4,7 @@ import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.blueprint" for Blueprint
 import "geograph.nodes.plane" for Plane
 import "beamgraph.trans_nodes" for TransNodes
+import "beamgraph.constant" for FRAME_DIST
 import "maths.vector" for Vector3
 import "math" for Math
 
@@ -12,6 +13,9 @@ class CompNodes
 	static create_chuan(pos)
 	{
 		var CHUAN  = NODE_CACHE.fetch("../yingzao/00_dougong2/44_chuan.ves", nil)
+
+		Blueprint.connect(VariantProxy(Variant(FRAME_DIST)), "out", CHUAN, "length")
+		
 		return TransNodes.transform(CHUAN, pos, -Math.pi() * 0.5)
 	}
 
@@ -164,6 +168,18 @@ class CompNodes
 	static create_lan_e(pos)
 	{
 		var E_FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/48_e_fang.ves", nil)
+
+		Blueprint.connect(VariantProxy(Variant(FRAME_DIST)), "out", E_FANG, "length")
+
 		return TransNodes.transform(E_FANG, pos, -Math.pi() * 0.5)
+	}
+
+	static create_pj_fang(pos)
+	{
+		var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
+
+		Blueprint.connect(VariantProxy(Variant(FRAME_DIST)), "out", FANG, "length")
+
+		return TransNodes.transform(FANG, pos, -Math.pi() * 0.5)	
 	}
 }

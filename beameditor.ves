@@ -1,7 +1,10 @@
 import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.nodes.array" for Array
 import "blueprint.nodes.subgraph" for Subgraph
 import "beamgraph.context" for CONTEXT
+import "beamgraph.constant" for FRAME_DIST
 import "editor.editor" for Editor
 import "editor.node_cache" for NODE_CACHE
 
@@ -36,6 +39,15 @@ class Beameditor is Editor
 
 		import "blueprint.nodes.commentary" for Commentary
 		super.add_popup_node(Commentary)
+
+		var FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/13_fang.ves", nil)
+		Blueprint.connect(VariantProxy(Variant(FRAME_DIST)), "out", FANG, "length")
+
+		var C_FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/42_chengchuan_fang.ves", nil)
+		Blueprint.connect(VariantProxy(Variant(FRAME_DIST)), "out", C_FANG, "length")
+
+		var L_FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/41_liaoyan_fang.ves", nil)
+		Blueprint.connect(VariantProxy(Variant(FRAME_DIST)), "out", L_FANG, "length")
 	}
 
 	rebuild_all_geos()

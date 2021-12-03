@@ -1,5 +1,10 @@
 import "blueprint.blueprint" for Blueprint
-import "beamgraph.constant" for BEAM_DX
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "beamgraph.constant" for BEAM_DX, FRAME_DIST
+import "beamgraph.trans_nodes" for TransNodes
+import "maths.vector" for Vector3
+import "math" for Math
 
 class BeamFrame
 {
@@ -36,8 +41,22 @@ class BeamFrame
 		}
 
 		// pass 3, geo
+		var geos = []
 		for (var node in sorted_nodes) {
-			out_list.add(node.resolve_geo(this))
+			geos.add(node.resolve_geo(this))
+		}
+
+		// copy
+		for (var i in 0..3) 
+		{
+			var z = FRAME_DIST * i
+			out_list.add(TransNodes.translate(VariantProxy(Variant(geos)), Vector3(0, 0, z)))
+
+			if (Math.mod(i, 2) > 0) {
+				for (var node in sorted_nodes) {
+					out_list.add(node.resolve_pj_geo(this, z))
+				}
+			}
 		}
 	}
 

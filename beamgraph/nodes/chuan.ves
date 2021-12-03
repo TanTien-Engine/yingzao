@@ -18,7 +18,7 @@ import "gonggraph.component.liao_yan_fang" for LiaoYanFang
 import "gonggraph.tools.hori_merge" for HoriMerge
 import "gonggraph.tools.vert_merge" for VertMerge
 import "beamgraph.variant" for PIN_TYPE_CHUAN
-import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN
+import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.context" for CONTEXT
 import "beamgraph.trans_nodes" for TransNodes
@@ -156,6 +156,34 @@ class Chuan is Node
 		}
 
 		return Variant(ret)
+	}
+
+	resolve_pj_geo(bf, z)
+	{
+		var sides = this.deep == bf.max_deep
+		if (sides) {
+			return nil
+		}
+
+		var pos_l = Vector3(-BEAM_DX * this.deep, this.height, 0)
+		var pos_r = Vector3( BEAM_DX * this.deep, this.height, 0)
+
+		var l_column = this.query_param("l_column").value
+		var r_column = this.query_param("r_column").value
+
+		var dz = 0
+		if (Math.mod(this.deep, 2) > 0) {
+			dz = FRAME_DIST * 0.5
+		} else {
+			dz = -FRAME_DIST * 0.5
+		}
+
+		var dy = -(0.12 - 0.02)
+
+		var fang_l = CompNodes.create_pj_fang(Vector3(pos_l.x, pos_l.y + dy, pos_l.z + z + dz))
+		var fang_r = CompNodes.create_pj_fang(Vector3(pos_r.x, pos_r.y + dy, pos_r.z + z - dz))
+
+		return Variant([ fang_l, fang_r ])
 	}
 
 	get_title()
@@ -373,7 +401,7 @@ class Chuan is Node
 		var nodes = [ dou ]
 
 		var gong = nil
-		if (CONTEXT.vert_conn)
+		if (CONTEXT.vert_conn and CONTEXT.gen_panjian)
 		{
 			var g = InnerGong()
 			var f = Fang()
@@ -510,7 +538,7 @@ class Chuan is Node
 
 		var ret = []
 
-		var num = 12
+		var num = 17
 		var dist = 0.16
 		for (var i in 0..num) {
 			ret.add(TransNodes.translate(VariantProxy(Variant([l_yuan, r_yuan])), Vector3(0, 0, i * dist - (num - 1) * 0.5 * dist)))
