@@ -104,11 +104,18 @@ class JiChuan is Node
 	{
 		var h_beam = 0.21
 		var dou_h = 0.12
-		var column = CompNodes.create_column(Vector3(pos.x, pos.y - dh - h_beam - dou_h, pos.z), bf.height - dh - h_beam - dou_h)
 
-		var dou = TransNodes.translate(LU_DOU, Vector3(pos.x, pos.y - dh - h_beam - dou_h, pos.z))
+		var p = Vector3(pos.x, pos.y - dh - h_beam - dou_h, pos.z)
 
-		return Variant([ dou, column ])
+		var column = CompNodes.create_column(p, bf.height - dh - h_beam - dou_h)
+		var dou = TransNodes.translate(LU_DOU, p)
+
+		if (CONTEXT.vert_conn) {
+			var e_fang = CompNodes.create_lan_e(p)
+			return Variant([ dou, column, e_fang ])
+		} else {
+			return Variant([ dou, column ])
+		}
 	}
 
 	create_zhuru_column(pos, height)

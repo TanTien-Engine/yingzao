@@ -151,13 +151,17 @@ class CompNodes
 	{
 		var YUAN = NODE_CACHE.fetch("../yingzao/01_beam_column/60_fei.ves", nil)
 
-		System.print("++ %(p0), %(p1)")
-
 		Blueprint.connect(VariantProxy(Variant(p0)), "out", YUAN, "p0")
 		Blueprint.connect(VariantProxy(Variant(p1)), "out", YUAN, "p1")
 
 		Blueprint.connect(VariantProxy(Variant(extend)), "out", YUAN, "extend")
 
 		return Variant(Blueprint.calc_output_value(YUAN, "geo"))
+	}
+
+	static create_lan_e(pos)
+	{
+		var E_FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/48_e_fang.ves", nil)
+		return TransNodes.transform(E_FANG, pos, -Math.pi() * 0.5)
 	}
 }

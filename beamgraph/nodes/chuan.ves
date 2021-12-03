@@ -219,7 +219,15 @@ class Chuan is Node
 			h_gong = this.calc_3s_gong_height(true)		
 		}
 
-		return CompNodes.create_column(Vector3(pos.x, pos.y - h_gong, pos.z), this.height - h_gong)
+		var p = Vector3(pos.x, pos.y - h_gong, pos.z)
+
+		var column = CompNodes.create_column(p, this.height - h_gong)
+		if (CONTEXT.vert_conn) {
+			var e_fang = CompNodes.create_lan_e(p)
+			return Variant([ column, e_fang ])
+		} else {
+			return column
+		}
 	}
 
 	calc_left_beam_dist(bf, idx)
