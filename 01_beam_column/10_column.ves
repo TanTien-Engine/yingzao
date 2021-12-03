@@ -245,19 +245,21 @@ _editor.add_node(node40, 277.77232776989, -813.35976063121)
 
 var node41 = ::geograph::nodes::column::Column()
 node41.query_param("height").value = 0.1
-node41.query_param("generatrix").value = [ 
-0, 1.5, 
-0.2, 1.5, 
-0.4, 1.4, 
-0.6, 1.15, 
-0.7, 1.15, 
-0.8, 1.05, 
-0.9, 1.02, 
-1, 1 
-]
+node41.query_param("generatrix").value = [ 0, 1.5, 0.2, 1.5, 0.4, 1.4, 0.6, 1.15, 0.7, 1.15, 0.8, 1.05, 0.9, 1.02, 1, 1 ]
 node41.query_param("offset_z_absolute").value = false
 
 _editor.add_node(node41, 275.00945427222, -622.02132298984)
+
+var node42 = ::blueprint::nodes::input::Input()
+
+node42.var_name = "no_base"
+node42.var_type = "bool"
+
+_editor.add_node(node42, 717.67903775024, -333.18540709428)
+
+var node43 = ::blueprint::nodes::branch_f::BranchF()
+
+_editor.add_node(node43, 865.29248046875, -341.05670720881)
 
 Blueprint.connect(node28, "geo", node29, "in0")
 Blueprint.connect(node26, "geo", node29, "in1")
@@ -292,6 +294,8 @@ Blueprint.connect(node37, "var", node36, "raduis")
 Blueprint.connect(node36, "geo", node41, "base")
 Blueprint.connect(node41, "geo", node38, "geo")
 Blueprint.connect(node40, "v", node38, "offset")
+Blueprint.connect(node42, "var", node43, "cond")
+Blueprint.connect(node38, "geo", node43, "false")
 Blueprint.connect(node5, "var", node6, "var")
 Blueprint.connect(node6, "var", node0, "raduis")
 Blueprint.connect(node0, "geo", node20, "base")
@@ -302,7 +306,7 @@ Blueprint.connect(node19, "geo", node24, "a")
 Blueprint.connect(node35, "geo", node24, "b")
 Blueprint.connect(node19, "geo", node22, "in0")
 Blueprint.connect(node23, "geo", node22, "in1")
-Blueprint.connect(node38, "geo", node22, "in2")
+Blueprint.connect(node43, "result", node22, "in2")
 Blueprint.connect(node22, "list", node34, "list")
 Blueprint.connect(node34, "brush", node12, "var")
 Blueprint.connect(node0, "polytope", node1, "geo")

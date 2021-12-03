@@ -28,6 +28,8 @@ class CompNodes
 		var h_node = VariantProxy(Variant(h))
 		Blueprint.connect(h_node, "out", COLUMN, "height")
 
+		Blueprint.connect(VariantProxy(Variant(false)), "out", COLUMN, "no_base")
+
 		var ret = TransNodes.transform(COLUMN, pos, -Math.pi() * 0.5)
 
 		h_node.disconnect()

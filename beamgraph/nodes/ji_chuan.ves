@@ -129,6 +129,8 @@ class JiChuan is Node
 		var h_node = VariantProxy(Variant(height))
 		Blueprint.connect(h_node, "out", COLUMN, "height")
 
+		Blueprint.connect(VariantProxy(Variant(true)), "out", COLUMN, "no_base")
+
 		var ret = TransNodes.translate(COLUMN, Vector3(pos.x, pos.y, pos.z))
 
 		h_node.disconnect()
