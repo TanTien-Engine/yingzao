@@ -299,12 +299,24 @@ class Chuan is Node
 
 	calc_beam_height(deep)
 	{
-		if (deep <= 2) {
-			return 0.24
-		} else if (deep <= 4) {
+		//// chen tong
+		//if (deep <= 2) {
+		//	return 0.24
+		//} else if (deep <= 4) {
+		//	return 0.3
+		//} else {
+		//	return 0.36
+		//}
+
+		// chen ming da
+		if (deep <= 1) {
+			return 0.21
+		} else if (deep <= 3) {
 			return 0.3
-		} else {
+		} else if (deep <= 5) {
 			return 0.36
+		} else {
+			return 0.45
 		}
 	}
 
