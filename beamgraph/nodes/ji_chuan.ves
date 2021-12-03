@@ -4,6 +4,7 @@ import "blueprint.node_param" for NodeParam
 import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.blueprint" for Blueprint
+import "gonggraph.component.lu_dou" for LU_DOU
 import "beamgraph.variant" for PIN_TYPE_CHUAN
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.gong_helper" for GongHelper
@@ -59,8 +60,7 @@ class JiChuan is Node
 
 		var column = this.query_param("column").value
 		if (column) {
-			var h_beam = 0.24
-			ret.add(CompNodes.create_column(Vector3(pos.x, pos.y - dh - h_beam, pos.z), bf.height - dh - h_beam))
+			ret.add(this.create_column(bf, pos, dh))
 		}
 
 		var v_gong = nil
@@ -98,6 +98,17 @@ class JiChuan is Node
 	get_title()
 	{
 		return "脊椽"
+	}
+
+	create_column(bf, pos, dh)
+	{
+		var h_beam = 0.21
+		var dou_h = 0.12
+		var column = CompNodes.create_column(Vector3(pos.x, pos.y - dh - h_beam - dou_h, pos.z), bf.height - dh - h_beam - dou_h)
+
+		var dou = TransNodes.translate(LU_DOU, Vector3(pos.x, pos.y - dh - h_beam - dou_h, pos.z))
+
+		return Variant([ dou, column ])
 	}
 
 	create_zhuru_column(pos, height)
