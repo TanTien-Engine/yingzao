@@ -113,7 +113,7 @@ class Chuan is Node
 			ret.add(this.create_4s_dg(pos_l, false))
 		} else {
 			ret.add(this.create_3s_dg(pos_l, l_column))
-			if (CONTEXT.cha_shou) {
+			if (CONTEXT.hori_conn) {
 				ret.add(this.create_tuo_jiao(bf, pos_l, false))			
 			}
 		}
@@ -142,7 +142,7 @@ class Chuan is Node
 			ret.add(this.create_4s_dg(pos_r, true))
 		} else {
 			ret.add(this.create_3s_dg(pos_r, r_column))
-			if (CONTEXT.cha_shou) {
+			if (CONTEXT.hori_conn) {
 				ret.add(this.create_tuo_jiao(bf, pos_r, true))			
 			}
 		}		
@@ -365,7 +365,7 @@ class Chuan is Node
 		var nodes = [ dou ]
 
 		var gong = nil
-		if (CONTEXT.pan_jian)
+		if (CONTEXT.vert_conn)
 		{
 			var g = InnerGong()
 			var f = Fang()

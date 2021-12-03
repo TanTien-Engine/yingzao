@@ -64,7 +64,7 @@ class JiChuan is Node
 		}
 
 		var v_gong = nil
-		if (CONTEXT.pan_jian) {
+		if (CONTEXT.vert_conn) {
 			v_gong = GongHelper.load_dou_gong("../yingzao/11_dg_song/802_pan_jian_2d.ves")
 		} else {
 			v_gong = GongHelper.load_dou_gong("../yingzao/11_dg_song/806_ding_hua_ji_chuan.ves")
@@ -85,7 +85,7 @@ class JiChuan is Node
 			ret.add(v_gong)
 		}
 
-		if (CONTEXT.cha_shou)
+		if (CONTEXT.hori_conn)
 		{
 			var off_h = 0.2
 			var c = CompNodes.create_cha_shou(Vector3(pos.x, pos.y - off_h, pos.z), dh - off_h, BEAM_DX - 0.35)
