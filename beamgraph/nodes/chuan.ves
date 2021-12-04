@@ -4,6 +4,8 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.node_param" for NodeParam
 import "blueprint.variant_proxy" for VariantProxy
+import "geograph.brush" for BrushInstanced
+import "geograph.variant" for VAR_TYPE_GEO, VarGeo
 import "gonggraph.component.dou" for Dou
 import "gonggraph.component.lu_dou" for LuDou
 import "gonggraph.component.inner_gong" for InnerGong
@@ -17,14 +19,16 @@ import "gonggraph.component.hori_gong" for HoriGong
 import "gonggraph.component.liao_yan_fang" for LiaoYanFang
 import "gonggraph.tools.hori_merge" for HoriMerge
 import "gonggraph.tools.vert_merge" for VertMerge
+import "gonggraph.tools_nodes" for ToolsNodes
 import "beamgraph.variant" for PIN_TYPE_CHUAN
-import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST
+import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.context" for CONTEXT
 import "beamgraph.trans_nodes" for TransNodes
 import "gonggraph.dou_gong" for DouGong
 import "maths.vector" for Vector3
 import "math" for Math
+import "maths" for Matrix44
 
 var YAN_FANG_HEIGHT_FIXED = 0.08
 
@@ -542,17 +546,46 @@ class Chuan is Node
 			l_yuan = Variant([ l_yuan, fei ])
 		}
 
-		var r_yuan = TransNodes.rotate(VariantProxy(l_yuan), Math.pi())
+		if (YUAN_INSTANCED)
+		{
+			l_yuan = ToolsNodes.brush_merge(l_yuan)
 
-		var ret = []
+			var instanced = BrushInstanced()
+			instanced.brush = l_yuan.value.shape
 
-		var num = 17
-		var dist = 0.16
-		for (var i in 0..num) {
-			ret.add(TransNodes.translate(VariantProxy(Variant([l_yuan, r_yuan])), Vector3(0, 0, i * dist - (num - 1) * 0.5 * dist)))
+			var num = 17
+			var dist = 0.16
+			for (var i in 0..num) 
+			{
+				var l_mat = Matrix44.init()
+				l_mat.translate(0, 0, i * dist - (num - 1) * 0.5 * dist)
+				instanced.transforms.add(l_mat)
+
+				var r_mat = Matrix44.init()
+				r_mat.rotate(0, Math.pi(), 0)
+				r_mat.translate(0, 0, i * dist - (num - 1) * 0.5 * dist)
+				instanced.transforms.add(r_mat)
+			}
+
+			var geo = VarGeo()
+			geo.shape = instanced
+
+			return Variant(VAR_TYPE_GEO, geo)
 		}
+		else
+		{
+			var r_yuan = TransNodes.rotate(VariantProxy(l_yuan), Math.pi())
 
-		return Variant(ret)
+			var ret = []
+
+			var num = 17
+			var dist = 0.16
+			for (var i in 0..num) {
+				ret.add(TransNodes.translate(VariantProxy(Variant([l_yuan, r_yuan])), Vector3(0, 0, i * dist - (num - 1) * 0.5 * dist)))
+			}
+
+			return Variant(ret)
+		}
 	}
 
 	create_shun_fu_chuan(bf)
