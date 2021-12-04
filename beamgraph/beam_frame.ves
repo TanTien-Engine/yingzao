@@ -1,8 +1,12 @@
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
+import "geograph.nodes.brush_instanced" for BrushInstanced
+import "geograph.nodes.brush_merge" for BrushMerge
+import "scenegraph.nodes.transform3d" for Transform3d
 import "beamgraph.constant" for BEAM_DX, FRAME_DIST
 import "beamgraph.trans_nodes" for TransNodes
+import "beamgraph.nodes.multi_frames" for MultiFrames
 import "maths.vector" for Vector3
 import "math" for Math
 
@@ -49,16 +53,33 @@ class BeamFrame
 			geos.add(node.resolve_geo(this))
 		}
 
-		// copy
-		for (var i in 0..3) 
+		// multi frames
+		var multi_frames = nil
+		for (var node in scene.nodes) {
+			var bp_node = node.components["bp"]
+			if (bp_node is MultiFrames) {
+				multi_frames = bp_node
+			}
+		}
+		if (multi_frames)
 		{
-			var z = FRAME_DIST * i
-			out_list.add(TransNodes.translate(VariantProxy(Variant(geos)), Vector3(0, 0, z)))
+			var num = multi_frames.query_param("num").value
 
-			if (Math.mod(i, 2) > 0) {
-				for (var node in sorted_nodes) {
-					out_list.add(node.resolve_pj_geo(this, z))
+			this.copy_frames(geos, num, out_list)
+
+			for (var i in 0..num) 
+			{
+				if (Math.mod(i, 2) > 0) {
+					for (var node in sorted_nodes) {
+						out_list.add(node.resolve_pj_geo(this, FRAME_DIST * i))
+					}
 				}
+			}
+		}
+		else
+		{
+			for (var i in geos) {
+				out_list.add(i)
 			}
 		}
 	}
@@ -73,5 +94,26 @@ class BeamFrame
 		}
 
 		this.height = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 3
+	}
+
+	copy_frames(frame_geos, num, dst)
+	{
+		var MERGE = BrushMerge()
+		Blueprint.connect(VariantProxy(Variant(frame_geos)), "out", MERGE, "list")		
+
+		var B_INST = BrushInstanced()
+		Blueprint.connect(MERGE, "brush", B_INST, "brush")
+
+		var mats = []
+		var TRANS = Transform3d()
+		for (var i in 0..num)
+		{
+			Blueprint.connect(VariantProxy(Variant(Vector3(0, 0, FRAME_DIST * i))), "out", TRANS, "translate")
+			mats.add(Blueprint.calc_output_value(TRANS, "mat").value)
+		}
+
+		Blueprint.connect(VariantProxy(Variant(mats)), "out", B_INST, "transforms")
+
+		dst.add(Blueprint.calc_output_value(B_INST, "instanced"))
 	}
 }
