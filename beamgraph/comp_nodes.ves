@@ -28,9 +28,7 @@ class CompNodes
 		var radius_node = VariantProxy(Variant(d * 0.5))
 		Blueprint.connect(radius_node, "out", COLUMN, "radius")	
 
-//		var h = d * 9 + height
-		var h = 2.5 + 0.75 + height
-		var h_node = VariantProxy(Variant(h))
+		var h_node = VariantProxy(Variant(height))
 		Blueprint.connect(h_node, "out", COLUMN, "height")
 
 		Blueprint.connect(VariantProxy(Variant(false)), "out", COLUMN, "no_base")

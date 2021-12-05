@@ -17,9 +17,6 @@ class BeamFrame
 		this.column_idx = []
 
 		this.shun_fu_chuan = false
-
-		this.max_deep = 0
-		this.height = 0
 	}
 
 	rebuild(scene, out_list)
@@ -42,7 +39,6 @@ class BeamFrame
 		}
 
 		// pass 2, height
-		this.calc_height()
 		for (var node in sorted_nodes) {
 			node.resolve_height(this)
 		}
@@ -82,18 +78,6 @@ class BeamFrame
 				out_list.add(i)
 			}
 		}
-	}
-
-	calc_height()
-	{
-		this.max_deep = 0
-		for (var i in this.column_idx) {
-			if (i > this.max_deep) {
-				this.max_deep = i
-			}
-		}
-
-		this.height = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 3
 	}
 
 	copy_frames(frame_geos, num, dst)

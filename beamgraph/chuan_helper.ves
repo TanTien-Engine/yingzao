@@ -1,0 +1,36 @@
+import "blueprint.blueprint" for Blueprint
+
+class ChuanHelper
+{
+	static calc_tree_deep(root)
+	{
+		import "beamgraph.nodes.chuan" for Chuan
+
+		var max_deep = 0
+
+		var next = Blueprint.get_output_node(root, "next")
+		while (next and next is Chuan) {
+			max_deep = max_deep + 1
+			next = Blueprint.get_output_node(next, "next")
+		}
+
+		return max_deep
+	}
+
+	static calc_tree_base_height(root)
+	{
+		import "beamgraph.nodes.sub_chuan" for SubChuan
+
+		var base_height = 0.84 + 2.50
+
+		var next = Blueprint.get_output_node(root, "next")
+		while (next) {
+			if (next is SubChuan) {
+				base_height = base_height + 0.84 + 2.50			
+			}
+			next = Blueprint.get_output_node(next, "next")
+		}
+
+		return base_height
+	}
+}

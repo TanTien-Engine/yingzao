@@ -30,7 +30,7 @@ import "maths.vector" for Vector3
 import "math" for Math
 import "maths" for Matrix44
 
-var YAN_FANG_HEIGHT_FIXED = 0.08
+var YAN_FANG_HEIGHT_FIXED = 0.09
 
 class Chuan is Node
 {
@@ -53,7 +53,8 @@ class Chuan is Node
 		this.title = "槫"
 
 		this.deep = 0
-		this.height = 0
+		this.roof_height = 0
+		this.base_height = 0
 	}
 
 	on_node_dirty()
@@ -78,7 +79,32 @@ class Chuan is Node
 
 	resolve_height(bf)
 	{
-		this.height = this.calc_height(bf)
+		this.roof_height = 0
+		this.base_height = 0
+
+		var root = this.get_root_chuan()
+		if (root) {
+			this.base_height = root.base_height
+		}
+		
+		if (this.is_curr_sides()) {
+			this.roof_height = 0
+			return
+		}
+
+		var deep = this.deep - root.deep
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		if (prev)
+		{
+			var d = root.max_deep - deep
+			var dh = 0.1 * Math.pow(0.5, (deep - 1)) * root.roof_height
+			this.roof_height = d / (d + 1) * prev.roof_height - dh
+		}
+		else
+		{
+			this.roof_height = (root.max_deep - deep) / root.max_deep * root.roof_height
+		}
 	}
 
 	resolve_geo(bf)
@@ -88,10 +114,10 @@ class Chuan is Node
 		this.title = this.calc_title(bf)
 
 		var rot = -Math.pi() * 0.5
-		var pos_l = Vector3(-BEAM_DX * this.deep, this.height, 0)
-		var pos_r = Vector3( BEAM_DX * this.deep, this.height, 0)
+		var pos_l = Vector3(-BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
+		var pos_r = Vector3( BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
 
-		var sides = this.deep == bf.max_deep
+		var sides = this.is_curr_sides()
 		if (!sides) {
 			ret.add(CompNodes.create_chuan(pos_l))
 			ret.add(CompNodes.create_chuan(pos_r))
@@ -105,7 +131,7 @@ class Chuan is Node
 		else 
 		{
 			var next_beam_h = 0
-			if (this.deep == bf.max_deep - 1) {
+			if (this.is_next_sides()) {
 				var next = Blueprint.get_output_node(this, "next")
 				if (next) {
 					next_beam_h = next.calc_beam_height(next.calc_left_beam_dist(bf, -next.deep))
@@ -134,7 +160,7 @@ class Chuan is Node
 		else 
 		{
 			var next_beam_h = 0
-			if (this.deep == bf.max_deep - 1) {
+			if (this.is_next_sides()) {
 				var next = Blueprint.get_output_node(this, "next")
 				if (next) {
 					next_beam_h = next.calc_beam_height(next.calc_right_beam_dist(bf, next.deep))
@@ -142,6 +168,7 @@ class Chuan is Node
 			}
 			ret.add(this.create_tuo_feng(bf, pos_r, next_beam_h))
 		}
+
 		if (sides) {
 			ret.add(this.create_4s_dg(pos_r, true))
 		} else {
@@ -172,13 +199,13 @@ class Chuan is Node
 
 	resolve_pj_geo(bf, z)
 	{
-		var sides = this.deep == bf.max_deep
+		var sides = this.is_curr_sides()
 		if (sides) {
 			return nil
 		}
 
-		var pos_l = Vector3(-BEAM_DX * this.deep, this.height, 0)
-		var pos_r = Vector3( BEAM_DX * this.deep, this.height, 0)
+		var pos_l = Vector3(-BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
+		var pos_r = Vector3( BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
 
 		var l_column = this.query_param("l_column").value
 		var r_column = this.query_param("r_column").value
@@ -207,9 +234,9 @@ class Chuan is Node
 	{
 		if (this.deep == 1) {
 			return "上平槫"
-		} else if (this.deep == bf.max_deep) {
+		} else if (this.is_curr_sides()) {
 			return "承椽槫"
-		} else if (this.deep == bf.max_deep - 1) {
+		} else if (this.is_next_sides()) {
 			return "下平槫"
 		} else {
 			return "中平槫"
@@ -218,33 +245,11 @@ class Chuan is Node
 
 	calc_deep()
 	{
-		var deep = 0
-
 		var prev = Blueprint.get_input_node(this, "prev")
-		while (prev) {
-			deep = deep + 1
-			prev = Blueprint.get_input_node(prev, "prev")
-		}
-
-		return deep
-	}
-
-	calc_height(bf)
-	{
-		if (this.deep == bf.max_deep) {
+		if (prev) {
+			return prev.deep + 1
+		} else {
 			return 0
-		}
-
-		var prev = Blueprint.get_input_node(this, "prev")
-		if (prev)
-		{
-			var d = bf.max_deep - this.deep
-			var dh = 0.1 * Math.pow(0.5, (this.deep - 1)) * bf.height
-			return d / (d + 1) * prev.height - dh
-		}
-		else
-		{
-			return (bf.max_deep - this.deep) / bf.max_deep * bf.height
 		}
 	}
 
@@ -252,7 +257,7 @@ class Chuan is Node
 	{
 		var h_gong = 0
 
-		var sides = this.deep == bf.max_deep
+		var sides = this.is_curr_sides()
 		if (sides) {
 			h_gong = this.calc_4s_gong_height()
 		} else {
@@ -261,7 +266,7 @@ class Chuan is Node
 
 		var p = Vector3(pos.x, pos.y - h_gong, pos.z)
 
-		var column = CompNodes.create_column(p, this.height - h_gong)
+		var column = CompNodes.create_column(p, this.base_height + this.roof_height - h_gong)
 		if (CONTEXT.vert_conn) {
 			var e_fang = CompNodes.create_lan_e(p)
 			return Variant([ column, e_fang ])
@@ -314,7 +319,7 @@ class Chuan is Node
 		}
 
 		var y = 0
-		var sides = this.deep == bf.max_deep
+		var sides = this.is_curr_sides()
 		if (sides) {
 			y = pos.y - 0.21 * 2 - YAN_FANG_HEIGHT_FIXED
 		} else {
@@ -335,7 +340,7 @@ class Chuan is Node
 		var len = d * BEAM_DX + BEAM_HEAD_LEN
 
 		var y = 0
-		var sides = this.deep == bf.max_deep
+		var sides = this.is_curr_sides()
 		if (sides) {
 			y = pos.y - 0.21 * 2 - YAN_FANG_HEIGHT_FIXED
 		} else {
@@ -374,10 +379,10 @@ class Chuan is Node
 
 		var next = Blueprint.get_output_node(this, "next")
 		if (next) {
-			dh = this.height - next.height
+			dh = this.roof_height - next.roof_height
 		}
 
-		var sides = this.deep == bf.max_deep - 1
+		var sides = this.is_next_sides()
 		if (sides) {
 			dh = dh + 0.21 * 2 - next_beam_h + YAN_FANG_HEIGHT_FIXED
 		}
@@ -505,10 +510,10 @@ class Chuan is Node
 
 		var next = Blueprint.get_output_node(this, "next")
 		if (next) {
-			dh = this.height - next.height
+			dh = this.roof_height - next.roof_height
 		}
 
-		if (this.deep == bf.max_deep - 1) {
+		if (this.is_next_sides()) {
 			dh = dh + 0.21 + YAN_FANG_HEIGHT_FIXED
 		}
 
@@ -525,12 +530,12 @@ class Chuan is Node
 
 		var d = 0.08 * 2
 
-		var l_p0 = Vector3(-BEAM_DX * this.deep, this.height + d, 0)
-		var l_p1 = Vector3(-BEAM_DX * prev.deep, prev.height + d, 0)
+		var l_p0 = Vector3(-BEAM_DX * this.deep, this.base_height + this.roof_height + d, 0)
+		var l_p1 = Vector3(-BEAM_DX * prev.deep, prev.base_height + prev.roof_height + d, 0)
 
 		var ex_len = 0
 		var ex_len_f = 0
-		if (this.deep == bf.max_deep) 
+		if (this.is_curr_sides()) 
 		{
 			var angle = Math.atan2(l_p1.y - l_p0.y, l_p1.x - l_p0.x)
 			ex_len = (0.3 + 0.8) / Math.cos(angle)
@@ -540,7 +545,7 @@ class Chuan is Node
 		var l_yuan = CompNodes.create_yuan(l_p0, l_p1, ex_len)
 
 		// fei zi
-		if (this.deep == bf.max_deep) 
+		if (this.is_curr_sides()) 
 		{
 			var fei = CompNodes.create_fei_zi(l_p0, Vector3(l_p1.x, l_p1.y, l_p1.z), ex_len_f)
 			l_yuan = Variant([ l_yuan, fei ])
@@ -603,10 +608,10 @@ class Chuan is Node
 
 		var len = BEAM_DX * this.deep * 2
 		var next_beam_h = next_cc.calc_beam_height(next_cc.calc_left_beam_dist(bf, -next_cc.deep))
-		if (next_cc.deep == bf.max_deep) {
+		if (this.is_chuan_sides(next_cc)) {
 			next_beam_h = next_beam_h + 0.21
 		}
-		return CompNodes.create_shun_fu_chuan(Vector3(-len * 0.5, next_cc.height - next_beam_h, 0), len)
+		return CompNodes.create_shun_fu_chuan(Vector3(-len * 0.5, next_cc.base_height + next_cc.roof_height - next_beam_h, 0), len)
 	}
 
 	find_next_cc()
@@ -627,6 +632,45 @@ class Chuan is Node
 
 			curr = next
 		}
+		return nil
+	}
+
+	is_chuan_sides(chuan)
+	{
+		import "beamgraph.nodes.sub_chuan" for SubChuan
+
+		var next = Blueprint.get_output_node(chuan, "next")
+		return !next or next is SubChuan
+	}
+
+	is_curr_sides()
+	{
+		return this.is_chuan_sides(this)
+	}
+
+	is_next_sides()
+	{
+		var next = Blueprint.get_output_node(this, "next")
+		if (next) {
+			return this.is_chuan_sides(next)
+		} else {
+			return false
+		}
+	}
+
+	get_root_chuan()
+	{
+		import "beamgraph.nodes.ji_chuan" for JiChuan
+		import "beamgraph.nodes.sub_chuan" for SubChuan
+
+		var prev = Blueprint.get_input_node(this, "prev")
+		while (prev) {
+			if (prev is JiChuan or prev is SubChuan) {
+				return prev
+			}
+			prev = Blueprint.get_input_node(prev, "prev")
+		}
+
 		return nil
 	}
 }
