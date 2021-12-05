@@ -616,11 +616,13 @@ class Chuan is Node
 
 	find_next_cc()
 	{
+		import "beamgraph.nodes.sub_chuan" for SubChuan
+
 		var curr = this
 		while (curr) 
 		{
 			var next = Blueprint.get_output_node(curr, "next")
-			if (!next) {
+			if (!next or next is SubChuan) {
 				return nil
 			}
 
