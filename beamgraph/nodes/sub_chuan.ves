@@ -1,9 +1,12 @@
 import "blueprint.pin" for Pin
 import "blueprint.node" for Node
 import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
 import "beamgraph.variant" for PIN_TYPE_CHUAN
 import "beamgraph.chuan_helper" for ChuanHelper
 import "beamgraph.constant" for BEAM_DX
+import "beamgraph.comp_nodes" for CompNodes
+import "maths.vector" for Vector3
 
 class SubChuan is Node
 {
@@ -48,7 +51,24 @@ class SubChuan is Node
 
 	resolve_geo(bf)
 	{
-		return nil
+		var pos_l = Vector3(-BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
+		var pos_r = Vector3( BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
+
+		var fang_dh = 0.15
+		var l_e_fang = CompNodes.create_cheng_yuan_fang(Vector3(pos_l.x, pos_l.y + fang_dh, pos_l.z))
+		var r_e_fang = CompNodes.create_cheng_yuan_fang(Vector3(pos_r.x, pos_r.y + fang_dh, pos_r.z))
+
+		var height = 0
+		var next = Blueprint.get_output_node(this, "next")
+		if (next) {
+			height = this.roof_height - next.roof_height
+		}
+
+		var tuo_dh = 0.05
+		var l_tuo_jiao = CompNodes.create_tuo_jiao(Vector3(pos_l.x, pos_l.y - tuo_dh, pos_l.z), height - tuo_dh, BEAM_DX - 0.3, false)
+		var r_tuo_jiao = CompNodes.create_tuo_jiao(Vector3(pos_r.x, pos_r.y - tuo_dh, pos_r.z), height - tuo_dh, BEAM_DX - 0.3, true)
+
+		return Variant([ l_e_fang, r_e_fang, l_tuo_jiao, r_tuo_jiao ])
 	}
 
 	resolve_pj_geo(bf, z)

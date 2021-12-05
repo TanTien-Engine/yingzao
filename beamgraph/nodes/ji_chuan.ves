@@ -130,7 +130,7 @@ class JiChuan is Node
 		var dou = TransNodes.translate(LU_DOU, p)
 
 		if (CONTEXT.vert_conn) {
-			var e_fang = CompNodes.create_lan_e(p)
+			var e_fang = CompNodes.create_lan_e_fang(p)
 			return Variant([ dou, column, e_fang ])
 		} else {
 			return Variant([ dou, column ])
