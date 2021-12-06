@@ -1,0 +1,59 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+
+node0.op_node.cam.position.set(-2.7667098552291, -0.88879334112684, 16.765294594389)
+node0.op_node.cam.yaw = -78.1
+node0.op_node.cam.pitch = -0.1
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.21526837348938
+
+_editor.add_node(node0, -495.1, 3)
+
+var node1 = ::beamgraph::nodes::ji_chuan::JiChuan()
+node1.query_param("column").value = false
+
+_editor.add_node(node1, -181.04720909091, -40.210481818182)
+
+var node2 = ::beamgraph::nodes::chuan::Chuan()
+node2.query_param("l_column").value = false
+node2.query_param("r_column").value = false
+
+_editor.add_node(node2, -46.047209090909, -48.210481818182)
+
+var node3 = ::beamgraph::nodes::chuan::Chuan()
+node3.query_param("l_column").value = false
+node3.query_param("r_column").value = false
+
+_editor.add_node(node3, 84.952790909091, -49.210481818182)
+
+var node4 = ::blueprint::nodes::commentary::Commentary()
+
+node4.set_size(865.051, 109.9282)
+node4.title = "十架椽屋前后乳袱用四柱"
+
+_editor.add_node(node4, 159.90909090909, 20.181818181818)
+
+var node5 = ::beamgraph::nodes::chuan::Chuan()
+node5.query_param("l_column").value = true
+node5.query_param("r_column").value = true
+
+_editor.add_node(node5, 215.95279090909, -48.210481818182)
+
+var node6 = ::beamgraph::nodes::chuan::Chuan()
+node6.query_param("l_column").value = false
+node6.query_param("r_column").value = false
+
+_editor.add_node(node6, 357.95279090909, -46.210481818182)
+
+var node7 = ::beamgraph::nodes::chuan::Chuan()
+node7.query_param("l_column").value = true
+node7.query_param("r_column").value = true
+
+_editor.add_node(node7, 493.5153434082, -45.679135064697)
+
+Blueprint.connect(node1, "next", node2, "prev")
+Blueprint.connect(node2, "next", node3, "prev")
+Blueprint.connect(node3, "next", node5, "prev")
+Blueprint.connect(node5, "next", node6, "prev")
+Blueprint.connect(node6, "next", node7, "prev")
