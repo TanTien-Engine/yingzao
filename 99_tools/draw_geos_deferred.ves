@@ -541,13 +541,13 @@ _editor.add_node(node45, -253.66468770139, -422.33304670692)
 var node46 = ::blueprint::nodes::orthographic::Orthographic()
 
 node46.left = -1.5
-node46.right = 0.5
+node46.right = 1
 node46.bottom = 0
 node46.top = 1
 node46.near = 1
 node46.far = -1
 
-_editor.add_node(node46, -140.40334984564, 399.31072114281)
+_editor.add_node(node46, -129.16467389827, 398.62770768744)
 
 var node47 = ::blueprint::nodes::viewport::Viewport()
 
@@ -563,9 +563,9 @@ _editor.add_node(node49, -278.23458011229, 438.57017137206)
 
 var node50 = ::blueprint::nodes::number::Number()
 
-node50.value = 0.82286107540131
+node50.value = 0.32784762978554
 
-_editor.add_node(node50, -277.05748675399, 370.4335289185)
+_editor.add_node(node50, -530.50628134814, 300.43876159183)
 
 var node51 = ::blueprint::nodes::branch_f::BranchF()
 
@@ -588,7 +588,7 @@ var node54 = ::blueprint::nodes::load::Load()
 
 node54.var_name = "ortho"
 
-_editor.add_node(node54, -65.299777345493, 498.462791162)
+_editor.add_node(node54, -91.746058337229, 523.25617959175)
 
 var node55 = ::blueprint::nodes::load::Load()
 
@@ -614,22 +614,46 @@ _editor.add_node(node58, 993.5241920331, -1150.159968538)
 
 var node59 = ::blueprint::nodes::number2::Number2()
 
-node59.value.set(0.46752727031708, 0.64530503749847)
+node59.value.set(0.18203972280025, 0.87092864513397)
 
-_editor.add_node(node59, -273.07745511134, 293.90839682106)
+_editor.add_node(node59, -402.3835868223, 198.18406105164)
 
+var node60 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node60, -404.73064421295, 273.88628710736)
+
+var node61 = ::blueprint::nodes::integer::Integer()
+
+node61.value = 10
+
+_editor.add_node(node61, -535.74505929333, 238.49376363056)
+
+var node62 = ::blueprint::nodes::multiply::Multiply()
+
+_editor.add_node(node62, -266.88611742774, 174.53887819146)
+
+var node63 = ::blueprint::nodes::integer::Integer()
+
+node63.value = 3
+
+_editor.add_node(node63, -399.76329006827, 124.24425306656)
+
+Blueprint.connect(node59, "v2", node62, "a")
+Blueprint.connect(node63, "v", node62, "b")
 Blueprint.connect(node52, "var", node53, "var")
 Blueprint.connect(node53, "var", node55, "var")
 Blueprint.connect(node55, "var", node56, "cond")
 Blueprint.connect(node57, "v", node56, "true")
 Blueprint.connect(node58, "v", node56, "false")
 Blueprint.connect(node53, "var", node54, "var")
+Blueprint.connect(node50, "v", node60, "a")
+Blueprint.connect(node61, "v", node60, "b")
 Blueprint.connect(node47, "size", node48, "xy")
 Blueprint.connect(node48, "x", node49, "a")
 Blueprint.connect(node48, "y", node49, "b")
 Blueprint.connect(node49, "v", node46, "aspect")
-Blueprint.connect(node50, "v", node46, "scale")
-Blueprint.connect(node59, "v2", node46, "offset")
+Blueprint.connect(node60, "v", node46, "scale")
+Blueprint.connect(node62, "v", node46, "offset")
 Blueprint.connect(node38, "size", node29, "size")
 Blueprint.connect(node29, "tex", node31, "tex")
 Blueprint.connect(node29, "tex", node28, "col0")
