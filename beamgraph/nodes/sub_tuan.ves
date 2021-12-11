@@ -2,23 +2,23 @@ import "blueprint.pin" for Pin
 import "blueprint.node" for Node
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
-import "beamgraph.variant" for PIN_TYPE_CHUAN
-import "beamgraph.chuan_helper" for ChuanHelper
+import "beamgraph.variant" for PIN_TYPE_TUAN
+import "beamgraph.tuan_helper" for TuanHelper
 import "beamgraph.constant" for BEAM_DX
 import "beamgraph.comp_nodes" for CompNodes
 import "maths.vector" for Vector3
 
-class SubChuan is Node
+class SubTuan is Node
 {
 	init()
 	{
 		super.init()
 
 		this.imports = [
-			Pin(this, "prev", PIN_TYPE_CHUAN),
+			Pin(this, "prev", PIN_TYPE_TUAN),
 		]
 		this.exports = [
-			Pin(this, "next", PIN_TYPE_CHUAN),
+			Pin(this, "next", PIN_TYPE_TUAN),
 		]
 
 		this.layout()
@@ -39,12 +39,12 @@ class SubChuan is Node
 			this.deep = 0
 		}
 
-		this.max_deep = ChuanHelper.calc_tree_deep(this)
+		this.max_deep = TuanHelper.calc_tree_deep(this)
 	}
 
 	resolve_height(bf)
 	{
-		this.base_height = ChuanHelper.calc_tree_base_height(this)
+		this.base_height = TuanHelper.calc_tree_base_height(this)
 
 		this.roof_height = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 4
 	}

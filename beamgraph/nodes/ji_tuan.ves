@@ -5,25 +5,25 @@ import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.blueprint" for Blueprint
 import "gonggraph.component.lu_dou" for LU_DOU
-import "beamgraph.variant" for PIN_TYPE_CHUAN
+import "beamgraph.variant" for PIN_TYPE_TUAN
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.gong_helper" for GongHelper
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.context" for CONTEXT
 import "beamgraph.constant" for BEAM_DX, FRAME_DIST
-import "beamgraph.chuan_helper" for ChuanHelper
+import "beamgraph.tuan_helper" for TuanHelper
 import "maths.vector" for Vector3
 import "math" for Math
 import "editor.node_cache" for NODE_CACHE
 
-class JiChuan is Node
+class JiTuan is Node
 {
 	init()
 	{
 		super.init()
 
 		this.exports = [
-			Pin(this, "next", PIN_TYPE_CHUAN),
+			Pin(this, "next", PIN_TYPE_TUAN),
 		]
 
 		this.params.add(NodeParam("column", false))
@@ -44,12 +44,12 @@ class JiChuan is Node
 			bf.column_idx.add(0)
 		}
 
-		this.max_deep = ChuanHelper.calc_tree_deep(this)
+		this.max_deep = TuanHelper.calc_tree_deep(this)
 	}
 
 	resolve_height(bf)
 	{
-		this.base_height = ChuanHelper.calc_tree_base_height(this)
+		this.base_height = TuanHelper.calc_tree_base_height(this)
 
 		this.roof_height = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 3
 	}
@@ -57,7 +57,7 @@ class JiChuan is Node
 	resolve_geo(bf)
 	{
 		var pos = Vector3(0, this.base_height + this.roof_height, 0)
-		var ret = [ CompNodes.create_chuan(pos) ]
+		var ret = [ CompNodes.create_tuan(pos) ]
 //		var ret = []
 
 		var dh = 0
@@ -75,7 +75,7 @@ class JiChuan is Node
 		if (CONTEXT.vert_conn and CONTEXT.gen_panjian) {
 			v_gong = GongHelper.load_dou_gong("../yingzao/11_dg_song/802_pan_jian_2d.ves")
 		} else {
-			v_gong = GongHelper.load_dou_gong("../yingzao/11_dg_song/806_ding_hua_ji_chuan.ves")
+			v_gong = GongHelper.load_dou_gong("../yingzao/11_dg_song/806_ding_hua_ji_tuan.ves")
 		}
 
 		if (v_gong) 

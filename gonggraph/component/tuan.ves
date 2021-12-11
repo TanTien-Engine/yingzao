@@ -2,7 +2,7 @@ import "blueprint.pin" for Pin
 import "blueprint.variant" for Variant
 import "blueprint.blueprint" for Blueprint
 import "gonggraph.component.comp_node" for CompNode
-import "gonggraph.variant" for PIN_TYPE_PING_CHUAN
+import "gonggraph.variant" for PIN_TYPE_PING_TUAN
 import "gonggraph.node_helper" for NodeHelper
 import "gonggraph.trans_nodes" for TransNodes
 import "gonggraph.gong_helper" for GongHelper
@@ -10,19 +10,19 @@ import "gonggraph.gen_nodes" for GenNodes
 import "maths.vector" for Vector3
 import "editor.node_cache" for NODE_CACHE
 
-var CHUAN = NODE_CACHE.fetch("../yingzao/00_dougong2/44_chuan.ves", nil)		
+var TUAN = NODE_CACHE.fetch("../yingzao/00_dougong2/44_tuan.ves", nil)		
 
-class Chuan is CompNode
+class Tuan is CompNode
 {
 	init()
 	{
 		super.init()
 
 		this.imports = [
-			Pin(this, "prev", PIN_TYPE_PING_CHUAN),
+			Pin(this, "prev", PIN_TYPE_PING_TUAN),
 		]
 		this.exports = [
-			Pin(this, "next", PIN_TYPE_PING_CHUAN),
+			Pin(this, "next", PIN_TYPE_PING_TUAN),
 		]
 
 		this.layout()
@@ -40,7 +40,7 @@ class Chuan is CompNode
 	{
 		// translate
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
-		var v_geo = TransNodes.translate(CHUAN, pos)
+		var v_geo = TransNodes.translate(TUAN, pos)
 
 		this.comp.pos = pos
 		this.comp.v_geo = v_geo
@@ -50,7 +50,7 @@ class Chuan is CompNode
 
 	gen_corner(dg)
 	{
-		var v_geo = Blueprint.calc_output_value(CHUAN, "geo")
+		var v_geo = Blueprint.calc_output_value(TUAN, "geo")
 
 		var offset = 0
 		if (GongHelper.is_ang_inside(this)) {

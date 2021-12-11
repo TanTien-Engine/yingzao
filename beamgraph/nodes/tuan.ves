@@ -20,7 +20,7 @@ import "gonggraph.component.liao_yan_fang" for LiaoYanFang
 import "gonggraph.tools.hori_merge" for HoriMerge
 import "gonggraph.tools.vert_merge" for VertMerge
 import "gonggraph.tools_nodes" for ToolsNodes
-import "beamgraph.variant" for PIN_TYPE_CHUAN
+import "beamgraph.variant" for PIN_TYPE_TUAN
 import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.context" for CONTEXT
@@ -32,17 +32,17 @@ import "maths" for Matrix44
 
 var YAN_FANG_HEIGHT_FIXED = 0.09
 
-class Chuan is Node
+class Tuan is Node
 {
 	init()
 	{
 		super.init()
 
 		this.imports = [
-			Pin(this, "prev", PIN_TYPE_CHUAN),
+			Pin(this, "prev", PIN_TYPE_TUAN),
 		]
 		this.exports = [
-			Pin(this, "next", PIN_TYPE_CHUAN),
+			Pin(this, "next", PIN_TYPE_TUAN),
 		]
 
 		this.params.add(NodeParam("l_column", true))
@@ -82,7 +82,7 @@ class Chuan is Node
 		this.roof_height = 0
 		this.base_height = 0
 
-		var root = this.get_root_chuan()
+		var root = this.get_root_tuan()
 		if (root) {
 			this.base_height = root.base_height
 		}
@@ -119,8 +119,8 @@ class Chuan is Node
 
 		var sides = this.is_curr_sides()
 		if (!sides) {
-			ret.add(CompNodes.create_chuan(pos_l))
-			ret.add(CompNodes.create_chuan(pos_r))
+			ret.add(CompNodes.create_tuan(pos_l))
+			ret.add(CompNodes.create_tuan(pos_r))
 		}
 
 		var l_column = this.query_param("l_column").value
@@ -608,7 +608,7 @@ class Chuan is Node
 
 		var len = BEAM_DX * this.deep * 2
 		var next_beam_h = next_cc.calc_beam_height(next_cc.calc_left_beam_dist(bf, -next_cc.deep))
-		if (this.is_chuan_sides(next_cc)) {
+		if (this.is_tuan_sides(next_cc)) {
 			next_beam_h = next_beam_h + 0.21
 		}
 		return CompNodes.create_shun_fu_chuan(Vector3(-len * 0.5, next_cc.base_height + next_cc.roof_height - next_beam_h, 0), len)
@@ -616,13 +616,13 @@ class Chuan is Node
 
 	find_next_cc()
 	{
-		import "beamgraph.nodes.sub_chuan" for SubChuan
+		import "beamgraph.nodes.sub_tuan" for SubTuan
 
 		var curr = this
 		while (curr) 
 		{
 			var next = Blueprint.get_output_node(curr, "next")
-			if (!next or next is SubChuan) {
+			if (!next or next is SubTuan) {
 				return nil
 			}
 
@@ -637,37 +637,37 @@ class Chuan is Node
 		return nil
 	}
 
-	is_chuan_sides(chuan)
+	is_tuan_sides(tuan)
 	{
-		import "beamgraph.nodes.sub_chuan" for SubChuan
+		import "beamgraph.nodes.sub_tuan" for SubTuan
 
-		var next = Blueprint.get_output_node(chuan, "next")
-		return !next or next is SubChuan
+		var next = Blueprint.get_output_node(tuan, "next")
+		return !next or next is SubTuan
 	}
 
 	is_curr_sides()
 	{
-		return this.is_chuan_sides(this)
+		return this.is_tuan_sides(this)
 	}
 
 	is_next_sides()
 	{
 		var next = Blueprint.get_output_node(this, "next")
 		if (next) {
-			return this.is_chuan_sides(next)
+			return this.is_tuan_sides(next)
 		} else {
 			return false
 		}
 	}
 
-	get_root_chuan()
+	get_root_tuan()
 	{
-		import "beamgraph.nodes.ji_chuan" for JiChuan
-		import "beamgraph.nodes.sub_chuan" for SubChuan
+		import "beamgraph.nodes.ji_tuan" for JiTuan
+		import "beamgraph.nodes.sub_tuan" for SubTuan
 
 		var prev = Blueprint.get_input_node(this, "prev")
 		while (prev) {
-			if (prev is JiChuan or prev is SubChuan) {
+			if (prev is JiTuan or prev is SubTuan) {
 				return prev
 			}
 			prev = Blueprint.get_input_node(prev, "prev")

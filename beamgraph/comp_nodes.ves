@@ -11,13 +11,13 @@ import "math" for Math
 
 class CompNodes
 {
-	static create_chuan(pos)
+	static create_tuan(pos)
 	{
-		var CHUAN  = NODE_CACHE.fetch("../yingzao/00_dougong2/44_chuan.ves", nil)
+		var TUAN = NODE_CACHE.fetch("../yingzao/00_dougong2/44_tuan.ves", nil)
 
-		Blueprint.connect(VariantProxy(Variant(FRAME_DIST)), "out", CHUAN, "length")
+		Blueprint.connect(VariantProxy(Variant(FRAME_DIST)), "out", TUAN, "length")
 		
-		return TransNodes.transform(CHUAN, pos, -Math.pi() * 0.5)
+		return TransNodes.transform(TUAN, pos, -Math.pi() * 0.5)
 	}
 
 	static create_column(pos, height)
