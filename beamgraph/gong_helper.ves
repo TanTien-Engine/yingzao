@@ -9,19 +9,23 @@ class GongHelper
 	{
 		var dg_sg = NODE_CACHE.fetch(filepath, nil)
 
+		var all_nodes = []
 		var comp_nodes = []
-		for (var item in dg_sg.all_items) {
+		for (var item in dg_sg.all_items) 
+		{
+			all_nodes.add(item[0])
 			if (item[0] is CompNode) {
 				comp_nodes.add(item[0])
 			}
 		}
-
 		if (comp_nodes.isEmpty) {
 			return nil
 		}
 
-		var dg = DouGong()
 		var geos = []
+
+		var dg = DouGong()
+		dg.prepare(all_nodes)
 		dg.rebuild(comp_nodes, geos)
 
 		return Variant(geos)

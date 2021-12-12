@@ -31,6 +31,37 @@ class DouGong
 		this.x_min = 0
 
 		this.joints = []
+		this.styles = []
+	}
+
+	prepare(nodes)
+	{
+		CONTEXT.dg = this
+
+		import "gonggraph.style.style_node" for StyleNode
+		import "gonggraph.style.ang_slope" for AngSlope
+		import "gonggraph.style.step_length" for StepLength
+		import "gonggraph.tools.hori_conn" for HoriConn
+
+		for (var node in nodes)
+		{
+			if (node is AngSlope)
+			{
+				CONTEXT.s_ang_slope = node
+			}
+			else if (node is StepLength)
+			{
+				CONTEXT.s_step_len = node
+			}
+			else if (node is HoriConn)
+			{
+				this.joints.add(node)
+			}
+			else if (node is StyleNode)
+			{
+				this.styles.add(node)
+			}
+		}
 	}
 
 	rebuild(comp_nodes, out_list)
@@ -38,7 +69,7 @@ class DouGong
 		this.rebuild_layers(comp_nodes)
 
 		// pass0: register style
-		for (var n in CONTEXT.style_nodes) {
+		for (var n in this.styles) {
 			n.register()
 		}
 
