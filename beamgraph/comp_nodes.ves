@@ -55,6 +55,8 @@ class CompNodes
 		var len_node = VariantProxy(Variant(len))
 		Blueprint.connect(len_node, "out", BEAM, "length")
 		
+		Blueprint.connect(VariantProxy(Variant(false)), "out", BEAM, "left")
+
 		var v_geo = TransNodes.transform(BEAM, pos, -Math.pi() * 0.5)
 		return v_geo
 	}
