@@ -183,6 +183,11 @@ class Tuan is Node
 			}
 		}
 
+		if (sides and FRAME_STYLE == STYLE_DIAN_TANG) {
+			var y = pos_l.y - TuanHelper.calc_dou_gong_height()
+			ret.add(CompNodes.create_nei_e_fang(Vector3(0, y, 0), BEAM_DX * this.deep * 2))
+		}
+
 		return Variant(ret)
 	}
 
