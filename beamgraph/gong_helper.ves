@@ -1,6 +1,8 @@
 import "blueprint.variant" for Variant
 import "gonggraph.component.comp_node" for CompNode
+import "gonggraph.style.beam_style" for BeamStyle
 import "gonggraph.dou_gong" for DouGong
+import "beamgraph.constant" for DG_STEPS
 import "editor.node_cache" for NODE_CACHE
 
 class GongHelper
@@ -13,9 +15,14 @@ class GongHelper
 		var comp_nodes = []
 		for (var item in dg_sg.all_items) 
 		{
-			all_nodes.add(item[0])
-			if (item[0] is CompNode) {
-				comp_nodes.add(item[0])
+			var node = item[0]
+
+			all_nodes.add(node)
+
+			if (node is CompNode) {
+				comp_nodes.add(node)
+			} else if (node is BeamStyle) {
+				node.query_param("h").value = 0.42
 			}
 		}
 		if (comp_nodes.isEmpty) {
@@ -29,5 +36,59 @@ class GongHelper
 		dg.rebuild(comp_nodes, geos)
 
 		return Variant(geos)
+	}
+
+	static create_outer_column()
+	{
+		return this.create_dou_gong(DG_STEPS, false, false)
+	}
+
+	static create_inner_column()
+	{
+		return this.create_dou_gong(DG_STEPS - 1, false, true)
+	}
+
+	static create_dou_gong(steps, tween, inner)
+	{
+		var filepath = nil
+
+		if (inner)
+		{
+			if (tween)
+			{
+
+			}
+			else
+			{
+				if (steps == 5) {
+					filepath = "../yingzao/11_dg_song/602_5s_33233_2c_1c_i_column.ves"
+				} else if (steps == 6) {
+					filepath = "../yingzao/11_dg_song/603_6s_4432344_3c_2c_i_column.ves"
+				}
+			}
+		}
+		else
+		{
+			if (tween)
+			{
+
+			}
+			else
+			{
+				if (steps == 6) {
+					filepath = "../yingzao/11_dg_song/204_6s_443233_1c2a_1c_column.ves"
+				} else if (steps == 7) {
+					filepath = "../yingzao/11_dg_song/206_7s_55432344_2c2a_2c_column.ves"
+				} else if (steps == 8) {
+					filepath = "../yingzao/11_dg_song/209_8s_6654323455_2c3a_2c_column.ves"					
+				}
+			}
+		}
+
+		if (filepath) {
+			return GongHelper.load_dou_gong(filepath)
+		} else {
+			return nil
+		}
 	}
 }

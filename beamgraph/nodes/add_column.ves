@@ -1,0 +1,86 @@
+import "blueprint.node" for Node
+import "blueprint.node_param" for NodeParam
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "beamgraph.comp_nodes" for CompNodes
+import "beamgraph.constant" for BEAM_DX
+import "beamgraph.context" for CONTEXT
+import "beamgraph.gong_helper" for GongHelper
+import "beamgraph.trans_nodes" for TransNodes
+import "beamgraph.tuan_helper" for TuanHelper
+import "maths.vector" for Vector3
+import "math" for Math
+
+class AddColumn is Node
+{
+	init()
+	{
+		super.init()
+
+		this.params.add(NodeParam("type", "center", { "combo" : [ "single", "double", "center" ] }))
+
+		this.layout()
+	}
+
+	on_node_dirty()
+	{
+		CONTEXT.prop_changed = true
+	}
+
+	resolve_deep(bf)
+	{
+	}
+
+	resolve_height(bf)
+	{
+	}
+
+	resolve_geo(bf)
+	{
+		if (!bf.root) {
+			return nil
+		}
+
+		var h = bf.root.base_height - TuanHelper.calc_dou_gong_height()
+		var y = h
+
+		var column = nil
+
+		var type = this.query_param("type").value
+		if (type == "single")
+		{
+			var x = - bf.root.max_deep * BEAM_DX * 0.5
+			column = CompNodes.create_column(Vector3(x, h, 0), h)
+		}
+		else if (type == "double")
+		{
+			var x = - bf.root.max_deep * BEAM_DX * 0.5
+			var l_col = CompNodes.create_column(Vector3(-x, h, 0), h)
+			var r_col = CompNodes.create_column(Vector3( x, h, 0), h)
+			column = Variant([ l_col, r_col ])
+		}
+		else if (type == "center")
+		{
+			column = CompNodes.create_column(Vector3(0, h, 0), h)
+		}
+		else
+		{
+			column = nil
+		}
+
+		var v_gong = GongHelper.create_inner_column()
+		v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(0, y, 0), -Math.pi() * 0.5)
+
+		return Variant([ column, v_gong ])
+	}
+
+	resolve_pj_geo(bf, z)
+	{	
+	}
+
+	get_title()
+	{
+		return "加柱"
+	}
+}

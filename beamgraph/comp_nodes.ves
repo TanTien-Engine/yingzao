@@ -5,7 +5,7 @@ import "blueprint.blueprint" for Blueprint
 import "geograph.nodes.plane" for Plane
 import "geograph.nodes.box" for Box
 import "beamgraph.trans_nodes" for TransNodes
-import "beamgraph.constant" for FRAME_DIST
+import "beamgraph.constant" for FRAME_DIST, FRAME_STYLE, STYLE_DIAN_TANG
 import "maths.vector" for Vector3
 import "math" for Math
 
@@ -25,6 +25,9 @@ class CompNodes
 		var COLUMN = NODE_CACHE.fetch("../yingzao/01_beam_column/10_column.ves", nil)
 
 		var d = 0.36
+		if (FRAME_STYLE == STYLE_DIAN_TANG) {
+			d = 0.42
+		}
 		var radius_node = VariantProxy(Variant(d * 0.5))
 		Blueprint.connect(radius_node, "out", COLUMN, "radius")	
 
@@ -214,4 +217,13 @@ class CompNodes
 
 		return TransNodes.translate(box, Vector3(pos.x, pos.y - h, pos.z))
 	}
+
+	static create_ti_mu(pos)
+	{
+		var TI_MU = NODE_CACHE.fetch("../yingzao/00_dougong2/43_ti_mu.ves", nil)
+
+		Blueprint.connect(VariantProxy(Variant(0.96)), "out", TI_MU, "length")
+
+		return TransNodes.transform(TI_MU, pos, -Math.pi() * 0.5)	
+	}	
 }

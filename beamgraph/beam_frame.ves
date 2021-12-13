@@ -17,18 +17,26 @@ class BeamFrame
 		this.column_idx = []
 
 		this.shun_fu_chuan = false
+
+		this.root = nil
 	}
 
 	rebuild(scene, out_list)
 	{
+		import "beamgraph.nodes.ji_tuan" for JiTuan
+
 		this.column_idx.clear()
 		this.shun_fu_chuan = false
 
 		var comp_nodes = []
-		for (var node in scene.nodes) {
+		for (var node in scene.nodes) 
+		{
 			var bp_node = node.components["bp"]
 			if (bp_node and bp_node.has_method("resolve_geo(_)")) {
 				comp_nodes.add(bp_node)
+				if (bp_node is JiTuan) {
+					this.root = bp_node
+				}
 			}
 		}
 		var sorted_nodes = Blueprint.topo_sort(comp_nodes)		

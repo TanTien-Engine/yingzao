@@ -1,4 +1,7 @@
 import "blueprint.blueprint" for Blueprint
+import "beamgraph.constant" for FRAME_STYLE, STYLE_DIAN_TANG, STYLE_TING_TANG, DG_STEPS
+
+var YAN_FANG_HEIGHT_FIXED = 0.09
 
 class TuanHelper
 {
@@ -21,16 +24,36 @@ class TuanHelper
 	{
 		import "beamgraph.nodes.sub_tuan" for SubTuan
 
-		var base_height = 0.84 + 2.50
+		var base_height = 2.5
+		if (FRAME_STYLE == STYLE_DIAN_TANG) {
+			base_height = 3.2
+		}
+
+		var sub_dh = 2.50
+		if (FRAME_STYLE == STYLE_TING_TANG) 
+		{
+			base_height = base_height + 0.84
+			sub_dh = sub_dh + 0.4
+		} 
+		else if (FRAME_STYLE == STYLE_DIAN_TANG) 
+		{
+			base_height = base_height + this.calc_dou_gong_height()
+			sub_dh = sub_dh + 0.5
+		}
 
 		var next = Blueprint.get_output_node(root, "next")
 		while (next) {
 			if (next is SubTuan) {
-				base_height = base_height + 0.4 + 2.50
+				base_height = base_height + sub_dh
 			}
 			next = Blueprint.get_output_node(next, "next")
 		}
 
 		return base_height
+	}
+
+	static calc_dou_gong_height()
+	{
+		return 0.21 * (DG_STEPS + 1) - YAN_FANG_HEIGHT_FIXED
 	}
 }
