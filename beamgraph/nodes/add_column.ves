@@ -46,33 +46,40 @@ class AddColumn is Node
 		var y = h
 
 		var column = nil
+		var dou_gong = nil
+
+		var v_gong = GongHelper.create_inner_column()
 
 		var type = this.query_param("type").value
 		if (type == "single")
 		{
 			var x = - bf.root.max_deep * BEAM_DX * 0.5
 			column = CompNodes.create_column(Vector3(x, h, 0), h)
+			dou_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(x, y, 0), -Math.pi() * 0.5)
 		}
 		else if (type == "double")
 		{
 			var x = - bf.root.max_deep * BEAM_DX * 0.5
+
 			var l_col = CompNodes.create_column(Vector3(-x, h, 0), h)
 			var r_col = CompNodes.create_column(Vector3( x, h, 0), h)
 			column = Variant([ l_col, r_col ])
+
+			var l_dg = TransNodes.transform(VariantProxy(v_gong), Vector3(-x, y, 0), -Math.pi() * 0.5)
+			var r_dg = TransNodes.transform(VariantProxy(v_gong), Vector3( x, y, 0), -Math.pi() * 0.5)			
+			dou_gong = Variant([ l_dg, r_dg ])
 		}
 		else if (type == "center")
 		{
 			column = CompNodes.create_column(Vector3(0, h, 0), h)
+			dou_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(0, y, 0), -Math.pi() * 0.5)
 		}
 		else
 		{
 			column = nil
 		}
 
-		var v_gong = GongHelper.create_inner_column()
-		v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(0, y, 0), -Math.pi() * 0.5)
-
-		return Variant([ column, v_gong ])
+		return Variant([ column, dou_gong ])
 	}
 
 	resolve_pj_geo(bf, z)

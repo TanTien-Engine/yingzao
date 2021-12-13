@@ -1,4 +1,6 @@
 import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "blueprint.blueprint" for Blueprint
 import "gonggraph.component.comp_node" for CompNode
 import "gonggraph.style.beam_style" for BeamStyle
 import "gonggraph.dou_gong" for DouGong
@@ -45,6 +47,9 @@ class GongHelper
 
 	static create_inner_column()
 	{
+		var BEAM = NODE_CACHE.fetch("../yingzao/00_dougong2/45_straight_beam.ves", nil)
+		Blueprint.connect(VariantProxy(Variant(0.5)), "out", BEAM, "length")
+
 		return this.create_dou_gong(DG_STEPS - 1, false, true)
 	}
 
