@@ -8,7 +8,6 @@ import "beamgraph.constant" for BEAM_DX
 import "beamgraph.context" for CONTEXT
 import "beamgraph.gong_helper" for GongHelper
 import "beamgraph.trans_nodes" for TransNodes
-import "beamgraph.tuan_helper" for TuanHelper
 import "maths.vector" for Vector3
 import "math" for Math
 
@@ -42,7 +41,7 @@ class AddColumn is Node
 			return nil
 		}
 
-		var h = bf.root.base_height - TuanHelper.calc_dou_gong_height()
+		var h = bf.root.column_height
 		var y = h
 
 		var column = nil

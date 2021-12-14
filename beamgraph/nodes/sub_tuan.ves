@@ -24,8 +24,12 @@ class SubTuan is Node
 		this.layout()
 
 		this.deep = 0
-		this.roof_height = 0
-		this.base_height = 0
+
+		this.roof_height   = 0
+		this.middle_height = 0
+		this.column_height = 0
+
+		this.tot_height = 0
 
 		this.max_deep = 0
 	}
@@ -44,15 +48,17 @@ class SubTuan is Node
 
 	resolve_height(bf)
 	{
-		this.base_height = TuanHelper.calc_tree_base_height(this)
+		this.column_height = TuanHelper.calc_column_layer_height(this)
+		this.middle_height = TuanHelper.calc_middle_layer_height(this)
+		this.roof_height   = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 4
 
-		this.roof_height = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 4
+		this.tot_height = this.column_height + this.middle_height + this.roof_height
 	}
 
 	resolve_geo(bf)
 	{
-		var pos_l = Vector3(-BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
-		var pos_r = Vector3( BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
+		var pos_l = Vector3(-BEAM_DX * this.deep, this.tot_height, 0)
+		var pos_r = Vector3( BEAM_DX * this.deep, this.tot_height, 0)
 
 		var fang_dh = 0.15
 		var l_e_fang = CompNodes.create_cheng_yuan_fang(Vector3(pos_l.x, pos_l.y + fang_dh, pos_l.z))

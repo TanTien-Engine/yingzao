@@ -31,8 +31,12 @@ class JiTuan is Node
 		this.layout()
 
 		this.deep = 0
-		this.roof_height = 0
-		this.base_height = 0
+
+		this.roof_height   = 0
+		this.middle_height = 0
+		this.column_height = 0
+
+		this.tot_height = 0
 
 		this.max_deep = 0
 	}
@@ -49,22 +53,27 @@ class JiTuan is Node
 
 	resolve_height(bf)
 	{
-		this.base_height = TuanHelper.calc_tree_base_height(this)
+		this.column_height = TuanHelper.calc_column_layer_height(this)
+		this.middle_height = TuanHelper.calc_middle_layer_height(this)
+		this.roof_height   = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 3
 
-		this.roof_height = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 3
+		this.tot_height = this.column_height + this.middle_height + this.roof_height
 	}
 
 	resolve_geo(bf)
 	{
-		var pos = Vector3(0, this.base_height + this.roof_height, 0)
+		var pos = Vector3(0, this.tot_height, 0)
 		var ret = [ CompNodes.create_tuan(pos) ]
 //		var ret = []
 
-		var dh = 0
 		var next = Blueprint.get_output_node(this, "next")
-		if (next) {
-			dh = this.roof_height - next.roof_height
+		if (!next) {
+			return Variant(ret)
 		}
+
+		var btm = next.tot_height + next.calc_beam_y_offset() + next.l_beam_h
+
+		var dh = this.tot_height - btm
 
 		var column = this.query_param("column").value
 		if (column) {
@@ -105,7 +114,7 @@ class JiTuan is Node
 
 	resolve_pj_geo(bf, z)
 	{
-		var pos = Vector3(0, this.base_height + this.roof_height, 0)
+		var pos = Vector3(0, this.tot_height, 0)
 		var h_gong = 0.06 + 0.21 + 0.21 + (0.12 - 0.02)
 
 		var fang0 = CompNodes.create_pj_fang(Vector3(pos.x, pos.y - h_gong + 0.06, pos.z + z + FRAME_DIST * 0.5))
@@ -126,7 +135,7 @@ class JiTuan is Node
 
 		var p = Vector3(pos.x, pos.y - dh - h_beam - dou_h, pos.z)
 
-		var column = CompNodes.create_column(p, this.base_height + this.roof_height - dh - h_beam - dou_h)
+		var column = CompNodes.create_column(p, this.tot_height - dh - h_beam - dou_h)
 		var dou = TransNodes.translate(LU_DOU, p)
 
 		if (CONTEXT.vert_conn) {

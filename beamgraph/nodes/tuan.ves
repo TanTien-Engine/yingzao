@@ -22,19 +22,16 @@ import "gonggraph.tools.vert_merge" for VertMerge
 import "gonggraph.tools_nodes" for ToolsNodes
 import "gonggraph.dou_gong" for DouGong
 import "beamgraph.variant" for PIN_TYPE_TUAN
-import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED, FRAME_STYLE, STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU, DG_STEPS
+import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED, FRAME_STYLE, STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.context" for CONTEXT
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.gong_helper" for GongHelper
-import "beamgraph.tuan_helper" for TuanHelper, YAN_FANG_HEIGHT_FIXED
+import "beamgraph.beam_helper" for BeamHelper
+import "beamgraph.tuan_helper" for TuanHelper
 import "maths.vector" for Vector3
 import "math" for Math
 import "maths" for Matrix44
-
-var BEAM_DIAN_Y_OFFSET =  0.15
-//var BEAM_TING_Y_OFFSET = -0.06
-var BEAM_TING_Y_OFFSET = 0.06
 
 class Tuan is Node
 {
@@ -57,10 +54,14 @@ class Tuan is Node
 		this.title = "槫"
 
 		this.deep = 0
+
 		this.roof_height = 0
 		this.base_height = 0
 
-		this.beam_dy = 0
+		this.tot_height = 0
+
+		this.l_beam_h = 0
+		this.r_beam_h = 0
 	}
 
 	on_node_dirty()
@@ -90,40 +91,45 @@ class Tuan is Node
 
 		var root = this.get_root_tuan()
 		if (root) {
-			this.base_height = root.base_height
+			this.base_height = root.column_height + root.middle_height
 		}
+
+		var sides = this.is_curr_sides()
 		
-		if (this.is_curr_sides()) {
-			this.roof_height = 0
-			return
+		// calc roof height
+		if (!sides) 
+		{
+			var deep = this.deep - root.deep
+
+			var prev = Blueprint.get_input_node(this, "prev")
+			if (prev)
+			{
+				var d = root.max_deep - deep
+				var dh = 0.1 * Math.pow(0.5, (deep - 1)) * root.roof_height
+				this.roof_height = d / (d + 1) * prev.roof_height - dh
+			}
+			else
+			{
+				this.roof_height = (root.max_deep - deep) / root.max_deep * root.roof_height
+			}
 		}
 
-		var deep = this.deep - root.deep
+		this.tot_height = this.base_height + this.roof_height
 
-		var prev = Blueprint.get_input_node(this, "prev")
-		if (prev)
-		{
-			var d = root.max_deep - deep
-			var dh = 0.1 * Math.pow(0.5, (deep - 1)) * root.roof_height
-			this.roof_height = d / (d + 1) * prev.roof_height - dh
-		}
-		else
-		{
-			this.roof_height = (root.max_deep - deep) / root.max_deep * root.roof_height
-		}
+		// calc beam height
+		this.l_beam_h = BeamHelper.calc_beam_height(this.calc_left_beam_dist(bf, -this.deep))
+		this.r_beam_h = BeamHelper.calc_beam_height(this.calc_right_beam_dist(bf, this.deep))
 	}
 
 	resolve_geo(bf)
 	{
 		var ret = []
 
-		this.beam_dy = this.calc_beam_dy()
-
 		this.title = this.calc_title(bf)
 
 		var rot = -Math.pi() * 0.5
-		var pos_l = Vector3(-BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
-		var pos_r = Vector3( BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
+		var pos_l = Vector3(-BEAM_DX * this.deep, this.tot_height, 0)
+		var pos_r = Vector3( BEAM_DX * this.deep, this.tot_height, 0)
 
 		var sides = this.is_curr_sides()
 
@@ -139,17 +145,15 @@ class Tuan is Node
 			ret.add(this.create_tuo_feng(bf, pos_l))
 		}
 		if (sides) {
-			ret.add(this.create_dou_gong(pos_l, false))
+			ret.add(this.create_dou_gong(bf, pos_l, false))
 		} else {
 			ret.add(this.create_3s_dg(pos_l, l_column))
 			if (CONTEXT.hori_conn) {
 				ret.add(this.create_tuo_jiao(bf, pos_l, false))			
 			}
 		}
-		var l_beam = this.create_left_beam(bf, this.deep, pos_l)
-		if (l_beam) {
-			ret.add(l_beam)
-		}
+		var dist_l = this.calc_left_beam_dist(bf, -this.deep)
+		ret.add(this.create_beam(dist_l, pos_l, true))
 
 		var r_column = this.query_param("r_column").value
 		if (r_column) {
@@ -159,16 +163,16 @@ class Tuan is Node
 		}
 
 		if (sides) {
-			ret.add(this.create_dou_gong(pos_r, true))
+			ret.add(this.create_dou_gong(bf, pos_r, true))
 		} else {
 			ret.add(this.create_3s_dg(pos_r, r_column))
 			if (CONTEXT.hori_conn) {
 				ret.add(this.create_tuo_jiao(bf, pos_r, true))			
 			}
-		}		
-		var r_beam = this.create_right_beam(bf, this.deep, pos_r)
-		if (r_beam) {
-			ret.add(r_beam)
+		}
+		var dist_r = this.calc_right_beam_dist(bf, this.deep)
+		if (dist_r != this.deep * 2) {
+			ret.add(this.create_beam(dist_r, pos_r, false))			
 		}
 
 		if (CONTEXT.yuan) {
@@ -184,7 +188,7 @@ class Tuan is Node
 		}
 
 		if (sides and FRAME_STYLE == STYLE_DIAN_TANG) {
-			var y = pos_l.y - TuanHelper.calc_dou_gong_height()
+			var y = pos_l.y - this.get_root_tuan().middle_height
 			ret.add(CompNodes.create_nei_e_fang(Vector3(0, y, 0), BEAM_DX * this.deep * 2))
 		}
 
@@ -198,8 +202,8 @@ class Tuan is Node
 			return nil
 		}
 
-		var pos_l = Vector3(-BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
-		var pos_r = Vector3( BEAM_DX * this.deep, this.base_height + this.roof_height, 0)
+		var pos_l = Vector3(-BEAM_DX * this.deep, this.tot_height, 0)
+		var pos_r = Vector3( BEAM_DX * this.deep, this.tot_height, 0)
 
 		var l_column = this.query_param("l_column").value
 		var r_column = this.query_param("r_column").value
@@ -247,6 +251,27 @@ class Tuan is Node
 		}
 	}
 
+	calc_beam_y_offset()
+	{
+		var dy = 0
+		if (this.is_curr_sides()) 
+		{
+			dy = - this.get_root_tuan().middle_height + 0.12 + 0.21
+
+			// double beam
+			if (FRAME_STYLE == STYLE_DIAN_TANG) 
+			{
+				var steps = TuanHelper.calc_steps(this.get_root_tuan())
+				dy = dy + 0.21 * (steps - 2) - 0.06
+			}
+		} 
+		else 
+		{
+			dy = - (0.21 + 0.12 - 0.02)
+		}
+		return dy
+	}
+
 	create_column(bf, pos)
 	{
 		var h_gong = 0
@@ -255,19 +280,19 @@ class Tuan is Node
 		if (FRAME_STYLE == STYLE_TING_TANG)
 		{
 			if (sides) {
-				h_gong = this.calc_4s_gong_height()
+				h_gong = this.get_root_tuan().middle_height
 			} else {
 				h_gong = this.calc_3s_gong_height(true)
 			}
 		}
 		else if (FRAME_STYLE == STYLE_DIAN_TANG)
 		{
-			h_gong = TuanHelper.calc_dou_gong_height()
+			h_gong = this.get_root_tuan().middle_height
 		}
 
 		var p = Vector3(pos.x, pos.y - h_gong, pos.z)
 
-		var column = CompNodes.create_column(p, this.base_height + this.roof_height - h_gong)
+		var column = CompNodes.create_column(p, this.tot_height - h_gong)
 		if (CONTEXT.vert_conn) {
 			var e_fang = CompNodes.create_lan_e_fang(p)
 			return Variant([ column, e_fang ])
@@ -306,103 +331,49 @@ class Tuan is Node
 		return dist
 	}
 
-	calc_beam_dy()
+	create_beam(dist, pos, left)
 	{
-		if (FRAME_STYLE == STYLE_DIAN_TANG) 
-		{
-			return BEAM_DIAN_Y_OFFSET
-		} 
-		else if (FRAME_STYLE == STYLE_TING_TANG) 
-		{
-			if (this.is_curr_sides()) {
-				return -YAN_FANG_HEIGHT_FIXED
-			} else {
-				return BEAM_TING_Y_OFFSET
-			}
+		var h = 0
+		if (left) {
+			h = this.l_beam_h
+		} else {
+			h = this.r_beam_h
 		}
-		return 0
-	}
 
-	create_left_beam(bf, dist, pos)
-	{
-		var d = this.calc_left_beam_dist(bf, -dist)
-//		if (d == dist * 2) {
-//			return nil
-//		}
+		var y = pos.y + this.calc_beam_y_offset()
 
-		var h = this.calc_beam_height(d)
-		var y = pos.y + this.beam_dy - h
-
-		var len = d * BEAM_DX + BEAM_HEAD_LEN
-		if (d == dist * 2) {
+		var len = dist * BEAM_DX + BEAM_HEAD_LEN * 2
+		if (dist == dist * 2) {
 			len = len + BEAM_HEAD_LEN
 		}
 
-		return CompNodes.create_straight_beam(Vector3(pos.x - BEAM_HEAD_LEN, y, pos.z), h, len)
-	}
-
-	create_right_beam(bf, dist, pos)
-	{
-		var d = this.calc_right_beam_dist(bf, dist)
-		if (d == dist * 2) {
-			return nil
-		}
-
-		var h = this.calc_beam_height(d)
-		var y = pos.y + this.beam_dy - h
-
-		return CompNodes.create_straight_beam(Vector3(pos.x - len + BEAM_HEAD_LEN, y, pos.z), h, len)
-	}
-
-	calc_beam_height(deep)
-	{
-		//// chen tong
-		//if (deep <= 2) {
-		//	return 0.24
-		//} else if (deep <= 4) {
-		//	return 0.3
-		//} else {
-		//	return 0.36
-		//}
-
-		// chen ming da
-		if (deep <= 1) {
-			return 0.21
-		} else if (deep <= 3) {
-			return 0.3
-		} else if (deep <= 5) {
-			return 0.36
+		var x = pos.x
+		if (left) {
+			x = x - BEAM_HEAD_LEN
 		} else {
-			return 0.45
+			x = x - len + BEAM_HEAD_LEN
 		}
+
+		return CompNodes.create_straight_beam(Vector3(x, y, pos.z), h, len)		
 	}
 
 	create_tuo_feng(bf, pos)
 	{
-		var dh = 0
-
 		var next = Blueprint.get_output_node(this, "next")
-		if (next) {
-			dh = this.roof_height - next.roof_height
+		if (!next) {
+			return nil
 		}
 
-		var off_y = 0
-		if (FRAME_STYLE == STYLE_TING_TANG and this.is_next_sides()) 
-		{
-			dh = dh + YAN_FANG_HEIGHT_FIXED
-		}
-		else
-		{
-			if (FRAME_STYLE == STYLE_TING_TANG) {
-				off_y = BEAM_TING_Y_OFFSET
-			} else if (FRAME_STYLE == STYLE_DIAN_TANG) {
-				off_y = BEAM_DIAN_Y_OFFSET
-			}
+		var top = this.tot_height + this.calc_beam_y_offset() - 0.06
+
+		var btm = next.tot_height + next.calc_beam_y_offset()
+		if (pos.x < 0) {
+			btm = btm + next.l_beam_h
+		} else {
+			btm = btm + next.r_beam_h		
 		}
 
-		var y = pos.y - dh + off_y
-		var h = dh - this.calc_3s_gong_height(false) - off_y
-		return CompNodes.create_tuo_feng(Vector3(pos.x, y, pos.z), h)
+		return CompNodes.create_tuo_feng(Vector3(pos.x, btm, pos.z), top - btm)
 	}
 
 	calc_3s_gong_height(column)
@@ -416,12 +387,7 @@ class Tuan is Node
 		return h_dou + 0.21 + (0.12 - 0.02)
 	}
 
-	calc_4s_gong_height()
-	{
-		return 0.12 + 0.21 * 3 + YAN_FANG_HEIGHT_FIXED
-	}
-
-	create_dou_gong(pos, rot)
+	create_dou_gong(bf, pos, rot)
 	{
 		if (FRAME_STYLE == STYLE_TING_TANG) 
 		{
@@ -434,7 +400,7 @@ class Tuan is Node
 			var ti_y = pos.y - (0.12 - 0.02)
 			var upper = CompNodes.create_ti_mu(Vector3(pos.x, ti_y, pos.z))
 
-			var lower = this.create_dian_dg(pos, rot)
+			var lower = this.create_dian_dg(bf, pos, rot)
 			return Variant([ upper, lower ])
 		} 
 		else 
@@ -443,18 +409,18 @@ class Tuan is Node
 		}
 	}
 
-	create_dian_dg(pos, rot)
+	create_dian_dg(bf, pos, rot)
 	{
 		var v_gong = GongHelper.create_outer_column()
 
-		var h_gong = TuanHelper.calc_dou_gong_height()
+		var y = pos.y - this.get_root_tuan().middle_height
 
 		var angle = -Math.pi() * 0.5
 		if (rot) {
 			angle = angle + Math.pi()
 		}
 
-		v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, pos.y - h_gong, pos.z), angle)
+		v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, y, pos.z), angle)
 
 		return v_gong
 	}
@@ -545,7 +511,7 @@ class Tuan is Node
 
 		var v_gong = Variant(geos)
 
-		var h_gong = this.calc_4s_gong_height()
+		var h_gong = this.get_root_tuan().middle_height
 
 		var angle = -Math.pi() * 0.5
 		if (rot) {
@@ -559,31 +525,26 @@ class Tuan is Node
 
 	create_tuo_jiao(bf, pos, rot)
 	{
-		var dh = 0
-
 		var next = Blueprint.get_output_node(this, "next")
-		if (next) {
-			dh = this.roof_height - next.roof_height
+		if (!next) {
+			return nil
+		}
+
+		var top = pos.y - 0.05
+
+		var btm = next.tot_height + next.calc_beam_y_offset()
+		if (pos.x < 0) {
+			btm = btm + next.l_beam_h
+		} else {
+			btm = btm + next.r_beam_h		
 		}
 
 		var dx = 0.3
-
-		if (FRAME_STYLE == STYLE_DIAN_TANG) 
-		{
-			dh = dh - BEAM_DIAN_Y_OFFSET
+		if (FRAME_STYLE == STYLE_DIAN_TANG) {
 			dx = 0.5
 		} 
-		else if (FRAME_STYLE == STYLE_TING_TANG)
-		{
-			if (this.is_next_sides()) {
-				dh = dh + YAN_FANG_HEIGHT_FIXED
-			} else {
-				dh = dh - BEAM_TING_Y_OFFSET
-			}
-		}
 
-		var off_h = 0.05
-		return CompNodes.create_tuo_jiao(Vector3(pos.x, pos.y - off_h, pos.z), dh - off_h, BEAM_DX - dx, rot)
+		return CompNodes.create_tuo_jiao(Vector3(pos.x, top, pos.z), top - btm, BEAM_DX - dx, rot)
 	}
 
 	create_yuan(bf)
@@ -595,8 +556,8 @@ class Tuan is Node
 
 		var d = 0.08 * 2
 
-		var l_p0 = Vector3(-BEAM_DX * this.deep, this.base_height + this.roof_height + d, 0)
-		var l_p1 = Vector3(-BEAM_DX * prev.deep, prev.base_height + prev.roof_height + d, 0)
+		var l_p0 = Vector3(-BEAM_DX * this.deep, this.tot_height + d, 0)
+		var l_p1 = Vector3(-BEAM_DX * prev.deep, prev.tot_height + d, 0)
 
 		var ex_len = 0
 		var ex_len_f = 0
@@ -672,11 +633,16 @@ class Tuan is Node
 		}
 
 		var len = BEAM_DX * this.deep * 2
-		var next_beam_h = next_cc.calc_beam_height(next_cc.calc_left_beam_dist(bf, -next_cc.deep))
+		var next_beam_h = BeamHelper.calc_beam_height(next_cc.calc_left_beam_dist(bf, -next_cc.deep))
 		if (this.is_tuan_sides(next_cc)) {
 			next_beam_h = next_beam_h + 0.21
 		}
-		return CompNodes.create_shun_fu_chuan(Vector3(-len * 0.5, next_cc.base_height + next_cc.roof_height - next_beam_h, 0), len)
+		return CompNodes.create_shun_fu_chuan(Vector3(-len * 0.5, next_cc.tot_height - next_beam_h, 0), len)
+	}
+
+	create_ping(bf)
+	{
+
 	}
 
 	find_next_cc()
@@ -739,5 +705,5 @@ class Tuan is Node
 		}
 
 		return nil
-	}
+	}	
 }
