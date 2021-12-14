@@ -38,7 +38,8 @@ class YaCaoFang is CompNode
 	resolve(dg)
 	{
 		var pos = NodeHelper.calc_curr_pos(this, "prev")
-		pos.y = pos.y - QI_HEIGHT - 0.02
+		//pos.y = pos.y - QI_HEIGHT - 0.02
+		pos.y = pos.y - QI_HEIGHT
 
 		var v_geo = TransNodes.translate(FANG, pos)
 
