@@ -4,6 +4,7 @@ import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.blueprint" for Blueprint
 import "geograph.nodes.plane" for Plane
 import "geograph.nodes.box" for Box
+import "geograph.nodes.rotate" for Rotate
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.constant" for FRAME_DIST, FRAME_STYLE, STYLE_DIAN_TANG
 import "maths.vector" for Vector3
@@ -236,5 +237,90 @@ class CompNodes
 		Blueprint.connect(VariantProxy(Variant(0.96)), "out", TI_MU, "length")
 
 		return TransNodes.transform(TI_MU, pos, -Math.pi() * 0.5)	
-	}	
+	}
+
+	static create_box(pos, size)
+	{
+		var box = Box()
+
+		var sz = box.query_param("size").value
+		sz.x = size.x
+		sz.y = size.y
+		sz.z = size.z
+
+		box.query_param("offset_y").value = true
+		box.query_param("offset_x").value = true
+
+		return TransNodes.translate(box, pos)		
+	}
+
+	static create_ping(pos, x_len, z_len)
+	{
+		var dist = 0.8
+		var h = 0.05
+		var w = 0.04
+
+		pos.y = pos.y + h
+
+		var ret = []
+
+		ret.add(CompNodes.create_box(pos, Vector3(x_len, 0.02, z_len)))
+
+		var p = Vector3(pos.x, pos.y - h, pos.z)
+		for (var x = 0; x < x_len; x = x + dist) {
+			ret.add(CompNodes.create_box(p, Vector3(w, h, z_len)))
+			p.x = p.x + dist
+		}
+
+		p = Vector3(pos.x, pos.y - h, pos.z - z_len * 0.5)
+		for (var z = 0; z < z_len; z = z + dist) {
+			ret.add(CompNodes.create_box(p, Vector3(x_len, h, w)))
+			p.z = p.z + dist
+		}
+
+		return Variant(ret)		
+	}
+
+	static create_ping_border(pos, z_len, mirror)
+	{
+		var dy = 0.21
+
+		var step_len = 0.2
+		var angle = Math.atan2(dy, step_len)
+
+		var x_len = Math.sqrt(dy * dy + step_len * step_len)
+
+		var geos = []
+
+		var h = 0.02
+
+		var h_panel = 0.02
+		var v_panel = CompNodes.create_box(Vector3(0, 0, 0), Vector3(x_len, h_panel, z_len))
+		v_panel = TransNodes.translate(VariantProxy(v_panel), Vector3(0, h + h_panel, 0))
+		geos.add(v_panel)
+
+		var dist = 0.1
+		var p = Vector3(0, 0, - z_len * 0.5)
+		for (var z = 0; z < z_len; z = z + dist) {
+			geos.add(CompNodes.create_box(p, Vector3(x_len, 0.05, h)))
+			p.z = p.z + dist
+		}
+
+		var rot_y = 0
+		var dx = 0.05
+		if (mirror) {
+			rot_y = Math.pi()
+			dx = -dx
+		}
+
+		var rot = Rotate()
+		Blueprint.connect(VariantProxy(Variant(geos)), "out", rot, "geo")
+		Blueprint.connect(VariantProxy(Variant(Vector3(0, rot_y, angle))), "out", rot, "rot_xyz")
+
+		var v_geo = Blueprint.calc_output_value(rot, "geo")
+
+		v_geo = TransNodes.translate(VariantProxy(v_geo), Vector3(pos.x + dx, pos.y, pos.z))
+
+		return v_geo
+	}
 }

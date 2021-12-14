@@ -187,9 +187,12 @@ class Tuan is Node
 			}
 		}
 
-		if (sides and FRAME_STYLE == STYLE_DIAN_TANG) {
+		if (sides and FRAME_STYLE == STYLE_DIAN_TANG) 
+		{
 			var y = pos_l.y - this.get_root_tuan().middle_height
 			ret.add(CompNodes.create_nei_e_fang(Vector3(0, y, 0), BEAM_DX * this.deep * 2))
+
+			ret.add(this.create_ping(bf))
 		}
 
 		return Variant(ret)
@@ -642,7 +645,65 @@ class Tuan is Node
 
 	create_ping(bf)
 	{
+		var ret = []
 
+		var x = -BEAM_DX * this.deep
+		var y = this.tot_height + this.calc_beam_y_offset() - 0.21
+
+		var sz_x = BEAM_DX * this.deep * 2
+		var sz_z = 2.0
+
+		var step_len = 0.3
+
+		if (!bf.cao)
+		{
+			ret.add(CompNodes.create_ping(Vector3(x + step_len, y, 0), sz_x - step_len * 2, sz_z))
+		}
+		else if (bf.cao == "center")
+		{
+			var cx = x + sz_x * 0.5
+
+			ret.add(CompNodes.create_ping(Vector3( x + step_len, y, 0), sz_x * 0.5 - step_len * 2, sz_z))
+			ret.add(CompNodes.create_ping(Vector3(cx + step_len, y, 0), sz_x * 0.5 - step_len * 2, sz_z))
+
+			ret.add(CompNodes.create_ping_border(Vector3(cx, y - 0.21, 0), sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(cx, y - 0.21, 0), sz_z, true))
+		}
+		else if (bf.cao == "single")
+		{
+			var cx = x + sz_x * 0.25
+
+			ret.add(CompNodes.create_ping(Vector3( x + step_len, y, 0), sz_x * 0.25 - step_len * 2, sz_z))
+			ret.add(CompNodes.create_ping(Vector3(cx + step_len, y, 0), sz_x * 0.75 - step_len * 2, sz_z))
+
+			ret.add(CompNodes.create_ping_border(Vector3(cx, y - 0.21, 0), sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(cx, y - 0.21, 0), sz_z, true))			
+		}
+		else if (bf.cao == "double")
+		{
+			var cx_0 = x + sz_x * 0.25
+			var cx_1 = x + sz_x * 0.75
+
+			ret.add(CompNodes.create_ping(Vector3(   x + step_len, y, 0), sz_x * 0.25 - step_len * 2, sz_z))
+			ret.add(CompNodes.create_ping(Vector3(cx_0 + step_len, y, 0), sz_x * 0.5  - step_len * 2, sz_z))
+			ret.add(CompNodes.create_ping(Vector3(cx_1 + step_len, y, 0), sz_x * 0.25 - step_len * 2, sz_z))
+
+			ret.add(CompNodes.create_ping_border(Vector3(cx_0, y - 0.21, 0), sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(cx_0, y - 0.21, 0), sz_z, true))
+
+			ret.add(CompNodes.create_ping_border(Vector3(cx_1, y - 0.21, 0), sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(cx_1, y - 0.21, 0), sz_z, true))
+		}
+
+		ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, false))
+		ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, true))
+		ret.add(CompNodes.create_ping_border(Vector3(x - 0.3, y, 0), sz_z, true))
+
+		ret.add(CompNodes.create_ping_border(Vector3(-x, y - 0.21, 0), sz_z, true))
+		ret.add(CompNodes.create_ping_border(Vector3(-x, y - 0.21, 0), sz_z, false))
+		ret.add(CompNodes.create_ping_border(Vector3(-x + 0.3, y, 0), sz_z, false))
+
+		return Variant(ret)
 	}
 
 	find_next_cc()
