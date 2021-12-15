@@ -323,4 +323,12 @@ class CompNodes
 
 		return v_geo
 	}
+
+	static create_ping_border_flat(pos, z_len, mirror)
+	{
+		var step_len = 0.3
+		var h_panel = 0.02
+
+		return CompNodes.create_box(pos, Vector3(x_len, h_panel, z_len))
+	}	
 }

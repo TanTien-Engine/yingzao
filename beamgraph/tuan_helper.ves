@@ -40,6 +40,9 @@ class TuanHelper
 	static calc_middle_layer_height(root)
 	{
 		var steps = this.calc_steps(root)
+		if (steps == 5) {
+			steps = steps + 1
+		}
 	
 		var dh = 0
 		if (FRAME_STYLE == STYLE_DIAN_TANG) {

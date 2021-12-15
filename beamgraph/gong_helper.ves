@@ -40,9 +40,13 @@ class GongHelper
 		return Variant(geos)
 	}
 
-	static create_outer_column()
+	static create_outer_column(sub)
 	{
-		return this.create_dou_gong(DG_STEPS, false, false)
+		var steps = DG_STEPS
+		if (sub) {
+			steps = steps - 1
+		}
+		return this.create_dou_gong(steps, false, false)
 	}
 
 	static create_inner_column()
@@ -65,10 +69,12 @@ class GongHelper
 			}
 			else
 			{
-				if (steps == 5) {
+				if (steps == 4 or steps == 5) {
 					filepath = "../yingzao/11_dg_song/602_5s_33233_2c_1c_i_column.ves"
 				} else if (steps == 6) {
 					filepath = "../yingzao/11_dg_song/603_6s_4432344_3c_2c_i_column.ves"
+				} else if (steps == 7) {
+					filepath = "../yingzao/11_dg_song/604_7s_554323455_4c_2c_i_column.ves"
 				}
 			}
 		}
@@ -80,7 +86,9 @@ class GongHelper
 			}
 			else
 			{
-				if (steps == 6) {
+				if (steps == 5) {
+					filepath = "../yingzao/11_dg_song/203_5s_33233_1c1a_1c_column.ves"
+				} else if (steps == 6) {
 					filepath = "../yingzao/11_dg_song/204_6s_443233_1c2a_1c_column.ves"
 				} else if (steps == 7) {
 					filepath = "../yingzao/11_dg_song/206_7s_55432344_2c2a_2c_column.ves"

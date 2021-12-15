@@ -22,7 +22,7 @@ import "gonggraph.tools.vert_merge" for VertMerge
 import "gonggraph.tools_nodes" for ToolsNodes
 import "gonggraph.dou_gong" for DouGong
 import "beamgraph.variant" for PIN_TYPE_TUAN
-import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED, FRAME_STYLE, STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU
+import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED, FRAME_STYLE, STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU, DG_STEPS
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.context" for CONTEXT
 import "beamgraph.trans_nodes" for TransNodes
@@ -117,8 +117,12 @@ class Tuan is Node
 		this.tot_height = this.base_height + this.roof_height
 
 		// calc beam height
-		this.l_beam_h = BeamHelper.calc_beam_height(this.calc_left_beam_dist(bf, -this.deep))
-		this.r_beam_h = BeamHelper.calc_beam_height(this.calc_right_beam_dist(bf, this.deep))
+		var deep = this.deep
+		if (sides and FRAME_STYLE == STYLE_DIAN_TANG) {
+			deep = deep - 1
+		}
+		this.l_beam_h = BeamHelper.calc_beam_height(this.calc_left_beam_dist(bf, -deep))
+		this.r_beam_h = BeamHelper.calc_beam_height(this.calc_right_beam_dist(bf, deep))
 	}
 
 	resolve_geo(bf)
@@ -276,8 +280,16 @@ class Tuan is Node
 			// double beam
 			if (FRAME_STYLE == STYLE_DIAN_TANG) 
 			{
+				var layers = 0
+
 				var steps = TuanHelper.calc_steps(this.get_root_tuan())
-				dy = dy + 0.21 * (steps - 2) - 0.06
+				if (steps == 5 or steps == 6) {
+					layers = 4
+				} else {
+					layers = steps - 2
+				}
+
+				dy = dy + 0.21 * layers - 0.06
 			}
 		} 
 		else 
@@ -457,7 +469,9 @@ class Tuan is Node
 
 	create_dian_dg(bf, pos, rot)
 	{
-		var v_gong = GongHelper.create_outer_column()
+		import "beamgraph.nodes.sub_tuan" for SubTuan
+		var sub = this.get_root_tuan() is SubTuan
+		var v_gong = GongHelper.create_outer_column(sub)
 
 		var y = pos.y - this.get_root_tuan().middle_height
 
@@ -686,6 +700,35 @@ class Tuan is Node
 		return CompNodes.create_shun_fu_chuan(Vector3(-len * 0.5, next_cc.tot_height - next_beam_h, 0), len)
 	}
 
+	create_inner_ping_border(ret, x)
+	{
+		var sz_z = 2.0
+
+		var y = this.tot_height + this.calc_beam_y_offset() - 0.21
+
+		if (DG_STEPS < 7) 
+		{
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, true))
+		}
+		else if (DG_STEPS == 7)
+		{
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 2, 0), sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 2, 0), sz_z, true))
+			ret.add(CompNodes.create_ping_border(Vector3(x + 0.28, y - 0.21, 0), sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x - 0.28, y - 0.21, 0), sz_z, true))			
+		}
+		else if (DG_STEPS == 8)
+		{
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 3, 0), sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 3, 0), sz_z, true))
+			ret.add(CompNodes.create_ping_border(Vector3(x + 0.28, y - 0.21 * 2, 0), sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x - 0.28, y - 0.21 * 2, 0), sz_z, true))				
+			ret.add(CompNodes.create_ping_border(Vector3(x + 0.28 + 0.25, y - 0.21, 0), sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x - 0.28 - 0.25, y - 0.21, 0), sz_z, true))			
+		}
+	}
+
 	create_ping(bf)
 	{
 		var ret = []
@@ -697,6 +740,11 @@ class Tuan is Node
 		var sz_z = 2.0
 
 		var step_len = 0.3
+		if (DG_STEPS == 7) {
+			step_len = step_len + 0.25
+		} else if (DG_STEPS == 8) {
+			step_len = step_len + 0.5
+		}
 
 		if (!bf.cao)
 		{
@@ -709,8 +757,7 @@ class Tuan is Node
 			ret.add(CompNodes.create_ping(Vector3( x + step_len, y, 0), sz_x * 0.5 - step_len * 2, sz_z))
 			ret.add(CompNodes.create_ping(Vector3(cx + step_len, y, 0), sz_x * 0.5 - step_len * 2, sz_z))
 
-			ret.add(CompNodes.create_ping_border(Vector3(cx, y - 0.21, 0), sz_z, false))
-			ret.add(CompNodes.create_ping_border(Vector3(cx, y - 0.21, 0), sz_z, true))
+			this.create_inner_ping_border(ret, cx)
 		}
 		else if (bf.cao == "single")
 		{
@@ -719,8 +766,7 @@ class Tuan is Node
 			ret.add(CompNodes.create_ping(Vector3( x + step_len, y, 0), sz_x * 0.25 - step_len * 2, sz_z))
 			ret.add(CompNodes.create_ping(Vector3(cx + step_len, y, 0), sz_x * 0.75 - step_len * 2, sz_z))
 
-			ret.add(CompNodes.create_ping_border(Vector3(cx, y - 0.21, 0), sz_z, false))
-			ret.add(CompNodes.create_ping_border(Vector3(cx, y - 0.21, 0), sz_z, true))			
+			this.create_inner_ping_border(ret, cx)
 		}
 		else if (bf.cao == "double")
 		{
@@ -731,20 +777,49 @@ class Tuan is Node
 			ret.add(CompNodes.create_ping(Vector3(cx_0 + step_len, y, 0), sz_x * 0.5  - step_len * 2, sz_z))
 			ret.add(CompNodes.create_ping(Vector3(cx_1 + step_len, y, 0), sz_x * 0.25 - step_len * 2, sz_z))
 
-			ret.add(CompNodes.create_ping_border(Vector3(cx_0, y - 0.21, 0), sz_z, false))
-			ret.add(CompNodes.create_ping_border(Vector3(cx_0, y - 0.21, 0), sz_z, true))
-
-			ret.add(CompNodes.create_ping_border(Vector3(cx_1, y - 0.21, 0), sz_z, false))
-			ret.add(CompNodes.create_ping_border(Vector3(cx_1, y - 0.21, 0), sz_z, true))
+			this.create_inner_ping_border(ret, cx_0)
+			this.create_inner_ping_border(ret, cx_1)
 		}
 
-		ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, false))
-		ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, true))
-		ret.add(CompNodes.create_ping_border(Vector3(x - 0.3, y, 0), sz_z, true))
-
-		ret.add(CompNodes.create_ping_border(Vector3(-x, y - 0.21, 0), sz_z, true))
-		ret.add(CompNodes.create_ping_border(Vector3(-x, y - 0.21, 0), sz_z, false))
-		ret.add(CompNodes.create_ping_border(Vector3(-x + 0.3, y, 0), sz_z, false))
+		var l_borders = []
+		if (DG_STEPS == 5)
+		{
+			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, true))
+			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, false))
+			l_borders.add(CompNodes.create_box(Vector3(x - 0.5, y, 0), Vector3(0.2, 0.02, sz_z)))
+		}
+		else if (DG_STEPS == 6)
+		{
+			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, true))
+			l_borders.add(CompNodes.create_ping_border(Vector3(x - 0.3, y, 0), sz_z, true))			
+			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, false))
+			l_borders.add(CompNodes.create_box(Vector3(x - 0.75, y + 0.21, 0), Vector3(0.2, 0.02, sz_z)))
+		}
+		else if (DG_STEPS == 7)
+		{
+			for (var i = 0; i < 2; i = i + 1) 
+			{
+				var dx = 0.3 * i
+				var dy = -0.21 * (2 - i)
+				l_borders.add(CompNodes.create_ping_border(Vector3(x - dx, y + dy, 0), sz_z, true))
+				l_borders.add(CompNodes.create_ping_border(Vector3(x + dx, y + dy, 0), sz_z, false))
+			}
+			l_borders.add(CompNodes.create_ping_border(Vector3(x - 0.6, y, 0), sz_z, true))			
+			l_borders.add(CompNodes.create_box(Vector3(x - 1, y + 0.21, 0), Vector3(0.2, 0.02, sz_z)))
+		}
+		else if (DG_STEPS == 8)
+		{
+			for (var i = 0; i < 3; i = i + 1) 
+			{
+				var dx = 0.3 * i
+				var dy = -0.21 * (3 - i)
+				l_borders.add(CompNodes.create_ping_border(Vector3(x - dx, y + dy, 0), sz_z, true))
+				l_borders.add(CompNodes.create_ping_border(Vector3(x + dx, y + dy, 0), sz_z, false))
+			}
+			l_borders.add(CompNodes.create_box(Vector3(x - 1.5, y, 0), Vector3(0.6, 0.02, sz_z)))
+		}
+		ret.add(Variant(l_borders))
+		ret.add(TransNodes.rotate(VariantProxy(Variant(l_borders)), Math.pi()))
 
 		return Variant(ret)
 	}
