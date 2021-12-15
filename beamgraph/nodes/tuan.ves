@@ -376,7 +376,38 @@ class Tuan is Node
 			btm = btm + next.r_beam_h		
 		}
 
-		return CompNodes.create_tuo_feng(Vector3(pos.x, btm, pos.z), top - btm)
+		if (top <= btm) {
+			return nil
+		}
+
+		if (FRAME_STYLE == STYLE_TING_TANG)	
+		{
+			return CompNodes.create_tuo_feng(Vector3(pos.x, btm, pos.z), top - btm)
+		} 
+		else if (FRAME_STYLE == STYLE_DIAN_TANG) 
+		{
+			var w = 0.15
+			var h = top - btm
+			var l = 3
+			var h1 = 0.22
+			if (h < h1) 
+			{
+				return CompNodes.create_box(Vector3(pos.x - h * l * 0.5, btm, pos.z), Vector3(h * l, h, w))
+			}
+			else
+			{
+				var t1 = CompNodes.create_box(Vector3(pos.x - h1 * l * 0.5, btm, pos.z), Vector3(h1 * l, h1, w))
+
+				var h2 = h - h1
+				var t2 = CompNodes.create_box(Vector3(pos.x - h2 * l * 0.5, btm + h1, pos.z), Vector3(h2 * l, h2, w))
+
+				return Variant([ t1, t2 ])
+			}
+		} 
+		else 
+		{
+			return nil
+		}
 	}
 
 	calc_3s_gong_height(column)
