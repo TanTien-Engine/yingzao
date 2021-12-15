@@ -182,13 +182,13 @@ class CompNodes
 		return TransNodes.transform(E_FANG, pos, -Math.pi() * 0.5)
 	}
 
-	static create_nei_e_fang(pos, length)
+	static create_nei_e_fang(pos, height, length)
 	{
 		var E_FANG = NODE_CACHE.fetch("../yingzao/00_dougong2/48_e_fang.ves", nil)
 
 		Blueprint.connect(VariantProxy(Variant(length)), "out", E_FANG, "length")
-		Blueprint.connect(VariantProxy(Variant(0.15)), "out", E_FANG, "width")
-		Blueprint.connect(VariantProxy(Variant(0.30)), "out", E_FANG, "height")
+		Blueprint.connect(VariantProxy(Variant(height / 3 * 2)), "out", E_FANG, "width")
+		Blueprint.connect(VariantProxy(Variant(height)), "out", E_FANG, "height")
 
 		return TransNodes.transform(E_FANG, pos, 0)		
 	}

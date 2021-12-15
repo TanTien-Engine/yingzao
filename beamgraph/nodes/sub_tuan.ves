@@ -4,7 +4,7 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "beamgraph.variant" for PIN_TYPE_TUAN
 import "beamgraph.tuan_helper" for TuanHelper
-import "beamgraph.constant" for BEAM_DX
+import "beamgraph.constant" for BEAM_DX, FRAME_STYLE, STYLE_DIAN_TANG
 import "beamgraph.comp_nodes" for CompNodes
 import "maths.vector" for Vector3
 
@@ -56,7 +56,7 @@ class SubTuan is Node
 	}
 
 	resolve_geo(bf)
-	{
+	{		
 		var pos_l = Vector3(-BEAM_DX * this.deep, this.tot_height, 0)
 		var pos_r = Vector3( BEAM_DX * this.deep, this.tot_height, 0)
 
@@ -74,7 +74,13 @@ class SubTuan is Node
 		var l_tuo_jiao = CompNodes.create_tuo_jiao(Vector3(pos_l.x, pos_l.y - tuo_dh, pos_l.z), height - tuo_dh, BEAM_DX - 0.3, false)
 		var r_tuo_jiao = CompNodes.create_tuo_jiao(Vector3(pos_r.x, pos_r.y - tuo_dh, pos_r.z), height - tuo_dh, BEAM_DX - 0.3, true)
 
-		return Variant([ l_e_fang, r_e_fang, l_tuo_jiao, r_tuo_jiao ])
+		var geos = [ l_e_fang, r_e_fang, l_tuo_jiao, r_tuo_jiao ]
+
+		if (FRAME_STYLE == STYLE_DIAN_TANG) {
+			geos.add(CompNodes.create_nei_e_fang(Vector3(0, this.tot_height + fang_dh, 0), 0.27, BEAM_DX * this.deep * 2))
+		}
+
+		return Variant(geos)
 	}
 
 	resolve_pj_geo(bf, z)

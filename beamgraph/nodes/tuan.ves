@@ -189,10 +189,22 @@ class Tuan is Node
 
 		if (sides and FRAME_STYLE == STYLE_DIAN_TANG) 
 		{
-			var y = pos_l.y - this.get_root_tuan().middle_height
-			ret.add(CompNodes.create_nei_e_fang(Vector3(0, y, 0), BEAM_DX * this.deep * 2))
+			import "beamgraph.nodes.ji_tuan" for JiTuan
 
-			ret.add(this.create_ping(bf))
+			var root = this.get_root_tuan()
+			if (root is JiTuan)
+			{
+				var y = pos_l.y - root.middle_height
+				ret.add(CompNodes.create_nei_e_fang(Vector3(0, y, 0), 0.3, BEAM_DX * this.deep * 2))
+
+				ret.add(this.create_ping(bf))
+			}
+			else
+			{
+				var y = pos_l.y
+				var h = 0.27
+				ret.add(CompNodes.create_nei_e_fang(Vector3(0, y - 0.21 - h, 0), h, BEAM_DX * (this.deep - 2) * 2))
+			}
 		}
 
 		return Variant(ret)
