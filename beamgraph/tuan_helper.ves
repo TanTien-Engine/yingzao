@@ -66,26 +66,43 @@ class TuanHelper
 	{
 		import "beamgraph.nodes.sub_tuan" for SubTuan
 
-		var h_column = 2.5
-		if (FRAME_STYLE == STYLE_DIAN_TANG) {
-			h_column = 3.2
-		}
-
-		var sub_dh = 2.50
-		if (FRAME_STYLE == STYLE_TING_TANG) {
-			sub_dh = sub_dh + 0.4
-		} else if (FRAME_STYLE == STYLE_DIAN_TANG) {
-			sub_dh = sub_dh + 0.5
-		}
-
+		var sub_num = 0
 		var next = Blueprint.get_output_node(root, "next")
 		while (next) {
 			if (next is SubTuan) {
-				h_column = h_column + sub_dh
+				sub_num = sub_num + 1
 			}
 			next = Blueprint.get_output_node(next, "next")
 		}
 
-		return h_column
+		if (sub_num == 0)
+		{
+			var h = 0
+			if (FRAME_STYLE == STYLE_DIAN_TANG) {
+				h = 3.3
+			} else {
+				h = 2.5
+			}
+			if (root is SubTuan) {
+				h = h - 0.5
+			}
+			return h
+		}
+
+		if (FRAME_STYLE == STYLE_DIAN_TANG) 
+		{
+			var h_dg = GongHelper.calc_dou_gong_height(DG_STEPS - 1)
+			if (DG_STEPS == 5) {
+				h_dg = h_dg + 0.15
+			} else {
+				h_dg = h_dg + 0.5
+			}
+			return 2.8 + (1.6 + h_dg) * sub_num
+		} 
+		else 
+		{
+			var h_dg = GongHelper.calc_dou_gong_height(4)		
+			return 2.0 + (1.1 + h_dg) * sub_num
+		}
 	}
 }
