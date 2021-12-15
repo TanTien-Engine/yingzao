@@ -212,7 +212,8 @@ _editor.add_node(node44, 282.11616271973, -407.69232727051)
 var node45 = ::gonggraph::style::beam_style::BeamStyle()
 node45.query_param("h").value = 0.42
 node45.query_param("stright").value = true
-node45.query_param("shrink").value = false
+node45.query_param("shrink").value = true
+node45.query_param("left").value = false
 
 _editor.add_node(node45, 413.65639277039, -411.38395396546)
 
@@ -220,6 +221,26 @@ var node46 = ::gonggraph::tools::dummy_vert::DummyVert()
 
 _editor.add_node(node46, 378.35443247569, 130.00500874004)
 
+var node47 = ::gonggraph::tools::comp_ref::CompRef()
+node47.query_param("y").value = 4
+node47.query_param("x").value = 0
+node47.query_param("inner").value = false
+
+_editor.add_node(node47, 117.93399658203, -612.36672363281)
+
+var node48 = ::gonggraph::tools::comp_ref::CompRef()
+node48.query_param("y").value = 6
+node48.query_param("x").value = 3
+node48.query_param("inner").value = false
+
+_editor.add_node(node48, 118.67307739258, -725.68297119141)
+
+var node49 = ::gonggraph::tools::ang_knife::AngKnife()
+
+_editor.add_node(node49, 256.59479272213, -657.38513967742)
+
+Blueprint.connect(node47, "comp", node49, "ang")
+Blueprint.connect(node48, "comp", node49, "top")
 Blueprint.connect(node44, "comp", node45, "beam")
 Blueprint.connect(node27, "comp", node15, "left")
 Blueprint.connect(node14, "comp", node15, "right")

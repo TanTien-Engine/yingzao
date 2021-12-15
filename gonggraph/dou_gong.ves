@@ -42,6 +42,7 @@ class DouGong
 		import "gonggraph.style.ang_slope" for AngSlope
 		import "gonggraph.style.step_length" for StepLength
 		import "gonggraph.tools.hori_conn" for HoriConn
+		import "gonggraph.tools.ang_knife" for AngKnife
 
 		for (var node in nodes)
 		{
@@ -53,7 +54,7 @@ class DouGong
 			{
 				CONTEXT.s_step_len = node
 			}
-			else if (node is HoriConn)
+			else if (node is HoriConn or node is AngKnife)
 			{
 				this.joints.add(node)
 			}

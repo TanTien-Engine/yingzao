@@ -1,0 +1,38 @@
+import "blueprint.node" for Node
+import "blueprint.pin" for Pin
+import "blueprint.blueprint" for Blueprint
+import "gonggraph.variant" for VAR_TYPE_COMPONENT
+import "gonggraph.joints_nodes" for JointsNodes
+import "gonggraph.constant" for ZU_CAI_HEIGHT
+
+class AngKnife is Node
+{
+	init()
+	{
+		super.init()
+
+		this.imports = [
+			Pin(this, "ang", VAR_TYPE_COMPONENT),
+			Pin(this, "top", VAR_TYPE_COMPONENT),			
+		]
+
+		this.layout()
+	}
+
+	resolve()
+	{
+		var n_ang = Blueprint.get_input_node(this, "ang")
+		var n_top = Blueprint.get_input_node(this, "top")
+		if (!n_ang or !n_top) {
+			return
+		}
+
+		n_ang = n_ang.get_node_ref()
+		n_top = n_top.get_node_ref()
+		if (!n_ang or !n_top) {
+			return
+		}
+
+		n_ang.comp.v_geo = JointsNodes.cut_top_plane(n_ang.comp.v_geo, n_top.comp.pos.y + ZU_CAI_HEIGHT)
+	}
+}

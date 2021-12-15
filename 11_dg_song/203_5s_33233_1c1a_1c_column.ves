@@ -3,9 +3,9 @@ node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
 node0.set_prop_value("ortho", false)
 node0.set_prop_value("offset", 4.2025756835938)
 
-node0.op_node.cam.position.set(1.8231006644158, 1.9046766292293, 0.45643247978755)
-node0.op_node.cam.yaw = -155
-node0.op_node.cam.pitch = -37.9
+node0.op_node.cam.position.set(4.7599248382403, 1.4275817759493, -0.25787300688694)
+node0.op_node.cam.yaw = -175.2
+node0.op_node.cam.pitch = -13.8
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
@@ -145,7 +145,8 @@ _editor.add_node(node28, 66.484252929692, -379.34862032804)
 var node29 = ::gonggraph::style::beam_style::BeamStyle()
 node29.query_param("h").value = 0.36
 node29.query_param("stright").value = true
-node29.query_param("shrink").value = false
+node29.query_param("shrink").value = true
+node29.query_param("left").value = false
 
 _editor.add_node(node29, 211.65525489996, -378.71512446128)
 
@@ -163,6 +164,7 @@ _editor.add_node(node32, 354.06625366211, -89.120979309082)
 
 Blueprint.connect(node28, "comp", node29, "beam")
 Blueprint.connect(node26, "comp", node15, "left")
+Blueprint.connect(node14, "comp", node15, "right")
 Blueprint.connect(node12, "comp", node13, "left")
 Blueprint.connect(node11, "comp", node13, "right")
 Blueprint.connect(node1, "hori", node3, "prev")

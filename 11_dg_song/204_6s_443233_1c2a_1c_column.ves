@@ -1,11 +1,11 @@
 var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_assemble_draw.ves")
 node0.set_prop_value("ortho", false)
-node0.set_prop_value("offset", 1.7171005010605)
+node0.set_prop_value("offset", 23.848661422729)
 
-node0.op_node.cam.position.set(2.2520912991044, 2.3572993020919, 0.84148454288209)
-node0.op_node.cam.yaw = -140.4
-node0.op_node.cam.pitch = -28.9
+node0.op_node.cam.position.set(3.7095482277948, 1.1076622839222, -0.45626448541405)
+node0.op_node.cam.yaw = -171
+node0.op_node.cam.pitch = -16.2
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.29386684298515
@@ -169,7 +169,8 @@ _editor.add_node(node34, 180.59955444336, -435.1728881836)
 var node35 = ::gonggraph::style::beam_style::BeamStyle()
 node35.query_param("h").value = 0.42
 node35.query_param("stright").value = true
-node35.query_param("shrink").value = false
+node35.query_param("shrink").value = true
+node35.query_param("left").value = false
 
 _editor.add_node(node35, 315.96029052734, -434.59417724609)
 
@@ -177,6 +178,26 @@ var node36 = ::gonggraph::tools::dummy_vert::DummyVert()
 
 _editor.add_node(node36, 93.063721854126, -107.28849771444)
 
+var node37 = ::gonggraph::tools::comp_ref::CompRef()
+node37.query_param("y").value = 3
+node37.query_param("x").value = 0
+node37.query_param("inner").value = false
+
+_editor.add_node(node37, 81.700379931641, -592.47034516602)
+
+var node38 = ::gonggraph::tools::comp_ref::CompRef()
+node38.query_param("y").value = 5
+node38.query_param("x").value = 3
+node38.query_param("inner").value = false
+
+_editor.add_node(node38, 79.977761209459, -700.85205400455)
+
+var node39 = ::gonggraph::tools::ang_knife::AngKnife()
+
+_editor.add_node(node39, 230.80204421625, -628.33732253656)
+
+Blueprint.connect(node37, "comp", node39, "ang")
+Blueprint.connect(node38, "comp", node39, "top")
 Blueprint.connect(node34, "comp", node35, "beam")
 Blueprint.connect(node27, "comp", node15, "left")
 Blueprint.connect(node14, "comp", node15, "right")
