@@ -411,7 +411,7 @@ class Tuan is Node
 				var t1 = CompNodes.create_box(Vector3(pos.x - h1 * l * 0.5, btm, pos.z), Vector3(h1 * l, h1, w))
 
 				var h2 = h - h1
-				var t2 = CompNodes.create_box(Vector3(pos.x - h2 * l * 0.5, btm + h1, pos.z), Vector3(h2 * l, h2, w))
+				var t2 = CompNodes.create_box(Vector3(pos.x - h2 * l * 0.5, btm + h1, pos.z), Vector3(h2 * l, h2, w - 0.02))
 
 				return Variant([ t1, t2 ])
 			}
