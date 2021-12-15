@@ -214,9 +214,30 @@ class Tuan is Node
 			}
 			else
 			{
-				var y = pos_l.y
 				var h = 0.27
-				ret.add(CompNodes.create_nei_e_fang(Vector3(0, y - 0.21 - h, 0), h, BEAM_DX * (this.deep - 2) * 2))
+				var y = pos_l.y + this.calc_beam_y_offset() + 0.21 * 2
+				ret.add(CompNodes.create_nei_e_fang(Vector3(0, y, 0), h, BEAM_DX * (this.deep - 2) * 2))
+
+				var x = BEAM_DX * (this.deep - 2)
+				ret.add(CompNodes.create_cheng_yuan_fang(Vector3(-x, y, 0)))
+				ret.add(CompNodes.create_cheng_yuan_fang(Vector3( x, y, 0)))
+
+				if (bf.cao == "center") {
+					ret.add(CompNodes.create_cheng_yuan_fang(Vector3(0, y, 0)))
+				} else if (bf.cao == "single") {
+					ret.add(CompNodes.create_cheng_yuan_fang(Vector3(-x / 3, y, 0)))
+				} else if (bf.cao == "double") {
+					ret.add(CompNodes.create_cheng_yuan_fang(Vector3(-x / 3, y, 0)))
+					ret.add(CompNodes.create_cheng_yuan_fang(Vector3( x / 3, y, 0)))					
+				}
+
+				// ping
+				var sz_z = 2.0
+				var step_len = 0.05
+				var l_sub_ping = CompNodes.create_ping(Vector3(- BEAM_DX * this.deep + step_len, y, 0), BEAM_DX * 2 - step_len * 2, sz_z)
+				var r_sub_ping = TransNodes.rotate(VariantProxy(l_sub_ping), Math.pi())
+				ret.add(l_sub_ping)
+				ret.add(r_sub_ping)
 			}
 		}
 

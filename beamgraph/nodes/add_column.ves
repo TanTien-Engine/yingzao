@@ -47,6 +47,7 @@ class AddColumn is Node
 
 		var column = nil
 		var dou_gong = nil
+		var e_fang = nil
 
 		var v_gong = GongHelper.create_inner_column()
 
@@ -54,32 +55,46 @@ class AddColumn is Node
 		if (type == "single")
 		{
 			var x = - bf.root.max_deep * BEAM_DX * 0.5
-			column = CompNodes.create_column(Vector3(x, h, 0), h)
-			dou_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(x, y, 0), -Math.pi() * 0.5)
+			var p = Vector3(x, y, 0)
+
+			column = CompNodes.create_column(p, h)
+			dou_gong = TransNodes.transform(VariantProxy(v_gong), p, -Math.pi() * 0.5)
+			e_fang = CompNodes.create_lan_e_fang(p)
 		}
 		else if (type == "double")
 		{
 			var x = - bf.root.max_deep * BEAM_DX * 0.5
+			var p0 = Vector3(-x, y, 0)
+			var p1 = Vector3( x, y, 0)
 
-			var l_col = CompNodes.create_column(Vector3(-x, h, 0), h)
-			var r_col = CompNodes.create_column(Vector3( x, h, 0), h)
+			var l_col = CompNodes.create_column(p0, h)
+			var r_col = CompNodes.create_column(p1, h)
 			column = Variant([ l_col, r_col ])
 
-			var l_dg = TransNodes.transform(VariantProxy(v_gong), Vector3(-x, y, 0), -Math.pi() * 0.5)
-			var r_dg = TransNodes.transform(VariantProxy(v_gong), Vector3( x, y, 0), -Math.pi() * 0.5)			
+			var l_dg = TransNodes.transform(VariantProxy(v_gong), p0, -Math.pi() * 0.5)
+			var r_dg = TransNodes.transform(VariantProxy(v_gong), p1, -Math.pi() * 0.5)			
 			dou_gong = Variant([ l_dg, r_dg ])
+
+			e_fang = Variant([ CompNodes.create_lan_e_fang(p0), CompNodes.create_lan_e_fang(p1) ])
 		}
 		else if (type == "center")
 		{
-			column = CompNodes.create_column(Vector3(0, h, 0), h)
-			dou_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(0, y, 0), -Math.pi() * 0.5)
+			var p = Vector3(0, y, 0)
+
+			column = CompNodes.create_column(p, h)
+			dou_gong = TransNodes.transform(VariantProxy(v_gong), p, -Math.pi() * 0.5)
+			e_fang = CompNodes.create_lan_e_fang(p)
 		}
 		else
 		{
 			column = nil
 		}
 
-		return Variant([ column, dou_gong ])
+		if (CONTEXT.vert_conn) {
+			return Variant([ column, dou_gong, e_fang ])
+		} else {
+			return Variant([ column, dou_gong ])		
+		}
 	}
 
 	resolve_pj_geo(bf, z)
