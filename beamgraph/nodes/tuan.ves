@@ -149,7 +149,7 @@ class Tuan is Node
 		var root = this.get_root_tuan()
 		var sides = this.is_curr_sides()
 		import "beamgraph.nodes.ji_tuan" for JiTuan
-		if ((FRAME_STYLE == STYLE_DIAN_TANG and root is JiTuan) or !sides) {
+		if ((FRAME_STYLE == STYLE_DIAN_TANG and (root is JiTuan or DG_STEPS > 5)) or !sides) {
 			ret.add(CompNodes.create_tuan(pos_l))
 			ret.add(CompNodes.create_tuan(pos_r))
 		}
@@ -232,9 +232,13 @@ class Tuan is Node
 				}
 
 				// ping
+				var ping_y = y
+				if (DG_STEPS > 5) {
+					ping_y = ping_y - 0.21 * 3
+				}
 				var sz_z = 2.0
 				var step_len = 0.05
-				var l_sub_ping = CompNodes.create_ping(Vector3(- BEAM_DX * this.deep + step_len, y, 0), BEAM_DX * 2 - step_len * 2, sz_z)
+				var l_sub_ping = CompNodes.create_ping(Vector3(- BEAM_DX * this.deep + step_len, ping_y, 0), BEAM_DX * 2 - step_len * 2, sz_z)
 				var r_sub_ping = TransNodes.rotate(VariantProxy(l_sub_ping), Math.pi())
 				ret.add(l_sub_ping)
 				ret.add(r_sub_ping)
@@ -310,7 +314,7 @@ class Tuan is Node
 
 			// double beam
 			import "beamgraph.nodes.ji_tuan" for JiTuan
-			if (FRAME_STYLE == STYLE_DIAN_TANG and root is JiTuan) 
+			if (FRAME_STYLE == STYLE_DIAN_TANG and (root is JiTuan or DG_STEPS > 5)) 
 			{
 				var layers = 0
 

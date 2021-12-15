@@ -45,9 +45,17 @@ class TuanHelper
 		}
 	
 		var dh = 0
-		if (FRAME_STYLE == STYLE_DIAN_TANG) {
-			dh = 0.3
-		} else if (FRAME_STYLE == STYLE_TING_TANG) {
+		if (FRAME_STYLE == STYLE_DIAN_TANG) 
+		{
+			import "beamgraph.nodes.sub_tuan" for SubTuan
+			if (root is SubTuan and DG_STEPS == 5) {
+				dh = 0.15
+			} else {
+				dh = 0.3			
+			}
+		} 
+		else if (FRAME_STYLE == STYLE_TING_TANG) 
+		{
 			dh = 0.15
 		}
 
