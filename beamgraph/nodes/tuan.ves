@@ -515,7 +515,7 @@ class Tuan is Node
 		if (sub) {
 			beam_len = BEAM_DX * 2 + 0.5
 		} else {
-			beam_len = BEAM_DX * root.max_deep + 0.5
+			beam_len = BEAM_DX * root.max_deep + 1.0
 		}
 		Blueprint.connect(VariantProxy(Variant(beam_len)), "out", BEAM, "length")
 
