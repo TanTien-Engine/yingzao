@@ -1,5 +1,5 @@
 import "blueprint.blueprint" for Blueprint
-import "beamgraph.constant" for FRAME_STYLE, STYLE_DIAN_TANG, STYLE_TING_TANG, DG_STEPS
+import "beamgraph.constant" for FRAME_STYLE, STYLE_DIAN_TANG, STYLE_TING_TANG
 import "beamgraph.gong_helper" for GongHelper
 import "beamgraph.beam_helper" for BeamHelper
 
@@ -20,9 +20,9 @@ class TuanHelper
 		return max_deep
 	}
 
-	static calc_steps(root)
+	static calc_steps(root, dg_steps)
 	{
-		var steps = DG_STEPS
+		var steps = dg_steps
 		if (FRAME_STYLE == STYLE_DIAN_TANG) 
 		{
 			import "beamgraph.nodes.sub_tuan" for SubTuan
@@ -37,9 +37,9 @@ class TuanHelper
 		return steps
 	}
 
-	static calc_middle_layer_height(root)
+	static calc_middle_layer_height(root, dg_steps)
 	{
-		var steps = this.calc_steps(root)
+		var steps = this.calc_steps(root, dg_steps)
 		if (steps == 5) {
 			steps = steps + 1
 		}
@@ -48,7 +48,7 @@ class TuanHelper
 		if (FRAME_STYLE == STYLE_DIAN_TANG) 
 		{
 			import "beamgraph.nodes.sub_tuan" for SubTuan
-			if (root is SubTuan and DG_STEPS == 5) {
+			if (root is SubTuan and dg_steps == 5) {
 				dh = 0.15
 			} else {
 				dh = 0.3			
@@ -62,7 +62,7 @@ class TuanHelper
 		return GongHelper.calc_dou_gong_height(steps) + dh
 	}
 
-	static calc_column_layer_height(root)
+	static calc_column_layer_height(root, dg_steps)
 	{
 		import "beamgraph.nodes.sub_tuan" for SubTuan
 
@@ -91,8 +91,8 @@ class TuanHelper
 
 		if (FRAME_STYLE == STYLE_DIAN_TANG) 
 		{
-			var h_dg = GongHelper.calc_dou_gong_height(DG_STEPS - 1)
-			if (DG_STEPS == 5) {
+			var h_dg = GongHelper.calc_dou_gong_height(dg_steps - 1)
+			if (dg_steps == 5) {
 				h_dg = h_dg + 0.15
 			} else {
 				h_dg = h_dg + 0.5

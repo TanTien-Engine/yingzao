@@ -48,8 +48,8 @@ class SubTuan is Node
 
 	resolve_height(bf)
 	{
-		this.column_height = TuanHelper.calc_column_layer_height(this)
-		this.middle_height = TuanHelper.calc_middle_layer_height(this)
+		this.column_height = TuanHelper.calc_column_layer_height(this, bf.dg_steps)
+		this.middle_height = TuanHelper.calc_middle_layer_height(this, bf.dg_steps)
 		this.roof_height   = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 5
 
 		this.tot_height = this.column_height + this.middle_height + this.roof_height

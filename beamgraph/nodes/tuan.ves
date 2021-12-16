@@ -22,7 +22,7 @@ import "gonggraph.tools.vert_merge" for VertMerge
 import "gonggraph.tools_nodes" for ToolsNodes
 import "gonggraph.dou_gong" for DouGong
 import "beamgraph.variant" for PIN_TYPE_TUAN
-import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED, FRAME_STYLE, STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU, DG_STEPS
+import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED, FRAME_STYLE, STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.context" for CONTEXT
 import "beamgraph.trans_nodes" for TransNodes
@@ -149,7 +149,7 @@ class Tuan is Node
 		var root = this.get_root_tuan()
 		var sides = this.is_curr_sides()
 		import "beamgraph.nodes.ji_tuan" for JiTuan
-		if ((FRAME_STYLE == STYLE_DIAN_TANG and (root is JiTuan or DG_STEPS > 5)) or !sides) {
+		if ((FRAME_STYLE == STYLE_DIAN_TANG and (root is JiTuan or bf.dg_steps > 5)) or !sides) {
 			ret.add(CompNodes.create_tuan(pos_l))
 			ret.add(CompNodes.create_tuan(pos_r))
 		}
@@ -169,7 +169,7 @@ class Tuan is Node
 			}
 		}
 		var dist_l = this.calc_left_beam_dist(bf, -this.deep)
-		ret.add(this.create_beam(dist_l, pos_l, true))
+		ret.add(this.create_beam(dist_l, pos_l, true, bf.dg_steps))
 
 		var r_column = this.query_param("r_column").value
 		if (r_column) {
@@ -188,7 +188,7 @@ class Tuan is Node
 		}
 		var dist_r = this.calc_right_beam_dist(bf, this.deep)
 		if (dist_r != this.deep * 2) {
-			ret.add(this.create_beam(dist_r, pos_r, false))			
+			ret.add(this.create_beam(dist_r, pos_r, false, bf.dg_steps))			
 		}
 
 		if (CONTEXT.yuan) {
@@ -215,7 +215,7 @@ class Tuan is Node
 			else
 			{
 				var h = 0.27
-				var y = pos_l.y + this.calc_beam_y_offset() + 0.21 * 2
+				var y = pos_l.y + this.calc_beam_y_offset(bf.dg_steps) + 0.21 * 2
 				ret.add(CompNodes.create_nei_e_fang(Vector3(0, y, 0), h, BEAM_DX * (this.deep - 2) * 2))
 
 				var x = BEAM_DX * (this.deep - 2)
@@ -233,7 +233,7 @@ class Tuan is Node
 
 				// ping
 				var ping_y = y
-				if (DG_STEPS > 5) {
+				if (bf.dg_steps > 5) {
 					ping_y = ping_y - 0.21 * 3
 				}
 				var sz_z = FRAME_DIST
@@ -304,7 +304,7 @@ class Tuan is Node
 		}
 	}
 
-	calc_beam_y_offset()
+	calc_beam_y_offset(dg_steps)
 	{
 		var dy = 0
 		if (this.is_curr_sides()) 
@@ -314,11 +314,11 @@ class Tuan is Node
 
 			// double beam
 			import "beamgraph.nodes.ji_tuan" for JiTuan
-			if (FRAME_STYLE == STYLE_DIAN_TANG and (root is JiTuan or DG_STEPS > 5)) 
+			if (FRAME_STYLE == STYLE_DIAN_TANG and (root is JiTuan or dg_steps > 5)) 
 			{
 				var layers = 0
 
-				var steps = TuanHelper.calc_steps(this.get_root_tuan())
+				var steps = TuanHelper.calc_steps(this.get_root_tuan(), dg_steps)
 				if (steps == 5 or steps == 6) {
 					layers = 4
 				} else {
@@ -394,7 +394,7 @@ class Tuan is Node
 		return dist
 	}
 
-	create_beam(dist, pos, left)
+	create_beam(dist, pos, left, dg_steps)
 	{
 		var h = 0
 		if (left) {
@@ -403,7 +403,7 @@ class Tuan is Node
 			h = this.r_beam_h
 		}
 
-		var y = pos.y + this.calc_beam_y_offset()
+		var y = pos.y + this.calc_beam_y_offset(dg_steps)
 
 		var len = dist * BEAM_DX + BEAM_HEAD_LEN * 2
 		if (dist == dist * 2) {
@@ -427,9 +427,9 @@ class Tuan is Node
 			return nil
 		}
 
-		var top = this.tot_height + this.calc_beam_y_offset() - 0.06
+		var top = this.tot_height + this.calc_beam_y_offset(bf.dg_steps) - 0.06
 
-		var btm = next.tot_height + next.calc_beam_y_offset()
+		var btm = next.tot_height + next.calc_beam_y_offset(bf.dg_steps)
 		if (pos.x < 0) {
 			btm = btm + next.l_beam_h
 		} else {
@@ -647,7 +647,7 @@ class Tuan is Node
 
 		var top = pos.y - 0.05
 
-		var btm = next.tot_height + next.calc_beam_y_offset()
+		var btm = next.tot_height + next.calc_beam_y_offset(bf.dg_steps)
 		if (pos.x < 0) {
 			btm = btm + next.l_beam_h
 		} else {

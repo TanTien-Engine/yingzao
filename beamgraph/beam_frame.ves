@@ -7,6 +7,7 @@ import "scenegraph.nodes.transform3d" for Transform3d
 import "beamgraph.constant" for BEAM_DX, FRAME_DIST
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.nodes.multi_frames" for MultiFrames
+import "beamgraph.nodes.dou_gong" for DouGong
 import "maths.vector" for Vector3
 import "math" for Math
 
@@ -21,11 +22,16 @@ class BeamFrame
 		this.root = nil
 
 		this.cao = nil
+
+		this.frames_num = 0
+		this.dg_steps   = 6
 	}
 
 	rebuild(scene, out_list)
 	{
 		import "beamgraph.nodes.ji_tuan" for JiTuan
+
+		this.prepare(scene)
 
 		this.column_idx.clear()
 		this.shun_fu_chuan = false
@@ -60,17 +66,10 @@ class BeamFrame
 		}
 
 		// multi frames
-		var multi_frames = nil
-		for (var node in scene.nodes) {
-			var bp_node = node.components["bp"]
-			if (bp_node is MultiFrames) {
-				multi_frames = bp_node
-			}
-		}
-		if (multi_frames)
+		if (this.frames_num > 0)
 		{
-			var num = multi_frames.query_param("num").value
-
+			var num = this.frames_num
+			
 			this.copy_frames(geos, num, out_list)
 
 			for (var i in 0..num) 
@@ -86,6 +85,23 @@ class BeamFrame
 		{
 			for (var i in geos) {
 				out_list.add(i)
+			}
+		}
+	}
+
+	prepare(scene)
+	{
+		this.frames_num = 0
+		this.dg_steps   = 6
+
+		for (var node in scene.nodes) 
+		{
+			var bp_node = node.components["bp"]
+			if (bp_node is MultiFrames) {
+				this.frames_num = bp_node.query_param("num").value
+			}
+			if (bp_node is DouGong) {
+				this.dg_steps = bp_node.query_param("steps").value
 			}
 		}
 	}
