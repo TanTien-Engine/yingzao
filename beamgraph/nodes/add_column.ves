@@ -49,14 +49,23 @@ class AddColumn is Node
 		var dou_gong = nil
 		var e_fang = nil
 
-		var dg_column = GongHelper.create_inner_column()
-		dg_column = TransNodes.rotate(VariantProxy(dg_column), -Math.pi() * 0.5)
+		var v_gong = nil
+		if (CONTEXT.tween)
+		{
+			var dg_column = GongHelper.create_inner_column(bf.dg_steps)
+			dg_column = TransNodes.rotate(VariantProxy(dg_column), -Math.pi() * 0.5)
 
-		var dg_tween = GongHelper.create_inner_tween()
-		dg_tween = TransNodes.rotate(VariantProxy(dg_tween), -Math.pi() * 0.5)
-		dg_tween = TransNodes.translate(VariantProxy(dg_tween), Vector3(0, 0, -FRAME_DIST * 0.5))
-		
-		var v_gong = Variant([ dg_column, dg_tween ])
+			var dg_tween = GongHelper.create_inner_tween(bf.dg_steps)
+			dg_tween = TransNodes.rotate(VariantProxy(dg_tween), -Math.pi() * 0.5)
+			dg_tween = TransNodes.translate(VariantProxy(dg_tween), Vector3(0, 0, -FRAME_DIST * 0.5))
+			
+			v_gong = Variant([ dg_column, dg_tween ])
+		}
+		else
+		{
+			v_gong = GongHelper.create_inner_column(bf.dg_steps)
+			v_gong = TransNodes.rotate(VariantProxy(v_gong), -Math.pi() * 0.5)
+		}
 
 		var type = this.query_param("type").value
 		if (type == "single")

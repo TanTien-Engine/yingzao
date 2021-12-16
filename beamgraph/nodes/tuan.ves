@@ -524,20 +524,33 @@ class Tuan is Node
 			angle = angle + Math.pi()
 		}
 
-		var dg_column = GongHelper.create_outer_column(sub)
-		dg_column = TransNodes.rotate(VariantProxy(dg_column), angle)
+		if (CONTEXT.tween)
+		{
+			var dg_column = GongHelper.create_outer_column(sub, bf.dg_steps)
+			dg_column = TransNodes.rotate(VariantProxy(dg_column), angle)
 
-		var dg_tween = GongHelper.create_outer_tween(sub)
-		dg_tween = TransNodes.rotate(VariantProxy(dg_tween), angle)
-		dg_tween = TransNodes.translate(VariantProxy(dg_tween), Vector3(0, 0, -FRAME_DIST * 0.5))
+			var dg_tween = GongHelper.create_outer_tween(sub, bf.dg_steps)
+			dg_tween = TransNodes.rotate(VariantProxy(dg_tween), angle)
+			dg_tween = TransNodes.translate(VariantProxy(dg_tween), Vector3(0, 0, -FRAME_DIST * 0.5))
 
-		var v_gong = Variant([ dg_column, dg_tween ])
+			var v_gong = Variant([ dg_column, dg_tween ])
 
-		var y = pos.y - this.get_root_tuan().middle_height
+			var y = pos.y - this.get_root_tuan().middle_height
 
-		v_gong = TransNodes.translate(VariantProxy(v_gong), Vector3(pos.x, y, pos.z))
+			v_gong = TransNodes.translate(VariantProxy(v_gong), Vector3(pos.x, y, pos.z))
 
-		return v_gong
+			return v_gong
+		}
+		else
+		{
+			var v_gong = GongHelper.create_outer_column(sub, bf.dg_steps)
+
+			var y = pos.y - this.get_root_tuan().middle_height
+
+			v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, y, pos.z), angle)
+
+			return v_gong			
+		}
 	}
 
 	create_3s_dg(pos, column)
