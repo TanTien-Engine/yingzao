@@ -4,7 +4,7 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "beamgraph.comp_nodes" for CompNodes
-import "beamgraph.constant" for BEAM_DX
+import "beamgraph.constant" for BEAM_DX, FRAME_DIST
 import "beamgraph.context" for CONTEXT
 import "beamgraph.gong_helper" for GongHelper
 import "beamgraph.trans_nodes" for TransNodes
@@ -49,7 +49,14 @@ class AddColumn is Node
 		var dou_gong = nil
 		var e_fang = nil
 
-		var v_gong = GongHelper.create_inner_column()
+		var dg_column = GongHelper.create_inner_column()
+		dg_column = TransNodes.rotate(VariantProxy(dg_column), -Math.pi() * 0.5)
+
+		var dg_tween = GongHelper.create_inner_tween()
+		dg_tween = TransNodes.rotate(VariantProxy(dg_tween), -Math.pi() * 0.5)
+		dg_tween = TransNodes.translate(VariantProxy(dg_tween), Vector3(0, 0, -FRAME_DIST * 0.5))
+		
+		var v_gong = Variant([ dg_column, dg_tween ])
 
 		var type = this.query_param("type").value
 		if (type == "single")
@@ -58,7 +65,7 @@ class AddColumn is Node
 			var p = Vector3(x, y, 0)
 
 			column = CompNodes.create_column(p, h)
-			dou_gong = TransNodes.transform(VariantProxy(v_gong), p, -Math.pi() * 0.5)
+			dou_gong = TransNodes.translate(VariantProxy(v_gong), p)
 			e_fang = CompNodes.create_lan_e_fang(p)
 		}
 		else if (type == "double")
@@ -71,8 +78,8 @@ class AddColumn is Node
 			var r_col = CompNodes.create_column(p1, h)
 			column = Variant([ l_col, r_col ])
 
-			var l_dg = TransNodes.transform(VariantProxy(v_gong), p0, -Math.pi() * 0.5)
-			var r_dg = TransNodes.transform(VariantProxy(v_gong), p1, -Math.pi() * 0.5)			
+			var l_dg = TransNodes.translate(VariantProxy(v_gong), p0)
+			var r_dg = TransNodes.translate(VariantProxy(v_gong), p1)			
 			dou_gong = Variant([ l_dg, r_dg ])
 
 			e_fang = Variant([ CompNodes.create_lan_e_fang(p0), CompNodes.create_lan_e_fang(p1) ])
@@ -82,7 +89,7 @@ class AddColumn is Node
 			var p = Vector3(0, y, 0)
 
 			column = CompNodes.create_column(p, h)
-			dou_gong = TransNodes.transform(VariantProxy(v_gong), p, -Math.pi() * 0.5)
+			dou_gong = TransNodes.translate(VariantProxy(v_gong), p)
 			e_fang = CompNodes.create_lan_e_fang(p)
 		}
 		else

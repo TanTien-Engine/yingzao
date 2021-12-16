@@ -49,12 +49,26 @@ class GongHelper
 		return this.create_dou_gong(steps, false, false)
 	}
 
+	static create_outer_tween(sub)
+	{
+		var steps = DG_STEPS
+		if (sub) {
+			steps = steps - 1
+		}
+		return this.create_dou_gong(steps, true, false)
+	}
+
 	static create_inner_column()
 	{
 		var BEAM = NODE_CACHE.fetch("../yingzao/00_dougong2/45_straight_beam.ves", nil)
 		Blueprint.connect(VariantProxy(Variant(0.2)), "out", BEAM, "length")
 
 		return this.create_dou_gong(DG_STEPS - 1, false, true)
+	}
+
+	static create_inner_tween()
+	{
+		return this.create_dou_gong(DG_STEPS - 1, true, true)
 	}
 
 	static create_dou_gong(steps, tween, inner)
@@ -65,7 +79,13 @@ class GongHelper
 		{
 			if (tween)
 			{
-
+				if (steps == 4 or steps == 5) {
+					filepath = "../yingzao/11_dg_song/602_5s_33233_2c_tween.ves"
+				} else if (steps == 6) {
+					filepath = "../yingzao/11_dg_song/603_6s_4432344_3c_tween.ves"
+				} else if (steps == 7) {
+					filepath = "../yingzao/11_dg_song/604_7s_554323455_4c_tween.ves"
+				}
 			}
 			else
 			{
@@ -82,7 +102,17 @@ class GongHelper
 		{
 			if (tween)
 			{
-
+				if (steps == 4) {
+					filepath = "../yingzao/11_dg_song/202_4s_222_1ca_tween.ves"
+				} else if (steps == 5) {
+					filepath = "../yingzao/11_dg_song/203_5s_33233_1c1a_2c_tween.ves"
+				} else if (steps == 6) {
+					filepath = "../yingzao/11_dg_song/204_6s_443233_1c2a_2c_tween.ves"
+				} else if (steps == 7) {
+					filepath = "../yingzao/11_dg_song/206_7s_55432344_2c2a_3c_tween.ves"
+				} else if (steps == 8) {
+					filepath = "../yingzao/11_dg_song/209_8s_6654323455_2c3a_4c_tween.ves"
+				}
 			}
 			else
 			{
@@ -95,7 +125,7 @@ class GongHelper
 				} else if (steps == 7) {
 					filepath = "../yingzao/11_dg_song/206_7s_55432344_2c2a_2c_column.ves"
 				} else if (steps == 8) {
-					filepath = "../yingzao/11_dg_song/209_8s_6654323455_2c3a_2c_column.ves"					
+					filepath = "../yingzao/11_dg_song/209_8s_6654323455_2c3a_2c_column.ves"
 				}
 			}
 		}

@@ -228,7 +228,7 @@ class Tuan is Node
 					ret.add(CompNodes.create_cheng_yuan_fang(Vector3(-x / 3, y, 0)))
 				} else if (bf.cao == "double") {
 					ret.add(CompNodes.create_cheng_yuan_fang(Vector3(-x / 3, y, 0)))
-					ret.add(CompNodes.create_cheng_yuan_fang(Vector3( x / 3, y, 0)))					
+					ret.add(CompNodes.create_cheng_yuan_fang(Vector3( x / 3, y, 0)))
 				}
 
 				// ping
@@ -236,7 +236,7 @@ class Tuan is Node
 				if (DG_STEPS > 5) {
 					ping_y = ping_y - 0.21 * 3
 				}
-				var sz_z = 2.0
+				var sz_z = FRAME_DIST
 				var step_len = 0.05
 				var l_sub_ping = CompNodes.create_ping(Vector3(- BEAM_DX * this.deep + step_len, ping_y, 0), BEAM_DX * 2 - step_len * 2, sz_z)
 				var r_sub_ping = TransNodes.rotate(VariantProxy(l_sub_ping), Math.pi())
@@ -506,7 +506,8 @@ class Tuan is Node
 	create_dian_dg(bf, pos, rot)
 	{		
 		import "beamgraph.nodes.sub_tuan" for SubTuan
-		var sub = this.get_root_tuan() is SubTuan
+		var root = this.get_root_tuan()
+		var sub = root is SubTuan
 
 		// set beam len
 		var beam_len = 0
@@ -514,20 +515,27 @@ class Tuan is Node
 		if (sub) {
 			beam_len = BEAM_DX * 2 + 0.5
 		} else {
-			beam_len = 0.2
+			beam_len = BEAM_DX * root.max_deep + 0.5
 		}
 		Blueprint.connect(VariantProxy(Variant(beam_len)), "out", BEAM, "length")
-
-		var v_gong = GongHelper.create_outer_column(sub)
-
-		var y = pos.y - this.get_root_tuan().middle_height
 
 		var angle = -Math.pi() * 0.5
 		if (rot) {
 			angle = angle + Math.pi()
 		}
 
-		v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, y, pos.z), angle)
+		var dg_column = GongHelper.create_outer_column(sub)
+		dg_column = TransNodes.rotate(VariantProxy(dg_column), angle)
+
+		var dg_tween = GongHelper.create_outer_tween(sub)
+		dg_tween = TransNodes.rotate(VariantProxy(dg_tween), angle)
+		dg_tween = TransNodes.translate(VariantProxy(dg_tween), Vector3(0, 0, -FRAME_DIST * 0.5))
+
+		var v_gong = Variant([ dg_column, dg_tween ])
+
+		var y = pos.y - this.get_root_tuan().middle_height
+
+		v_gong = TransNodes.translate(VariantProxy(v_gong), Vector3(pos.x, y, pos.z))
 
 		return v_gong
 	}
@@ -749,7 +757,7 @@ class Tuan is Node
 
 	create_inner_ping_border(ret, x)
 	{
-		var sz_z = 2.0
+		var sz_z = FRAME_DIST
 
 		var y = this.tot_height + this.calc_beam_y_offset() - 0.21
 
@@ -784,7 +792,7 @@ class Tuan is Node
 		var y = this.tot_height + this.calc_beam_y_offset() - 0.21
 
 		var sz_x = BEAM_DX * this.deep * 2
-		var sz_z = 2.0
+		var sz_z = FRAME_DIST
 
 		var step_len = 0.3
 		if (DG_STEPS == 7) {
