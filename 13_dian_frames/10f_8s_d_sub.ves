@@ -1,0 +1,89 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+node0.set_prop_value("ortho", false)
+
+node0.op_node.cam.position.set(-9.4975442877386, 5.3818107117729, 8.9974317037857)
+node0.op_node.cam.yaw = -57.2
+node0.op_node.cam.pitch = -6.4
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.21526837348938
+
+_editor.add_node(node0, -493.89, 4.61051)
+
+var node1 = ::beamgraph::nodes::ji_tuan::JiTuan()
+node1.query_param("column").value = false
+
+_editor.add_node(node1, -131.88408, 23.97836)
+
+var node2 = ::beamgraph::nodes::tuan::Tuan()
+node2.query_param("l_column").value = false
+node2.query_param("r_column").value = false
+
+_editor.add_node(node2, 3.1159199999999, 15.97836)
+
+var node3 = ::beamgraph::nodes::tuan::Tuan()
+node3.query_param("l_column").value = false
+node3.query_param("r_column").value = false
+
+_editor.add_node(node3, 134.11592, 14.97836)
+
+var node4 = ::blueprint::nodes::commentary::Commentary()
+
+node4.set_size(1280.56258, 119.88408)
+node4.title = "十架椽，身内双槽；殿身外转八铺作（重栱，出双抄、三下昂），里转六铺作（重栱，出三抄）；副阶外转七铺作（重栱，出双抄、两下昂），里转六铺作（出三抄）；以上并各计心"
+
+_editor.add_node(node4, 397.35548, 86.4204)
+
+var node5 = ::beamgraph::nodes::tuan::Tuan()
+node5.query_param("l_column").value = false
+node5.query_param("r_column").value = false
+
+_editor.add_node(node5, 265.11592, 15.97836)
+
+var node6 = ::beamgraph::nodes::tuan::Tuan()
+node6.query_param("l_column").value = false
+node6.query_param("r_column").value = false
+
+_editor.add_node(node6, 407.11592, 17.97836)
+
+var node7 = ::beamgraph::nodes::add_column::AddColumn()
+node7.query_param("type").value = "double"
+
+_editor.add_node(node7, -168.88213659347, -100.7779237186)
+
+var node8 = ::beamgraph::nodes::tuan::Tuan()
+node8.query_param("l_column").value = true
+node8.query_param("r_column").value = true
+
+_editor.add_node(node8, 545.21424236491, 18.655480703723)
+
+var node9 = ::beamgraph::nodes::sub_tuan::SubTuan()
+
+_editor.add_node(node9, 678.5312749583, 35.866249308878)
+
+var node10 = ::beamgraph::nodes::tuan::Tuan()
+node10.query_param("l_column").value = false
+node10.query_param("r_column").value = false
+
+_editor.add_node(node10, 811.40842134241, 14.754921267088)
+
+var node11 = ::beamgraph::nodes::tuan::Tuan()
+node11.query_param("l_column").value = true
+node11.query_param("r_column").value = true
+
+_editor.add_node(node11, 950.06013048384, 13.885630636119)
+
+var node12 = ::beamgraph::nodes::dou_gong::DouGong()
+node12.query_param("steps").value = 8
+
+_editor.add_node(node12, -31.804696327399, -100.15939204949)
+
+Blueprint.connect(node1, "next", node2, "prev")
+Blueprint.connect(node2, "next", node3, "prev")
+Blueprint.connect(node3, "next", node5, "prev")
+Blueprint.connect(node5, "next", node6, "prev")
+Blueprint.connect(node6, "next", node8, "prev")
+Blueprint.connect(node8, "next", node9, "prev")
+Blueprint.connect(node9, "next", node10, "prev")
+Blueprint.connect(node10, "next", node11, "prev")
