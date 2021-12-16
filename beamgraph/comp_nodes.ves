@@ -7,6 +7,8 @@ import "geograph.nodes.box" for Box
 import "geograph.nodes.rotate" for Rotate
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.constant" for FRAME_DIST, FRAME_STYLE, STYLE_DIAN_TANG
+import "beamgraph.context" for CONTEXT
+
 import "maths.vector" for Vector3
 import "math" for Math
 
@@ -260,32 +262,37 @@ class CompNodes
 		var h = 0.05
 		var w = 0.04
 
-		pos.y = pos.y + h
+		if (!CONTEXT.ping_simple) {
+			pos.y = pos.y + h		
+		}
 
 		var ret = []
 
 		ret.add(CompNodes.create_box(pos, Vector3(x_len, 0.02, z_len)))
 
-		var p = Vector3(pos.x, pos.y - h, pos.z)
-		for (var x = 0; x < x_len; x = x + dist) {
-			ret.add(CompNodes.create_box(p, Vector3(w, h, z_len)))
-			p.x = p.x + dist
-		}
+		if (!CONTEXT.ping_simple)
+		{
+			var p = Vector3(pos.x, pos.y - h, pos.z)
+			for (var x = 0; x < x_len; x = x + dist) {
+				ret.add(CompNodes.create_box(p, Vector3(w, h, z_len)))
+				p.x = p.x + dist
+			}
 
-		p = Vector3(pos.x, pos.y - h, pos.z - z_len * 0.5)
-		for (var z = 0; z < z_len; z = z + dist) {
-			ret.add(CompNodes.create_box(p, Vector3(x_len, h, w)))
-			p.z = p.z + dist
+			p = Vector3(pos.x, pos.y - h, pos.z - z_len * 0.5)
+			for (var z = 0; z < z_len; z = z + dist) {
+				ret.add(CompNodes.create_box(p, Vector3(x_len, h, w)))
+				p.z = p.z + dist
+			}
 		}
 
 		return Variant(ret)		
 	}
 
-	static create_ping_border(pos, z_len, mirror)
+	static create_ping_border(pos, x_dist, y_dist, z_len, mirror)
 	{
-		var dy = 0.21
+		var dy = y_dist
 
-		var step_len = 0.2
+		var step_len = x_dist - 0.05 * 2
 		var angle = Math.atan2(dy, step_len)
 
 		var x_len = Math.sqrt(dy * dy + step_len * step_len)
@@ -296,14 +303,19 @@ class CompNodes
 
 		var h_panel = 0.02
 		var v_panel = CompNodes.create_box(Vector3(0, 0, 0), Vector3(x_len, h_panel, z_len))
-		v_panel = TransNodes.translate(VariantProxy(v_panel), Vector3(0, h + h_panel, 0))
+		if (!this.ping_simple) {
+			v_panel = TransNodes.translate(VariantProxy(v_panel), Vector3(0, h + h_panel, 0))
+		}
 		geos.add(v_panel)
 
-		var dist = 0.1
-		var p = Vector3(0, 0, - z_len * 0.5)
-		for (var z = 0; z < z_len; z = z + dist) {
-			geos.add(CompNodes.create_box(p, Vector3(x_len, 0.05, h)))
-			p.z = p.z + dist
+		if (!CONTEXT.ping_simple)
+		{
+			var dist = 0.1
+			var p = Vector3(0, 0, - z_len * 0.5)
+			for (var z = 0; z < z_len; z = z + dist) {
+				geos.add(CompNodes.create_box(p, Vector3(x_len, 0.05, h)))
+				p.z = p.z + dist
+			}
 		}
 
 		var rot_y = 0
