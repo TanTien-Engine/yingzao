@@ -768,32 +768,38 @@ class Tuan is Node
 		return CompNodes.create_shun_fu_chuan(Vector3(-len * 0.5, next_cc.tot_height - next_beam_h, 0), len)
 	}
 
-	create_inner_ping_border(ret, x)
+	create_inner_ping_border(ret, x, dg_steps)
 	{
 		var sz_z = FRAME_DIST
 
-		var y = this.tot_height + this.calc_beam_y_offset() - 0.21
+		var y = this.tot_height + this.calc_beam_y_offset(dg_steps) - 0.21
 
-		if (DG_STEPS < 7) 
+		var y_len = 0.21
+		if (dg_steps < 7) 
 		{
-			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, false))
-			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, true))
+			var x_len = 0.28
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), x_len, y_len, sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), x_len, y_len, sz_z, true))
 		}
-		else if (DG_STEPS == 7)
+		else if (dg_steps == 7)
 		{
-			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 2, 0), sz_z, false))
-			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 2, 0), sz_z, true))
-			ret.add(CompNodes.create_ping_border(Vector3(x + 0.28, y - 0.21, 0), sz_z, false))
-			ret.add(CompNodes.create_ping_border(Vector3(x - 0.28, y - 0.21, 0), sz_z, true))			
+			var x_len = 0.28
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 2, 0), x_len, y_len, sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 2, 0), x_len, y_len, sz_z, true))
+			x_len = 0.25
+			ret.add(CompNodes.create_ping_border(Vector3(x + 0.28, y - 0.21, 0), x_len, y_len, sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x - 0.28, y - 0.21, 0), x_len, y_len, sz_z, true))			
 		}
-		else if (DG_STEPS == 8)
+		else if (dg_steps == 8)
 		{
-			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 3, 0), sz_z, false))
-			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 3, 0), sz_z, true))
-			ret.add(CompNodes.create_ping_border(Vector3(x + 0.28, y - 0.21 * 2, 0), sz_z, false))
-			ret.add(CompNodes.create_ping_border(Vector3(x - 0.28, y - 0.21 * 2, 0), sz_z, true))				
-			ret.add(CompNodes.create_ping_border(Vector3(x + 0.28 + 0.25, y - 0.21, 0), sz_z, false))
-			ret.add(CompNodes.create_ping_border(Vector3(x - 0.28 - 0.25, y - 0.21, 0), sz_z, true))			
+			var x_len = 0.28
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 3, 0), x_len, y_len, sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 3, 0), x_len, y_len, sz_z, true))
+			x_len = 0.25
+			ret.add(CompNodes.create_ping_border(Vector3(x + 0.28, y - 0.21 * 2, 0), x_len, y_len, sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x - 0.28, y - 0.21 * 2, 0), x_len, y_len, sz_z, true))				
+			ret.add(CompNodes.create_ping_border(Vector3(x + 0.28 + 0.25, y - 0.21, 0), x_len, y_len, sz_z, false))
+			ret.add(CompNodes.create_ping_border(Vector3(x - 0.28 - 0.25, y - 0.21, 0), x_len, y_len, sz_z, true))			
 		}
 	}
 
@@ -802,15 +808,15 @@ class Tuan is Node
 		var ret = []
 
 		var x = -BEAM_DX * this.deep
-		var y = this.tot_height + this.calc_beam_y_offset() - 0.21
+		var y = this.tot_height + this.calc_beam_y_offset(bf.dg_steps) - 0.21
 
 		var sz_x = BEAM_DX * this.deep * 2
 		var sz_z = FRAME_DIST
 
 		var step_len = 0.3
-		if (DG_STEPS == 7) {
+		if (bf.dg_steps == 7) {
 			step_len = step_len + 0.25
-		} else if (DG_STEPS == 8) {
+		} else if (bf.dg_steps == 8) {
 			step_len = step_len + 0.5
 		}
 
@@ -825,7 +831,7 @@ class Tuan is Node
 			ret.add(CompNodes.create_ping(Vector3( x + step_len, y, 0), sz_x * 0.5 - step_len * 2, sz_z))
 			ret.add(CompNodes.create_ping(Vector3(cx + step_len, y, 0), sz_x * 0.5 - step_len * 2, sz_z))
 
-			this.create_inner_ping_border(ret, cx)
+			this.create_inner_ping_border(ret, cx, bf.dg_steps)
 		}
 		else if (bf.cao == "single")
 		{
@@ -834,7 +840,7 @@ class Tuan is Node
 			ret.add(CompNodes.create_ping(Vector3( x + step_len, y, 0), sz_x * 0.25 - step_len * 2, sz_z))
 			ret.add(CompNodes.create_ping(Vector3(cx + step_len, y, 0), sz_x * 0.75 - step_len * 2, sz_z))
 
-			this.create_inner_ping_border(ret, cx)
+			this.create_inner_ping_border(ret, cx, bf.dg_steps)
 		}
 		else if (bf.cao == "double")
 		{
@@ -845,46 +851,59 @@ class Tuan is Node
 			ret.add(CompNodes.create_ping(Vector3(cx_0 + step_len, y, 0), sz_x * 0.5  - step_len * 2, sz_z))
 			ret.add(CompNodes.create_ping(Vector3(cx_1 + step_len, y, 0), sz_x * 0.25 - step_len * 2, sz_z))
 
-			this.create_inner_ping_border(ret, cx_0)
-			this.create_inner_ping_border(ret, cx_1)
+			this.create_inner_ping_border(ret, cx_0, bf.dg_steps)
+			this.create_inner_ping_border(ret, cx_1, bf.dg_steps)
 		}
 
+		var y_len = 0.21
+
 		var l_borders = []
-		if (DG_STEPS == 5)
+		if (bf.dg_steps == 5)
 		{
-			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, true))
-			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, false))
+			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), 0.3, y_len, sz_z, true))
+			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), 0.3, y_len, sz_z, false))
 			l_borders.add(CompNodes.create_box(Vector3(x - 0.5, y, 0), Vector3(0.2, 0.02, sz_z)))
 		}
-		else if (DG_STEPS == 6)
+		else if (bf.dg_steps == 6)
 		{
-			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, true))
-			l_borders.add(CompNodes.create_ping_border(Vector3(x - 0.3, y, 0), sz_z, true))			
-			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), sz_z, false))
+			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), 0.3, y_len, sz_z, true))
+			l_borders.add(CompNodes.create_ping_border(Vector3(x - 0.3, y, 0), 0.3, y_len, sz_z, true))			
+			l_borders.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), 0.3, y_len, sz_z, false))
 			l_borders.add(CompNodes.create_box(Vector3(x - 0.75, y + 0.21, 0), Vector3(0.2, 0.02, sz_z)))
 		}
-		else if (DG_STEPS == 7)
+		else if (bf.dg_steps == 7)
 		{
+			var outer = [ 0.3, 0.26, 0.26, 0.26, 0.26 ]
+			var inner = [ 0.28, 0.26, 0.26, 0.26, 0.26 ]
+			var i_dx = 0
+			var o_dx = 0			
 			for (var i = 0; i < 2; i = i + 1) 
 			{
-				var dx = 0.3 * i
 				var dy = -0.21 * (2 - i)
-				l_borders.add(CompNodes.create_ping_border(Vector3(x - dx, y + dy, 0), sz_z, true))
-				l_borders.add(CompNodes.create_ping_border(Vector3(x + dx, y + dy, 0), sz_z, false))
+				l_borders.add(CompNodes.create_ping_border(Vector3(x - o_dx, y + dy, 0), outer[i], y_len, sz_z, true))
+				l_borders.add(CompNodes.create_ping_border(Vector3(x + i_dx, y + dy, 0), inner[i], y_len, sz_z, false))
+				i_dx = i_dx + inner[i]
+				o_dx = o_dx + outer[i]				
 			}
-			l_borders.add(CompNodes.create_ping_border(Vector3(x - 0.6, y, 0), sz_z, true))			
+			l_borders.add(CompNodes.create_ping_border(Vector3(x - 0.56, y, 0), 0.26, y_len, sz_z, true))
 			l_borders.add(CompNodes.create_box(Vector3(x - 1, y + 0.21, 0), Vector3(0.2, 0.02, sz_z)))
 		}
-		else if (DG_STEPS == 8)
+		else if (bf.dg_steps == 8)
 		{
+			var outer = [ 0.3, 0.3, 0.3, 0.3, 0.3 ]
+			var inner = [ 0.28, 0.26, 0.26, 0.26, 0.26 ]
+			var i_dx = 0
+			var o_dx = 0
 			for (var i = 0; i < 3; i = i + 1) 
 			{
-				var dx = 0.3 * i
 				var dy = -0.21 * (3 - i)
-				l_borders.add(CompNodes.create_ping_border(Vector3(x - dx, y + dy, 0), sz_z, true))
-				l_borders.add(CompNodes.create_ping_border(Vector3(x + dx, y + dy, 0), sz_z, false))
+				l_borders.add(CompNodes.create_ping_border(Vector3(x - o_dx, y + dy, 0), outer[i], y_len, sz_z, true))
+				l_borders.add(CompNodes.create_ping_border(Vector3(x + i_dx, y + dy, 0), inner[i], y_len, sz_z, false))
+				i_dx = i_dx + inner[i]
+				o_dx = o_dx + outer[i]
 			}
-			l_borders.add(CompNodes.create_box(Vector3(x - 1.5, y, 0), Vector3(0.6, 0.02, sz_z)))
+			l_borders.add(CompNodes.create_ping_border(Vector3(x - 0.9, y, 0), 0.3, 0.105, sz_z, true))			
+			l_borders.add(CompNodes.create_box(Vector3(x - 1.5, y + 0.105, 0), Vector3(0.3, 0.02, sz_z)))
 		}
 		ret.add(Variant(l_borders))
 		ret.add(TransNodes.rotate(VariantProxy(Variant(l_borders)), Math.pi()))
