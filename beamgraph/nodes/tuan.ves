@@ -215,7 +215,15 @@ class Tuan is Node
 			else
 			{
 				var h = 0.27
-				var y = pos_l.y + this.calc_beam_y_offset(bf.dg_steps) + 0.21 * 2
+
+				var layer_num = 3
+				if (bf.dg_steps == 5) {
+					layer_num = layer_num - 1
+				} else if (bf.dg_steps == 8) {
+					layer_num = layer_num + 1					
+				}
+				var y = root.column_height + 0.12 + 0.21 * layer_num + 0.15
+
 				ret.add(CompNodes.create_nei_e_fang(Vector3(0, y, 0), h, BEAM_DX * (this.deep - 2) * 2))
 
 				var x = BEAM_DX * (this.deep - 2)
@@ -233,9 +241,6 @@ class Tuan is Node
 
 				// ping
 				var ping_y = y
-				if (bf.dg_steps > 5) {
-					ping_y = ping_y - 0.21 * 3
-				}
 				var sz_z = FRAME_DIST
 				var step_len = 0.05
 				var l_sub_ping = CompNodes.create_ping(Vector3(- BEAM_DX * this.deep + step_len, ping_y, 0), BEAM_DX * 2 - step_len * 2, sz_z)
