@@ -70,7 +70,7 @@ class AddColumn is Node
 		var type = this.query_param("type").value
 		if (type == "single")
 		{
-			var x = - bf.root.max_deep * BEAM_DX * 0.5
+			var x = - bf.root.max_deep * BEAM_DX / 3
 			var p = Vector3(x, y, 0)
 
 			column = CompNodes.create_column(p, h)

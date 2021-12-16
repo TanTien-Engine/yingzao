@@ -840,10 +840,10 @@ class Tuan is Node
 		}
 		else if (bf.cao == "single")
 		{
-			var cx = x + sz_x * 0.25
+			var cx = x + sz_x / 3
 
-			ret.add(CompNodes.create_ping(Vector3( x + step_len, y, 0), sz_x * 0.25 - step_len * 2, sz_z))
-			ret.add(CompNodes.create_ping(Vector3(cx + step_len, y, 0), sz_x * 0.75 - step_len * 2, sz_z))
+			ret.add(CompNodes.create_ping(Vector3( x + step_len, y, 0), sz_x / 3 - step_len * 2, sz_z))
+			ret.add(CompNodes.create_ping(Vector3(cx + step_len, y, 0), sz_x * 2 / 3 - step_len * 2, sz_z))
 
 			this.create_inner_ping_border(ret, cx, bf.dg_steps)
 		}
