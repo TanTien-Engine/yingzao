@@ -7,7 +7,7 @@ import "blueprint.variant_proxy" for VariantProxy
 import "geograph.brush" for BrushInstanced
 import "geograph.variant" for VAR_TYPE_GEO, VarGeo
 import "gonggraph.component.dou" for Dou
-import "gonggraph.component.lu_dou" for LuDou
+import "gonggraph.component.lu_dou" for LuDou, LU_DOU
 import "gonggraph.component.inner_gong" for InnerGong
 import "gonggraph.component.ti_mu" for TiMu
 import "gonggraph.component.fang" for Fang
@@ -195,7 +195,7 @@ class Tuan is Node
 			ret.add(this.create_yuan(bf))
 		}
 
-		if (!bf.shun_fu_chuan) {
+		if (FRAME_STYLE == STYLE_TING_TANG and !bf.shun_fu_chuan) {
 			var chuan = this.create_shun_fu_chuan(bf)
 			if (chuan) {
 				ret.add(chuan)
@@ -357,6 +357,8 @@ class Tuan is Node
 		{
 			if (sides) {
 				h_gong = this.get_root_tuan().middle_height			
+			} else {
+				h_gong = 0.21 * 2
 			}
 		}
 
@@ -365,26 +367,36 @@ class Tuan is Node
 
 	create_column(bf, pos)
 	{
-		var h_gong = this.calc_dg_height()
+		var ret = []
 
+		var h_gong = this.calc_dg_height()
+		var y = pos.y - h_gong
+
+		var x = pos.x
 		// move column
-		if (FRAME_STYLE == STYLE_DIAN_TANG and !this.is_curr_sides()) {
+		if (bf.move_column > 0 and FRAME_STYLE == STYLE_DIAN_TANG and !this.is_curr_sides()) 
+		{
+			ret.add(this.create_tuo_feng(bf, pos))
+
 			if (pos.x < 0) {
-				pos.x = pos.x + BEAM_DX * bf.move_column
+				x = pos.x + BEAM_DX * bf.move_column
 			} else {
-				pos.x = pos.x - BEAM_DX * bf.move_column
+				x = pos.x - BEAM_DX * bf.move_column
 			}
+			ret.add(TransNodes.translate(LU_DOU, Vector3(x, y, pos.z)))
 		}
 
-		var p = Vector3(pos.x, pos.y - h_gong, pos.z)
+		var p = Vector3(x, y, pos.z)
 
 		var column = CompNodes.create_column(p, this.tot_height - h_gong)
+		ret.add(column)
+
 		if (CONTEXT.vert_conn) {
 			var e_fang = CompNodes.create_lan_e_fang(p)
-			return Variant([ column, e_fang ])
-		} else {
-			return column
+			ret.add(e_fang)
 		}
+
+		return Variant(ret)
 	}
 
 	calc_left_beam_dist(bf, idx)
@@ -399,6 +411,12 @@ class Tuan is Node
 				}
 			}
 		}
+
+		// fixme
+		if (bf.move_column > 0 and idx < -3) {
+			dist = dist + bf.move_column
+		}
+
 		return dist
 	}
 
@@ -414,6 +432,12 @@ class Tuan is Node
 				}
 			}
 		}
+
+		// fixme
+		if (bf.move_column > 0 and idx > 3) {
+			dist = dist + bf.move_column
+		}
+
 		return dist
 	}
 
