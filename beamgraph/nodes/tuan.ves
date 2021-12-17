@@ -340,7 +340,7 @@ class Tuan is Node
 		return dy
 	}
 
-	create_column(bf, pos)
+	calc_dg_height()
 	{
 		var h_gong = 0
 
@@ -357,13 +357,22 @@ class Tuan is Node
 		{
 			if (sides) {
 				h_gong = this.get_root_tuan().middle_height			
+			}
+		}
+
+		return h_gong
+	}
+
+	create_column(bf, pos)
+	{
+		var h_gong = this.calc_dg_height()
+
+		// move column
+		if (FRAME_STYLE == STYLE_DIAN_TANG and !this.is_curr_sides()) {
+			if (pos.x < 0) {
+				pos.x = pos.x + BEAM_DX * bf.move_column
 			} else {
-				// move column
-				if (pos.x < 0) {
-					pos.x = pos.x + BEAM_DX * bf.move_column
-				} else {
-					pos.x = pos.x - BEAM_DX * bf.move_column
-				}
+				pos.x = pos.x - BEAM_DX * bf.move_column
 			}
 		}
 
@@ -438,8 +447,15 @@ class Tuan is Node
 	{
 		var next = Blueprint.get_output_node(this, "next")
 		import "beamgraph.nodes.sub_tuan" for SubTuan
-		if (!next or next is SubTuan) {
+		if (!next) {
 			return nil
+		}
+
+		if (next is SubTuan) 
+		{
+			var h_gong = this.calc_dg_height()
+			var p = Vector3(pos.x, pos.y - h_gong, pos.z)
+			return CompNodes.create_column(p, p.y - next.column_height - h_gong + 0.21 * 3, 0.36, false)
 		}
 
 		var top = this.tot_height + this.calc_beam_y_offset(bf.dg_steps) - 0.06
@@ -527,9 +543,18 @@ class Tuan is Node
 		// set beam len
 		var beam_len = 0
 		var BEAM = NODE_CACHE.fetch("../yingzao/00_dougong2/45_straight_beam.ves", nil)
-		if (sub) {
-			beam_len = BEAM_DX * 2 + 0.5
-		} else {
+		if (sub) 
+		{
+			var dist = 2
+			if (pos.x < 0) {
+				dist = this.calc_left_beam_dist(bf, -this.deep)
+			} else {
+				dist = this.calc_right_beam_dist(bf, this.deep)
+			}
+			beam_len = BEAM_DX * dist + 0.5
+		} 
+		else 
+		{
 			beam_len = BEAM_DX * root.max_deep + 1.0
 		}
 		Blueprint.connect(VariantProxy(Variant(beam_len)), "out", BEAM, "length")

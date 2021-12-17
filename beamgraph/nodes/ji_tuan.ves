@@ -148,21 +148,6 @@ class JiTuan is Node
 
 	create_zhuru_column(pos, height)
 	{
-		var COLUMN = NODE_CACHE.fetch("../yingzao/01_beam_column/10_column.ves", nil)
-
-		var d = 0.2
-		var radius_node = VariantProxy(Variant(d * 0.5))
-		Blueprint.connect(radius_node, "out", COLUMN, "radius")	
-
-		var h_node = VariantProxy(Variant(height))
-		Blueprint.connect(h_node, "out", COLUMN, "height")
-
-		Blueprint.connect(VariantProxy(Variant(true)), "out", COLUMN, "no_base")
-
-		var ret = TransNodes.translate(COLUMN, Vector3(pos.x, pos.y, pos.z))
-
-		h_node.disconnect()
-
-		return ret
+		return CompNodes.create_column(pos, height, 0.2, false)
 	}
 }
