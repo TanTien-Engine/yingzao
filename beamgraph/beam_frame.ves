@@ -8,6 +8,7 @@ import "beamgraph.constant" for BEAM_DX, FRAME_DIST
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.nodes.multi_frames" for MultiFrames
 import "beamgraph.nodes.dou_gong" for DouGong
+import "beamgraph.nodes.move_column" for MoveColumn
 import "maths.vector" for Vector3
 import "math" for Math
 
@@ -25,6 +26,8 @@ class BeamFrame
 
 		this.frames_num = 0
 		this.dg_steps   = 6
+
+		this.move_column = 0
 	}
 
 	rebuild(scene, out_list)
@@ -93,15 +96,17 @@ class BeamFrame
 	{
 		this.frames_num = 0
 		this.dg_steps   = 6
+		this.move_column = 0
 
 		for (var node in scene.nodes) 
 		{
 			var bp_node = node.components["bp"]
 			if (bp_node is MultiFrames) {
 				this.frames_num = bp_node.query_param("num").value
-			}
-			if (bp_node is DouGong) {
+			} else if (bp_node is DouGong) {
 				this.dg_steps = bp_node.query_param("steps").value
+			} else if (bp_node is MoveColumn) {
+				this.move_column = bp_node.query_param("dist").value
 			}
 		}
 	}

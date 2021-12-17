@@ -355,7 +355,16 @@ class Tuan is Node
 		}
 		else if (FRAME_STYLE == STYLE_DIAN_TANG)
 		{
-			h_gong = this.get_root_tuan().middle_height
+			if (sides) {
+				h_gong = this.get_root_tuan().middle_height			
+			} else {
+				// move column
+				if (pos.x < 0) {
+					pos.x = pos.x + BEAM_DX * bf.move_column
+				} else {
+					pos.x = pos.x - BEAM_DX * bf.move_column
+				}
+			}
 		}
 
 		var p = Vector3(pos.x, pos.y - h_gong, pos.z)
