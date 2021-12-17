@@ -437,7 +437,8 @@ class Tuan is Node
 	create_tuo_feng(bf, pos)
 	{
 		var next = Blueprint.get_output_node(this, "next")
-		if (!next) {
+		import "beamgraph.nodes.sub_tuan" for SubTuan
+		if (!next or next is SubTuan) {
 			return nil
 		}
 
