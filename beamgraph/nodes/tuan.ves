@@ -149,7 +149,7 @@ class Tuan is Node
 		var root = this.get_root_tuan()
 		var sides = this.is_curr_sides()
 		import "beamgraph.nodes.ji_tuan" for JiTuan
-		if ((bf.style == STYLE_DIAN_TANG and (root is JiTuan or bf.dg_steps > 5)) or !sides) {
+		if ((bf.style == STYLE_DIAN_TANG and (root is JiTuan or bf.dg_steps > 5)) or !sides or bf.style == STYLE_CHUAN_DOU) {
 			ret.add(CompNodes.create_tuan(pos_l))
 			ret.add(CompNodes.create_tuan(pos_r))
 		}
@@ -162,14 +162,16 @@ class Tuan is Node
 		}
 		if (sides) {
 			ret.add(this.create_dou_gong(bf, pos_l, false))
-		} else {
+		} else if (bf.style != STYLE_CHUAN_DOU) {
 			ret.add(this.create_3s_dg(pos_l, l_column))
 			if (CONTEXT.hori_conn) {
 				ret.add(this.create_tuo_jiao(bf, pos_l, false))			
 			}
 		}
-		var dist_l = this.calc_left_beam_dist(bf, -this.deep)
-		ret.add(this.create_beam(bf, dist_l, pos_l, true))
+		if (bf.style != STYLE_CHUAN_DOU) {
+			var dist_l = this.calc_left_beam_dist(bf, -this.deep)
+			ret.add(this.create_beam(bf, dist_l, pos_l, true))
+		}
 
 		var r_column = this.query_param("r_column").value
 		if (r_column) {
@@ -180,14 +182,14 @@ class Tuan is Node
 
 		if (sides) {
 			ret.add(this.create_dou_gong(bf, pos_r, true))
-		} else {
+		} else if (bf.style != STYLE_CHUAN_DOU) {
 			ret.add(this.create_3s_dg(pos_r, r_column))
 			if (CONTEXT.hori_conn) {
 				ret.add(this.create_tuo_jiao(bf, pos_r, true))			
 			}
 		}
 		var dist_r = this.calc_right_beam_dist(bf, this.deep)
-		if (dist_r != this.deep * 2) {
+		if (bf.style != STYLE_CHUAN_DOU and dist_r != this.deep * 2) {
 			ret.add(this.create_beam(bf, dist_r, pos_r, false))			
 		}
 
@@ -201,6 +203,11 @@ class Tuan is Node
 				ret.add(chuan)
 				bf.shun_fu_chuan = true
 			}
+		}
+
+		if (bf.style == STYLE_CHUAN_DOU) {
+			var len = BEAM_DX * this.deep * 2
+			ret.add(CompNodes.create_nei_e_fang(Vector3(0, this.tot_height, 0), 0.15, len))
 		}
 
 		if (sides and bf.style == STYLE_DIAN_TANG) 
@@ -396,7 +403,7 @@ class Tuan is Node
 		var column = CompNodes.create_column(bf, p, this.tot_height - h_gong)
 		ret.add(column)
 
-		if (CONTEXT.vert_conn) {
+		if (CONTEXT.vert_conn and bf.style != STYLE_CHUAN_DOU) {
 			var e_fang = CompNodes.create_lan_e_fang(p)
 			ret.add(e_fang)
 		}

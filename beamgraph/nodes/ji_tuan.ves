@@ -10,7 +10,7 @@ import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.gong_helper" for GongHelper
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.context" for CONTEXT
-import "beamgraph.constant" for BEAM_DX, FRAME_DIST
+import "beamgraph.constant" for BEAM_DX, FRAME_DIST, STYLE_CHUAN_DOU
 import "beamgraph.tuan_helper" for TuanHelper
 import "maths.vector" for Vector3
 import "math" for Math
@@ -68,6 +68,11 @@ class JiTuan is Node
 
 		var next = Blueprint.get_output_node(this, "next")
 		if (!next) {
+			return Variant(ret)
+		}
+
+		if (bf.style == STYLE_CHUAN_DOU) {
+			ret.add(CompNodes.create_column(bf, pos, this.tot_height))
 			return Variant(ret)
 		}
 
@@ -135,7 +140,7 @@ class JiTuan is Node
 
 		var p = Vector3(pos.x, pos.y - dh - h_beam - dou_h, pos.z)
 
-		var column = CompNodes.create_column(p, this.tot_height - dh - h_beam - dou_h)
+		var column = CompNodes.create_column(bf, p, this.tot_height - dh - h_beam - dou_h)
 		var dou = TransNodes.translate(LU_DOU, p)
 
 		if (CONTEXT.vert_conn) {

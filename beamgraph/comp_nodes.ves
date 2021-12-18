@@ -6,7 +6,7 @@ import "geograph.nodes.plane" for Plane
 import "geograph.nodes.box" for Box
 import "geograph.nodes.rotate" for Rotate
 import "beamgraph.trans_nodes" for TransNodes
-import "beamgraph.constant" for FRAME_DIST, STYLE_DIAN_TANG
+import "beamgraph.constant" for FRAME_DIST, STYLE_DIAN_TANG, STYLE_CHUAN_DOU
 import "beamgraph.context" for CONTEXT
 
 import "maths.vector" for Vector3
@@ -47,6 +47,8 @@ class CompNodes
 		var diam = 0.36
 		if (bf.style == STYLE_DIAN_TANG) {
 			diam = 0.42
+		} else if (bf.style == STYLE_CHUAN_DOU) {
+			diam = 0.25
 		}
 		return this.create_column(pos, height, diam, true)
 	}
