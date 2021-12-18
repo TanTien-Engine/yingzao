@@ -9,6 +9,7 @@ import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.nodes.multi_frames" for MultiFrames
 import "beamgraph.nodes.dou_gong" for DouGong
 import "beamgraph.nodes.move_column" for MoveColumn
+import "beamgraph.nodes.del_column" for DelColumn
 import "beamgraph.nodes.frame_style" for FrameStyle
 import "maths.vector" for Vector3
 import "math" for Math
@@ -29,6 +30,7 @@ class BeamFrame
 		this.dg_steps   = 6
 
 		this.move_column = 0
+		this.del_column  = 0
 
 		this.style = STYLE_TING_TANG
 	}
@@ -100,6 +102,7 @@ class BeamFrame
 		this.frames_num = 0
 		this.dg_steps   = 6
 		this.move_column = 0
+		this.del_column  = 0
 		this.style = STYLE_TING_TANG
 
 		for (var node in scene.nodes) 
@@ -111,6 +114,8 @@ class BeamFrame
 				this.dg_steps = bp_node.query_param("steps").value
 			} else if (bp_node is MoveColumn) {
 				this.move_column = bp_node.query_param("dist").value
+			} else if (bp_node is DelColumn) {
+				this.del_column = bp_node.query_param("num").value
 			} else if (bp_node is FrameStyle) {
 				this.style = bp_node.query_param("style").value
 			}

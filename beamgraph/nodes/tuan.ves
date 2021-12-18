@@ -385,6 +385,11 @@ class Tuan is Node
 			}
 			ret.add(TransNodes.translate(LU_DOU, Vector3(x, y, pos.z)))
 		}
+		// del column
+		else if (bf.del_column > 0 and !this.is_curr_sides())
+		{
+			return CompNodes.create_column(Vector3(x, y, pos.z), y - this.base_height + 0.21 * 3, 0.3, false)
+		}
 
 		var p = Vector3(x, y, pos.z)
 
@@ -813,6 +818,10 @@ class Tuan is Node
 
 	create_shun_fu_chuan(bf)
 	{
+		if (bf.del_column > 0) {
+			return nil
+		}
+
 		var l_column = this.query_param("l_column").value
 		var r_column = this.query_param("r_column").value
 		if (!l_column or !r_column) {
