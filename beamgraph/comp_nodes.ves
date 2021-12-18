@@ -4,6 +4,7 @@ import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.blueprint" for Blueprint
 import "geograph.nodes.plane" for Plane
 import "geograph.nodes.box" for Box
+import "geograph.nodes.column" for Column
 import "geograph.nodes.rotate" for Rotate
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.constant" for FRAME_DIST, STYLE_DIAN_TANG, STYLE_CHUAN_DOU
@@ -94,6 +95,24 @@ class CompNodes
 
 		var offset = len * 0.5
 		v_geo = TransNodes.translate(VariantProxy(v_geo), Vector3(offset, 0, 0))
+
+		return v_geo
+	}
+
+	static create_column_beam(pos, len, rot)
+	{
+		var BEAM = NODE_CACHE.fetch("../yingzao/01_beam_column/00_column_beam.ves", nil)		
+
+		var r_node = VariantProxy(Variant(0.1))
+		Blueprint.connect(r_node, "out", BEAM, "radius")
+
+		var len_node = VariantProxy(Variant(len))
+		Blueprint.connect(len_node, "out", BEAM, "length")
+
+		var rot_node = VariantProxy(Variant(rot))
+		Blueprint.connect(rot_node, "out", BEAM, "rot")
+
+		var v_geo = TransNodes.transform(BEAM, pos, -Math.pi() * 0.5)
 
 		return v_geo
 	}
@@ -350,4 +369,42 @@ class CompNodes
 
 		return CompNodes.create_box(pos, Vector3(x_len, h_panel, z_len))
 	}	
+
+	static create_jing_gan_columns(btm, top, x_min, x_max)
+	{
+		var ret = []
+
+		var diam = 0.1 * 2
+
+		var num = (top - btm) / diam
+		var dx = (x_max - x_min) / num
+		var dy = (top - btm) / num
+
+		var y = btm
+		var x_len = x_max + 0.4
+		for (var i in 0..num)
+		{
+			ret.add(CompNodes.create_column_beam(Vector3(0, y, 0), x_len, true))
+			y = y + dy
+			x_len = x_len - dx
+		}
+
+		return Variant(ret)
+	}
+
+	static create_jing_gan_columns(x, h)
+	{
+		var ret = []
+
+		var diam = 0.1 * 2
+
+		var offset_y = 0.1
+		var num = (h - offset_y) / diam
+		var dh = (h - offset_y) / num
+		for (var i in 0..num) {
+			ret.add(CompNodes.create_column_beam(Vector3(x, dh * i + offset_y, 0), FRAME_DIST, false))
+		}
+
+		return Variant(ret)
+	}
 }

@@ -71,8 +71,14 @@ class JiTuan is Node
 			return Variant(ret)
 		}
 
-		if (bf.style == STYLE_CHUAN_DOU) {
-			ret.add(CompNodes.create_column(bf, pos, this.tot_height))
+		if (bf.style == STYLE_CHUAN_DOU) 
+		{
+			var column = this.query_param("column").value
+			if (column) {
+				ret.add(CompNodes.create_column(bf, pos, this.tot_height))
+			} else {
+				ret.add(CompNodes.create_jing_gan_columns(next.tot_height, this.tot_height, 0, BEAM_DX * 2))
+			}
 			return Variant(ret)
 		}
 

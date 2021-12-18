@@ -4,7 +4,7 @@ import "blueprint.variant_proxy" for VariantProxy
 import "geograph.nodes.brush_instanced" for BrushInstanced
 import "geograph.nodes.brush_merge" for BrushMerge
 import "scenegraph.nodes.transform3d" for Transform3d
-import "beamgraph.constant" for BEAM_DX, FRAME_DIST, STYLE_TING_TANG
+import "beamgraph.constant" for BEAM_DX, FRAME_DIST, STYLE_TING_TANG, STYLE_CHUAN_DOU
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.nodes.multi_frames" for MultiFrames
 import "beamgraph.nodes.dou_gong" for DouGong
@@ -80,11 +80,15 @@ class BeamFrame
 			
 			this.copy_frames(geos, num, out_list)
 
-			for (var i in 0..num) 
+			// pan jian
+			if (this.style != STYLE_CHUAN_DOU)
 			{
-				if (Math.mod(i, 2) > 0) {
-					for (var node in sorted_nodes) {
-						out_list.add(node.resolve_pj_geo(this, FRAME_DIST * i))
+				for (var i in 0..num) 
+				{
+					if (Math.mod(i, 2) > 0) {
+						for (var node in sorted_nodes) {
+							out_list.add(node.resolve_pj_geo(this, FRAME_DIST * i))
+						}
 					}
 				}
 			}

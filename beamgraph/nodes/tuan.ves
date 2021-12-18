@@ -193,6 +193,19 @@ class Tuan is Node
 			ret.add(this.create_beam(bf, dist_r, pos_r, false))			
 		}
 
+		if (bf.style == STYLE_CHUAN_DOU and !l_column and !r_column) 
+		{
+			var next = Blueprint.get_output_node(this, "next")
+			if (next) {
+				ret.add(CompNodes.create_jing_gan_columns(next.tot_height, this.tot_height, this.deep * BEAM_DX * 2, next.deep * BEAM_DX * 2))
+			} else if (sides) {
+				ret.add(CompNodes.create_jing_gan_columns(0, this.tot_height, this.deep * BEAM_DX * 2, this.deep * BEAM_DX * 2))
+				ret.add(CompNodes.create_jing_gan_columns(this.deep * BEAM_DX, this.tot_height))
+				ret.add(CompNodes.create_jing_gan_columns(- this.deep * BEAM_DX, this.tot_height))
+				ret.add(CompNodes.create_jing_gan_columns(0, root.tot_height))				
+			}
+		}
+
 		if (CONTEXT.yuan) {
 			ret.add(this.create_yuan(bf))
 		}
