@@ -1,0 +1,63 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+node0.set_prop_value("ortho", false)
+
+node0.op_node.cam.position.set(0.87036747819994, 4.6672160259617, 12.175735444141)
+node0.op_node.cam.yaw = -93
+node0.op_node.cam.pitch = -11.8
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.21526837348938
+
+_editor.add_node(node0, -495.1, 3)
+
+var node1 = ::beamgraph::nodes::ji_tuan::JiTuan()
+node1.query_param("column").value = false
+
+_editor.add_node(node1, -177.08, -32.79)
+
+var node2 = ::beamgraph::nodes::tuan::Tuan()
+node2.query_param("l_column").value = false
+node2.query_param("r_column").value = false
+
+_editor.add_node(node2, -42.08, -40.79)
+
+var node3 = ::blueprint::nodes::commentary::Commentary()
+
+node3.set_size(878.24, 105.79)
+node3.title = "八架椽屋前后乳袱用两柱（佛光寺文殊殿）"
+
+_editor.add_node(node3, 159, 22)
+
+var node4 = ::beamgraph::nodes::tuan::Tuan()
+node4.query_param("l_column").value = true
+node4.query_param("r_column").value = true
+
+_editor.add_node(node4, 132.074, -42.121)
+
+var node5 = ::beamgraph::nodes::tuan::Tuan()
+node5.query_param("l_column").value = false
+node5.query_param("r_column").value = false
+
+_editor.add_node(node5, 274.074, -40.121)
+
+var node6 = ::beamgraph::nodes::tuan::Tuan()
+node6.query_param("l_column").value = true
+node6.query_param("r_column").value = true
+
+_editor.add_node(node6, 431.34647377735, -36.791192735702)
+
+var node7 = ::beamgraph::nodes::frame_style::FrameStyle()
+node7.query_param("style").value = "ting"
+
+_editor.add_node(node7, -95.227234472657, -169.39953027344)
+
+var node8 = ::beamgraph::nodes::del_column::DelColumn()
+node8.query_param("num").value = 2
+
+_editor.add_node(node8, 66, -162)
+
+Blueprint.connect(node1, "next", node2, "prev")
+Blueprint.connect(node2, "next", node4, "prev")
+Blueprint.connect(node4, "next", node5, "prev")
+Blueprint.connect(node5, "next", node6, "prev")

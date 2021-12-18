@@ -1,0 +1,70 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+node0.set_prop_value("ortho", false)
+
+node0.op_node.cam.position.set(-4.4276275445514, 5.432804540966, 11.437920346817)
+node0.op_node.cam.yaw = -71.2
+node0.op_node.cam.pitch = -7.3
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.21526837348938
+
+_editor.add_node(node0, -495.1, 3)
+
+var node1 = ::beamgraph::nodes::ji_tuan::JiTuan()
+node1.query_param("column").value = false
+
+_editor.add_node(node1, -177.08, -32.79)
+
+var node2 = ::beamgraph::nodes::tuan::Tuan()
+node2.query_param("l_column").value = false
+node2.query_param("r_column").value = false
+
+_editor.add_node(node2, -42.08, -40.79)
+
+var node3 = ::beamgraph::nodes::tuan::Tuan()
+node3.query_param("l_column").value = false
+node3.query_param("r_column").value = false
+
+_editor.add_node(node3, 88.92, -41.79)
+
+var node4 = ::blueprint::nodes::commentary::Commentary()
+
+node4.set_size(878.24, 105.79)
+node4.title = "十架椽屋前后三椽袱用四柱（严华寺大雄殿），262->343"
+
+_editor.add_node(node4, 159, 22)
+
+var node5 = ::beamgraph::nodes::tuan::Tuan()
+node5.query_param("l_column").value = true
+node5.query_param("r_column").value = true
+
+_editor.add_node(node5, 219.92, -40.79)
+
+var node6 = ::beamgraph::nodes::tuan::Tuan()
+node6.query_param("l_column").value = false
+node6.query_param("r_column").value = false
+
+_editor.add_node(node6, 361.92, -38.79)
+
+var node7 = ::beamgraph::nodes::tuan::Tuan()
+node7.query_param("l_column").value = true
+node7.query_param("r_column").value = true
+
+_editor.add_node(node7, 519.19247377735, -35.460192735702)
+
+var node8 = ::beamgraph::nodes::move_column::MoveColumn()
+node8.query_param("dist").value = 1
+
+_editor.add_node(node8, -116, -150)
+
+var node9 = ::beamgraph::nodes::frame_style::FrameStyle()
+node9.query_param("style").value = "dian"
+
+_editor.add_node(node9, -250.36610794067, -146.32148742676)
+
+Blueprint.connect(node1, "next", node2, "prev")
+Blueprint.connect(node2, "next", node3, "prev")
+Blueprint.connect(node3, "next", node5, "prev")
+Blueprint.connect(node5, "next", node6, "prev")
+Blueprint.connect(node6, "next", node7, "prev")
