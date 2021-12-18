@@ -4,7 +4,7 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "beamgraph.variant" for PIN_TYPE_TUAN
 import "beamgraph.tuan_helper" for TuanHelper
-import "beamgraph.constant" for BEAM_DX, FRAME_STYLE, STYLE_DIAN_TANG
+import "beamgraph.constant" for BEAM_DX, STYLE_DIAN_TANG
 import "beamgraph.comp_nodes" for CompNodes
 import "maths.vector" for Vector3
 
@@ -48,8 +48,8 @@ class SubTuan is Node
 
 	resolve_height(bf)
 	{
-		this.column_height = TuanHelper.calc_column_layer_height(this, bf.dg_steps)
-		this.middle_height = TuanHelper.calc_middle_layer_height(this, bf.dg_steps)
+		this.column_height = TuanHelper.calc_column_layer_height(bf, this)
+		this.middle_height = TuanHelper.calc_middle_layer_height(bf, this)
 		this.roof_height   = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 5
 
 		this.tot_height = this.column_height + this.middle_height + this.roof_height
@@ -76,7 +76,7 @@ class SubTuan is Node
 
 		var geos = [ l_e_fang, r_e_fang, l_tuo_jiao, r_tuo_jiao ]
 
-		if (FRAME_STYLE == STYLE_DIAN_TANG) {
+		if (bf.style == STYLE_DIAN_TANG) {
 			geos.add(CompNodes.create_nei_e_fang(Vector3(0, this.tot_height + fang_dh, 0), 0.27, BEAM_DX * this.deep * 2))
 		}
 

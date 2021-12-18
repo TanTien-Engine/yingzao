@@ -22,7 +22,7 @@ import "gonggraph.tools.vert_merge" for VertMerge
 import "gonggraph.tools_nodes" for ToolsNodes
 import "gonggraph.dou_gong" for DouGong
 import "beamgraph.variant" for PIN_TYPE_TUAN
-import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED, FRAME_STYLE, STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU
+import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED, STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU
 import "beamgraph.comp_nodes" for CompNodes
 import "beamgraph.context" for CONTEXT
 import "beamgraph.trans_nodes" for TransNodes
@@ -128,7 +128,7 @@ class Tuan is Node
 		else
 		{
 			var deep = this.deep
-			if (sides and FRAME_STYLE == STYLE_DIAN_TANG) {
+			if (sides and bf.style == STYLE_DIAN_TANG) {
 				deep = deep - 1
 			}
 			this.l_beam_h = BeamHelper.calc_beam_height(this.calc_left_beam_dist(bf, -deep))
@@ -149,7 +149,7 @@ class Tuan is Node
 		var root = this.get_root_tuan()
 		var sides = this.is_curr_sides()
 		import "beamgraph.nodes.ji_tuan" for JiTuan
-		if ((FRAME_STYLE == STYLE_DIAN_TANG and (root is JiTuan or bf.dg_steps > 5)) or !sides) {
+		if ((bf.style == STYLE_DIAN_TANG and (root is JiTuan or bf.dg_steps > 5)) or !sides) {
 			ret.add(CompNodes.create_tuan(pos_l))
 			ret.add(CompNodes.create_tuan(pos_r))
 		}
@@ -169,7 +169,7 @@ class Tuan is Node
 			}
 		}
 		var dist_l = this.calc_left_beam_dist(bf, -this.deep)
-		ret.add(this.create_beam(dist_l, pos_l, true, bf.dg_steps))
+		ret.add(this.create_beam(bf, dist_l, pos_l, true))
 
 		var r_column = this.query_param("r_column").value
 		if (r_column) {
@@ -188,14 +188,14 @@ class Tuan is Node
 		}
 		var dist_r = this.calc_right_beam_dist(bf, this.deep)
 		if (dist_r != this.deep * 2) {
-			ret.add(this.create_beam(dist_r, pos_r, false, bf.dg_steps))			
+			ret.add(this.create_beam(bf, dist_r, pos_r, false))			
 		}
 
 		if (CONTEXT.yuan) {
 			ret.add(this.create_yuan(bf))
 		}
 
-		if (FRAME_STYLE == STYLE_TING_TANG and !bf.shun_fu_chuan) {
+		if (bf.style == STYLE_TING_TANG and !bf.shun_fu_chuan) {
 			var chuan = this.create_shun_fu_chuan(bf)
 			if (chuan) {
 				ret.add(chuan)
@@ -203,7 +203,7 @@ class Tuan is Node
 			}
 		}
 
-		if (sides and FRAME_STYLE == STYLE_DIAN_TANG) 
+		if (sides and bf.style == STYLE_DIAN_TANG) 
 		{
 			if (root is JiTuan)
 			{
@@ -309,7 +309,7 @@ class Tuan is Node
 		}
 	}
 
-	calc_beam_y_offset(dg_steps)
+	calc_beam_y_offset(bf)
 	{
 		var dy = 0
 		if (this.is_curr_sides()) 
@@ -319,11 +319,11 @@ class Tuan is Node
 
 			// double beam
 			import "beamgraph.nodes.ji_tuan" for JiTuan
-			if (FRAME_STYLE == STYLE_DIAN_TANG and (root is JiTuan or dg_steps > 5)) 
+			if (bf.style == STYLE_DIAN_TANG and (root is JiTuan or bf.dg_steps > 5)) 
 			{
 				var layers = 0
 
-				var steps = TuanHelper.calc_steps(this.get_root_tuan(), dg_steps)
+				var steps = TuanHelper.calc_steps(bf, this.get_root_tuan())
 				if (steps == 5 or steps == 6) {
 					layers = 4
 				} else {
@@ -340,12 +340,12 @@ class Tuan is Node
 		return dy
 	}
 
-	calc_dg_height()
+	calc_dg_height(bf)
 	{
 		var h_gong = 0
 
 		var sides = this.is_curr_sides()
-		if (FRAME_STYLE == STYLE_TING_TANG)
+		if (bf.style == STYLE_TING_TANG)
 		{
 			if (sides) {
 				h_gong = this.get_root_tuan().middle_height
@@ -353,7 +353,7 @@ class Tuan is Node
 				h_gong = this.calc_3s_gong_height(true)
 			}
 		}
-		else if (FRAME_STYLE == STYLE_DIAN_TANG)
+		else if (bf.style == STYLE_DIAN_TANG)
 		{
 			if (sides) {
 				h_gong = this.get_root_tuan().middle_height			
@@ -369,12 +369,12 @@ class Tuan is Node
 	{
 		var ret = []
 
-		var h_gong = this.calc_dg_height()
+		var h_gong = this.calc_dg_height(bf)
 		var y = pos.y - h_gong
 
 		var x = pos.x
 		// move column
-		if (bf.move_column > 0 and FRAME_STYLE == STYLE_DIAN_TANG and !this.is_curr_sides()) 
+		if (bf.move_column > 0 and bf.style == STYLE_DIAN_TANG and !this.is_curr_sides()) 
 		{
 			ret.add(this.create_tuo_feng(bf, pos))
 
@@ -388,7 +388,7 @@ class Tuan is Node
 
 		var p = Vector3(x, y, pos.z)
 
-		var column = CompNodes.create_column(p, this.tot_height - h_gong)
+		var column = CompNodes.create_column(bf, p, this.tot_height - h_gong)
 		ret.add(column)
 
 		if (CONTEXT.vert_conn) {
@@ -441,7 +441,7 @@ class Tuan is Node
 		return dist
 	}
 
-	create_beam(dist, pos, left, dg_steps)
+	create_beam(bf, dist, pos, left)
 	{
 		var h = 0
 		if (left) {
@@ -450,7 +450,7 @@ class Tuan is Node
 			h = this.r_beam_h
 		}
 
-		var y = pos.y + this.calc_beam_y_offset(dg_steps)
+		var y = pos.y + this.calc_beam_y_offset(bf)
 
 		var len = dist * BEAM_DX + BEAM_HEAD_LEN * 2
 		if (dist == dist * 2) {
@@ -477,14 +477,14 @@ class Tuan is Node
 
 		if (next is SubTuan) 
 		{
-			var h_gong = this.calc_dg_height()
+			var h_gong = this.calc_dg_height(bf)
 			var p = Vector3(pos.x, pos.y - h_gong, pos.z)
 			return CompNodes.create_column(p, p.y - next.column_height - h_gong + 0.21 * 3, 0.36, false)
 		}
 
-		var top = this.tot_height + this.calc_beam_y_offset(bf.dg_steps) - 0.06
+		var top = this.tot_height + this.calc_beam_y_offset(bf) - 0.06
 
-		var btm = next.tot_height + next.calc_beam_y_offset(bf.dg_steps)
+		var btm = next.tot_height + next.calc_beam_y_offset(bf)
 		if (pos.x < 0) {
 			btm = btm + next.l_beam_h
 		} else {
@@ -495,11 +495,11 @@ class Tuan is Node
 			return nil
 		}
 
-		if (FRAME_STYLE == STYLE_TING_TANG)	
+		if (bf.style == STYLE_TING_TANG)	
 		{
 			return CompNodes.create_tuo_feng(Vector3(pos.x, btm, pos.z), top - btm)
 		} 
-		else if (FRAME_STYLE == STYLE_DIAN_TANG) 
+		else if (bf.style == STYLE_DIAN_TANG) 
 		{
 			var w = 0.15
 			var h = top - btm
@@ -538,11 +538,11 @@ class Tuan is Node
 
 	create_dou_gong(bf, pos, rot)
 	{
-		if (FRAME_STYLE == STYLE_TING_TANG) 
+		if (bf.style == STYLE_TING_TANG) 
 		{
 			return this.create_4s_dg(pos, rot)
 		} 
-		else if (FRAME_STYLE == STYLE_DIAN_TANG) 
+		else if (bf.style == STYLE_DIAN_TANG) 
 		{
 //			var upper = this.create_3s_dg(pos, true)
 			
@@ -724,7 +724,7 @@ class Tuan is Node
 
 		var top = pos.y - 0.05
 
-		var btm = next.tot_height + next.calc_beam_y_offset(bf.dg_steps)
+		var btm = next.tot_height + next.calc_beam_y_offset(bf)
 		if (pos.x < 0) {
 			btm = btm + next.l_beam_h
 		} else {
@@ -732,7 +732,7 @@ class Tuan is Node
 		}
 
 		var dx = 0.3
-		if (FRAME_STYLE == STYLE_DIAN_TANG) {
+		if (bf.style == STYLE_DIAN_TANG) {
 			dx = 0.5
 		} 
 
@@ -832,20 +832,20 @@ class Tuan is Node
 		return CompNodes.create_shun_fu_chuan(Vector3(-len * 0.5, next_cc.tot_height - next_beam_h, 0), len)
 	}
 
-	create_inner_ping_border(ret, x, dg_steps)
+	create_inner_ping_border(bf, ret, x)
 	{
 		var sz_z = FRAME_DIST
 
-		var y = this.tot_height + this.calc_beam_y_offset(dg_steps) - 0.21
+		var y = this.tot_height + this.calc_beam_y_offset(bf.steps) - 0.21
 
 		var y_len = 0.21
-		if (dg_steps < 7) 
+		if (bf.steps < 7) 
 		{
 			var x_len = 0.28
 			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), x_len, y_len, sz_z, false))
 			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), x_len, y_len, sz_z, true))
 		}
-		else if (dg_steps == 7)
+		else if (bf.steps == 7)
 		{
 			var x_len = 0.28
 			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 2, 0), x_len, y_len, sz_z, false))
@@ -854,7 +854,7 @@ class Tuan is Node
 			ret.add(CompNodes.create_ping_border(Vector3(x + 0.28, y - 0.21, 0), x_len, y_len, sz_z, false))
 			ret.add(CompNodes.create_ping_border(Vector3(x - 0.28, y - 0.21, 0), x_len, y_len, sz_z, true))			
 		}
-		else if (dg_steps == 8)
+		else if (bf.steps == 8)
 		{
 			var x_len = 0.28
 			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 3, 0), x_len, y_len, sz_z, false))
@@ -872,7 +872,7 @@ class Tuan is Node
 		var ret = []
 
 		var x = -BEAM_DX * this.deep
-		var y = this.tot_height + this.calc_beam_y_offset(bf.dg_steps) - 0.21
+		var y = this.tot_height + this.calc_beam_y_offset(bf) - 0.21
 
 		var sz_x = BEAM_DX * this.deep * 2
 		var sz_z = FRAME_DIST
@@ -895,7 +895,7 @@ class Tuan is Node
 			ret.add(CompNodes.create_ping(Vector3( x + step_len, y, 0), sz_x * 0.5 - step_len * 2, sz_z))
 			ret.add(CompNodes.create_ping(Vector3(cx + step_len, y, 0), sz_x * 0.5 - step_len * 2, sz_z))
 
-			this.create_inner_ping_border(ret, cx, bf.dg_steps)
+			this.create_inner_ping_border(bf, ret, cx)
 		}
 		else if (bf.cao == "single")
 		{
@@ -904,7 +904,7 @@ class Tuan is Node
 			ret.add(CompNodes.create_ping(Vector3( x + step_len, y, 0), sz_x / 3 - step_len * 2, sz_z))
 			ret.add(CompNodes.create_ping(Vector3(cx + step_len, y, 0), sz_x * 2 / 3 - step_len * 2, sz_z))
 
-			this.create_inner_ping_border(ret, cx, bf.dg_steps)
+			this.create_inner_ping_border(bf, ret, cx)
 		}
 		else if (bf.cao == "double")
 		{
@@ -915,8 +915,8 @@ class Tuan is Node
 			ret.add(CompNodes.create_ping(Vector3(cx_0 + step_len, y, 0), sz_x * 0.5  - step_len * 2, sz_z))
 			ret.add(CompNodes.create_ping(Vector3(cx_1 + step_len, y, 0), sz_x * 0.25 - step_len * 2, sz_z))
 
-			this.create_inner_ping_border(ret, cx_0, bf.dg_steps)
-			this.create_inner_ping_border(ret, cx_1, bf.dg_steps)
+			this.create_inner_ping_border(bf, ret, cx_0)
+			this.create_inner_ping_border(bf, ret, cx_1)
 		}
 
 		var y_len = 0.21

@@ -73,7 +73,7 @@ class AddColumn is Node
 			var x = - bf.root.max_deep * BEAM_DX / 3
 			var p = Vector3(x, y, 0)
 
-			column = CompNodes.create_column(p, h)
+			column = CompNodes.create_column(bf, p, h)
 			dou_gong = TransNodes.translate(VariantProxy(v_gong), p)
 			e_fang = CompNodes.create_lan_e_fang(p)
 		}
@@ -83,8 +83,8 @@ class AddColumn is Node
 			var p0 = Vector3(-x, y, 0)
 			var p1 = Vector3( x, y, 0)
 
-			var l_col = CompNodes.create_column(p0, h)
-			var r_col = CompNodes.create_column(p1, h)
+			var l_col = CompNodes.create_column(bf, p0, h)
+			var r_col = CompNodes.create_column(bf, p1, h)
 			column = Variant([ l_col, r_col ])
 
 			var l_dg = TransNodes.translate(VariantProxy(v_gong), p0)
@@ -97,7 +97,7 @@ class AddColumn is Node
 		{
 			var p = Vector3(0, y, 0)
 
-			column = CompNodes.create_column(p, h)
+			column = CompNodes.create_column(bf, p, h)
 			dou_gong = TransNodes.translate(VariantProxy(v_gong), p)
 			e_fang = CompNodes.create_lan_e_fang(p)
 		}

@@ -1,0 +1,21 @@
+import "blueprint.node" for Node
+import "blueprint.node_param" for NodeParam
+import "beamgraph.context" for CONTEXT
+import "beamgraph.constant" for STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU
+
+class FrameStyle is Node
+{
+	init()
+	{
+		super.init()
+
+		this.params.add(NodeParam("style", STYLE_TING_TANG, { "combo" : [ STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU ] }))
+
+		this.layout()
+	}
+
+	on_node_dirty()
+	{		
+		CONTEXT.prop_changed = true
+	}
+}
