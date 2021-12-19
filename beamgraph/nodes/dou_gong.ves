@@ -8,7 +8,7 @@ class DouGong is Node
 	{
 		super.init()
 
-		this.params.add(NodeParam("steps", 0, { "integer" : true, "min" : 4, "max" : 8 }))
+		this.params.add(NodeParam("steps", 0, { "integer" : true, "min" : 5, "max" : 8 }))
 
 		this.layout()
 	}
@@ -17,4 +17,9 @@ class DouGong is Node
 	{		
 		CONTEXT.prop_changed = true
 	}
+
+	get_title()
+	{
+		return "铺作"
+	}	
 }

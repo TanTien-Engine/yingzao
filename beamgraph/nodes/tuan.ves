@@ -865,16 +865,16 @@ class Tuan is Node
 	{
 		var sz_z = FRAME_DIST
 
-		var y = this.tot_height + this.calc_beam_y_offset(bf.steps) - 0.21
+		var y = this.tot_height + this.calc_beam_y_offset(bf) - 0.21
 
 		var y_len = 0.21
-		if (bf.steps < 7) 
+		if (bf.dg_steps < 7) 
 		{
 			var x_len = 0.28
 			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), x_len, y_len, sz_z, false))
 			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21, 0), x_len, y_len, sz_z, true))
 		}
-		else if (bf.steps == 7)
+		else if (bf.dg_steps == 7)
 		{
 			var x_len = 0.28
 			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 2, 0), x_len, y_len, sz_z, false))
@@ -883,7 +883,7 @@ class Tuan is Node
 			ret.add(CompNodes.create_ping_border(Vector3(x + 0.28, y - 0.21, 0), x_len, y_len, sz_z, false))
 			ret.add(CompNodes.create_ping_border(Vector3(x - 0.28, y - 0.21, 0), x_len, y_len, sz_z, true))			
 		}
-		else if (bf.steps == 8)
+		else if (bf.dg_steps == 8)
 		{
 			var x_len = 0.28
 			ret.add(CompNodes.create_ping_border(Vector3(x, y - 0.21 * 3, 0), x_len, y_len, sz_z, false))

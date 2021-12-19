@@ -48,7 +48,7 @@ class TuanHelper
 		if (bf.style == STYLE_DIAN_TANG) 
 		{
 			import "beamgraph.nodes.sub_tuan" for SubTuan
-			if (root is SubTuan and dg_steps == 5) {
+			if (root is SubTuan and bf.dg_steps == 5) {
 				dh = 0.15
 			} else {
 				dh = 0.3			
@@ -91,8 +91,8 @@ class TuanHelper
 
 		if (bf.style == STYLE_DIAN_TANG) 
 		{
-			var h_dg = GongHelper.calc_dou_gong_height(dg_steps - 1)
-			if (dg_steps == 5) {
+			var h_dg = GongHelper.calc_dou_gong_height(bf.dg_steps - 1)
+			if (bf.dg_steps == 5) {
 				h_dg = h_dg + 0.15
 			} else {
 				h_dg = h_dg + 0.5

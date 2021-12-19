@@ -17,7 +17,7 @@ class AddColumn is Node
 	{
 		super.init()
 
-		this.params.add(NodeParam("type", "center", { "combo" : [ "single", "double", "center" ] }))
+		this.params.add(NodeParam("type", "none", { "combo" : [ "none", "single", "double", "center" ] }))
 
 		this.layout()
 	}
@@ -29,7 +29,6 @@ class AddColumn is Node
 
 	resolve_deep(bf)
 	{
-		bf.cao = this.query_param("type").value
 	}
 
 	resolve_height(bf)

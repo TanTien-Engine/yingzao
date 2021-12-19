@@ -8,6 +8,7 @@ import "beamgraph.constant" for BEAM_DX, FRAME_DIST, STYLE_TING_TANG, STYLE_CHUA
 import "beamgraph.trans_nodes" for TransNodes
 import "beamgraph.nodes.multi_frames" for MultiFrames
 import "beamgraph.nodes.dou_gong" for DouGong
+import "beamgraph.nodes.add_column" for AddColumn
 import "beamgraph.nodes.move_column" for MoveColumn
 import "beamgraph.nodes.del_column" for DelColumn
 import "beamgraph.nodes.frame_style" for FrameStyle
@@ -103,6 +104,7 @@ class BeamFrame
 
 	prepare(scene)
 	{
+		this.cao = nil
 		this.frames_num = 0
 		this.dg_steps   = 6
 		this.move_column = 0
@@ -112,7 +114,9 @@ class BeamFrame
 		for (var node in scene.nodes) 
 		{
 			var bp_node = node.components["bp"]
-			if (bp_node is MultiFrames) {
+			if (bp_node is AddColumn) {
+				this.cao = bp_node.query_param("type").value
+			} else if (bp_node is MultiFrames) {
 				this.frames_num = bp_node.query_param("num").value
 			} else if (bp_node is DouGong) {
 				this.dg_steps = bp_node.query_param("steps").value

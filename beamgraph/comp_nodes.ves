@@ -284,9 +284,12 @@ class CompNodes
 
 	static create_ping(pos, x_len, z_len)
 	{
-		var dist = 0.8
+//		var dist = 0.8
+//		var w = 0.04
+
+		var dist = 0.2
 		var h = 0.05
-		var w = 0.04
+		var w = 0.02
 
 		if (!CONTEXT.ping_simple) {
 			pos.y = pos.y + h		
@@ -329,14 +332,14 @@ class CompNodes
 
 		var h_panel = 0.02
 		var v_panel = CompNodes.create_box(Vector3(0, 0, 0), Vector3(x_len, h_panel, z_len))
-		if (!this.ping_simple) {
+		if (!CONTEXT.ping_simple) {
 			v_panel = TransNodes.translate(VariantProxy(v_panel), Vector3(0, h + h_panel, 0))
 		}
 		geos.add(v_panel)
 
 		if (!CONTEXT.ping_simple)
 		{
-			var dist = 0.1
+			var dist = 0.2
 			var p = Vector3(0, 0, - z_len * 0.5)
 			for (var z = 0; z < z_len; z = z + dist) {
 				geos.add(CompNodes.create_box(p, Vector3(x_len, 0.05, h)))
