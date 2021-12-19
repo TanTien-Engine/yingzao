@@ -2,9 +2,9 @@ var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
 node0.set_prop_value("ortho", false)
 
-node0.op_node.cam.position.set(-4.041268874059, 4.1377640978452, 9.5319359878461)
-node0.op_node.cam.yaw = -69.1
-node0.op_node.cam.pitch = 4.7
+node0.op_node.cam.position.set(-4.5917956924093, 3.6819526814693, 10.591196927571)
+node0.op_node.cam.yaw = -69
+node0.op_node.cam.pitch = 0.8
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.21526837348938
@@ -56,6 +56,11 @@ var node8 = ::beamgraph::nodes::dou_gong::DouGong()
 node8.query_param("steps").value = 6
 
 _editor.add_node(node8, 2.7497953568746, -172.0238731405)
+
+var node9 = ::beamgraph::nodes::frame_style::FrameStyle()
+node9.query_param("style").value = "dian"
+
+_editor.add_node(node9, -260, -171)
 
 Blueprint.connect(node1, "next", node2, "prev")
 Blueprint.connect(node2, "next", node3, "prev")

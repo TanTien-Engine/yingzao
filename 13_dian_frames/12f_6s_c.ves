@@ -67,7 +67,12 @@ _editor.add_node(node9, 552.21027948049, -40.770290658494)
 var node10 = ::beamgraph::nodes::dou_gong::DouGong()
 node10.query_param("steps").value = 6
 
-_editor.add_node(node10, -72.144515991211, -171.93984985352)
+_editor.add_node(node10, -88.144515991211, -174.93984985352)
+
+var node11 = ::beamgraph::nodes::frame_style::FrameStyle()
+node11.query_param("style").value = "dian"
+
+_editor.add_node(node11, -362.90818786621, -173.72427368164)
 
 Blueprint.connect(node1, "next", node2, "prev")
 Blueprint.connect(node2, "next", node3, "prev")

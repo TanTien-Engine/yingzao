@@ -2,9 +2,9 @@ var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
 node0.set_prop_value("ortho", false)
 
-node0.op_node.cam.position.set(-4.4372698268679, 5.1619472940308, 10.752187923965)
-node0.op_node.cam.yaw = -75.2
-node0.op_node.cam.pitch = -0.60000000000001
+node0.op_node.cam.position.set(-4.6482986278232, 5.9111615505135, 11.189989395169)
+node0.op_node.cam.yaw = -71.8
+node0.op_node.cam.pitch = -5.2
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.21526837348938
@@ -50,12 +50,12 @@ _editor.add_node(node6, 229.95982, -35.16847)
 var node7 = ::beamgraph::nodes::add_column::AddColumn()
 node7.query_param("type").value = "single"
 
-_editor.add_node(node7, -128, -171)
+_editor.add_node(node7, 26.88, -173.42)
 
 var node8 = ::beamgraph::nodes::dou_gong::DouGong()
 node8.query_param("steps").value = 5
 
-_editor.add_node(node8, 2.7497953568746, -172.0238731405)
+_editor.add_node(node8, -124.30020464313, -173.2338731405)
 
 var node9 = ::beamgraph::nodes::sub_tuan::SubTuan()
 
@@ -72,6 +72,11 @@ node11.query_param("l_column").value = true
 node11.query_param("r_column").value = true
 
 _editor.add_node(node11, 653.48820538269, -33.054269707033)
+
+var node12 = ::beamgraph::nodes::frame_style::FrameStyle()
+node12.query_param("style").value = "dian"
+
+_editor.add_node(node12, -256.58, -172.82)
 
 Blueprint.connect(node1, "next", node2, "prev")
 Blueprint.connect(node2, "next", node3, "prev")

@@ -2,55 +2,55 @@ var node0 = ::blueprint::nodes::subgraph::Subgraph()
 node0.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
 node0.set_prop_value("ortho", false)
 
-node0.op_node.cam.position.set(-7.7422192141988, 6.9782979524057, 8.7890306452293)
-node0.op_node.cam.yaw = -54.5
-node0.op_node.cam.pitch = -17.2
+node0.op_node.cam.position.set(-4.5875733782165, 3.5666630481079, 10.387160742124)
+node0.op_node.cam.yaw = -67
+node0.op_node.cam.pitch = -2.7
 node0.op_node.cam.zoom = 45
 node0.op_node.cam.update_vectors()
 node0.op_node.speed = 0.21526837348938
 
-_editor.add_node(node0, -495.1, 3)
+_editor.add_node(node0, -496.1, 3)
 
 var node1 = ::beamgraph::nodes::ji_tuan::JiTuan()
-node1.query_param("column").value = false
+node1.query_param("column").value = true
 
 _editor.add_node(node1, -187.08, -30.79)
 
 var node2 = ::beamgraph::nodes::tuan::Tuan()
-node2.query_param("l_column").value = false
-node2.query_param("r_column").value = false
+node2.query_param("l_column").value = true
+node2.query_param("r_column").value = true
 
 _editor.add_node(node2, -36.08, -39.79)
 
 var node3 = ::blueprint::nodes::commentary::Commentary()
 
 node3.set_size(878.24, 105.79)
-node3.title = "八架椽穿斗"
+node3.title = "八架椽井干"
 
 _editor.add_node(node3, 159, 22)
 
 var node4 = ::beamgraph::nodes::tuan::Tuan()
-node4.query_param("l_column").value = false
-node4.query_param("r_column").value = false
+node4.query_param("l_column").value = true
+node4.query_param("r_column").value = true
 
 _editor.add_node(node4, 108.074, -40.121)
 
 var node5 = ::beamgraph::nodes::tuan::Tuan()
-node5.query_param("l_column").value = false
-node5.query_param("r_column").value = false
+node5.query_param("l_column").value = true
+node5.query_param("r_column").value = true
 
 _editor.add_node(node5, 264.074, -39.121)
 
 var node6 = ::beamgraph::nodes::tuan::Tuan()
-node6.query_param("l_column").value = false
-node6.query_param("r_column").value = false
+node6.query_param("l_column").value = true
+node6.query_param("r_column").value = true
 
 _editor.add_node(node6, 410.54647377735, -38.391192735702)
 
 var node7 = ::beamgraph::nodes::frame_style::FrameStyle()
 node7.query_param("style").value = "chuan"
 
-_editor.add_node(node7, -95.227234472657, -169.39953027344)
+_editor.add_node(node7, -196.13632538175, 77.873196999287)
 
 Blueprint.connect(node1, "next", node2, "prev")
 Blueprint.connect(node2, "next", node4, "prev")

@@ -79,6 +79,11 @@ node12.query_param("steps").value = 7
 
 _editor.add_node(node12, -31.804696327399, -100.15939204949)
 
+var node13 = ::beamgraph::nodes::frame_style::FrameStyle()
+node13.query_param("style").value = "dian"
+
+_editor.add_node(node13, -300, -102)
+
 Blueprint.connect(node1, "next", node2, "prev")
 Blueprint.connect(node2, "next", node3, "prev")
 Blueprint.connect(node3, "next", node5, "prev")
