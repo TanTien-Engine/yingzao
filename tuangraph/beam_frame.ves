@@ -1,19 +1,21 @@
 import "blueprint.blueprint" for Blueprint
 import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
+//import "blueprint.nodes.list_flatten" for ListFlatten
 import "geograph.nodes.brush_instanced" for BrushInstanced
 import "geograph.nodes.brush_merge" for BrushMerge
 import "scenegraph.nodes.transform3d" for Transform3d
-import "beamgraph.constant" for BEAM_DX, FRAME_DIST, STYLE_TING_TANG, STYLE_CHUAN_DOU
-import "beamgraph.trans_nodes" for TransNodes
-import "beamgraph.nodes.multi_frames" for MultiFrames
-import "beamgraph.nodes.dou_gong" for DouGong
-import "beamgraph.nodes.add_column" for AddColumn
-import "beamgraph.nodes.move_column" for MoveColumn
-import "beamgraph.nodes.del_column" for DelColumn
-import "beamgraph.nodes.frame_style" for FrameStyle
+import "tuangraph.constant" for BEAM_DX, FRAME_DIST, STYLE_TING_TANG, STYLE_CHUAN_DOU
+import "tuangraph.trans_nodes" for TransNodes
+import "tuangraph.nodes.multi_frames" for MultiFrames
+import "tuangraph.nodes.dou_gong" for DouGong
+import "tuangraph.nodes.add_column" for AddColumn
+import "tuangraph.nodes.move_column" for MoveColumn
+import "tuangraph.nodes.del_column" for DelColumn
+import "tuangraph.nodes.frame_style" for FrameStyle
 import "maths.vector" for Vector3
 import "math" for Math
+//import "editor.node_cache" for NODE_CACHE
 
 class BeamFrame
 {
@@ -38,7 +40,7 @@ class BeamFrame
 
 	rebuild(scene, out_list)
 	{
-		import "beamgraph.nodes.ji_tuan" for JiTuan
+		import "tuangraph.nodes.ji_tuan" for JiTuan
 
 		this.prepare(scene)
 
@@ -75,9 +77,11 @@ class BeamFrame
 		}
 
 		// multi frames
+//		if (true or this.frames_num > 0)
 		if (this.frames_num > 0)
 		{
 			var num = this.frames_num
+			//var num = 3
 			
 			this.copy_frames(geos, num, out_list)
 
@@ -132,11 +136,29 @@ class BeamFrame
 
 	copy_frames(frame_geos, num, dst)
 	{
-		var MERGE = BrushMerge()
-		Blueprint.connect(VariantProxy(Variant(frame_geos)), "out", MERGE, "list")		
+		var MATERIAL = false
 
 		var B_INST = BrushInstanced()
-		Blueprint.connect(MERGE, "brush", B_INST, "brush")
+		if (MATERIAL)
+		{
+//			var FLATTEN = ListFlatten()
+//			Blueprint.connect(VariantProxy(Variant(frame_geos)), "out", FLATTEN, "list")
+
+//			var SET_MATERIAL = NODE_CACHE.fetch("../yingzao/99_tools/set_vertex_material.ves", nil)
+//			Blueprint.connect(FLATTEN, "list", SET_MATERIAL, "geo")
+
+//			var MERGE = BrushMerge()
+//			Blueprint.connect(SET_MATERIAL, "geo", MERGE, "list")
+
+			Blueprint.connect(VariantProxy(Variant(frame_geos)), "out", B_INST, "brush")
+		}
+		else
+		{
+			var MERGE = BrushMerge()
+			Blueprint.connect(VariantProxy(Variant(frame_geos)), "out", MERGE, "list")
+
+			Blueprint.connect(MERGE, "brush", B_INST, "brush")
+		}
 
 		var mats = []
 		var TRANS = Transform3d()

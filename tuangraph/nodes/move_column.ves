@@ -1,14 +1,14 @@
 import "blueprint.node" for Node
 import "blueprint.node_param" for NodeParam
-import "beamgraph.context" for CONTEXT
+import "tuangraph.context" for CONTEXT
 
-class DelColumn is Node
+class MoveColumn is Node
 {
 	init()
 	{
 		super.init()
 
-		this.params.add(NodeParam("num", 0, { "integer" : true, "min" : 0, "max" : 2 }))
+		this.params.add(NodeParam("dist", 0, { "integer" : true, "min" : 0, "max" : 2 }))
 
 		this.layout()
 	}
@@ -20,6 +20,6 @@ class DelColumn is Node
 
 	get_title()
 	{
-		return "减柱"
+		return "移柱"
 	}
 }

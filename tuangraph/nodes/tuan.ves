@@ -21,14 +21,14 @@ import "gonggraph.tools.hori_merge" for HoriMerge
 import "gonggraph.tools.vert_merge" for VertMerge
 import "gonggraph.tools_nodes" for ToolsNodes
 import "gonggraph.dou_gong" for DouGong
-import "beamgraph.variant" for PIN_TYPE_TUAN
-import "beamgraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED, STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU
-import "beamgraph.comp_nodes" for CompNodes
-import "beamgraph.context" for CONTEXT
-import "beamgraph.trans_nodes" for TransNodes
-import "beamgraph.gong_helper" for GongHelper
-import "beamgraph.beam_helper" for BeamHelper
-import "beamgraph.tuan_helper" for TuanHelper
+import "tuangraph.variant" for PIN_TYPE_TUAN
+import "tuangraph.constant" for BEAM_DX, BEAM_HEAD_LEN, FRAME_DIST, YUAN_INSTANCED, STYLE_TING_TANG, STYLE_DIAN_TANG, STYLE_CHUAN_DOU
+import "tuangraph.comp_nodes" for CompNodes
+import "tuangraph.context" for CONTEXT
+import "tuangraph.trans_nodes" for TransNodes
+import "tuangraph.gong_helper" for GongHelper
+import "tuangraph.beam_helper" for BeamHelper
+import "tuangraph.tuan_helper" for TuanHelper
 import "maths.vector" for Vector3
 import "math" for Math
 import "maths" for Matrix44
@@ -87,7 +87,7 @@ class Tuan is Node
 
 	resolve_height(bf)
 	{
-		import "beamgraph.nodes.sub_tuan" for SubTuan
+		import "tuangraph.nodes.sub_tuan" for SubTuan
 
 		this.roof_height = 0
 		this.base_height = 0
@@ -148,7 +148,7 @@ class Tuan is Node
 
 		var root = this.get_root_tuan()
 		var sides = this.is_curr_sides()
-		import "beamgraph.nodes.ji_tuan" for JiTuan
+		import "tuangraph.nodes.ji_tuan" for JiTuan
 		if ((bf.style == STYLE_DIAN_TANG and (root is JiTuan or bf.dg_steps > 5)) or !sides or bf.style == STYLE_CHUAN_DOU) {
 			ret.add(CompNodes.create_tuan(pos_l))
 			ret.add(CompNodes.create_tuan(pos_r))
@@ -338,7 +338,7 @@ class Tuan is Node
 			dy = - root.middle_height + 0.12 + 0.21
 
 			// double beam
-			import "beamgraph.nodes.ji_tuan" for JiTuan
+			import "tuangraph.nodes.ji_tuan" for JiTuan
 			if (bf.style == STYLE_DIAN_TANG and (root is JiTuan or bf.dg_steps > 5)) 
 			{
 				var layers = 0
@@ -495,7 +495,7 @@ class Tuan is Node
 	create_tuo_feng(bf, pos)
 	{
 		var next = Blueprint.get_output_node(this, "next")
-		import "beamgraph.nodes.sub_tuan" for SubTuan
+		import "tuangraph.nodes.sub_tuan" for SubTuan
 		if (!next) {
 			return nil
 		}
@@ -585,7 +585,7 @@ class Tuan is Node
 
 	create_dian_dg(bf, pos, rot)
 	{		
-		import "beamgraph.nodes.sub_tuan" for SubTuan
+		import "tuangraph.nodes.sub_tuan" for SubTuan
 		var root = this.get_root_tuan()
 		var sub = root is SubTuan
 
@@ -1006,7 +1006,7 @@ class Tuan is Node
 
 	find_next_cc()
 	{
-		import "beamgraph.nodes.sub_tuan" for SubTuan
+		import "tuangraph.nodes.sub_tuan" for SubTuan
 
 		var curr = this
 		while (curr) 
@@ -1029,7 +1029,7 @@ class Tuan is Node
 
 	is_tuan_sides(tuan)
 	{
-		import "beamgraph.nodes.sub_tuan" for SubTuan
+		import "tuangraph.nodes.sub_tuan" for SubTuan
 
 		var next = Blueprint.get_output_node(tuan, "next")
 		return !next or next is SubTuan
@@ -1052,8 +1052,8 @@ class Tuan is Node
 
 	get_root_tuan()
 	{
-		import "beamgraph.nodes.ji_tuan" for JiTuan
-		import "beamgraph.nodes.sub_tuan" for SubTuan
+		import "tuangraph.nodes.ji_tuan" for JiTuan
+		import "tuangraph.nodes.sub_tuan" for SubTuan
 
 		var prev = Blueprint.get_input_node(this, "prev")
 		while (prev) {

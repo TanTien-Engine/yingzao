@@ -3,14 +3,14 @@ import "blueprint.variant" for Variant
 import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.nodes.array" for Array
 import "blueprint.nodes.subgraph" for Subgraph
-import "beamgraph.context" for CONTEXT
-import "beamgraph.constant" for FRAME_DIST
+import "tuangraph.context" for CONTEXT
+import "tuangraph.constant" for FRAME_DIST
 import "editor.editor" for Editor
 import "editor.node_cache" for NODE_CACHE
 
 var RENDER_NODE_FILENAME = "9_edit_draw.ves"
 
-class Beameditor is Editor
+class Tuaneditor is Editor
 {
 	load()
 	{
@@ -20,7 +20,7 @@ class Beameditor is Editor
 
 		this.all_geos = Array()
 
-		import "beamgraph.beam_frame" for BeamFrame
+		import "tuangraph.beam_frame" for BeamFrame
 
 		this.bf = BeamFrame()
 
@@ -32,8 +32,8 @@ class Beameditor is Editor
 	{
 		this.clear_popup_nodes()
 
-		import "beamnodes" for BEAM_NODES
-		for (var node in BEAM_NODES) {
+		import "tuannodes" for TUAN_NODES
+		for (var node in TUAN_NODES) {
 			super.add_popup_node(node)
 		}
 

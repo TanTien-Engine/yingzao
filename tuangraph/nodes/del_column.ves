@@ -1,25 +1,25 @@
 import "blueprint.node" for Node
 import "blueprint.node_param" for NodeParam
-import "beamgraph.context" for CONTEXT
+import "tuangraph.context" for CONTEXT
 
-class MultiFrames is Node
+class DelColumn is Node
 {
 	init()
 	{
 		super.init()
 
-		this.params.add(NodeParam("num", 0, { "integer" : true, "min" : 1, "max" : 10 }))
+		this.params.add(NodeParam("num", 0, { "integer" : true, "min" : 0, "max" : 2 }))
 
 		this.layout()
 	}
 
 	on_node_dirty()
-	{
+	{		
 		CONTEXT.prop_changed = true
 	}
 
 	get_title()
 	{
-		return "间架"
+		return "减柱"
 	}
 }
