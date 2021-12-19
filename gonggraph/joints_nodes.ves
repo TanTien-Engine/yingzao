@@ -2,6 +2,7 @@ import "blueprint.blueprint" for Blueprint
 import "blueprint.variant_proxy" for VariantProxy
 import "blueprint.variant" for Variant
 import "gonggraph.trans_nodes" for TransNodes
+import "gonggraph.context" for CONTEXT
 import "editor.node_cache" for NODE_CACHE
 import "math" for Math
 
@@ -18,6 +19,10 @@ class JointsNodes
 {
 	static conn2(v_geo0, v_geo1, pos, angle)
 	{
+		if (CONTEXT.disable_joints) {
+			return [ v_geo0, v_geo1 ]
+		}
+
 		var CONN2_JOINT = NODE_CACHE.fetch("../yingzao/00_dougong2/62_conn_2_joint.ves", nil)
 
 		var n_geo0  = VariantProxy(v_geo0)
@@ -35,6 +40,10 @@ class JointsNodes
 
 	static conn3(v_geo0, v_geo1, v_geo2, pos, angle)
 	{
+		if (CONTEXT.disable_joints) {
+			return [ v_geo0, v_geo1, v_geo2 ]
+		}
+
 		var CONN3_JOINT = NODE_CACHE.fetch("../yingzao/00_dougong2/62_conn_3_joint.ves", nil)
 
 		var n_geo0 = VariantProxy(v_geo0)
@@ -78,6 +87,10 @@ class JointsNodes
 
 	static conn_gong_beam(gong, beam, pos)
 	{
+		if (CONTEXT.disable_joints) {
+			return
+		}
+
 		import "gonggraph.tools.dummy_hori" for DummyHori
 		if (gong is DummyHori) {
 			return
@@ -108,6 +121,10 @@ class JointsNodes
 
 	static conn_beam_gong(beam, gong, pos)
 	{
+		if (CONTEXT.disable_joints) {
+			return
+		}
+
 		import "gonggraph.tools.dummy_hori" for DummyHori
 		if (gong is DummyHori) {
 			return
@@ -138,6 +155,10 @@ class JointsNodes
 
 	static cut_geo_node(v_geo, cut_node, pos)
 	{
+		if (CONTEXT.disable_joints) {
+			return v_geo
+		}
+
 		var CUT_BODY_JOINT = NODE_CACHE.fetch("../yingzao/00_dougong2/61_cut_body_joint.ves", nil)	
 
 		var geo_node = VariantProxy(v_geo)
@@ -152,6 +173,10 @@ class JointsNodes
 
 	static cut_jao_hu_er(v_geo, pos, angle)
 	{
+		if (CONTEXT.disable_joints) {
+			return v_geo
+		}
+
 		var JIAOHU_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_cut_body.ves", nil)
 
 		var cut_body = TransNodes.rotate(JIAOHU_CUT, angle)
@@ -162,6 +187,10 @@ class JointsNodes
 
 	static cut_jao_hu_er_outer(v_geo, pos, angle)
 	{
+		if (CONTEXT.disable_joints) {
+			return v_geo
+		}
+
 		var JIAOHU_CUT  = NODE_CACHE.fetch("../yingzao/00_dougong2/20_jiaohu_outer_cut_body.ves", nil)
 
 		var cut_body = TransNodes.rotate(JIAOHU_CUT, angle)
@@ -224,6 +253,10 @@ class JointsNodes
 
 	static conn_tiaogan(v_geo, pos, slope)
 	{
+//		if (CONTEXT.disable_joints) {
+//			return v_geo
+//		}
+
 		var CONN = NODE_CACHE.fetch("../yingzao/00_dougong2/64_tiaogan_joint.ves", nil)
 
 		var geo_node = VariantProxy(v_geo)
@@ -239,6 +272,10 @@ class JointsNodes
 
 	static conn_beam(beam0, beam1, offset)
 	{
+		if (CONTEXT.disable_joints) {
+			return
+		}
+
 		var CONN = NODE_CACHE.fetch("../yingzao/00_dougong2/65_beam_conn2.ves", nil)
 
 		var geo0_node = VariantProxy(beam0.comp.v_geo)
