@@ -1,0 +1,28 @@
+import "network.vertex" for Vertex
+import "network.vertex_shape" for VTX_STYLE_CAPSULE_V
+import "beamgraph.variant" for PIN_TYPE_TUAN, PIN_TYPE_COLUMN_BOTTOM, PIN_TYPE_COLUMN_TOP, PIN_TYPE_COLUMN_LEFT, PIN_TYPE_COLUMN_RIGHT, PIN_TYPE_BEAM_RIGHT, PIN_TYPE_BEAM_LEFT
+
+class Column is Vertex
+{
+	init()
+	{
+		super.init()
+
+		this.layout = VTX_STYLE_CAPSULE_V
+
+		this.pin_types_f = [ PIN_TYPE_COLUMN_TOP, PIN_TYPE_COLUMN_BOTTOM, PIN_TYPE_COLUMN_LEFT, PIN_TYPE_COLUMN_RIGHT ]
+		this.pin_types_t = [
+			[ PIN_TYPE_TUAN, PIN_TYPE_COLUMN_BOTTOM ],
+			[ PIN_TYPE_COLUMN_TOP ],
+			[ PIN_TYPE_BEAM_RIGHT ],
+			[ PIN_TYPE_BEAM_LEFT ]
+		]
+
+		this.title = "柱"
+	}
+
+	get_title()
+	{
+		return this.title
+	}	
+}

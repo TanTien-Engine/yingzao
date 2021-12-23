@@ -1,0 +1,80 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.nodes.array" for Array
+import "blueprint.nodes.subgraph" for Subgraph
+import "editor.editor" for Editor
+import "editor.node_cache" for NODE_CACHE
+import "network.edit_op" for EditOP as NetworkEditOP
+
+var RENDER_NODE_FILENAME = "9_edit_draw.ves"
+
+class Beameditor is Editor
+{
+	load()
+	{
+		super.load()
+
+		this.nodes_op = NetworkEditOP(this.camera, this.scene_stack, this.popup_cb)
+		this.editop = this.nodes_op
+
+		this.prepare_nodes()
+
+		this.all_geos = Array()
+
+		this.render_node = nil
+		this.add_node(NODE_CACHE.fetch("../yingzao/99_tools/%(RENDER_NODE_FILENAME)", nil), 0, 0)
+	}
+
+	prepare_nodes()
+	{
+		this.clear_popup_nodes()
+
+		import "beamnodes" for BEAM_NODES
+		for (var node in BEAM_NODES) {
+			super.add_popup_node(node)
+		}
+	}
+
+	rebuild_all_geos()
+	{
+		this.all_geos.list.clear()
+
+		var scene = this.scene_stack.root()
+		if (!scene.nodes.isEmpty) {
+//			this.bf.rebuild(scene, this.all_geos.list)
+		}
+	}
+
+	draw_preview()
+	{
+		if (this.scene_stack.bp_dirty)
+		{
+			this.rebuild_all_geos()
+
+			Blueprint.send_pin_dirty_root(this.all_geos.exports[0])
+		}
+
+		super.draw_preview()
+
+		if (this.render_node) {
+			this.render_node.render_run()
+		}	
+	}
+
+	add_node(bp_node, x, y)
+	{
+		super.add_node(bp_node, x, y)
+
+		if (bp_node is Subgraph and bp_node.filepath.contains(RENDER_NODE_FILENAME)) 
+		{
+			this.render_node = bp_node
+			Blueprint.connect(this.all_geos, 0, this.render_node, 1)
+		}
+	}
+
+	load_file_imports()
+	{
+		return super.load_file_imports() + "
+import \"network.network\" for Network
+"
+	}
+}

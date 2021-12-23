@@ -1,0 +1,22 @@
+import "network.vertex" for Vertex
+import "beamgraph.variant" for PIN_TYPE_TUAN, PIN_TYPE_COLUMN_TOP, PIN_TYPE_BEAM_TOP
+
+class Tuan is Vertex
+{
+	init()
+	{
+		super.init()
+
+		this.pin_types_f = [ PIN_TYPE_TUAN ]
+		this.pin_types_t = [
+			[ PIN_TYPE_TUAN, PIN_TYPE_COLUMN_TOP, PIN_TYPE_BEAM_TOP ]
+		]
+
+		this.title = "槫"
+	}
+
+	get_title()
+	{
+		return this.title
+	}	
+}
