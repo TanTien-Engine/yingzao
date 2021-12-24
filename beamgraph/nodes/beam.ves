@@ -57,7 +57,7 @@ class Beam is Vertex
 			x_min = - top_tuan.deep * BEAM_DX
 			x_max = - x_min
 
-			y_min = top_tuan.tot_height - this.calc_dg_height()
+			y_min = top_tuan.tot_height - this.calc_dg_height(top_tuan)
 		}
 
 		var left = this.get_left_node()
@@ -152,10 +152,20 @@ class Beam is Vertex
 
 		// dou gong
 		var top_nodes = Network.neighbors(this, PIN_CAPSULE_TOP_IDX)
-		for (var node in top_nodes) {
-			if (node is Tuan) {
-				var lu_dou = (node.x < 0 and this.is_left_column) or (node.x > 0 and this.is_right_column)
-				ret.add(GongHelper.create_3s_dg(Vector3(node.x, this.y_min + this.calc_dg_height(), 0), lu_dou))
+		for (var node in top_nodes) 
+		{
+			if (node is Tuan) 
+			{
+				var next = node.find_next_tuan()
+				if (next)
+				{
+					var lu_dou = (node.x < 0 and this.is_left_column) or (node.x > 0 and this.is_right_column)
+					ret.add(GongHelper.create_3s_dg(Vector3(node.x, this.y_min + this.calc_dg_height(node), 0), lu_dou))
+				}
+				else
+				{
+					ret.add(GongHelper.create_4s_dg(Vector3(node.x, this.y_min + this.calc_dg_height(node), 0), node.x > 0))
+				}
 			}
 		}
 
@@ -223,8 +233,13 @@ class Beam is Vertex
 		}
 	}	
 
-	calc_dg_height()
+	calc_dg_height(tuan)
 	{
-		return 0.21 + 0.12 - 0.02
+		var next = tuan.find_next_tuan()
+		if (next) {
+			return 0.21 + 0.12 - 0.02		
+		} else {
+			return 0.21 + 0.12 - 0.02 + 0.21
+		}
 	}
 }

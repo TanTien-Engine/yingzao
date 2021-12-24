@@ -1,3 +1,4 @@
+import "blueprint.variant" for Variant
 import "network.vertex" for Vertex
 import "network.network" for Network
 import "network.vertex_shape" for SHAPE_CAPSULE_V, PIN_CAPSULE_TOP_IDX, PIN_CAPSULE_BOTTOM_IDX, PIN_CAPSULE_LEFT_IDX, PIN_CAPSULE_RIGHT_IDX
@@ -106,7 +107,7 @@ class Column is Vertex
 	resolve_geo(bf)
 	{
 		this.v_geo = nil
-		
+
 		import "beamgraph.nodes.ji_tuan" for JiTuan
 		import "beamgraph.nodes.beam" for Beam
 
@@ -115,9 +116,13 @@ class Column is Vertex
 		var y_min = 0
 		var y_max = 0
 
+		var e_fang = true
+
 		var top = this.get_top_node()
 		if (top is JiTuan)
 		{
+			e_fang = false
+
 			base = false
 			diam = 0.2
 
@@ -132,6 +137,11 @@ class Column is Vertex
 		else if (top is Beam)
 		{
 			y_max = top.y_min - 0.12
+
+			var tuan = top.find_top_tuan()
+			if (tuan and !tuan.find_next_tuan()) {
+				y_max = y_max - 0.21
+			}
 		}
 		else
 		{
@@ -151,7 +161,15 @@ class Column is Vertex
 			return nil
 		}
 
-		this.v_geo = CompNodes.create_column(Vector3(this.x, y_max, 0), h, diam, base)
+		var ret = []
+
+		var pos = Vector3(this.x, y_max, 0)
+		ret.add(CompNodes.create_column(pos, h, diam, base))
+		if (e_fang) {
+			ret.add(CompNodes.create_lan_e_fang(pos))		
+		}
+
+		this.v_geo = Variant(ret)
 		return this.v_geo
 	}
 

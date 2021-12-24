@@ -5,8 +5,15 @@ import "gonggraph.component.lu_dou" for LuDou
 import "gonggraph.component.dou" for Dou
 import "gonggraph.component.inner_gong" for InnerGong
 import "gonggraph.component.ti_mu" for TiMu
+import "gonggraph.component.fang" for Fang
+import "gonggraph.component.cheng_chuan_fang" for ChengChuanFang
+import "gonggraph.component.shua_tou" for ShuaTou
+import "gonggraph.component.hua_gong" for HuaGong
+import "gonggraph.component.hori_gong" for HoriGong
+import "gonggraph.component.liao_yan_fang" for LiaoYanFang
 import "gonggraph.dou_gong" for DouGong
 import "tuangraph.trans_nodes" for TransNodes
+import "tuangraph.gong_helper" for GongHelper as TG_GongHelper
 import "maths.vector" for Vector3
 import "math" for Math
 
@@ -45,6 +52,50 @@ class GongHelper
 		return v_gong
 	}
 
+	static create_4s_dg(pos, rot)
+	{
+		var lu = LuDou()
+
+		var ni_dao = InnerGong()
+		var bi_man = InnerGong()
+		var zhu_fang = Fang()
+		var cheng_fang = ChengChuanFang()
+
+		var hua = HuaGong()
+		var shua = ShuaTou()		
+		var ling = HoriGong()
+		var yan = LiaoYanFang()
+
+		Blueprint.connect(lu, "hori", ni_dao, "prev")
+		Blueprint.connect(ni_dao, "next", bi_man, "prev")
+		Blueprint.connect(bi_man, "next", zhu_fang, "prev")
+		Blueprint.connect(zhu_fang, "next", cheng_fang, "prev")
+
+		Blueprint.connect(lu, "vert", hua, "prev")
+		Blueprint.connect(hua, "next", shua, "prev")
+
+		Blueprint.connect(hua, "outer", ling, "prev")
+		Blueprint.connect(ling, "next", yan, "prev")
+
+		var geos = []
+
+		var dg = DouGong()
+		dg.rebuild([ lu, ni_dao, bi_man, zhu_fang, cheng_fang, shua, hua, ling, yan ], geos)
+
+		var v_gong = Variant(geos)
+
+		var h_gong = this.calc_4s_gong_height()
+
+		var angle = -Math.pi() * 0.5
+		if (rot) {
+			angle = angle + Math.pi()
+		}
+
+		v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, pos.y - h_gong, pos.z), angle)
+
+		return v_gong
+	}
+	
 	static calc_3s_gong_height(column)
 	{
 		var h_dou = 0
@@ -54,5 +105,11 @@ class GongHelper
 			h_dou = 0.06
 		}
 		return h_dou + 0.21 + (0.12 - 0.02)
+	}	
+
+	static calc_4s_gong_height()
+	{
+		var dh = 0.15
+		return TG_GongHelper.calc_dou_gong_height(4) + dh
 	}	
 }

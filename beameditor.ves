@@ -5,6 +5,7 @@ import "editor.editor" for Editor
 import "editor.node_cache" for NODE_CACHE
 import "geograph.brush" for Brush
 import "network.edit_op" for EditOP as NetworkEditOP
+import "network.vertex" for Vertex
 import "beamgraph.beam_frame" for BeamFrame
 import "maths.vector" for Vector3
 
@@ -64,7 +65,7 @@ class Beameditor is Editor
 
 	set_node_color(node, col)
 	{
-		if (node.v_geo) {
+		if (node is Vertex and node.v_geo) {
 			this.set_brush_color(node.v_geo.value.shape, col)
 		}
 	}

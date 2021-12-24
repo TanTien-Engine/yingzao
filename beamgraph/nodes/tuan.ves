@@ -1,12 +1,17 @@
 import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
 import "network.vertex" for Vertex
 import "network.network" for Network
 import "network.vertex_shape" for PIN_CIRCLE_AROUND_IDX, PIN_CAPSULE_LEFT_IDX
+import "geograph.brush" for BrushInstanced
+import "geograph.variant" for VAR_TYPE_GEO, VarGeo
+import "gonggraph.tools_nodes" for ToolsNodes
 import "tuangraph.comp_nodes" for CompNodes
 import "tuangraph.constant" for BEAM_DX
 import "beamgraph.variant" for PIN_TYPE_TUAN, PIN_TYPE_COLUMN_TOP, PIN_TYPE_BEAM_TOP
 import "maths.vector" for Vector3
 import "math" for Math
+import "maths" for Matrix44
 
 class Tuan is Vertex
 {
@@ -45,7 +50,7 @@ class Tuan is Vertex
 
 		var deep = this.deep - root.deep
 
-		var prev = this.find_prev_tuan(this)
+		var prev = this.find_prev_tuan()
 		if (prev)
 		{
 			var d = root.max_deep - deep
@@ -67,11 +72,21 @@ class Tuan is Vertex
 
 	resolve_geo(bf)
 	{
+		var ret = []
+
 		this.v_geo = nil
 
 		var pos = Vector3(this.x, this.tot_height, 0)
 
-		var ret = [ CompNodes.create_tuan(pos) ]
+		var next_tuan = this.find_next_tuan()
+
+		if (next_tuan) {
+			ret.add(CompNodes.create_tuan(pos))
+		}
+
+		ret.add(this.create_tuo_jiao(next_tuan, pos))
+
+		ret.add(this.create_yuan(!next_tuan))
 
 		this.v_geo = Variant(ret)
 		return this.v_geo
@@ -107,17 +122,135 @@ class Tuan is Vertex
 		}
 	}
 
-	find_prev_tuan(node)
+	find_prev_tuan()
 	{
 		import "beamgraph.nodes.ji_tuan" for JiTuan
 		import "beamgraph.nodes.tuan" for Tuan
 
-		var prev = nil
-		var neighbors = Network.neighbors(node)
+		var neighbors = Network.neighbors(this)
 		for (var v in neighbors) {
-			if ((v is Tuan or v is JiTuan) and v.deep == node.deep - 1) {
+			if ((v is Tuan or v is JiTuan) and v.deep == this.deep - 1) {
 				return v
 			}
+		}
+
+		return nil
+	}
+
+	find_next_tuan()
+	{
+		import "beamgraph.nodes.tuan" for Tuan
+
+		var neighbors = Network.neighbors(this)
+		for (var v in neighbors) {
+			if (v is Tuan and v.deep == this.deep + 1) {
+				return v
+			}
+		}
+
+		return nil
+	}
+
+	find_beam()
+	{
+		import "beamgraph.nodes.beam" for Beam
+
+		var neighbors = Network.neighbors(this)
+		for (var v in neighbors) {
+			if (v is Beam) {
+				return v
+			}
+		}
+
+		return nil
+	}
+
+	create_tuo_jiao(next_tuan, pos)
+	{
+		var btm_beam = nil
+		if (next_tuan) {
+			btm_beam = next_tuan.find_beam()
+		}
+		if (!btm_beam) {
+			return nil
+		}
+
+		var top = pos.y - 0.05
+		var btm = btm_beam.y_max
+		var dx = 0.3
+		var rot = this.x > 0
+		return CompNodes.create_tuo_jiao(Vector3(pos.x, top, pos.z), top - btm, BEAM_DX - dx, rot)
+	}
+
+	create_yuan(sides)
+	{
+		var prev = this.find_prev_tuan()
+		if (!prev) {
+			return nil
+		}
+
+		var d = 0.08 * 2
+
+		var l_p0 = Vector3(-BEAM_DX * this.deep, this.tot_height + d, 0)
+		var l_p1 = Vector3(-BEAM_DX * prev.deep, prev.tot_height + d, 0)
+
+		var ex_len = 0
+		var ex_len_f = 0
+		if (sides) 
+		{
+			var angle = Math.atan2(l_p1.y - l_p0.y, l_p1.x - l_p0.x)
+			ex_len = (0.3 + 0.8) / Math.cos(angle)
+			ex_len_f = (0.3 + 0.8 + 0.48) / Math.cos(angle)
+		}
+
+		var l_yuan = CompNodes.create_yuan(l_p0, l_p1, ex_len)
+
+		// fei zi
+		if (sides) 
+		{
+			var fei = CompNodes.create_fei_zi(l_p0, Vector3(l_p1.x, l_p1.y, l_p1.z), ex_len_f)
+			l_yuan = Variant([ l_yuan, fei ])
+		}
+
+		if (true or YUAN_INSTANCED)
+		{
+			l_yuan = ToolsNodes.brush_merge(l_yuan)
+
+			var instanced = BrushInstanced()
+			instanced.brush = l_yuan.value.shape
+
+			var num = 17
+			var dist = 0.16
+			for (var i in 0..num) 
+			{
+				var l_mat = Matrix44.init()
+				l_mat.translate(0, 0, i * dist - (num - 1) * 0.5 * dist)
+				instanced.transforms.add(l_mat)
+
+				var r_mat = Matrix44.init()
+				r_mat.rotate(0, Math.pi(), 0)
+				r_mat.translate(0, 0, i * dist - (num - 1) * 0.5 * dist)
+				instanced.transforms.add(r_mat)
+			}
+
+			var geo = VarGeo()
+			geo.shape = instanced
+
+			return Variant(VAR_TYPE_GEO, geo)
+		}
+		else
+		{
+			var r_yuan = TransNodes.rotate(VariantProxy(l_yuan), Math.pi())
+
+			var ret = []
+
+			var num = 17
+			var dist = 0.16
+			for (var i in 0..num) {
+				ret.add(TransNodes.translate(VariantProxy(Variant([l_yuan, r_yuan])), Vector3(0, 0, i * dist - (num - 1) * 0.5 * dist)))
+			}
+
+			return Variant(ret)
 		}
 	}
 }
