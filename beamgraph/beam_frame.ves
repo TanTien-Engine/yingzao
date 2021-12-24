@@ -1,0 +1,47 @@
+import "network.network" for Network
+
+class BeamFrame
+{
+	init()
+	{
+		this.root = nil
+
+		this.left_tuans = []
+		this.right_tuans = []
+	}
+
+	rebuild(scene, out_list)
+	{
+		import "beamgraph.nodes.ji_tuan" for JiTuan
+
+		var comp_nodes = []
+		var root = nil		
+		for (var node in scene.nodes) 
+		{
+			var bp_node = node.components["bp"]
+			if (bp_node and bp_node.has_method("resolve_geo(_)")) {
+				comp_nodes.add(bp_node)
+				if (bp_node is JiTuan) {
+					root = bp_node
+				}
+			}
+		}
+
+		var sorted_nodes = nil
+		if (root) {
+			sorted_nodes = Network.topo_sort(comp_nodes, root)
+		} else {
+			sorted_nodes = comp_nodes
+		}
+
+		// pass 1, pos
+		for (var node in sorted_nodes) {
+			node.resolve_pos(this)
+		}
+		
+		// pass 2, geo
+		for (var node in sorted_nodes) {
+			out_list.add(node.resolve_geo(this))
+		}
+	}
+}

@@ -3,7 +3,10 @@ import "blueprint.nodes.array" for Array
 import "blueprint.nodes.subgraph" for Subgraph
 import "editor.editor" for Editor
 import "editor.node_cache" for NODE_CACHE
+import "geograph.brush" for Brush
 import "network.edit_op" for EditOP as NetworkEditOP
+import "beamgraph.beam_frame" for BeamFrame
+import "maths.vector" for Vector3
 
 var RENDER_NODE_FILENAME = "9_edit_draw.ves"
 
@@ -20,8 +23,12 @@ class Beameditor is Editor
 
 		this.all_geos = Array()
 
+		this.bf = BeamFrame()
+
 		this.render_node = nil
 		this.add_node(NODE_CACHE.fetch("../yingzao/99_tools/%(RENDER_NODE_FILENAME)", nil), 0, 0)
+
+		this.selected = nil
 	}
 
 	prepare_nodes()
@@ -40,7 +47,25 @@ class Beameditor is Editor
 
 		var scene = this.scene_stack.root()
 		if (!scene.nodes.isEmpty) {
-//			this.bf.rebuild(scene, this.all_geos.list)
+			this.bf.rebuild(scene, this.all_geos.list)
+		}
+	}
+
+	set_brush_color(val, col)
+	{
+		if (val is Brush) {
+			val.set_color(col.x, col.y, col.z)
+		} else if (val is List) {
+			for (var i in val) {
+				this.set_brush_color(i.value.shape, col)
+			}
+		}
+	}
+
+	set_node_color(node, col)
+	{
+		if (node.v_geo) {
+			this.set_brush_color(node.v_geo.value.shape, col)
 		}
 	}
 
@@ -49,6 +74,17 @@ class Beameditor is Editor
 		if (this.scene_stack.bp_dirty)
 		{
 			this.rebuild_all_geos()
+
+			Blueprint.send_pin_dirty_root(this.all_geos.exports[0])
+		}
+
+		var selected = this.preview_op.get_selected()
+		if (selected != this.selected)
+		{
+			this.set_node_color(this.selected, Vector3(255, 255, 255))
+			this.set_node_color(selected, Vector3(255, 0, 0))
+
+			this.selected = selected
 
 			Blueprint.send_pin_dirty_root(this.all_geos.exports[0])
 		}

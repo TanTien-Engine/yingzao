@@ -1,6 +1,9 @@
 import "network.vertex" for Vertex
-import "network.vertex_shape" for VTX_STYLE_CAPSULE_V
-import "beamgraph.variant" for PIN_TYPE_TUAN, PIN_TYPE_COLUMN_BOTTOM, PIN_TYPE_COLUMN_TOP, PIN_TYPE_COLUMN_LEFT, PIN_TYPE_COLUMN_RIGHT, PIN_TYPE_BEAM_RIGHT, PIN_TYPE_BEAM_LEFT
+import "network.network" for Network
+import "network.vertex_shape" for SHAPE_CAPSULE_V, PIN_CAPSULE_TOP_IDX, PIN_CAPSULE_BOTTOM_IDX, PIN_CAPSULE_LEFT_IDX, PIN_CAPSULE_RIGHT_IDX
+import "tuangraph.comp_nodes" for CompNodes
+import "beamgraph.variant" for PIN_TYPE_TUAN, PIN_TYPE_COLUMN_BOTTOM, PIN_TYPE_COLUMN_TOP, PIN_TYPE_COLUMN_LEFT, PIN_TYPE_COLUMN_RIGHT, PIN_TYPE_BEAM_TOP, PIN_TYPE_BEAM_RIGHT, PIN_TYPE_BEAM_LEFT
+import "maths.vector" for Vector3
 
 class Column is Vertex
 {
@@ -8,21 +11,198 @@ class Column is Vertex
 	{
 		super.init()
 
-		this.layout = VTX_STYLE_CAPSULE_V
+		this.shape = SHAPE_CAPSULE_V
 
 		this.pin_types_f = [ PIN_TYPE_COLUMN_TOP, PIN_TYPE_COLUMN_BOTTOM, PIN_TYPE_COLUMN_LEFT, PIN_TYPE_COLUMN_RIGHT ]
 		this.pin_types_t = [
 			[ PIN_TYPE_TUAN, PIN_TYPE_COLUMN_BOTTOM ],
-			[ PIN_TYPE_COLUMN_TOP ],
+			[ PIN_TYPE_COLUMN_TOP, PIN_TYPE_BEAM_TOP ],
 			[ PIN_TYPE_BEAM_RIGHT ],
 			[ PIN_TYPE_BEAM_LEFT ]
 		]
 
 		this.title = "柱"
+
+		this.x = nil
+
+		this.v_geo = nil
+	}
+
+	resolve_pos(bf)
+	{
+		import "beamgraph.nodes.beam" for Beam
+
+		var top = this.get_top_node()
+		if (top is Beam)
+		{
+			var btm_nodes = Network.neighbors(top, PIN_CAPSULE_BOTTOM_IDX)
+
+			var left = nil
+			var right = nil
+
+			for (var node in btm_nodes)
+			{
+				if (node != this)
+				{
+					if (node is Beam)
+					{
+						if (Network.adjacent(node, PIN_CAPSULE_RIGHT_IDX, this, PIN_CAPSULE_LEFT_IDX)) {
+							left = node
+						} else if (Network.adjacent(node, PIN_CAPSULE_LEFT_IDX, this, PIN_CAPSULE_RIGHT_IDX)) {
+							right = node
+						}
+					}
+					else if (node is Column)
+					{
+						if (node.pos.x < this.pos.x) {
+							left = node
+						} else {
+							right = node
+						}
+					}
+				}
+			}
+
+			if (left and right) {
+				this.x = (top.x_min + top.x_max) * 0.5
+			} else if (left) {
+				this.x = top.x_max
+			} else if (right) {
+				this.x = top.x_min
+			} else {
+				if (top.get_left_node() is Column) {
+					this.x = top.x_max
+				} else if (top.get_right_node() is Column) {
+					this.x = top.x_min
+				} else {
+					this.x = (top.x_min + top.x_max) * 0.5				
+				}
+			}
+
+			if (this.x == top.x_min) {
+				top.is_left_column = true
+			} else if (this.x == top.x_max) {
+				top.is_right_column = true
+			} else {
+				top.is_center_column = true
+			}
+		}
+		else
+		{
+			var lb = this.find_left_beam()
+			if (lb) {
+				this.x = lb.x_max
+			} else {
+				var rb = this.find_right_beam()
+				if (rb) {
+					this.x = rb.x_min
+				} else {
+					this.x = 0
+				}
+			}
+		}
+	}
+
+	resolve_geo(bf)
+	{
+		this.v_geo = nil
+		
+		import "beamgraph.nodes.ji_tuan" for JiTuan
+		import "beamgraph.nodes.beam" for Beam
+
+		var base = true
+		var diam = 0.36
+		var y_min = 0
+		var y_max = 0
+
+		var top = this.get_top_node()
+		if (top is JiTuan)
+		{
+			base = false
+			diam = 0.2
+
+			var h_gong = 0.06 + 0.21 + 0.21 + (0.12 - 0.02)
+			y_max = bf.root.tot_height - h_gong
+
+			var btm = this.get_btm_node()			
+			if (btm is Beam) {
+				y_min = btm.y_max
+			}
+		}
+		else if (top is Beam)
+		{
+			y_max = top.y_min - 0.12
+		}
+		else
+		{
+			var lb = this.find_left_beam()
+			if (lb) {
+				y_max = lb.y_max
+			} else {
+				var rb = this.find_right_beam()
+				if (rb) {
+					y_max = rb.y_max
+				}
+			}
+		}
+
+		var h = y_max - y_min
+		if (h <= 0) {
+			return nil
+		}
+
+		this.v_geo = CompNodes.create_column(Vector3(this.x, y_max, 0), h, diam, base)
+		return this.v_geo
 	}
 
 	get_title()
 	{
 		return this.title
+	}
+
+	find_left_beam()
+	{
+		import "beamgraph.nodes.beam" for Beam
+
+		var top_nodes = Network.neighbors(this, PIN_CAPSULE_LEFT_IDX)
+		for (var node in top_nodes) {
+			if (node is Beam) {
+				return node
+			}
+		}
+		return nil
+	}
+
+	find_right_beam()
+	{
+		import "beamgraph.nodes.beam" for Beam
+
+		var top_nodes = Network.neighbors(this, PIN_CAPSULE_RIGHT_IDX)
+		for (var node in top_nodes) {
+			if (node is Beam) {
+				return node
+			}
+		}
+		return nil
+	}	
+
+	get_top_node()
+	{
+		var nodes = Network.neighbors(this, PIN_CAPSULE_TOP_IDX)
+		if (nodes.isEmpty) {
+			return nil
+		} else {
+			return nodes[0]
+		}
+	}
+
+	get_btm_node()
+	{
+		var nodes = Network.neighbors(this, PIN_CAPSULE_BOTTOM_IDX)
+		if (nodes.isEmpty) {
+			return nil
+		} else {
+			return nodes[0]
+		}
 	}	
 }

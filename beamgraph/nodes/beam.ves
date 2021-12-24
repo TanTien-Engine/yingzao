@@ -1,6 +1,13 @@
+import "blueprint.variant" for Variant
 import "network.vertex" for Vertex
-import "network.vertex_shape" for VTX_STYLE_CAPSULE_H
+import "network.network" for Network
+import "network.vertex_shape" for SHAPE_CAPSULE_H, PIN_CAPSULE_TOP_IDX, PIN_CAPSULE_LEFT_IDX, PIN_CAPSULE_RIGHT_IDX, PIN_CAPSULE_BOTTOM_IDX, PIN_CAPSULE_TOP_IDX
+import "tuangraph.comp_nodes" for CompNodes
+import "tuangraph.constant" for BEAM_DX, BEAM_HEAD_LEN
+import "tuangraph.beam_helper" for BeamHelper
 import "beamgraph.variant" for PIN_TYPE_TUAN, PIN_TYPE_BEAM_TOP, PIN_TYPE_BEAM_BOTTOM, PIN_TYPE_COLUMN_BOTTOM, PIN_TYPE_COLUMN_TOP, PIN_TYPE_BEAM_LEFT, PIN_TYPE_BEAM_RIGHT 
+import "beamgraph.gong_helper" for GongHelper
+import "maths.vector" for Vector3
 
 class Beam is Vertex
 {
@@ -8,7 +15,7 @@ class Beam is Vertex
 	{
 		super.init()
 
-		this.layout = VTX_STYLE_CAPSULE_H
+		this.shape = SHAPE_CAPSULE_H
 
 		this.pin_types_f = [ PIN_TYPE_BEAM_TOP, PIN_TYPE_BEAM_BOTTOM, PIN_TYPE_BEAM_LEFT, PIN_TYPE_BEAM_RIGHT ]
 		this.pin_types_t = [
@@ -19,10 +26,205 @@ class Beam is Vertex
 		]
 
 		this.title = "梁"
+
+		this.y_min = 0
+		this.y_max = 0
+		this.x_min = 0
+		this.x_max = 0
+
+		this.is_left_column   = false
+		this.is_center_column = false
+		this.is_right_column  = false
+
+		this.v_geo = nil
+	}
+
+	resolve_pos(bf)
+	{
+		import "beamgraph.nodes.column" for Column
+
+		this.is_left_column   = false
+		this.is_center_column = false
+		this.is_right_column  = false
+
+		var x_min = -BEAM_DX
+		var x_max = BEAM_DX
+		var y_min = 0
+
+		var top_tuan = this.find_top_tuan()
+		if (top_tuan) 
+		{
+			x_min = - top_tuan.deep * BEAM_DX
+			x_max = - x_min
+
+			y_min = top_tuan.tot_height - this.calc_dg_height()
+		}
+
+		var left = this.get_left_node()
+		if (left is Column and left.x) {
+			x_min = left.x
+		}
+
+		var right = this.get_right_node()
+		if (right is Column and right.x) {
+			x_max = right.x
+		}
+
+		if (x_max <= x_min) {
+			return nil
+		}
+
+		var deep = (x_max - x_min) / BEAM_DX
+		var h = BeamHelper.calc_beam_height(deep)
+
+		this.x_min = x_min
+		this.x_max = x_max
+		this.y_min = y_min		
+		this.y_max = this.y_min + h
+	}
+
+	resolve_geo(bf)
+	{
+		this.v_geo = nil
+	
+		import "beamgraph.nodes.column" for Column
+		import "beamgraph.nodes.tuan" for Tuan
+
+		var ret = []
+
+		// tuo feng
+		var top = this.find_top_beam()
+		if (top)
+		{
+			var btm_nodes = Network.neighbors(top, PIN_CAPSULE_BOTTOM_IDX)
+
+			var left = nil
+			var right = nil
+
+			var x = nil
+
+			for (var node in btm_nodes)
+			{
+				if (node != this)
+				{
+					if (node is Column)
+					{
+						if (Network.adjacent(node, PIN_CAPSULE_RIGHT_IDX, this, PIN_CAPSULE_LEFT_IDX)) {
+							left = node
+						} else if (Network.adjacent(node, PIN_CAPSULE_LEFT_IDX, this, PIN_CAPSULE_RIGHT_IDX)) {
+							right = node
+						}
+					}
+					else if (node is Beam)
+					{
+						if (node.pos.x < this.pos.x) {
+							left = node
+						} else {
+							right = node
+						}
+					}
+				}
+			}
+
+			var h = top.y_min - this.y_max - 0.06
+
+			if (left and right) {
+				x = (top.x_min + top.x_max) * 0.5
+			} else if (left) {
+				x = top.x_max
+			} else if (right) {
+				x = top.x_min
+			} else {
+				if (top.get_left_node() is Column) {
+					x = top.x_max
+				} else if (top.get_right_node() is Column) {
+					x = top.x_min
+				}
+			}
+
+			if (x) {
+				ret.add(CompNodes.create_tuo_feng(Vector3(x, this.y_max, 0), h))			
+			} else {
+				ret.add(CompNodes.create_tuo_feng(Vector3(top.x_min, this.y_max, 0), h))
+				ret.add(CompNodes.create_tuo_feng(Vector3(top.x_max, this.y_max, 0), h))
+			}
+		}
+
+		// dou gong
+		var top_nodes = Network.neighbors(this, PIN_CAPSULE_TOP_IDX)
+		for (var node in top_nodes) {
+			if (node is Tuan) {
+				var lu_dou = (node.x < 0 and this.is_left_column) or (node.x > 0 and this.is_right_column)
+				ret.add(GongHelper.create_3s_dg(Vector3(node.x, this.y_min + this.calc_dg_height(), 0), lu_dou))
+			}
+		}
+
+		var x_min = this.x_min
+		if (!this.get_left_node()) {
+			x_min = x_min - BEAM_HEAD_LEN
+		}
+		var x_max = this.x_max
+		if (!this.get_right_node()) {
+			x_max = x_max + BEAM_HEAD_LEN
+		}
+		var h = this.y_max - this.y_min
+		var len = x_max - x_min
+		ret.add(CompNodes.create_straight_beam(Vector3(x_min, this.y_min, 0), h, len))
+
+		this.v_geo = Variant(ret)
+		return this.v_geo
 	}
 
 	get_title()
 	{
 		return this.title
+	}
+
+	find_top_tuan()
+	{
+		import "beamgraph.nodes.tuan" for Tuan
+		var top_nodes = Network.neighbors(this, PIN_CAPSULE_TOP_IDX)
+		for (var node in top_nodes) {
+			if (node is Tuan) {
+				return node
+			}
+		}
+		return nil
+	}
+
+	find_top_beam()
+	{
+		var top_nodes = Network.neighbors(this, PIN_CAPSULE_TOP_IDX)
+		for (var node in top_nodes) {
+			if (node is Beam) {
+				return node
+			}
+		}
+		return nil
+	}
+
+	get_left_node()
+	{
+		var nodes = Network.neighbors(this, PIN_CAPSULE_LEFT_IDX)
+		if (nodes.isEmpty) {
+			return nil
+		} else {
+			return nodes[0]
+		}
+	}
+
+	get_right_node()
+	{
+		var nodes = Network.neighbors(this, PIN_CAPSULE_RIGHT_IDX)
+		if (nodes.isEmpty) {
+			return nil
+		} else {
+			return nodes[0]
+		}
 	}	
+
+	calc_dg_height()
+	{
+		return 0.21 + 0.12 - 0.02
+	}
 }

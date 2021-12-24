@@ -1,0 +1,140 @@
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "network.vertex" for Vertex
+import "network.network" for Network
+import "network.vertex_shape" for SHAPE_CAPSULE_H, PIN_CAPSULE_LEFT_IDX, PIN_CAPSULE_RIGHT_IDX, PIN_CAPSULE_BOTTOM_IDX
+import "tuangraph.comp_nodes" for CompNodes
+import "tuangraph.gong_helper" for GongHelper
+import "tuangraph.constant" for BEAM_DX
+import "tuangraph.trans_nodes" for TransNodes
+import "beamgraph.variant" for PIN_TYPE_JI_TUAN, PIN_TYPE_TUAN, PIN_TYPE_COLUMN_TOP, PIN_TYPE_BEAM_TOP
+import "maths.vector" for Vector3
+import "math" for Math
+
+class JiTuan is Vertex
+{
+	init()
+	{
+		super.init()
+
+		this.shape = SHAPE_CAPSULE_H
+
+		this.pin_types_f = [ PIN_TYPE_JI_TUAN, PIN_TYPE_JI_TUAN, PIN_TYPE_JI_TUAN, PIN_TYPE_JI_TUAN ]
+		this.pin_types_t = [
+			[],
+			[ PIN_TYPE_COLUMN_TOP, PIN_TYPE_BEAM_TOP ],
+			[ PIN_TYPE_TUAN ],
+			[ PIN_TYPE_TUAN ]
+		]
+
+		this.title = "脊槫"
+
+		this.max_deep = 0
+
+		this.deep = 0
+
+		this.roof_height   = 0
+		this.middle_height = 0
+		this.column_height = 0
+
+		this.tot_height = 0
+
+		this.v_geo = nil
+	}
+
+	resolve_pos(bf)
+	{
+		bf.root = this
+
+		var deep_l = this.calc_tuan_deep(bf, PIN_CAPSULE_LEFT_IDX)
+		var deep_r = this.calc_tuan_deep(bf, PIN_CAPSULE_RIGHT_IDX)
+		this.max_deep = Math.max(deep_l, deep_r)
+
+		this.column_height = 2.5
+		this.middle_height = GongHelper.calc_dou_gong_height(4) + 0.15
+		this.roof_height   = (this.max_deep * 2 * BEAM_DX + 0.3 * 2) / 3
+
+		this.tot_height = this.column_height + this.middle_height + this.roof_height
+	}
+
+	resolve_geo(bf)
+	{
+		this.v_geo = nil
+
+		var pos = Vector3(0, this.tot_height, 0)
+		var ret = [ CompNodes.create_tuan(pos) ]
+
+		var v_gong = GongHelper.load_dou_gong("../yingzao/11_dg_song/806_ding_hua_ji_tuan.ves")
+		var h_gong = 0.06 + 0.21 + 0.21 + (0.12 - 0.02)
+		ret.add(TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, pos.y - h_gong, pos.z), -Math.pi() * 0.5))
+
+		// cha shou
+		var beam = this.find_btm_beam(Network.neighbors(this, PIN_CAPSULE_BOTTOM_IDX))
+		if (beam)
+		{
+			var off_h = 0.2
+			var dh = pos.y - beam.y_max
+			ret.add(CompNodes.create_cha_shou(Vector3(pos.x, pos.y - off_h, pos.z), dh - off_h, BEAM_DX - 0.35))
+		}
+
+		this.v_geo = Variant(ret)
+		return this.v_geo
+	}
+
+	get_title()
+	{
+		return this.title
+	}
+
+	calc_tuan_deep(bf, type)
+	{
+		var deep = 0
+
+		var curr = this.find_tuan(Network.neighbors(this, type), this)
+		var prev = this
+		while (curr) 
+		{
+			deep = deep + 1
+			curr.deep = deep
+
+			if (type == PIN_CAPSULE_LEFT_IDX) {
+				bf.left_tuans.add(curr)
+			} else {
+				bf.right_tuans.add(curr)			
+			}
+
+			var next = this.find_tuan(Network.neighbors(curr), prev)
+			prev = curr
+			curr = next
+		}
+
+		return deep
+	}
+
+	find_tuan(nodes, expect)
+	{
+		import "beamgraph.nodes.tuan" for Tuan
+
+		for (var node in nodes) {
+			if (node is Tuan and node != expect) {
+				return node
+			}
+		}
+
+		return nil
+	}	
+
+	find_btm_beam(nodes)
+	{
+		import "beamgraph.nodes.beam" for Beam
+		import "beamgraph.nodes.column" for Column
+
+		for (var node in nodes) {
+			if (node is Column) {
+				return node.get_btm_node()
+			}
+		}
+
+		return nil
+	}
+}

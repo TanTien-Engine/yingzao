@@ -1,0 +1,58 @@
+import "blueprint.blueprint" for Blueprint
+import "blueprint.variant" for Variant
+import "blueprint.variant_proxy" for VariantProxy
+import "gonggraph.component.lu_dou" for LuDou
+import "gonggraph.component.dou" for Dou
+import "gonggraph.component.inner_gong" for InnerGong
+import "gonggraph.component.ti_mu" for TiMu
+import "gonggraph.dou_gong" for DouGong
+import "tuangraph.trans_nodes" for TransNodes
+import "maths.vector" for Vector3
+import "math" for Math
+
+class GongHelper
+{
+	static create_3s_dg(pos, column)
+	{
+		var dou = nil
+		if (column) {
+			dou = LuDou()
+		} else {
+			dou = Dou()
+		}
+
+		var nodes = [ dou ]
+
+		var gong = InnerGong()
+		nodes.add(gong)
+
+		var ti = TiMu()
+		nodes.add(ti)
+
+		Blueprint.connect(dou, "hori", gong, "prev")
+		Blueprint.connect(gong, "next", ti, "prev")
+
+		var geos = []
+
+		var dg = DouGong()
+		dg.rebuild(nodes, geos)
+
+		var v_gong = Variant(geos)
+
+		var h_gong = this.calc_3s_gong_height(column)
+		v_gong = TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, pos.y - h_gong, pos.z), -Math.pi() * 0.5)
+
+		return v_gong
+	}
+
+	static calc_3s_gong_height(column)
+	{
+		var h_dou = 0
+		if (column) {
+			h_dou = 0.12
+		} else {
+			h_dou = 0.06
+		}
+		return h_dou + 0.21 + (0.12 - 0.02)
+	}	
+}

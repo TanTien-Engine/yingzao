@@ -1,5 +1,12 @@
+import "blueprint.variant" for Variant
 import "network.vertex" for Vertex
+import "network.network" for Network
+import "network.vertex_shape" for PIN_CIRCLE_AROUND_IDX, PIN_CAPSULE_LEFT_IDX
+import "tuangraph.comp_nodes" for CompNodes
+import "tuangraph.constant" for BEAM_DX
 import "beamgraph.variant" for PIN_TYPE_TUAN, PIN_TYPE_COLUMN_TOP, PIN_TYPE_BEAM_TOP
+import "maths.vector" for Vector3
+import "math" for Math
 
 class Tuan is Vertex
 {
@@ -13,10 +20,104 @@ class Tuan is Vertex
 		]
 
 		this.title = "槫"
+
+		this.deep = 0
+
+		this.roof_height = 0
+		this.base_height = 0
+
+		this.tot_height = 0
+
+		this.x = nil
+
+		this.v_geo = nil
+	}
+
+	resolve_pos(bf)
+	{
+		this.roof_height = 0
+		this.base_height = 0
+
+		var root = bf.root
+		if (root) {
+			this.base_height = root.column_height + root.middle_height
+		}
+
+		var deep = this.deep - root.deep
+
+		var prev = this.find_prev_tuan(this)
+		if (prev)
+		{
+			var d = root.max_deep - deep
+			var dh = 0.1 * Math.pow(0.5, (deep - 1)) * root.roof_height
+			this.roof_height = d / (d + 1) * prev.roof_height - dh
+		}
+		else
+		{
+			this.roof_height = (root.max_deep - deep) / root.max_deep * root.roof_height
+		}
+
+		this.tot_height = this.base_height + this.roof_height
+
+		this.x = BEAM_DX * this.deep
+		if (this.is_tuan_left(this)) {
+			this.x = -this.x
+		}
+	}
+
+	resolve_geo(bf)
+	{
+		this.v_geo = nil
+
+		var pos = Vector3(this.x, this.tot_height, 0)
+
+		var ret = [ CompNodes.create_tuan(pos) ]
+
+		this.v_geo = Variant(ret)
+		return this.v_geo
 	}
 
 	get_title()
 	{
 		return this.title
-	}	
+	}
+
+	is_tuan_left(node)
+	{
+		import "beamgraph.nodes.ji_tuan" for JiTuan
+
+		var neighbors = Network.neighbors(node)
+		for (var v in neighbors)
+		{
+			if (v is Tuan and v.deep == node.deep - 1) 
+			{
+				return this.is_tuan_left(v)
+			} 
+			else if (v is JiTuan) 
+			{
+				for (var p in v.pins)
+				{
+					if (p.edge.pin0.vert == node) {
+						return p.edge.pin1.type == PIN_CAPSULE_LEFT_IDX
+					} else if (p.edge.pin1.vert == node) {
+						return p.edge.pin0.type == PIN_CAPSULE_LEFT_IDX
+					}
+				}
+			}
+		}
+	}
+
+	find_prev_tuan(node)
+	{
+		import "beamgraph.nodes.ji_tuan" for JiTuan
+		import "beamgraph.nodes.tuan" for Tuan
+
+		var prev = nil
+		var neighbors = Network.neighbors(node)
+		for (var v in neighbors) {
+			if ((v is Tuan or v is JiTuan) and v.deep == node.deep - 1) {
+				return v
+			}
+		}
+	}
 }
