@@ -64,7 +64,7 @@ class JiTuan is Vertex
 		var pos = Vector3(0, this.tot_height, 0)
 		var ret = [ CompNodes.create_tuan(pos) ]
 
-		var v_gong = GongHelper.load_dou_gong("../yingzao/11_dg_song/806_ding_hua_ji_tuan.ves")
+		var v_gong = GongHelper.load_dou_gong("../yingzao/11_dougong_gg/806_ding_hua_ji_tuan.ves")
 		var h_gong = 0.06 + 0.21 + 0.21 + (0.12 - 0.02)
 		ret.add(TransNodes.transform(VariantProxy(v_gong), Vector3(pos.x, pos.y - h_gong, pos.z), -Math.pi() * 0.5))
 
