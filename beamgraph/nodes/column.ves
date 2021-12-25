@@ -3,8 +3,10 @@ import "network.vertex" for Vertex
 import "network.network" for Network
 import "network.vertex_shape" for SHAPE_CAPSULE_V, PIN_CAPSULE_TOP_IDX, PIN_CAPSULE_BOTTOM_IDX, PIN_CAPSULE_LEFT_IDX, PIN_CAPSULE_RIGHT_IDX
 import "tuangraph.comp_nodes" for CompNodes
+import "tuangraph.trans_nodes" for TransNodes
 import "beamgraph.variant" for PIN_TYPE_TUAN, PIN_TYPE_COLUMN_BOTTOM, PIN_TYPE_COLUMN_TOP, PIN_TYPE_COLUMN_LEFT, PIN_TYPE_COLUMN_RIGHT, PIN_TYPE_BEAM_TOP, PIN_TYPE_BEAM_RIGHT, PIN_TYPE_BEAM_LEFT
 import "maths.vector" for Vector3
+import "editor.node_cache" for NODE_CACHE
 
 class Column is Vertex
 {
@@ -116,6 +118,7 @@ class Column is Vertex
 		var y_min = 0
 		var y_max = 0
 
+		var lu_dou = false
 		var e_fang = true
 
 		var top = this.get_top_node()
@@ -142,6 +145,10 @@ class Column is Vertex
 			if (tuan and !tuan.find_next_tuan()) {
 				y_max = y_max - 0.21
 			}
+
+			if (this.x > top.x_min and this.x < top.x_max) {
+				lu_dou = true
+			}
 		}
 		else
 		{
@@ -164,7 +171,14 @@ class Column is Vertex
 		var ret = []
 
 		var pos = Vector3(this.x, y_max, 0)
+
+		if (lu_dou) {
+			var LU_DOU = NODE_CACHE.fetch("../yingzao/00_dougong2/24_solid_lu_dou.ves", nil)
+			ret.add(TransNodes.translate(LU_DOU, pos))
+		}
+
 		ret.add(CompNodes.create_column(pos, h, diam, base))
+
 		if (e_fang) {
 			ret.add(CompNodes.create_lan_e_fang(pos))		
 		}
