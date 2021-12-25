@@ -81,6 +81,14 @@ class Beam is Vertex
 		this.x_max = x_max
 		this.y_min = y_min		
 		this.y_max = this.y_min + h
+
+		// child column first
+		var btm_nodes = Network.neighbors(this, PIN_CAPSULE_BOTTOM_IDX)
+		for (var node in btm_nodes) {
+			if (node is Column) {
+				node.resolve_pos(bf)
+			}
+		}
 	}
 
 	resolve_geo(bf)
