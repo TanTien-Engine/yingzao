@@ -1,0 +1,77 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+node0.set_prop_value("ortho", false)
+
+node0.op_node.cam.position.set(2.8497929279889, 3.2728514497449, 6.2702661873633)
+node0.op_node.cam.yaw = -115.6
+node0.op_node.cam.pitch = -9.3
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.21526837348938
+
+_editor.add_node(node0, 334, 264)
+
+var node1 = ::beamgraph::nodes::ji_tuan::JiTuan()
+
+_editor.add_node(node1, -92, 259)
+
+var node2 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node2, -233, 201)
+
+var node3 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node3, 14, 213)
+
+var node4 = ::beamgraph::nodes::column::Column()
+
+_editor.add_node(node4, -90, 169)
+
+var node5 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node5, -95, 74)
+
+var node6 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node6, -372, 80)
+
+var node7 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node7, 106, 97)
+
+var node8 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node8, -178, -89)
+
+var node9 = ::beamgraph::nodes::column::Column()
+
+_editor.add_node(node9, -194, -210)
+
+var node10 = ::beamgraph::nodes::column::Column()
+
+_editor.add_node(node10, 84, -168)
+
+var node11 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node11, 58, -25)
+
+var node12 = ::beamgraph::nodes::column::Column()
+
+_editor.add_node(node12, -90, -84)
+
+Network.connect(node1, "left", node2, "around")
+Network.connect(node1, "right", node3, "around")
+Network.connect(node1, "bottom", node4, "top")
+Network.connect(node2, "around", node5, "top")
+Network.connect(node2, "around", node6, "around")
+Network.connect(node3, "around", node5, "top")
+Network.connect(node3, "around", node7, "around")
+Network.connect(node4, "bottom", node5, "top")
+Network.connect(node5, "bottom", node11, "top")
+Network.connect(node5, "bottom", node12, "top")
+Network.connect(node6, "around", node8, "top")
+Network.connect(node7, "around", node11, "top")
+Network.connect(node8, "bottom", node9, "top")
+Network.connect(node8, "right", node12, "left")
+Network.connect(node11, "bottom", node10, "top")
+Network.connect(node12, "right", node11, "left")

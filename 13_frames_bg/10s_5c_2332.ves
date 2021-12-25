@@ -1,0 +1,158 @@
+var node0 = ::blueprint::nodes::subgraph::Subgraph()
+node0.load_from_file(_editor, "../99_tools/9_edit_draw.ves")
+node0.set_prop_value("ortho", false)
+
+node0.op_node.cam.position.set(-0.55840699917092, 4.4425178543052, 12.636457671881)
+node0.op_node.cam.yaw = -85
+node0.op_node.cam.pitch = -11.7
+node0.op_node.cam.zoom = 45
+node0.op_node.cam.update_vectors()
+node0.op_node.speed = 0.21526837348938
+
+_editor.add_node(node0, 275.5, 214.3)
+
+var node1 = ::beamgraph::nodes::ji_tuan::JiTuan()
+
+_editor.add_node(node1, -258, 258)
+
+var node2 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node2, -391.90909090909, 184.54545454545)
+
+var node3 = ::beamgraph::nodes::column::Column()
+
+_editor.add_node(node3, -254.63636363636, 174)
+
+var node4 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node4, -118.09090909091, 201)
+
+var node5 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node5, -253.331, 75.624727272727)
+
+var node6 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node6, -490.83809592507, 71.48508661444)
+
+var node7 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node7, -22.827794666132, 84.25101716853)
+
+var node8 = ::beamgraph::nodes::column::Column()
+
+_editor.add_node(node8, -479.45388664941, -216.8667869442)
+
+var node9 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node9, 87.20009848855, 2.7097360784396)
+
+var node10 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node10, -602.09080144709, -28.55390638872)
+
+var node11 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node11, -376.10913005652, -19.906426393023)
+
+var node12 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node12, -511.68386252994, -108.46829997514)
+
+var node13 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node13, -6.7509828879622, -109.81998239413)
+
+var node14 = ::beamgraph::nodes::column::Column()
+
+_editor.add_node(node14, -713.03628613282, -377.68436319449)
+
+var node15 = ::beamgraph::nodes::column::Column()
+
+_editor.add_node(node15, 207.15057920727, -337.68183003246)
+
+var node16 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node16, -695.85130611035, -115.70586999841)
+
+var node17 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node17, 167.74234008789, -89.798583984375)
+
+var node18 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node18, 114.37870372425, -174.07131125711)
+
+var node19 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node19, -579.07392822266, -203.34558349609)
+
+var node20 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node20, -767.77627185159, -188.26702199889)
+
+var node21 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node21, -709.098564211, -265.12651806035)
+
+var node22 = ::beamgraph::nodes::tuan::Tuan()
+
+_editor.add_node(node22, 254.50498792231, -162.36889483515)
+
+var node23 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node23, 168.64618542871, -232.529096914)
+
+var node24 = ::beamgraph::nodes::column::Column()
+
+_editor.add_node(node24, -20.916108622215, -221.72050660074)
+
+var node25 = ::beamgraph::nodes::beam::Beam()
+
+_editor.add_node(node25, -163.95289611816, -9.4123992919922)
+
+var node26 = ::beamgraph::nodes::column::Column()
+
+_editor.add_node(node26, -262.95289611816, -42.412395477295)
+
+Network.connect(node1, "left", node2, "around")
+Network.connect(node1, "bottom", node3, "top")
+Network.connect(node1, "right", node4, "around")
+Network.connect(node2, "around", node5, "top")
+Network.connect(node2, "around", node6, "around")
+Network.connect(node3, "bottom", node5, "top")
+Network.connect(node4, "around", node5, "top")
+Network.connect(node4, "around", node7, "around")
+Network.connect(node5, "bottom", node26, "top")
+Network.connect(node5, "bottom", node11, "top")
+Network.connect(node5, "bottom", node25, "top")
+Network.connect(node6, "around", node10, "around")
+Network.connect(node6, "around", node11, "top")
+Network.connect(node7, "around", node9, "around")
+Network.connect(node9, "around", node13, "top")
+Network.connect(node9, "around", node17, "around")
+Network.connect(node10, "around", node12, "top")
+Network.connect(node10, "around", node16, "around")
+Network.connect(node11, "right", node26, "left")
+Network.connect(node11, "bottom", node12, "top")
+Network.connect(node12, "bottom", node8, "top")
+Network.connect(node16, "around", node19, "top")
+Network.connect(node16, "around", node20, "around")
+Network.connect(node17, "around", node18, "top")
+Network.connect(node17, "around", node22, "around")
+Network.connect(node18, "bottom", node23, "top")
+Network.connect(node19, "right", node8, "left")
+Network.connect(node19, "bottom", node21, "top")
+Network.connect(node20, "around", node21, "top")
+Network.connect(node21, "bottom", node14, "top")
+Network.connect(node21, "right", node8, "left")
+Network.connect(node22, "around", node23, "top")
+Network.connect(node23, "bottom", node15, "top")
+Network.connect(node24, "right", node18, "left")
+Network.connect(node24, "right", node23, "left")
+Network.connect(node24, "top", node13, "bottom")
+Network.connect(node25, "top", node7, "around")
+Network.connect(node25, "bottom", node13, "top")
+Network.connect(node26, "right", node25, "left")
+Network.connect(node26, "left", node12, "right")
+Network.connect(node26, "right", node13, "left")
