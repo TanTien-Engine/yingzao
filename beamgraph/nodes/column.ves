@@ -183,6 +183,17 @@ class Column is Vertex
 			ret.add(CompNodes.create_lan_e_fang(pos))		
 		}
 
+		// chuan
+		var r_column = this.find_right_column()
+		if (r_column) 
+		{
+			var y_chuan = this.calc_sides_beam_bottom()
+			if (!y_chuan) {
+				y_chuan = pos.y
+			}
+			ret.add(CompNodes.create_shun_fu_chuan(Vector3(this.x, y_chuan, 0), r_column.x - this.x))
+		}
+
 		this.v_geo = Variant(ret)
 		return this.v_geo
 	}
@@ -218,6 +229,17 @@ class Column is Vertex
 		return nil
 	}	
 
+	find_right_column()
+	{
+		var top_nodes = Network.neighbors(this, PIN_CAPSULE_RIGHT_IDX)
+		for (var node in top_nodes) {
+			if (node is Column) {
+				return node
+			}
+		}
+		return nil
+	}
+
 	get_top_node()
 	{
 		var nodes = Network.neighbors(this, PIN_CAPSULE_TOP_IDX)
@@ -236,5 +258,23 @@ class Column is Vertex
 		} else {
 			return nodes[0]
 		}
-	}	
+	}
+
+	calc_sides_beam_bottom()
+	{
+		var ret = nil
+
+		import "beamgraph.nodes.beam" for Beam
+
+		var nodes = Network.neighbors(this)
+		for (var node in nodes) {
+			if (node is Beam) {
+				if (!ret or node.y_min < ret) {
+					ret = node.y_min
+				}
+			}
+		}
+
+		return ret
+	}
 }
