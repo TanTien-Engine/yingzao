@@ -34,6 +34,17 @@ class DouGong
 		this.styles = []
 	}
 
+	reset()
+	{
+		this.layers.clear()
+
+		this.x_max = 0
+		this.x_min = 0
+
+		this.joints.clear()
+		this.styles.clear()
+	}
+
 	prepare(nodes)
 	{
 		CONTEXT.dg = this

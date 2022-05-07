@@ -20,6 +20,23 @@ class Context
 		this.disable_joints = true
 	}
 
+	reset()
+	{
+		this.dg = nil
+
+		this.gen_corner = false
+		this.no_you = false
+
+		// style
+		this.style_changed = false
+		this.s_ang_slope = nil
+		this.s_step_len = nil
+
+		this.style_nodes.clear()
+
+		this.disable_joints = true		
+	}
+
 	step_len(hop)
 	{
 		if (this.s_step_len) {

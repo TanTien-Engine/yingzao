@@ -114,6 +114,9 @@ class Gongeditor is Editor
 		if (this.scene_stack.bp_dirty or CONTEXT.style_changed)
 		{
 			CONTEXT.style_changed = false
+
+			CONTEXT.reset()
+			this.dg.reset()
 			
 			this.rebuild_all_geos()
 
