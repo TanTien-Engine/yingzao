@@ -112,10 +112,13 @@ class Tuan is Vertex
 			{
 				for (var p in v.pins)
 				{
-					if (p.edge.pin0.vert == node) {
-						return p.edge.pin1.type == PIN_CAPSULE_LEFT_IDX
-					} else if (p.edge.pin1.vert == node) {
-						return p.edge.pin0.type == PIN_CAPSULE_LEFT_IDX
+					for (var e in p.edges)
+					{
+						if (e.pin0.vert == node) {
+							return e.pin1.type == PIN_CAPSULE_LEFT_IDX
+						} else if (e.pin1.vert == node) {
+							return e.pin0.type == PIN_CAPSULE_LEFT_IDX
+						}
 					}
 				}
 			}
